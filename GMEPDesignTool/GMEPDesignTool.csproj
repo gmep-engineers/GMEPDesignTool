@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="gmep.ico" />
+    <None Remove="GMEPE-LogoTransparent.png" />
+  </ItemGroup>
+
+    <ItemGroup>
+	    <SplashScreen Include="GMEPE-LogoTransparent.png" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="gmep.ico" />
+    <Resource Include="GMEPE-LogoTransparent.png" />
+  </ItemGroup>
+
+</Project>
