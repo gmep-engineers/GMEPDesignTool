@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -94,9 +96,10 @@ namespace GMEPDesignTool
 
     private readonly DelegateCommand _getSearchResultsCommand;
     public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
-
+    public ObservableCollection<TabItem> Tabs { get; set; }
     public ViewModel()
     {
+      Tabs = new ObservableCollection<TabItem>();
       _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
       Name = "My Name";
     }
@@ -116,14 +119,21 @@ namespace GMEPDesignTool
       return true;
     }
 
-    private void OpenProject(object commandParameter)
+    public void OpenProject(string projectName)
     {
-
+      foreach (TabItem tab in Tabs)
+      {
+        if ((string)tab.Header == projectName)
+        {
+          return;
+        }
+      }
+      Tabs.Add(new TabItem { Header = projectName, Content = "Content", IsSelected = true });
     }
 
-    private bool CanOpenProject(object commandParameter)
+    public void CloseProject(TabItem projectTab)
     {
-      return true;
+      Tabs.Remove(projectTab);
     }
   }
 }

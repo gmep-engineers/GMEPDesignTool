@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Diagnostics;
 
 namespace GMEPDesignTool
 {
@@ -27,6 +28,18 @@ namespace GMEPDesignTool
       MainWindowViewModel = new ViewModel();
       DataContext = MainWindowViewModel;
       InitializeComponent();
+    }
+
+    public void MainWindowOpenProject(object sender, MouseButtonEventArgs e)
+    {
+      string projectName = (string)ProjectList.SelectedItem;
+      MainWindowViewModel.OpenProject(projectName);
+    }
+
+    public void MainWindowCloseProject(object sender, RoutedEventArgs e)
+    {
+      TabItem projectTab = (TabItem)ProjectTabs.SelectedItem;
+      MainWindowViewModel.CloseProject(projectTab);
     }
   }
 }

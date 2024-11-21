@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace GMEPDesignTool
       {
         // just printing the actions for now
         // later on, this will be a function to perform actions in sql
-        Console.WriteLine(action);
+        Trace.WriteLine(action);
       }
       sqlActions = new List<string>();
       LastSaved = DateTime.Now;
