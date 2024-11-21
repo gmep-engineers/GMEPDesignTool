@@ -10,8 +10,51 @@ using System.Windows.Input;
 
 namespace GMEPDesignTool
 {
+
   public class ViewModel : ViewModelBase
   {
+    private List<Project> _projects = new List<Project>();
+    public List<Project> Projects
+    {
+      get => _projects;
+      set => SetProperty(ref _projects, value);
+    }
+
+    private static Dictionary<string, string> StandardColorScheme = new Dictionary<string, string>()
+      {
+        { "Background1", "White" },
+        { "Background2", "Gainsboro" },
+        { "Foreground1", "Black" },
+        { "Foreground2", "White" },
+        { "Link", "Blue" },
+        { "LinkDisabled", "Gray" },
+        { "ReadOnlyTextBox", "LightYellow" },
+        { "CustomColor0", "White" },
+        { "CustomColor1", "LightCoral" },
+        { "CustomColor2", "LightSalmon" },
+        { "CustomColor3", "NavajoWhite" },
+        { "CustomColor4", "Khaki" },
+        { "CustomColor5", "YellowGreen" },
+        { "CustomColor6", "LimeGreen" },
+        { "CustomColor7", "MediumTurquoise" },
+        { "CustomColor8", "LightSkyBlue" },
+        { "CustomColor9", "Thistle" },
+        { "CustomColor10", "Plum" }
+      };
+
+    private static Dictionary<string, Dictionary<string, string>> ColorSchemes = new Dictionary<string, Dictionary<string, string>>()
+    {
+      {"Standard", StandardColorScheme },
+      {"Dark", StandardColorScheme }
+    };
+
+    private Dictionary<string, string> _colors = StandardColorScheme;
+    public Dictionary<string, string> Colors
+    {
+      get => _colors;
+      set => SetProperty(ref _colors, value);
+    }
+
     private string _name = "";
     public string Name
     {
@@ -69,6 +112,16 @@ namespace GMEPDesignTool
     }
 
     private bool CanGetSearchResults(object commandParameter)
+    {
+      return true;
+    }
+
+    private void OpenProject(object commandParameter)
+    {
+
+    }
+
+    private bool CanOpenProject(object commandParameter)
     {
       return true;
     }
