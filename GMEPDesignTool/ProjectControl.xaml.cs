@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +22,31 @@ namespace GMEPDesignTool
   /// </summary>
   public partial class ProjectControl : UserControl
   {
+
+    public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
     public ProjectControl()
     {
       InitializeComponent();
+      ElectricalPanels = new ObservableCollection<ElectricalPanel>();
     }
+
+    public void AddElectricalPanel(ElectricalPanel electricalPanel)
+    {
+      ElectricalPanels.Add(electricalPanel);
+    }
+
+    public void AddNewElectricalPanel(object sender, EventArgs e)
+    {
+      Trace.WriteLine("new panel");
+      ElectricalPanel electricalPanel = new ElectricalPanel("0", 100, 100, false, false, "", 0, "");
+      ElectricalPanels.Add(electricalPanel);
+      
+    }
+
+    public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
+    {
+      ElectricalPanels.Remove(electricalPanel);
+    }
+
   }
 }
