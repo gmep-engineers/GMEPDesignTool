@@ -31,16 +31,16 @@
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
                                                 <Label Content="Name" />
-                                                <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50" Text="{Binding Name}"/>
                                                 <Label Content="Voltage" Margin="0 25"/>
-                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
+                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" SelectedItem="{Binding Voltage}">
                                                     <ComboBoxItem Content="120/208V 3-Φ" />
                                                     <ComboBoxItem Content="120/240V 1-Φ" />
                                                     <ComboBoxItem Content="277/480V 3-Φ" />
                                                     <ComboBoxItem Content="120/240V 3-Φ" />
                                                 </ComboBox>
                                                 <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
+                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50" Text="{Binding Amp}"></TextBox>
 
                                                 <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
                                                     <TextBlock TextDecorations="Underline">
@@ -49,7 +49,7 @@
                                                         </Hyperlink>
                                                     </TextBlock>                    
                                                 </Label>
-                                                <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="183 0 0 0" VerticalAlignment="Top"/>
+                                                <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="-25 0 0 0" VerticalAlignment="Top"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -83,13 +83,13 @@
                                                 <Label VerticalAlignment="Top" Margin="75,2,0,0" HorizontalAlignment="Left" Content="Bus (A)"/>
                                                 <Label VerticalAlignment="Top" Margin="75,25,0,0" HorizontalAlignment="Left" Content="Main (A)"/>
                                                 <Rectangle Width="80" Height="100" Stroke="Gray" HorizontalAlignment="Left" Margin="10 53" VerticalAlignment="Top" Fill="{Binding Color}"/>
-                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15,60,0,0" HorizontalContentAlignment="Right">
+                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15,60,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
                                                     <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                 </ComboBox>
-                                                <TextBox Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper"/>
+                                                <TextBox  Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper"/>
 
-                                                <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right">
+                                                <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
                                                     <ComboBoxItem Content=" " Background="White" />
                                                     <ComboBoxItem Content=" " Background="Red" />
                                                     <ComboBoxItem Content=" " Background="Blue" />
@@ -117,7 +117,7 @@
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right">
+                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Content">
                                                     <ComboBoxItem Content="MS-1" />
                                                     <ComboBoxItem Content="B" />
                                                     <ComboBoxItem Content="C" />
