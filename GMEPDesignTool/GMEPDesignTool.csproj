@@ -13,13 +13,13 @@
     <None Remove="GMEPE-LogoTransparent.png" />
   </ItemGroup>
 
-    <ItemGroup>
-	    <SplashScreen Include="GMEPE-LogoTransparent.png" />
-    </ItemGroup>
-
   <ItemGroup>
     <Resource Include="gmep.ico" />
     <Resource Include="GMEPE-LogoTransparent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\" />
   </ItemGroup>
 
 </Project>

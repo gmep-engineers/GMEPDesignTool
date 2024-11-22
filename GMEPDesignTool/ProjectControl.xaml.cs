@@ -28,7 +28,8 @@ namespace GMEPDesignTool
     {
       InitializeComponent();
       ElectricalPanels = new ObservableCollection<ElectricalPanel>();
-    }
+      this.DataContext = this;
+        }
 
     public void AddElectricalPanel(ElectricalPanel electricalPanel)
     {
