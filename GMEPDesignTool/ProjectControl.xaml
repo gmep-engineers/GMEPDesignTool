@@ -103,7 +103,7 @@
                                                     <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                 </ComboBox>
-                                                <TextBox  Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper"/>
+                                                <TextBox  Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
 
                                                 <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
                                                     <ComboBoxItem Content=" " Background="White" />
