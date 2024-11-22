@@ -21,43 +21,40 @@
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
                                 <!-- Make Dynamic -->
-                                <Grid Height="100" Width="Auto">
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
-                                        <Label Content="Name" />
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
-                                        <Label Content="Voltage" Margin="0 25"/>
-                                        <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
-                                            <ComboBoxItem Content="120/208V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 1-Φ" />
-                                            <ComboBoxItem Content="277/480V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 3-Φ" />
-                                        </ComboBox>
-                                        <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
+                                <ItemsControl ItemsSource="{Binding ElectricalServices}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
+                                                <Label Content="Name" />
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
+                                                <Label Content="Voltage" Margin="0 25"/>
+                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
+                                                    <ComboBoxItem Content="120/208V 3-Φ" />
+                                                    <ComboBoxItem Content="120/240V 1-Φ" />
+                                                    <ComboBoxItem Content="277/480V 3-Φ" />
+                                                    <ComboBoxItem Content="120/240V 3-Φ" />
+                                                </ComboBox>
+                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
+                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
 
-                                        <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
-                                            <TextBlock TextDecorations="Underline">[delete]</TextBlock>
-                                        </Label>
-                                    </Grid>
-                                    <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="183 0 0 0" VerticalAlignment="Top"/>
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="200 0 0 0">
-                                        <Label Content="Name"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
-                                        <Label Content="Voltage" Margin="0 25"/>
-                                        <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
-                                            <ComboBoxItem Content="120/208V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 1-Φ" />
-                                            <ComboBoxItem Content="277/480V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 3-Φ" />
-                                        </ComboBox>
-                                        <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
+                                                <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
+                                                    <TextBlock TextDecorations="Underline">
+                                                        <Hyperlink Click="DeleteSelectedElectricalService" TextDecorations="Underline" CommandParameter="{Binding}">
+                                                            [delete]
+                                                        </Hyperlink>
+                                                    </TextBlock>                    
+                                                </Label>
+                                                <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="183 0 0 0" VerticalAlignment="Top"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                                        <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
-                                            <TextBlock TextDecorations="Underline">[delete]</TextBlock>
-                                        </Label>
-                                    </Grid>
-                                </Grid>
                                 <!-- End Dynamic -->
                             </ScrollViewer>
                             <Grid HorizontalAlignment="Right">
@@ -65,59 +62,73 @@
                                     <TextBlock TextDecorations="Underline">[hide]</TextBlock>
                                 </Label>
                                 <Rectangle Height="900" Stroke="LightGray" HorizontalAlignment="Left" Margin="0 0 48 0" VerticalAlignment="Top"/>
-                                <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 0 0" Content="+"/>
+                                <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 0 0" Content="+" Click="AddNewElectricalService"/>
                             </Grid>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="Panels" Height="270" VerticalAlignment="Top" Margin="0 140 0 0">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                                <ListBox ItemsSource="{Binding ElectricalPanels}">
-                                    <Grid Margin="0 0 0 0" Width="150" HorizontalAlignment="Left">
-                                        <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="25,5,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
-                                        <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="25,28,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
-                                        <Label VerticalAlignment="Top" Margin="75,2,0,0" HorizontalAlignment="Left" Content="Bus (A)"/>
-                                        <Label VerticalAlignment="Top" Margin="75,25,0,0" HorizontalAlignment="Left" Content="Main (A)"/>
-                                        <Rectangle Width="80" Height="100" Stroke="Gray" HorizontalAlignment="Left" Margin="10 53" VerticalAlignment="Top" Fill="{Binding Color}"/>
-                                        <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15,60,0,0" HorizontalContentAlignment="Right">
-                                            <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
-                                            <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
-                                        </ComboBox>
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper"/>
+                                <ItemsControl ItemsSource="{Binding ElectricalPanels}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="180">
+                                                <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="25,5,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
+                                                <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="25,28,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
+                                                <Label VerticalAlignment="Top" Margin="75,2,0,0" HorizontalAlignment="Left" Content="Bus (A)"/>
+                                                <Label VerticalAlignment="Top" Margin="75,25,0,0" HorizontalAlignment="Left" Content="Main (A)"/>
+                                                <Rectangle Width="80" Height="100" Stroke="Gray" HorizontalAlignment="Left" Margin="10 53" VerticalAlignment="Top" Fill="{Binding Color}"/>
+                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15,60,0,0" HorizontalContentAlignment="Right">
+                                                    <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
+                                                    <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
+                                                </ComboBox>
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper"/>
 
-                                        <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right">
-                                            <ComboBoxItem Content=" " Background="White" />
-                                            <ComboBoxItem Content=" " Background="Red" />
-                                            <ComboBoxItem Content=" " Background="Blue" />
-                                            <!--
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor1]}" />
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor2]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor3]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor4]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor5]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor6]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor7]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor8]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor9]}"/>
-<ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor10]}"/>
--->
-                                        </ComboBox>
-                                        <Label VerticalAlignment="Top" Margin="25,126,0,0" Height="25"  HorizontalAlignment="Left" Foreground="Blue">
-                                            <TextBlock TextDecorations="Underline">[delete]</TextBlock>
-                                        </Label>
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
-                                        <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
-                                        <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                        <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right">
-                                            <ComboBoxItem Content="MS-1" />
-                                            <ComboBoxItem Content="B" />
-                                            <ComboBoxItem Content="C" />
-                                            <ComboBoxItem Content="D" />
-                                        </ComboBox>
-                                        <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
-                                    </Grid>
-                                </ListBox>
+                                                <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right">
+                                                    <ComboBoxItem Content=" " Background="White" />
+                                                    <ComboBoxItem Content=" " Background="Red" />
+                                                    <ComboBoxItem Content=" " Background="Blue" />
+                                                    <!--
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor1]}" />
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor2]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor3]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor4]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor5]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor6]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor7]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor8]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor9]}"/>
+                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor10]}"/>
+                                                        -->
+                                                </ComboBox>
+                                                <Label VerticalAlignment="Top" Margin="25,126,0,0" Height="25"  HorizontalAlignment="Left" Foreground="Blue">
+                                                    <TextBlock TextDecorations="Underline">
+                                                             <Hyperlink Click="DeleteSelectedElectricalPanel" TextDecorations="Underline" CommandParameter="{Binding}">
+                                                                 [delete]
+                                                             </Hyperlink>                               
+                                                        </TextBlock>
+                                                </Label>
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
+                                                <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
+                                                <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
+                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right">
+                                                    <ComboBoxItem Content="MS-1" />
+                                                    <ComboBoxItem Content="B" />
+                                                    <ComboBoxItem Content="C" />
+                                                    <ComboBoxItem Content="D" />
+                                                </ComboBox>
+                                                <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
+                                                <Rectangle Height="230" Stroke="LightGray" HorizontalAlignment="Left" Margin="-17 0 0 0" VerticalAlignment="Top"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </ScrollViewer>
                             <Grid HorizontalAlignment="Right">
                                 <Label VerticalAlignment="Top" Margin="7,0,0,0" HorizontalAlignment="Left" Foreground="Blue" >
@@ -466,6 +477,6 @@
                 <Grid Background="Gainsboro"/>
             </TabItem>
         </TabControl>
-        <TextBlock Text="Last Saved: Today 11:56 AM" HorizontalAlignment="Right" Margin="5"/>
+        <TextBlock Text="Last Saved: Today 11:56 AM" HorizontalAlignment="Right" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
