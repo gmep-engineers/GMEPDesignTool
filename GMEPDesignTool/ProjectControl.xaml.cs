@@ -48,6 +48,12 @@ namespace GMEPDesignTool
     {
       ElectricalPanels.Remove(electricalPanel);
     }
-
-  }
+    public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
+    {
+        if (sender is Hyperlink hyperlink && hyperlink.CommandParameter is ElectricalPanel electricalPanel)
+            {
+                RemoveElectricalPanel(electricalPanel);
+            }
+     }
+    }
 }

@@ -110,7 +110,11 @@
                                                         -->
                                                 </ComboBox>
                                                 <Label VerticalAlignment="Top" Margin="25,126,0,0" Height="25"  HorizontalAlignment="Left" Foreground="Blue">
-                                                    <TextBlock TextDecorations="Underline">[delete]</TextBlock>
+                                                    <TextBlock TextDecorations="Underline">
+                                                             <Hyperlink Click="DeleteSelectedElectricalPanel" TextDecorations="Underline" CommandParameter="{Binding}">
+                                                                 [delete]
+                                                             </Hyperlink>                               
+                                                        </TextBlock>
                                                 </Label>
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
