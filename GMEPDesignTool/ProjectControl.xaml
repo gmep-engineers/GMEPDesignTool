@@ -21,43 +21,39 @@
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
                                 <!-- Make Dynamic -->
-                                <Grid Height="100" Width="Auto">
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
-                                        <Label Content="Name" />
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
-                                        <Label Content="Voltage" Margin="0 25"/>
-                                        <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
-                                            <ComboBoxItem Content="120/208V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 1-Φ" />
-                                            <ComboBoxItem Content="277/480V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 3-Φ" />
-                                        </ComboBox>
-                                        <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
+                                <ItemsControl ItemsSource="{Binding ElectricalServices}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
+                                                <Label Content="Name" />
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
+                                                <Label Content="Voltage" Margin="0 25"/>
+                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
+                                                    <ComboBoxItem Content="120/208V 3-Φ" />
+                                                    <ComboBoxItem Content="120/240V 1-Φ" />
+                                                    <ComboBoxItem Content="277/480V 3-Φ" />
+                                                    <ComboBoxItem Content="120/240V 3-Φ" />
+                                                </ComboBox>
+                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
+                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
 
-                                        <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
-                                            <TextBlock TextDecorations="Underline">[delete]</TextBlock>
-                                        </Label>
-                                    </Grid>
-                                    <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="183 0 0 0" VerticalAlignment="Top"/>
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="200 0 0 0">
-                                        <Label Content="Name"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50"/>
-                                        <Label Content="Voltage" Margin="0 25"/>
-                                        <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30">
-                                            <ComboBoxItem Content="120/208V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 1-Φ" />
-                                            <ComboBoxItem Content="277/480V 3-Φ" />
-                                            <ComboBoxItem Content="120/240V 3-Φ" />
-                                        </ComboBox>
-                                        <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50"></TextBox>
+                                                <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
+                                                    <TextBlock TextDecorations="Underline">
+                                                        <Hyperlink Click="DeleteSelectedElectricalService" TextDecorations="Underline" CommandParameter="{Binding}">
+                                                            [delete]
+                                                        </Hyperlink>
+                                                    </TextBlock>                    
+                                                </Label>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                                        <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
-                                            <TextBlock TextDecorations="Underline">[delete]</TextBlock>
-                                        </Label>
-                                    </Grid>
-                                </Grid>
                                 <!-- End Dynamic -->
                             </ScrollViewer>
                             <Grid HorizontalAlignment="Right">
@@ -65,7 +61,7 @@
                                     <TextBlock TextDecorations="Underline">[hide]</TextBlock>
                                 </Label>
                                 <Rectangle Height="900" Stroke="LightGray" HorizontalAlignment="Left" Margin="0 0 48 0" VerticalAlignment="Top"/>
-                                <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 0 0" Content="+"/>
+                                <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 0 0" Content="+" Click="AddNewElectricalService"/>
                             </Grid>
                         </Grid>
                     </GroupBox>
