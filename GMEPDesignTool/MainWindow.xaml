@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
+        xmlns:uc="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowState="Maximized"
         Icon="/gmep.ico">
@@ -111,7 +112,7 @@
                     </TabControl.ItemTemplate>
                     <TabControl.ContentTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Content}"/>
+                            <uc:ProjectControl/>
                         </DataTemplate>
                     </TabControl.ContentTemplate>
                 </TabControl>
