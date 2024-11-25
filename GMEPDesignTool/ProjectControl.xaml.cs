@@ -41,7 +41,7 @@ namespace GMEPDesignTool
         public void AddNewElectricalPanel(object sender, EventArgs e)
         {
           Trace.WriteLine("new panel");
-          ElectricalPanel electricalPanel = new ElectricalPanel("0", 100, 100, false, false, "", 0, "");
+          ElectricalPanel electricalPanel = new ElectricalPanel("0", 100, 100, false, false, "Panel X", 0, "MS-1");
           ElectricalPanels.Add(electricalPanel);
         }
 
@@ -66,7 +66,7 @@ namespace GMEPDesignTool
         public void AddNewElectricalService(object sender, EventArgs e)
         {
             Trace.WriteLine("new service");
-            ElectricalService electricalService = new ElectricalService("0", "0", "", "", 0);
+            ElectricalService electricalService = new ElectricalService("0", "0", "Service X", "", 0);
             ElectricalServices.Add(electricalService);
         }
 
