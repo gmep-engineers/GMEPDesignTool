@@ -197,7 +197,7 @@
                                     <Grid Height="80" Margin="0 0 0 0" VerticalAlignment="Top" Background="White">
                                         <Grid Margin="0 0 50 0">
                                             <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Vendor" Margin="3 0 0 0"/>
+                                                <Label Content="Owner" Margin="3 0 0 0"/>
                                                 <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
                                                     <ComboBoxItem Content="Arco" />
                                                     <ComboBoxItem Content="Chick-Fil-A" />
@@ -260,7 +260,7 @@
                                     <Grid Height="80" Margin="0 80 0 0" VerticalAlignment="Top" Background="Gainsboro">
                                         <Grid Margin="0 0 50 0">
                                             <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Vendor" Margin="3 0 0 0"/>
+                                                <Label Content="Owner" Margin="3 0 0 0"/>
                                                 <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
                                                     <ComboBoxItem Content="Arco" />
                                                     <ComboBoxItem Content="Chick-Fil-A" />
@@ -315,7 +315,7 @@
                                     <Grid Height="80" Margin="0 160 0 0" VerticalAlignment="Top" Background="White">
                                         <Grid Margin="0 0 50 0">
                                             <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Vendor" Margin="3 0 0 0"/>
+                                                <Label Content="Owner" Margin="3 0 0 0"/>
                                                 <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
                                                     <ComboBoxItem Content="Arco" />
                                                     <ComboBoxItem Content="Chick-Fil-A" />
@@ -370,7 +370,7 @@
                                     <Grid Height="80" Margin="0 240 0 0" VerticalAlignment="Top" Background="Gainsboro">
                                         <Grid Margin="0 0 50 0">
                                             <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Vendor" Margin="3 0 0 0"/>
+                                                <Label Content="Owner" Margin="3 0 0 0"/>
                                                 <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
                                                     <ComboBoxItem Content="Arco" />
                                                     <ComboBoxItem Content="Chick-Fil-A" />
@@ -425,7 +425,7 @@
                                     <Grid Height="80" Margin="0 320 0 0" VerticalAlignment="Top" Background="White">
                                         <Grid Margin="0 0 50 0">
                                             <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Vendor" Margin="3 0 0 0"/>
+                                                <Label Content="Owner" Margin="3 0 0 0"/>
                                                 <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
                                                     <ComboBoxItem Content="Arco" />
                                                     <ComboBoxItem Content="Chick-Fil-A" />
