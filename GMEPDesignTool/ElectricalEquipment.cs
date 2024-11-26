@@ -6,37 +6,60 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  
-  public class ElectricalEquipment
-  {
-    private string Vendor;
-    private string EquipNo;
-    private int Qty;
-    private string PanelId;
-    private int Voltage;
-    private float Amp;
-    private float Va;
-    private bool Is3Ph;
-    private string SpecSheetId;
-    public ElectricalEquipment(string vendor, string equipNo, int qty, string panelId, int voltage, float amp, float va, bool is3Ph, string specSheetId)
+    public class ElectricalEquipment
     {
-      Vendor = vendor;
-      EquipNo = equipNo;
-      Qty = qty;
-      PanelId = panelId;
-      Voltage = voltage;
-      Amp = amp;
-      Va = va;
-      Is3Ph = is3Ph;
-      SpecSheetId = specSheetId;
+        private string Owner;
+        private string EquipNo;
+        private int Qty;
+        private string PanelId;
+        private int Voltage;
+        private float Amp;
+        private float Va;
+        private bool Is3Ph;
+        private string SpecSheetId;
+
+        public ElectricalEquipment(
+            string owner,
+            string equipNo,
+            int qty,
+            string panelId,
+            int voltage,
+            float amp,
+            float va,
+            bool is3Ph,
+            string specSheetId
+        )
+        {
+            Owner = owner;
+            EquipNo = equipNo;
+            Qty = qty;
+            PanelId = panelId;
+            Voltage = voltage;
+            Amp = amp;
+            Va = va;
+            Is3Ph = is3Ph;
+            SpecSheetId = specSheetId;
+        }
+
+        public bool Verify()
+        {
+            if (!Utils.IsOwnerName(Owner))
+            {
+                return false;
+            }
+            if (!Utils.IsEquipName(EquipNo))
+            {
+                return false;
+            }
+            if (!Utils.IsUuid(PanelId))
+            {
+                return false;
+            }
+            if (!Utils.IsUuid(SpecSheetId))
+            {
+                return false;
+            }
+            return true;
+        }
     }
-    public bool Verify()
-    {
-      if (!Utils.IsVendorName(Vendor)) { return false; }
-      if (!Utils.IsEquipName(EquipNo)) { return false; }
-      if (!Utils.IsUuid(PanelId)) { return false; }
-      if (!Utils.IsUuid(SpecSheetId)) { return false; }
-      return true;
-    }
-  }
 }
