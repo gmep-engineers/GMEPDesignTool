@@ -200,8 +200,8 @@
 
                                 </Grid>
                             </StackPanel>
-                            <ScrollViewer Margin="0 40 0 0">
-                                <ItemsControl ItemsSource="{Binding ElectricalEquipments}">
+                            <ScrollViewer Margin="0 40 0 0" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding ElectricalEquipments}" AlternationCount="2">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Vertical" Height="Auto"/>
@@ -209,12 +209,12 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <!-- Make Dynamic -->
-                                            <Grid Height="80" Margin="0 0 0 0" VerticalAlignment="Top" Background="White">
+                                            <!-- Make Dynamic --> 
+                                            <Grid x:Name="EquipmentGrid" Height="80" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Margin="0 0 50 0">
                                                     <Grid Height="85" Width="Auto" VerticalAlignment="Top">
                                                         <Label Content="Owner" Margin="3 0 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0"  SelectedValue="{Binding Owner}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="Arco" />
                                                             <ComboBoxItem Content="Chick-Fil-A" />
                                                             <ComboBoxItem Content="Circle-K" />
@@ -222,20 +222,20 @@
                                                         </ComboBox>
 
                                                         <Label Content="Equip #" Margin="0 25 0 0"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="69"></TextBox>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="69" Text="{Binding EquipNo}"></TextBox>
 
                                                         <Label Content="Qty." Margin="130 25 0 0"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="162 30 0 0" Width="43"></TextBox>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="162 30 0 0" Width="43" Text="{Binding Qty}"></TextBox>
 
                                                         <Label Content="Panel" Margin="10 50 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="A" />
                                                             <ComboBoxItem Content="B" />
                                                             <ComboBoxItem Content="C" />
                                                         </ComboBox>
 
                                                         <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="115" Background="NavajoWhite" />
                                                             <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
                                                             <ComboBoxItem Content="208" Background="PaleGreen"/>
@@ -246,19 +246,19 @@
                                                         </ComboBox>
 
                                                         <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="279 25 0 0"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50"></TextBox>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50" Text="{Binding Amp}"></TextBox>
 
                                                         <Label Content="VA"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="375 25 0 0"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400 30 0 0" Width="70"></TextBox>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="400 30 0 0" Width="70" Text="{Binding Va}"></TextBox>
 
                                                         <Label Content="Phase" Margin="272 50 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0 ">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0" SelectedIndex="{Binding Is3Ph}">
                                                             <ComboBoxItem Content="1" />
                                                             <ComboBoxItem Content="3" />
                                                         </ComboBox>
 
                                                         <Label Margin="525 0 0 0">
-                                                            <TextBlock TextDecorations="Underline" Foreground="Gray">[view spec sheet]</TextBlock>
+                                                            <TextBlock x:Name="ViewSpecSheet" TextDecorations="Underline">[view spec sheet]</TextBlock>
                                                         </Label>
                                                         <Label Margin="525 25 0 0">
                                                             <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
@@ -267,236 +267,25 @@
 
                                                 </Grid>
                                                 <Grid>
-                                                    <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,100,0" Stroke="LightGray" VerticalAlignment="Center"/>
+                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,100,0" Stroke="LightGray" VerticalAlignment="Center"/>
                                                     <Button Height="20" Width="50"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
                                                     
                                                 </Grid>
                                             </Grid>
+                                            <DataTemplate.Triggers>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                                    <Setter Property="Background" Value="White" TargetName="EquipmentGrid"/>
+                                                    <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
+                                                    <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                                 <!-- End Dynamic -->
-                                    <!--<Grid Height="80" Margin="0 80 0 0" VerticalAlignment="Top" Background="Gainsboro">
-                                        <Grid Margin="0 0 50 0">
-                                            <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Owner" Margin="3 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
-                                                    <ComboBoxItem Content="Arco" />
-                                                    <ComboBoxItem Content="Chick-Fil-A" />
-                                                    <ComboBoxItem Content="Circle-K" />
-                                                    <ComboBoxItem Content="Shell" />
-                                                </ComboBox>
-
-                                                <Label Content="Equip #" Margin="0 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="90"></TextBox>
-
-                                                <Label Content="Panel" Margin="10 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0">
-                                                    <ComboBoxItem Content="A" />
-                                                    <ComboBoxItem Content="B" />
-                                                    <ComboBoxItem Content="C" />
-                                                </ComboBox>
-
-                                                <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0">
-                                                    <ComboBoxItem Content="120" />
-                                                    <ComboBoxItem Content="208" />
-                                                    <ComboBoxItem Content="230" />
-                                                    <ComboBoxItem Content="240" />
-                                                    <ComboBoxItem Content="460" />
-                                                    <ComboBoxItem Content="480" />
-                                                </ComboBox>
-
-                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="279 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50"></TextBox>
-
-                                                <Label Content="Phase" Margin="272 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0 ">
-                                                    <ComboBoxItem Content="1" />
-                                                    <ComboBoxItem Content="3" />
-                                                </ComboBox>
-
-                                                <Label Margin="525 0 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Gray">[view spec sheet]</TextBlock>
-                                                </Label>
-                                                <Label Margin="525 25 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
-                                                </Label>
-                                            </Grid>
-
-                                        </Grid>
-                                        <Grid>
-                                            <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,52,0" Stroke="White" VerticalAlignment="Center"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="+"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 0" Content="-"/>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid Height="80" Margin="0 160 0 0" VerticalAlignment="Top" Background="White">
-                                        <Grid Margin="0 0 50 0">
-                                            <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Owner" Margin="3 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
-                                                    <ComboBoxItem Content="Arco" />
-                                                    <ComboBoxItem Content="Chick-Fil-A" />
-                                                    <ComboBoxItem Content="Circle-K" />
-                                                    <ComboBoxItem Content="Shell" />
-                                                </ComboBox>
-
-                                                <Label Content="Equip #" Margin="0 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="90"></TextBox>
-
-                                                <Label Content="Panel" Margin="10 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0">
-                                                    <ComboBoxItem Content="A" />
-                                                    <ComboBoxItem Content="B" />
-                                                    <ComboBoxItem Content="C" />
-                                                </ComboBox>
-
-                                                <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0">
-                                                    <ComboBoxItem Content="120" />
-                                                    <ComboBoxItem Content="208" />
-                                                    <ComboBoxItem Content="230" />
-                                                    <ComboBoxItem Content="240" />
-                                                    <ComboBoxItem Content="460" />
-                                                    <ComboBoxItem Content="480" />
-                                                </ComboBox>
-
-                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="279 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50"></TextBox>
-
-                                                <Label Content="Phase" Margin="272 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0 ">
-                                                    <ComboBoxItem Content="1" />
-                                                    <ComboBoxItem Content="3" />
-                                                </ComboBox>
-
-                                                <Label Margin="525 0 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Gray">[view spec sheet]</TextBlock>
-                                                </Label>
-                                                <Label Margin="525 25 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
-                                                </Label>
-                                            </Grid>
-
-                                        </Grid>
-                                        <Grid>
-                                            <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,52,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="+"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 0" Content="-"/>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid Height="80" Margin="0 240 0 0" VerticalAlignment="Top" Background="Gainsboro">
-                                        <Grid Margin="0 0 50 0">
-                                            <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Owner" Margin="3 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
-                                                    <ComboBoxItem Content="Arco" />
-                                                    <ComboBoxItem Content="Chick-Fil-A" />
-                                                    <ComboBoxItem Content="Circle-K" />
-                                                    <ComboBoxItem Content="Shell" />
-                                                </ComboBox>
-
-                                                <Label Content="Equip #" Margin="0 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="90"></TextBox>
-
-                                                <Label Content="Panel" Margin="10 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0">
-                                                    <ComboBoxItem Content="A" />
-                                                    <ComboBoxItem Content="B" />
-                                                    <ComboBoxItem Content="C" />
-                                                </ComboBox>
-
-                                                <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0">
-                                                    <ComboBoxItem Content="120" />
-                                                    <ComboBoxItem Content="208" />
-                                                    <ComboBoxItem Content="230" />
-                                                    <ComboBoxItem Content="240" />
-                                                    <ComboBoxItem Content="460" />
-                                                    <ComboBoxItem Content="480" />
-                                                </ComboBox>
-
-                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="279 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50"></TextBox>
-
-                                                <Label Content="Phase" Margin="272 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0 ">
-                                                    <ComboBoxItem Content="1" />
-                                                    <ComboBoxItem Content="3" />
-                                                </ComboBox>
-
-                                                <Label Margin="525 0 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Gray">[view spec sheet]</TextBlock>
-                                                </Label>
-                                                <Label Margin="525 25 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
-                                                </Label>
-                                            </Grid>
-
-                                        </Grid>
-                                        <Grid>
-                                            <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,52,0" Stroke="White" VerticalAlignment="Center"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="+"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 0" Content="-"/>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid Height="80" Margin="0 320 0 0" VerticalAlignment="Top" Background="White">
-                                        <Grid Margin="0 0 50 0">
-                                            <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                <Label Content="Owner" Margin="3 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 5 0 0">
-                                                    <ComboBoxItem Content="Arco" />
-                                                    <ComboBoxItem Content="Chick-Fil-A" />
-                                                    <ComboBoxItem Content="Circle-K" />
-                                                    <ComboBoxItem Content="Shell" />
-                                                </ComboBox>
-
-                                                <Label Content="Equip #" Margin="0 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" Width="90"></TextBox>
-
-                                                <Label Content="Panel" Margin="10 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0">
-                                                    <ComboBoxItem Content="A" />
-                                                    <ComboBoxItem Content="B" />
-                                                    <ComboBoxItem Content="C" />
-                                                </ComboBox>
-
-                                                <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0">
-                                                    <ComboBoxItem Content="120" />
-                                                    <ComboBoxItem Content="208" />
-                                                    <ComboBoxItem Content="230" />
-                                                    <ComboBoxItem Content="240" />
-                                                    <ComboBoxItem Content="460" />
-                                                    <ComboBoxItem Content="480" />
-                                                </ComboBox>
-
-                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="279 25 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 30 0 0" Width="50"></TextBox>
-
-                                                <Label Content="Phase" Margin="272 50 0 0"/>
-                                                <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 55 0 0 ">
-                                                    <ComboBoxItem Content="1" />
-                                                    <ComboBoxItem Content="3" />
-                                                </ComboBox>
-
-                                                <Label Margin="525 0 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Gray">[view spec sheet]</TextBlock>
-                                                </Label>
-                                                <Label Margin="525 25 0 0">
-                                                    <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
-                                                </Label>
-                                            </Grid>
-
-                                        </Grid>
-                                        <Grid>
-                                            <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,52,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="+"/>
-                                            <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 0" Content="-"/>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>-->
                             </ScrollViewer>
                         </Grid>
                     </GroupBox>

@@ -111,15 +111,15 @@ namespace GMEPDesignTool
         {
             Trace.WriteLine("new panel");
             ElectricalEquipment electricalEquipment = new ElectricalEquipment(
-                "0",
-                "100",
-                100,
                 "",
-                0,
+                "",
+                1,
+                "",
+                115,
                 0,
                 0,
                 false,
-                "MS-1"
+                ""
             );
             ElectricalEquipments.Add(electricalEquipment);
         }
