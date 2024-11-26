@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -10,7 +12,7 @@ using MySql.Data.MySqlClient;
 
 namespace GMEPDesignTool.Database
 {
-    internal class Database
+    public class Database
     {
         public string ConnectionString { get; set; }
         public MySqlConnection Connection { get; set; }
@@ -37,11 +39,33 @@ namespace GMEPDesignTool.Database
             }
         }
 
-        public void GetProjectPanels(string projectName)
+        public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectName)
         {
+            ObservableCollection<ElectricalPanel> ElectricalPanels =
+                new ObservableCollection<ElectricalPanel>();
             string query =
-                "SELECT p.* FROM panels p JOIN projects pr ON p.projectId = pr.id WHERE pr.gmep_project_name = "
-                + projectName;
+                "SELECT ep.* FROM electrical_panels ep JOIN electrical_services s ON ep.fed_from_id = s.id JOIN projects pr ON s.project_id = pr.id WHERE pr.gmep_project_name = @projectName";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectName", projectName);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                ElectricalPanels.Add(
+                    new ElectricalPanel(
+                        reader.GetString("id"),
+                        reader.GetInt32("bus"),
+                        reader.GetInt32("main"),
+                        false,
+                        reader.GetBoolean("is_distribution"),
+                        reader.GetString("name"),
+                        reader.GetInt32("color_index"),
+                        reader.GetString("fed_from_id")
+                    )
+                );
+            }
+            CloseConnection();
+            return ElectricalPanels;
         }
     }
 }

@@ -26,10 +26,12 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
 
-        public ProjectControl()
+        public Database.Database database = new Database.Database();
+
+        public ProjectControl(string projectName)
         {
             InitializeComponent();
-            ElectricalPanels = new ObservableCollection<ElectricalPanel>();
+            ElectricalPanels = database.GetProjectPanels(projectName);
             ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             this.DataContext = this;
