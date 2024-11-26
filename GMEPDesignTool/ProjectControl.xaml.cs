@@ -17,44 +17,59 @@ using System.Windows.Shapes;
 
 namespace GMEPDesignTool
 {
-  /// <summary>
-  /// Interaction logic for ProjectControl.xaml
-  /// </summary>
-  public partial class ProjectControl : UserControl
-  {
-
+    /// <summary>
+    /// Interaction logic for ProjectControl.xaml
+    /// </summary>
+    public partial class ProjectControl : UserControl
+    {
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
+        public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
+
         public ProjectControl()
         {
-              InitializeComponent();
-              ElectricalPanels = new ObservableCollection<ElectricalPanel>();
-              ElectricalServices = new ObservableCollection<ElectricalService>();
-              this.DataContext = this;
+            InitializeComponent();
+            ElectricalPanels = new ObservableCollection<ElectricalPanel>();
+            ElectricalServices = new ObservableCollection<ElectricalService>();
+            ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
+            this.DataContext = this;
         }
 
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
-          ElectricalPanels.Add(electricalPanel);
+            ElectricalPanels.Add(electricalPanel);
         }
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
         {
-          Trace.WriteLine("new panel");
-          ElectricalPanel electricalPanel = new ElectricalPanel("0", 100, 100, false, false, "Panel X", 0, "MS-1");
-          ElectricalPanels.Add(electricalPanel);
+            Trace.WriteLine("new panel");
+            ElectricalPanel electricalPanel = new ElectricalPanel(
+                "0",
+                100,
+                100,
+                false,
+                false,
+                "",
+                0,
+                "MS-1"
+            );
+            ElectricalPanels.Add(electricalPanel);
         }
 
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
-          ElectricalPanels.Remove(electricalPanel);
+            ElectricalPanels.Remove(electricalPanel);
         }
+
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
         {
-            if (sender is Hyperlink hyperlink && hyperlink.CommandParameter is ElectricalPanel electricalPanel)
-                {
-                    RemoveElectricalPanel(electricalPanel);
-                }
+            if (
+                sender is Hyperlink hyperlink
+                && hyperlink.CommandParameter is ElectricalPanel electricalPanel
+            )
+            {
+                RemoveElectricalPanel(electricalPanel);
+            }
         }
 
         //Service Functions
@@ -66,7 +81,7 @@ namespace GMEPDesignTool
         public void AddNewElectricalService(object sender, EventArgs e)
         {
             Trace.WriteLine("new service");
-            ElectricalService electricalService = new ElectricalService("0", "0", "Service X", "", 0);
+            ElectricalService electricalService = new ElectricalService("0", "0", "", "", 0);
             ElectricalServices.Add(electricalService);
         }
 
@@ -74,11 +89,54 @@ namespace GMEPDesignTool
         {
             ElectricalServices.Remove(electricalService);
         }
+
         public void DeleteSelectedElectricalService(object sender, EventArgs e)
         {
-            if (sender is Hyperlink hyperlink && hyperlink.CommandParameter is ElectricalService electricalService)
+            if (
+                sender is Hyperlink hyperlink
+                && hyperlink.CommandParameter is ElectricalService electricalService
+            )
             {
                 RemoveElectricalService(electricalService);
+            }
+        }
+
+        //Equipment Functions
+        public void AddElectricalEquipment(ElectricalPanel electricalEquipment)
+        {
+            ElectricalPanels.Add(electricalEquipment);
+        }
+
+        public void AddNewElectricalEquipment(object sender, EventArgs e)
+        {
+            Trace.WriteLine("new panel");
+            ElectricalEquipment electricalEquipment = new ElectricalEquipment(
+                "0",
+                "100",
+                100,
+                "",
+                0,
+                0,
+                0,
+                false,
+                "MS-1"
+            );
+            ElectricalEquipments.Add(electricalEquipment);
+        }
+
+        public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
+        {
+            ElectricalEquipments.Remove(electricalEquipment);
+        }
+
+        public void DeleteSelectedElectricalEquipment(object sender, EventArgs e)
+        {
+            if (
+                sender is Hyperlink hyperlink
+                && hyperlink.CommandParameter is ElectricalEquipment electricalEquipment
+            )
+            {
+                RemoveElectricalEquipment(electricalEquipment);
             }
         }
     }
