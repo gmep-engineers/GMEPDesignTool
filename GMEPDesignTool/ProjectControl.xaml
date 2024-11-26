@@ -267,9 +267,9 @@
 
                                                 </Grid>
                                                 <Grid>
-                                                    <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,52,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                                    <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="+"/>
-                                                    <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5 0" Content="-"/>
+                                                    <Rectangle HorizontalAlignment="Right" Height="900" Margin="0,0,100,0" Stroke="LightGray" VerticalAlignment="Center"/>
+                                                    <Button Height="20" Width="50"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                                    
                                                 </Grid>
                                             </Grid>
                                         </DataTemplate>

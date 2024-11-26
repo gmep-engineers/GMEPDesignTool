@@ -132,8 +132,8 @@ namespace GMEPDesignTool
         public void DeleteSelectedElectricalEquipment(object sender, EventArgs e)
         {
             if (
-                sender is Hyperlink hyperlink
-                && hyperlink.CommandParameter is ElectricalEquipment electricalEquipment
+                sender is Button button
+                && button.CommandParameter is ElectricalEquipment electricalEquipment
             )
             {
                 RemoveElectricalEquipment(electricalEquipment);
