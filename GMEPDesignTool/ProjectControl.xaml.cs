@@ -32,7 +32,7 @@ namespace GMEPDesignTool
         {
             InitializeComponent();
             ElectricalPanels = database.GetProjectPanels(projectName);
-            ElectricalServices = new ObservableCollection<ElectricalService>();
+            ElectricalServices = database.GetProjectServices(projectName);
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             this.DataContext = this;
         }

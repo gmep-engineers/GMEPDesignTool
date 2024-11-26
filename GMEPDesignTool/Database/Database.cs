@@ -39,6 +39,32 @@ namespace GMEPDesignTool.Database
             }
         }
 
+        public ObservableCollection<ElectricalService> GetProjectServices(string projectName)
+        {
+            ObservableCollection<ElectricalService> ElectricalServices =
+                new ObservableCollection<ElectricalService>();
+            string query =
+                "SELECT s.* FROM electrical_services s JOIN projects pr ON s.project_id = pr.id WHERE pr.gmep_project_name = @projectName";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectName", projectName);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                ElectricalServices.Add(
+                    new ElectricalService(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("name"),
+                        "0",
+                        reader.GetInt32("amp")
+                    )
+                );
+            }
+            CloseConnection();
+            return ElectricalServices;
+        }
+
         public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectName)
         {
             ObservableCollection<ElectricalPanel> ElectricalPanels =
