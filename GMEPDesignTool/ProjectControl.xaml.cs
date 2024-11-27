@@ -53,28 +53,38 @@ namespace GMEPDesignTool
             this.DataContext = this;
         }
 
+        public void updateProject()
+        {
+            foreach (var service in ElectricalServices)
+            {
+                database.UpdateService(service);
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                database.UpdatePanel(panel);
+            }
+        }
+
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             ElectricalPanels.Add(electricalPanel);
             GetFedFromNames();
-            //checkPowered();
         }
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
         {
             Trace.WriteLine("new panel");
             ElectricalPanel electricalPanel = new ElectricalPanel(
-                "0",
+                Guid.NewGuid().ToString(),
                 100,
                 100,
                 false,
                 false,
                 "",
                 0,
-                "MS-1",
-                false
+                "MS-1"
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -84,7 +94,6 @@ namespace GMEPDesignTool
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             ElectricalPanels.Remove(electricalPanel);
             GetFedFromNames();
-            //checkPowered();
         }
 
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
@@ -117,33 +126,6 @@ namespace GMEPDesignTool
             }
         }
 
-        /*private void SetPanelPower(ElectricalPanel panel)
-        {
-            if (ElectricalServices.Any(service => service.Id == panel.FedFromId))
-            {
-                panel.Powered = true;
-                return;
-            }
-            var fedFromPanel = ElectricalPanels.FirstOrDefault(p => p.Id == panel.FedFromId);
-            if (fedFromPanel != null)
-            {
-                SetPanelPower(fedFromPanel);
-                if (fedFromPanel.Powered)
-                {
-                    panel.Powered = true;
-                }
-            }
-        }
-
-        public void checkPowered()
-        {
-            foreach (var panel in ElectricalPanels)
-            {
-                panel.Powered = false;
-                SetPanelPower(panel);
-            }
-        }*/
-
         private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ElectricalPanel.Name))
@@ -163,7 +145,13 @@ namespace GMEPDesignTool
         public void AddNewElectricalService(object sender, EventArgs e)
         {
             Trace.WriteLine("new service");
-            ElectricalService electricalService = new ElectricalService("0", "0", "", "", 0);
+            ElectricalService electricalService = new ElectricalService(
+                Guid.NewGuid().ToString(),
+                "0",
+                "",
+                "",
+                0
+            );
             AddElectricalService(electricalService);
         }
 
@@ -204,7 +192,7 @@ namespace GMEPDesignTool
         {
             Trace.WriteLine("new panel");
             ElectricalEquipment electricalEquipment = new ElectricalEquipment(
-                "",
+                Guid.NewGuid().ToString(),
                 "",
                 1,
                 "",

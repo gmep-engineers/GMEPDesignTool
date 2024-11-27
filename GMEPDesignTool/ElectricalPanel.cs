@@ -19,7 +19,8 @@ namespace GMEPDesignTool
         private string _name;
         private int _colorIndex;
         private string _fedFromId;
-        private bool _powered;
+
+        // private bool _powered;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -31,8 +32,7 @@ namespace GMEPDesignTool
             bool isDistribution,
             string name,
             int colorIndex,
-            string fedFromId,
-            bool powered
+            string fedFromId
         )
         {
             _id = id;
@@ -43,7 +43,6 @@ namespace GMEPDesignTool
             _name = name;
             _colorIndex = colorIndex;
             _fedFromId = fedFromId;
-            _powered = powered;
         }
 
         public string Id
@@ -122,15 +121,6 @@ namespace GMEPDesignTool
             set
             {
                 _fedFromId = value;
-                OnPropertyChanged();
-            }
-        }
-        public bool Powered
-        {
-            get => _powered;
-            set
-            {
-                _powered = value;
                 OnPropertyChanged();
             }
         }
