@@ -53,17 +53,17 @@ namespace GMEPDesignTool
             this.DataContext = this;
         }
 
-        public void updateProject()
-        {
-            foreach (var service in ElectricalServices)
-            {
-                database.UpdateService(service);
-            }
-            foreach (var panel in ElectricalPanels)
-            {
-                database.UpdatePanel(panel);
-            }
-        }
+        /*  public void updateProject()
+          {
+              foreach (var service in ElectricalServices)
+              {
+                  database.UpdateService(service);
+              }
+              foreach (var panel in ElectricalPanels)
+              {
+                  database.UpdatePanel(panel);
+              }
+          }*/
 
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)

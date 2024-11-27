@@ -65,6 +65,12 @@ namespace GMEPDesignTool.Database
             return ElectricalServices;
         }
 
+        /* public void updateProjects(string projectName, )
+ 
+         public void UpdateProjectService(ElectricalPanel electricalService) {
+         
+         }*/
+
         public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectName)
         {
             ObservableCollection<ElectricalPanel> ElectricalPanels =
