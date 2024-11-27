@@ -25,6 +25,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
+        private ObservableCollection<string> FedFromNames { get; set; }
 
         public Database.Database database = new Database.Database();
 
@@ -34,9 +35,12 @@ namespace GMEPDesignTool
             ElectricalPanels = database.GetProjectPanels(projectName);
             ElectricalServices = database.GetProjectServices(projectName);
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
+            FedFromNames = new ObservableCollection<string>();
             this.DataContext = this;
+            GetFedFromNames();
         }
 
+        //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             ElectricalPanels.Add(electricalPanel);
@@ -74,6 +78,15 @@ namespace GMEPDesignTool
             }
         }
 
+        public void GetFedFromNames()
+        {
+            FedFromNames.Clear();
+            foreach (ElectricalService service in ElectricalServices)
+            {
+                FedFromNames.Add(service.Name);
+            }
+        }
+
         //Service Functions
         public void AddElectricalService(ElectricalService electricalService)
         {
@@ -85,6 +98,7 @@ namespace GMEPDesignTool
             Trace.WriteLine("new service");
             ElectricalService electricalService = new ElectricalService("0", "0", "", "", 0);
             ElectricalServices.Add(electricalService);
+            GetFedFromNames();
         }
 
         public void RemoveElectricalService(ElectricalService electricalService)
@@ -101,6 +115,7 @@ namespace GMEPDesignTool
             {
                 RemoveElectricalService(electricalService);
             }
+            GetFedFromNames();
         }
 
         //Equipment Functions
