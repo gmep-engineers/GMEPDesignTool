@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
-        private ObservableCollection<string> FedFromNames { get; set; }
+        public ObservableCollection<string> FedFromNames { get; set; }
 
         public Database.Database database = new Database.Database();
 
@@ -36,6 +37,7 @@ namespace GMEPDesignTool
             ElectricalServices = database.GetProjectServices(projectName);
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             FedFromNames = new ObservableCollection<string>();
+
             this.DataContext = this;
             GetFedFromNames();
         }
@@ -84,6 +86,15 @@ namespace GMEPDesignTool
             foreach (ElectricalService service in ElectricalServices)
             {
                 FedFromNames.Add(service.Name);
+                service.PropertyChanged += ElectricalService_PropertyChanged;
+            }
+        }
+
+        private void ElectricalService_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalService.Name))
+            {
+                GetFedFromNames();
             }
         }
 
@@ -103,6 +114,7 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalService(ElectricalService electricalService)
         {
+            electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalServices.Remove(electricalService);
         }
 

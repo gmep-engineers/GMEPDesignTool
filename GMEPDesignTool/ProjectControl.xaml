@@ -140,6 +140,7 @@
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
+                                                <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
                                                 <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Content" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
 
