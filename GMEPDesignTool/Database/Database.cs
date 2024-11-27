@@ -86,7 +86,8 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("is_distribution"),
                         reader.GetString("name"),
                         reader.GetInt32("color_index"),
-                        reader.GetString("fed_from_id")
+                        reader.GetString("fed_from_id"),
+                        false
                     )
                 );
             }

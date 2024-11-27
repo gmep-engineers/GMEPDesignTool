@@ -35,12 +35,17 @@ namespace GMEPDesignTool
             InitializeComponent();
             ElectricalPanels = database.GetProjectPanels(projectName);
             ElectricalServices = database.GetProjectServices(projectName);
+
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             FedFromNames = new ObservableCollection<string>();
 
             foreach (var service in ElectricalServices)
             {
                 service.PropertyChanged += ElectricalService_PropertyChanged;
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.PropertyChanged += ElectricalPanel_PropertyChanged;
             }
 
             GetFedFromNames();
@@ -51,7 +56,10 @@ namespace GMEPDesignTool
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
+            electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             ElectricalPanels.Add(electricalPanel);
+            GetFedFromNames();
+            //checkPowered();
         }
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
@@ -65,14 +73,18 @@ namespace GMEPDesignTool
                 false,
                 "",
                 0,
-                "MS-1"
+                "MS-1",
+                false
             );
-            ElectricalPanels.Add(electricalPanel);
+            AddElectricalPanel(electricalPanel);
         }
 
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
+            electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             ElectricalPanels.Remove(electricalPanel);
+            GetFedFromNames();
+            //checkPowered();
         }
 
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
@@ -91,7 +103,52 @@ namespace GMEPDesignTool
             FedFromNames.Clear();
             foreach (ElectricalService service in ElectricalServices)
             {
-                FedFromNames.Add(service.Name);
+                if (service.Name != "")
+                {
+                    FedFromNames.Add(service.Name);
+                }
+            }
+            foreach (ElectricalPanel panel in ElectricalPanels)
+            {
+                if (panel.Name != "")
+                {
+                    FedFromNames.Add(panel.Name);
+                }
+            }
+        }
+
+        /*private void SetPanelPower(ElectricalPanel panel)
+        {
+            if (ElectricalServices.Any(service => service.Id == panel.FedFromId))
+            {
+                panel.Powered = true;
+                return;
+            }
+            var fedFromPanel = ElectricalPanels.FirstOrDefault(p => p.Id == panel.FedFromId);
+            if (fedFromPanel != null)
+            {
+                SetPanelPower(fedFromPanel);
+                if (fedFromPanel.Powered)
+                {
+                    panel.Powered = true;
+                }
+            }
+        }
+
+        public void checkPowered()
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.Powered = false;
+                SetPanelPower(panel);
+            }
+        }*/
+
+        private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.Name))
+            {
+                GetFedFromNames();
             }
         }
 
