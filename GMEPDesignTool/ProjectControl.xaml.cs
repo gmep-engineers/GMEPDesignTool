@@ -38,8 +38,14 @@ namespace GMEPDesignTool
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             FedFromNames = new ObservableCollection<string>();
 
-            this.DataContext = this;
+            foreach (var service in ElectricalServices)
+            {
+                service.PropertyChanged += ElectricalService_PropertyChanged;
+            }
+
             GetFedFromNames();
+
+            this.DataContext = this;
         }
 
         //Electrical Panel Functions
@@ -86,36 +92,29 @@ namespace GMEPDesignTool
             foreach (ElectricalService service in ElectricalServices)
             {
                 FedFromNames.Add(service.Name);
-                service.PropertyChanged += ElectricalService_PropertyChanged;
-            }
-        }
-
-        private void ElectricalService_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ElectricalService.Name))
-            {
-                GetFedFromNames();
             }
         }
 
         //Service Functions
         public void AddElectricalService(ElectricalService electricalService)
         {
+            electricalService.PropertyChanged += ElectricalService_PropertyChanged;
             ElectricalServices.Add(electricalService);
+            GetFedFromNames();
         }
 
         public void AddNewElectricalService(object sender, EventArgs e)
         {
             Trace.WriteLine("new service");
             ElectricalService electricalService = new ElectricalService("0", "0", "", "", 0);
-            ElectricalServices.Add(electricalService);
-            GetFedFromNames();
+            AddElectricalService(electricalService);
         }
 
         public void RemoveElectricalService(ElectricalService electricalService)
         {
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalServices.Remove(electricalService);
+            GetFedFromNames();
         }
 
         public void DeleteSelectedElectricalService(object sender, EventArgs e)
@@ -127,7 +126,15 @@ namespace GMEPDesignTool
             {
                 RemoveElectricalService(electricalService);
             }
-            GetFedFromNames();
+        }
+
+        private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalService.Name))
+            {
+                Trace.WriteLine("ElectricalService name changed");
+                GetFedFromNames();
+            }
         }
 
         //Equipment Functions

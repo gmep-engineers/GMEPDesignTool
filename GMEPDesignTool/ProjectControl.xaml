@@ -142,9 +142,7 @@
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Content" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-
-
+                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                 <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
                                                 <Rectangle Height="230" Stroke="LightGray" HorizontalAlignment="Left" Margin="-17 0 0 0" VerticalAlignment="Top"/>
                                             </Grid>
