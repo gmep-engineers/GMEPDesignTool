@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace GMEPDesignTool
 {
@@ -23,18 +24,21 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ProjectControl : UserControl
     {
+        private DispatcherTimer _timer;
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<string> FedFromNames { get; set; }
+        public string ProjectId { get; set; }
 
         public Database.Database database = new Database.Database();
 
         public ProjectControl(string projectName)
         {
             InitializeComponent();
-            ElectricalPanels = database.GetProjectPanels(projectName);
-            ElectricalServices = database.GetProjectServices(projectName);
+            ProjectId = database.GetProjectId(projectName);
+            ElectricalPanels = database.GetProjectPanels(ProjectId);
+            ElectricalServices = database.GetProjectServices(ProjectId);
 
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             FedFromNames = new ObservableCollection<string>();
@@ -51,19 +55,17 @@ namespace GMEPDesignTool
             GetFedFromNames();
 
             this.DataContext = this;
+
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(5);
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
         }
 
-        /*  public void updateProject()
-          {
-              foreach (var service in ElectricalServices)
-              {
-                  database.UpdateService(service);
-              }
-              foreach (var panel in ElectricalPanels)
-              {
-                  database.UpdatePanel(panel);
-              }
-          }*/
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            database.UpdateProject(ProjectId, ElectricalServices, ElectricalPanels);
+        }
 
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
@@ -78,6 +80,7 @@ namespace GMEPDesignTool
             Trace.WriteLine("new panel");
             ElectricalPanel electricalPanel = new ElectricalPanel(
                 Guid.NewGuid().ToString(),
+                ProjectId,
                 100,
                 100,
                 false,
@@ -147,7 +150,7 @@ namespace GMEPDesignTool
             Trace.WriteLine("new service");
             ElectricalService electricalService = new ElectricalService(
                 Guid.NewGuid().ToString(),
-                "0",
+                ProjectId,
                 "",
                 "",
                 0

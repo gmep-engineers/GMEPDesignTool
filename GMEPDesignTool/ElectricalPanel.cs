@@ -19,6 +19,7 @@ namespace GMEPDesignTool
         private string _name;
         private int _colorIndex;
         private string _fedFromId;
+        private string _projectId;
 
         // private bool _powered;
 
@@ -26,6 +27,7 @@ namespace GMEPDesignTool
 
         public ElectricalPanel(
             string id,
+            string projectId,
             int busSize,
             int mainSize,
             bool isMlo,
@@ -43,6 +45,7 @@ namespace GMEPDesignTool
             _name = name;
             _colorIndex = colorIndex;
             _fedFromId = fedFromId;
+            _projectId = projectId;
         }
 
         public string Id
@@ -121,6 +124,15 @@ namespace GMEPDesignTool
             set
             {
                 _fedFromId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProjectId
+        {
+            get => _projectId;
+            set
+            {
+                _projectId = value;
                 OnPropertyChanged();
             }
         }
