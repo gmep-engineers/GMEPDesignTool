@@ -57,7 +57,7 @@ namespace GMEPDesignTool
             this.DataContext = this;
 
             _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(5);
+            _timer.Interval = TimeSpan.FromSeconds(2);
             _timer.Tick += Timer_Tick;
             _timer.Start();
         }
