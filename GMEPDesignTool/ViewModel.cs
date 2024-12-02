@@ -139,7 +139,7 @@ namespace GMEPDesignTool
                 new TabItem
                 {
                     Header = projectName,
-                    Content = new ProjectControl(),
+                    Content = new ProjectControl(projectName),
                     IsSelected = true,
                 }
             );

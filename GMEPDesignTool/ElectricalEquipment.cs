@@ -9,6 +9,8 @@ namespace GMEPDesignTool
 {
     public class ElectricalEquipment : INotifyPropertyChanged
     {
+        private string id;
+        private string projectId;
         private string owner;
         private string equipNo;
         private int qty;
@@ -22,6 +24,8 @@ namespace GMEPDesignTool
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalEquipment(
+            string id,
+            string projectId,
             string owner,
             string equipNo,
             int qty,
@@ -33,6 +37,8 @@ namespace GMEPDesignTool
             string specSheetId
         )
         {
+            this.id = id;
+            this.projectId = projectId;
             this.owner = owner;
             this.equipNo = equipNo;
             this.qty = qty;
@@ -42,6 +48,31 @@ namespace GMEPDesignTool
             this.va = va;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
+        }
+
+        public string Id
+        {
+            get => id;
+            set
+            {
+                if (id != value)
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                if (projectId != value)
+                {
+                    projectId = value;
+                    OnPropertyChanged(nameof(ProjectId));
+                }
+            }
         }
 
         public string Owner

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class ElectricalPanel : INotifyPropertyChanged
+    public class ElectricalPanel : INotifyPropertyChanged
     {
         private string _id;
         private int _busSize;
@@ -19,9 +19,23 @@ namespace GMEPDesignTool
         private string _name;
         private int _colorIndex;
         private string _fedFromId;
+        private string _projectId;
+
+        // private bool _powered;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public ElectricalPanel(string id, int busSize, int mainSize, bool isMlo, bool isDistribution, string name, int colorIndex, string fedFromId)
+
+        public ElectricalPanel(
+            string id,
+            string projectId,
+            int busSize,
+            int mainSize,
+            bool isMlo,
+            bool isDistribution,
+            string name,
+            int colorIndex,
+            string fedFromId
+        )
         {
             _id = id;
             _busSize = busSize;
@@ -31,7 +45,9 @@ namespace GMEPDesignTool
             _name = name;
             _colorIndex = colorIndex;
             _fedFromId = fedFromId;
+            _projectId = projectId;
         }
+
         public string Id
         {
             get => _id;
@@ -111,16 +127,36 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+        public string ProjectId
+        {
+            get => _projectId;
+            set
+            {
+                _projectId = value;
+                OnPropertyChanged();
+            }
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public bool Verify()
         {
-          if (!Utils.IsUuid(Id)) { return false; }
-          if (!Utils.IsEquipName(Name)) { return false; }
-          if (!Utils.IsUuid(FedFromId)) { return false; }
-          return true;
+            if (!Utils.IsUuid(Id))
+            {
+                return false;
+            }
+            if (!Utils.IsEquipName(Name))
+            {
+                return false;
+            }
+            if (!Utils.IsUuid(FedFromId))
+            {
+                return false;
+            }
+            return true;
         }
-  }
+    }
 }

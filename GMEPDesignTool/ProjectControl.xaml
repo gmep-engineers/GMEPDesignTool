@@ -90,10 +90,16 @@
                                                                     <Setter Property="Fill" Value="White"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding ColorIndex}" Value="1">
-                                                                    <Setter Property="Fill" Value="Red"/>
+                                                                    <Setter Property="Fill" Value="LightBlue"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding ColorIndex}" Value="2">
-                                                                    <Setter Property="Fill" Value="Blue"/>
+                                                                    <Setter Property="Fill" Value="LightGreen"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="3">
+                                                                    <Setter Property="Fill" Value="Pink"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="4">
+                                                                    <Setter Property="Fill" Value="LightYellow"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -106,9 +112,11 @@
                                                 <TextBox  Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
 
                                                 <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
-                                                    <ComboBoxItem Content=" " Background="White" />
-                                                    <ComboBoxItem Content=" " Background="Red" />
-                                                    <ComboBoxItem Content=" " Background="Blue" />
+                                                    <ComboBoxItem Content="White" Background="White" />
+                                                    <ComboBoxItem Content="Blue" Background="LightBlue" />
+                                                    <ComboBoxItem Content="Green" Background="LightGreen" />
+                                                    <ComboBoxItem Content="Red" Background="Pink" />
+                                                    <ComboBoxItem Content="Yellow" Background="LightYellow" />
                                                     <!--
                                                         <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor1]}" />
                                                         <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor2]}"/>
@@ -132,13 +140,9 @@
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
+                                                <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Content">
-                                                    <ComboBoxItem Content="MS-1" />
-                                                    <ComboBoxItem Content="B" />
-                                                    <ComboBoxItem Content="C" />
-                                                    <ComboBoxItem Content="D" />
-                                                </ComboBox>
+                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                 <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
                                                 <Rectangle Height="230" Stroke="LightGray" HorizontalAlignment="Left" Margin="-17 0 0 0" VerticalAlignment="Top"/>
                                             </Grid>
@@ -301,6 +305,6 @@
                 <Grid Background="Gainsboro"/>
             </TabItem>
         </TabControl>
-        <TextBlock Text="Last Saved: Today 11:56 AM" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SaveText" HorizontalAlignment="Right" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
