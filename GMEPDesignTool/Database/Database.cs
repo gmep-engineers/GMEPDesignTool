@@ -73,7 +73,8 @@ namespace GMEPDesignTool.Database
         public void UpdateProject(
             string projectId,
             ObservableCollection<ElectricalService> services,
-            ObservableCollection<ElectricalPanel> panels
+            ObservableCollection<ElectricalPanel> panels,
+            ObservableCollection<ElectricalEquipment> equipments
         )
         {
             OpenConnection();
@@ -207,6 +208,92 @@ namespace GMEPDesignTool.Database
                 deletePanelCommand.ExecuteNonQuery();
             }
 
+            // Update Electrical Equipment
+            string selectEquipmentsQuery =
+                "SELECT id FROM electrical_equipment WHERE project_id = @projectId";
+            MySqlCommand selectEquipmentsCommand = new MySqlCommand(
+                selectEquipmentsQuery,
+                Connection
+            );
+            selectEquipmentsCommand.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader equipmentsReader = selectEquipmentsCommand.ExecuteReader();
+            HashSet<string> existingEquipmentIds = new HashSet<string>();
+            while (equipmentsReader.Read())
+            {
+                existingEquipmentIds.Add(equipmentsReader.GetString("id"));
+            }
+            equipmentsReader.Close();
+
+            foreach (var equipment in equipments)
+            {
+                if (existingEquipmentIds.Contains(equipment.Id))
+                {
+                    // Update existing equipment
+                    string updateEquipmentQuery =
+                        "UPDATE electrical_equipment SET owner_id = @owner_id, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_three_phase, spec_sheet_id = @spec_sheet_id WHERE id = @id";
+                    MySqlCommand updateEquipmentCommand = new MySqlCommand(
+                        updateEquipmentQuery,
+                        Connection
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue("@owner_id", equipment.Owner);
+                    updateEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
+                    updateEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
+                    updateEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
+                    updateEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
+                    updateEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
+                    updateEquipmentCommand.Parameters.AddWithValue(
+                        "@is_three_phase",
+                        equipment.Is3Ph
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue(
+                        "@spec_sheet_id",
+                        equipment.SpecSheetId
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
+                    updateEquipmentCommand.ExecuteNonQuery();
+                    existingEquipmentIds.Remove(equipment.Id);
+                }
+                else
+                {
+                    // Insert new equipment
+                    string insertEquipmentQuery =
+                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id) VALUES (@id, @projectId, @owner_id, @equip_no, @qty, @panel_id, @voltage, @amp, @is_three_phase, @spec_sheet_id)";
+                    MySqlCommand insertEquipmentCommand = new MySqlCommand(
+                        insertEquipmentQuery,
+                        Connection
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
+                    insertEquipmentCommand.Parameters.AddWithValue("@projectId", projectId);
+                    insertEquipmentCommand.Parameters.AddWithValue("@owner_id", equipment.Owner);
+                    insertEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
+                    insertEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
+                    insertEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
+                    insertEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
+                    insertEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@is_three_phase",
+                        equipment.Is3Ph
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@spec_sheet_id",
+                        equipment.SpecSheetId
+                    );
+                    insertEquipmentCommand.ExecuteNonQuery();
+                }
+            }
+
+            // Remove equipment that no longer exists
+            foreach (var equipmentId in existingEquipmentIds)
+            {
+                string deleteEquipmentQuery = "DELETE FROM electrical_equipment WHERE id = @id";
+                MySqlCommand deleteEquipmentCommand = new MySqlCommand(
+                    deleteEquipmentQuery,
+                    Connection
+                );
+                deleteEquipmentCommand.Parameters.AddWithValue("@id", equipmentId);
+                deleteEquipmentCommand.ExecuteNonQuery();
+            }
+
             CloseConnection();
         }
 
@@ -262,6 +349,37 @@ namespace GMEPDesignTool.Database
             }
             CloseConnection();
             return ElectricalPanels;
+        }
+
+        public ObservableCollection<ElectricalEquipment> GetProjectEquipment(string projectId)
+        {
+            ObservableCollection<ElectricalEquipment> ElectricalEquipments =
+                new ObservableCollection<ElectricalEquipment>();
+            string query = "SELECT * FROM electrical_equipment WHERE project_id = @projectId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                ElectricalEquipments.Add(
+                    new ElectricalEquipment(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("owner_id"),
+                        reader.GetString("equip_no"),
+                        reader.GetInt32("qty"),
+                        reader.GetString("panel_id"),
+                        reader.GetInt32("voltage"),
+                        reader.GetInt32("amp"),
+                        reader.GetInt32("voltage") * reader.GetInt32("amp"),
+                        reader.GetBoolean("is_three_phase"),
+                        reader.GetString("spec_sheet_id")
+                    )
+                );
+            }
+            CloseConnection();
+            return ElectricalEquipments;
         }
     }
 }

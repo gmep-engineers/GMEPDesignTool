@@ -24,7 +24,7 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ProjectControl : UserControl
     {
-        private DispatcherTimer _timer;
+        private DispatcherTimer timer;
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
@@ -39,8 +39,7 @@ namespace GMEPDesignTool
             ProjectId = database.GetProjectId(projectName);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
-
-            ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
+            ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             FedFromNames = new ObservableCollection<string>();
 
             foreach (var service in ElectricalServices)
@@ -51,20 +50,39 @@ namespace GMEPDesignTool
             {
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
             }
+            foreach (var equipment in ElectricalEquipments)
+            {
+                equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+            }
 
             GetFedFromNames();
 
             this.DataContext = this;
 
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(2);
-            _timer.Tick += Timer_Tick;
-            _timer.Start();
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(2);
+            timer.Tick += Timer_Tick;
+
+            SaveText.Text = "";
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            database.UpdateProject(ProjectId, ElectricalServices, ElectricalPanels);
+            database.UpdateProject(
+                ProjectId,
+                ElectricalServices,
+                ElectricalPanels,
+                ElectricalEquipments
+            );
+            SaveText.Text = "Last Save: " + DateTime.Now.ToString();
+            timer.Stop();
+        }
+
+        private void StartTimer()
+        {
+            timer.Stop();
+            timer.Start();
+            SaveText.Text = "*SAVING*";
         }
 
         //Electrical Panel Functions
@@ -73,6 +91,7 @@ namespace GMEPDesignTool
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             ElectricalPanels.Add(electricalPanel);
             GetFedFromNames();
+            StartTimer();
         }
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
@@ -97,6 +116,7 @@ namespace GMEPDesignTool
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             ElectricalPanels.Remove(electricalPanel);
             GetFedFromNames();
+            StartTimer();
         }
 
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
@@ -135,6 +155,7 @@ namespace GMEPDesignTool
             {
                 GetFedFromNames();
             }
+            StartTimer();
         }
 
         //Service Functions
@@ -143,6 +164,7 @@ namespace GMEPDesignTool
             electricalService.PropertyChanged += ElectricalService_PropertyChanged;
             ElectricalServices.Add(electricalService);
             GetFedFromNames();
+            StartTimer();
         }
 
         public void AddNewElectricalService(object sender, EventArgs e)
@@ -163,6 +185,7 @@ namespace GMEPDesignTool
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalServices.Remove(electricalService);
             GetFedFromNames();
+            StartTimer();
         }
 
         public void DeleteSelectedElectricalService(object sender, EventArgs e)
@@ -183,12 +206,15 @@ namespace GMEPDesignTool
                 Trace.WriteLine("ElectricalService name changed");
                 GetFedFromNames();
             }
+            StartTimer();
         }
 
         //Equipment Functions
-        public void AddElectricalEquipment(ElectricalPanel electricalEquipment)
+        public void AddElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
-            ElectricalPanels.Add(electricalEquipment);
+            electricalEquipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+            ElectricalEquipments.Add(electricalEquipment);
+            StartTimer();
         }
 
         public void AddNewElectricalEquipment(object sender, EventArgs e)
@@ -196,6 +222,8 @@ namespace GMEPDesignTool
             Trace.WriteLine("new panel");
             ElectricalEquipment electricalEquipment = new ElectricalEquipment(
                 Guid.NewGuid().ToString(),
+                ProjectId,
+                "",
                 "",
                 1,
                 "",
@@ -205,12 +233,14 @@ namespace GMEPDesignTool
                 false,
                 ""
             );
-            ElectricalEquipments.Add(electricalEquipment);
+            AddElectricalEquipment(electricalEquipment);
         }
 
         public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
+            electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
             ElectricalEquipments.Remove(electricalEquipment);
+            StartTimer();
         }
 
         public void DeleteSelectedElectricalEquipment(object sender, EventArgs e)
@@ -222,6 +252,11 @@ namespace GMEPDesignTool
             {
                 RemoveElectricalEquipment(electricalEquipment);
             }
+        }
+
+        private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            StartTimer();
         }
     }
 }

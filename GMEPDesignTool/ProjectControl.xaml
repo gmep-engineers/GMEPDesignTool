@@ -305,6 +305,6 @@
                 <Grid Background="Gainsboro"/>
             </TabItem>
         </TabControl>
-        <TextBlock Text="Last Saved: Today 11:56 AM" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SaveText" HorizontalAlignment="Right" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
