@@ -142,7 +142,7 @@
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
                                                 <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                 <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
                                                 <Rectangle Height="230" Stroke="LightGray" HorizontalAlignment="Left" Margin="-17 0 0 0" VerticalAlignment="Top"/>
                                             </Grid>
@@ -165,14 +165,9 @@
                                 <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" >
                                     
                                     <Label Content="Panel" Margin="0 3 0 0"/>
-                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40 7 0 0">
-                                        <ComboBoxItem Content="" />
-                                        <ComboBoxItem Content="B" />
-                                        <ComboBoxItem Content="C" />
-                                        <ComboBoxItem Content="D" />
-                                    </ComboBox>
+                                    <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40 7 0 0" ItemsSource="{Binding PanelNames}" DisplayMemberPath="Value"/>
                                     <Label Content="Voltage" Margin="150 3 0 0"/>
-                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="203 7 0 0">
+                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" HorizontalAlignment="Left" Margin="203 7 0 0">
                                         <ComboBoxItem Content="" Background="White" />
                                         <ComboBoxItem Content="115" Background="NavajoWhite" />
                                         <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
@@ -183,14 +178,14 @@
                                         <ComboBoxItem Content="480" Background="Plum"/>
                                     </ComboBox>
                                     <Label Content="Phase" Margin="320 3 0 0"/>
-                                    <ComboBox Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363 7 0 0">
+                                    <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363 7 0 0">
                                         <ComboBoxItem Content="1" />
                                         <ComboBoxItem Content="3" />
                                     </ComboBox>
 
                                     <Label Content="Equip #" Margin="430 3 0 0"/>
-                                    <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="482 7 0 0" Width="69"></TextBox>
-
+                                    <TextBox x:Name="EquipmentFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="482 7 0 0" Width="69"></TextBox>
+                                    
 
                                     <Label Margin="590 2 0 0">
                                         <TextBlock TextDecorations="Underline" Foreground="Blue">[reset filters]</TextBlock>
@@ -205,7 +200,7 @@
                                 </Grid>
                             </StackPanel>
                             <ScrollViewer Margin="0 40 0 0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding ElectricalEquipments}" AlternationCount="2">
+                                <ItemsControl  ItemsSource="{Binding ElectricalEquipments}" AlternationCount="2">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Vertical" Height="Auto"/>
@@ -232,14 +227,10 @@
                                                         <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="162 30 0 0" Width="43" Text="{Binding Qty}"></TextBox>
 
                                                         <Label Content="Panel" Margin="10 50 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Content">
-                                                            <ComboBoxItem Content="A" />
-                                                            <ComboBoxItem Content="B" />
-                                                            <ComboBoxItem Content="C" />
-                                                        </ComboBox>
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
                                                         <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Conten">
                                                             <ComboBoxItem Content="115" Background="NavajoWhite" />
                                                             <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
                                                             <ComboBoxItem Content="208" Background="PaleGreen"/>

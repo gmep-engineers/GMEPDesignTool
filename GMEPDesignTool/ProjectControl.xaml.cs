@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Google.Protobuf.WellKnownTypes;
 
 namespace GMEPDesignTool
 {
@@ -28,7 +29,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
-        public ObservableCollection<string> FedFromNames { get; set; }
+        public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
+        public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
         public string ProjectId { get; set; }
 
         public Database.Database database = new Database.Database();
@@ -40,7 +42,8 @@ namespace GMEPDesignTool
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
-            FedFromNames = new ObservableCollection<string>();
+            FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
+            PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
 
             foreach (var service in ElectricalServices)
             {
@@ -55,7 +58,7 @@ namespace GMEPDesignTool
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
             }
 
-            GetFedFromNames();
+            GetNames();
 
             this.DataContext = this;
 
@@ -90,7 +93,7 @@ namespace GMEPDesignTool
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             ElectricalPanels.Add(electricalPanel);
-            GetFedFromNames();
+            GetNames();
             StartTimer();
         }
 
@@ -115,7 +118,7 @@ namespace GMEPDesignTool
         {
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             ElectricalPanels.Remove(electricalPanel);
-            GetFedFromNames();
+            GetNames();
             StartTimer();
         }
 
@@ -130,21 +133,31 @@ namespace GMEPDesignTool
             }
         }
 
-        public void GetFedFromNames()
+        public void GetNames()
         {
             FedFromNames.Clear();
+            PanelNames.Clear();
             foreach (ElectricalService service in ElectricalServices)
             {
                 if (service.Name != "")
                 {
-                    FedFromNames.Add(service.Name);
+                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                        service.Id,
+                        service.Name
+                    );
+                    FedFromNames.Add(value);
                 }
             }
             foreach (ElectricalPanel panel in ElectricalPanels)
             {
                 if (panel.Name != "")
                 {
-                    FedFromNames.Add(panel.Name);
+                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                        panel.Id,
+                        panel.Name
+                    );
+                    FedFromNames.Add(value);
+                    PanelNames.Add(value);
                 }
             }
         }
@@ -153,7 +166,7 @@ namespace GMEPDesignTool
         {
             if (e.PropertyName == nameof(ElectricalPanel.Name))
             {
-                GetFedFromNames();
+                GetNames();
             }
             StartTimer();
         }
@@ -163,7 +176,7 @@ namespace GMEPDesignTool
         {
             electricalService.PropertyChanged += ElectricalService_PropertyChanged;
             ElectricalServices.Add(electricalService);
-            GetFedFromNames();
+            GetNames();
             StartTimer();
         }
 
@@ -184,7 +197,7 @@ namespace GMEPDesignTool
         {
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalServices.Remove(electricalService);
-            GetFedFromNames();
+            GetNames();
             StartTimer();
         }
 
@@ -204,7 +217,7 @@ namespace GMEPDesignTool
             if (e.PropertyName == nameof(ElectricalService.Name))
             {
                 Trace.WriteLine("ElectricalService name changed");
-                GetFedFromNames();
+                GetNames();
             }
             StartTimer();
         }
