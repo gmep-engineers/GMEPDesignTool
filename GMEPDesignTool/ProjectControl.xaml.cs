@@ -180,16 +180,18 @@ namespace GMEPDesignTool
                     );
                     FedFromNames.Add(value);
                     PanelNames.Add(value);
-
-                    //Adding back selection
-                    if (currentPanelSelections.TryGetValue(panel.Id, out var fedFromId))
-                    {
-                        panel.FedFromId = fedFromId;
-                    }
-                    else
-                    {
-                        panel.FedFromId = "";
-                    }
+                }
+            }
+            //Adding back selection
+            foreach (var panel in ElectricalPanels)
+            {
+                if (currentPanelSelections.TryGetValue(panel.Id, out var fedFromId))
+                {
+                    panel.FedFromId = fedFromId;
+                }
+                else
+                {
+                    panel.FedFromId = "";
                 }
             }
             //adding back equipment panelId
