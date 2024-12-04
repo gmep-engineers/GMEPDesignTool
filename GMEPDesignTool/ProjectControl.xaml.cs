@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
         public string ProjectId { get; set; }
+        public CollectionViewSource EquipmentViewSource { get; set; }
 
         public Database.Database database = new Database.Database();
 
@@ -44,6 +45,8 @@ namespace GMEPDesignTool
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
+            EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
+            EquipmentViewSource.Filter += EquipmentViewSource_Filter;
 
             foreach (var service in ElectricalServices)
             {
@@ -58,8 +61,6 @@ namespace GMEPDesignTool
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
             }
 
-            GetNames();
-
             this.DataContext = this;
 
             timer = new DispatcherTimer();
@@ -67,6 +68,7 @@ namespace GMEPDesignTool
             timer.Tick += Timer_Tick;
 
             SaveText.Text = "";
+            GetNames();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -135,8 +137,28 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
+            var currentFedFromSelections = new Dictionary<string, string>();
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (!string.IsNullOrEmpty(equipment.PanelId))
+                {
+                    currentFedFromSelections[equipment.Id] = equipment.PanelId;
+                }
+            }
+
+            var currentPanelSelections = new Dictionary<string, string>();
+            foreach (var panel in ElectricalPanels)
+            {
+                if (!string.IsNullOrEmpty(panel.FedFromId))
+                {
+                    currentPanelSelections[panel.Id] = panel.FedFromId;
+                }
+            }
+
             FedFromNames.Clear();
             PanelNames.Clear();
+            PanelNames.Add(new KeyValuePair<string, string>("", ""));
+            FedFromNames.Add(new KeyValuePair<string, string>("", ""));
             foreach (ElectricalService service in ElectricalServices)
             {
                 if (service.Name != "")
@@ -158,6 +180,28 @@ namespace GMEPDesignTool
                     );
                     FedFromNames.Add(value);
                     PanelNames.Add(value);
+
+                    //Adding back selection
+                    if (currentPanelSelections.TryGetValue(panel.Id, out var fedFromId))
+                    {
+                        panel.FedFromId = fedFromId;
+                    }
+                    else
+                    {
+                        panel.FedFromId = "";
+                    }
+                }
+            }
+            //adding back equipment panelId
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (currentFedFromSelections.TryGetValue(equipment.Id, out var panelId))
+                {
+                    equipment.PanelId = panelId;
+                }
+                else
+                {
+                    equipment.PanelId = "";
                 }
             }
         }
@@ -270,6 +314,77 @@ namespace GMEPDesignTool
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             StartTimer();
+        }
+
+        private void EquipmentViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is ElectricalEquipment equipment)
+            {
+                // Replace "FilterString" with the actual filter string
+                bool isAccepted = true;
+                if (
+                    !string.IsNullOrEmpty(EquipmentFilter.Text)
+                    && (
+                        equipment.EquipNo == null
+                        || !equipment.EquipNo.Contains(
+                            EquipmentFilter.Text,
+                            StringComparison.OrdinalIgnoreCase
+                        )
+                    )
+                )
+                {
+                    isAccepted = false;
+                }
+
+                if (PanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                {
+                    string panelKey = selectedPanel.Key;
+                    if (
+                        !string.IsNullOrEmpty(panelKey)
+                        && (equipment.PanelId == null || equipment.PanelId != panelKey)
+                    )
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    VoltageFilter.SelectedValue is string selectedVoltageString
+                    && int.TryParse(selectedVoltageString, out int selectedVoltage)
+                )
+                {
+                    if (equipment.Voltage != selectedVoltage)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (PhaseFilter.SelectedIndex > 0)
+                {
+                    bool is3Ph = PhaseFilter.SelectedIndex == 2;
+                    if (equipment.Is3Ph != is3Ph)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                e.Accepted = isAccepted;
+            }
+        }
+
+        private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            EquipmentViewSource.View.Refresh();
+        }
+
+        private void EquipmentFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EquipmentViewSource.View.Refresh();
+        }
+
+        private void ResetFilters_Click(object sender, RoutedEventArgs e)
+        {
+            PhaseFilter.SelectedIndex = 0;
+            VoltageFilter.SelectedValue = "";
+            PanelFilter.SelectedValue = "";
+            EquipmentFilter.Text = "";
         }
     }
 }
