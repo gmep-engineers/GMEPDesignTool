@@ -335,6 +335,7 @@ namespace GMEPDesignTool
                 {
                     isAccepted = false;
                 }
+
                 if (PanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
                 {
                     string panelKey = selectedPanel.Key;
@@ -342,6 +343,16 @@ namespace GMEPDesignTool
                         !string.IsNullOrEmpty(panelKey)
                         && (equipment.PanelId == null || equipment.PanelId != panelKey)
                     )
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    VoltageFilter.SelectedValue is string selectedVoltageString
+                    && int.TryParse(selectedVoltageString, out int selectedVoltage)
+                )
+                {
+                    if (equipment.Voltage != selectedVoltage)
                     {
                         isAccepted = false;
                     }

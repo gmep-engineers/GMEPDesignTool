@@ -170,7 +170,7 @@
                                     <Label Content="Panel" Margin="0 3 0 0"/>
                                     <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
                                     <Label Content="Voltage" Margin="150 3 0 0"/>
-                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" HorizontalAlignment="Left" Margin="203 7 0 0">
+                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="203 7 0 0">
                                         <ComboBoxItem Content="" Background="White" />
                                         <ComboBoxItem Content="115" Background="NavajoWhite" />
                                         <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
@@ -233,7 +233,7 @@
                                                         <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
                                                         <Label Content="Voltage" Margin="265 0 0 0"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Conten">
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="320 5 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="115" Background="NavajoWhite" />
                                                             <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
                                                             <ComboBoxItem Content="208" Background="PaleGreen"/>
