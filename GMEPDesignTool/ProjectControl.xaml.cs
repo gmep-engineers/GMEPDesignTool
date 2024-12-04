@@ -137,22 +137,16 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
-            var currentFedFromSelections = new Dictionary<string, string>();
-            foreach (var equipment in ElectricalEquipments)
-            {
-                if (!string.IsNullOrEmpty(equipment.PanelId))
-                {
-                    currentFedFromSelections[equipment.Id] = equipment.PanelId;
-                }
-            }
-
-            var currentPanelSelections = new Dictionary<string, string>();
+            Dictionary<string, string> fedFromBackup = new Dictionary<string, string>();
             foreach (var panel in ElectricalPanels)
             {
-                if (!string.IsNullOrEmpty(panel.FedFromId))
-                {
-                    currentPanelSelections[panel.Id] = panel.FedFromId;
-                }
+                fedFromBackup[panel.Id] = panel.FedFromId;
+            }
+
+            Dictionary<string, string> panelBackup = new Dictionary<string, string>();
+            foreach (var equipment in ElectricalEquipments)
+            {
+                panelBackup[equipment.Id] = equipment.PanelId;
             }
 
             FedFromNames.Clear();
@@ -182,28 +176,19 @@ namespace GMEPDesignTool
                     PanelNames.Add(value);
                 }
             }
-            //Adding back selection
-            foreach (var panel in ElectricalPanels)
-            {
-                if (currentPanelSelections.TryGetValue(panel.Id, out var fedFromId))
-                {
-                    panel.FedFromId = fedFromId;
-                }
-                else
-                {
-                    panel.FedFromId = "";
-                }
-            }
-            //adding back equipment panelId
+            //adding backup values
             foreach (var equipment in ElectricalEquipments)
             {
-                if (currentFedFromSelections.TryGetValue(equipment.Id, out var panelId))
+                if (panelBackup.ContainsKey(equipment.Id))
                 {
-                    equipment.PanelId = panelId;
+                    equipment.PanelId = panelBackup[equipment.Id];
                 }
-                else
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                if (fedFromBackup.ContainsKey(panel.Id))
                 {
-                    equipment.PanelId = "";
+                    panel.FedFromId = fedFromBackup[panel.Id];
                 }
             }
         }
