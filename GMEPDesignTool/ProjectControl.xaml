@@ -181,7 +181,8 @@
                                         <ComboBoxItem Content="480" Background="Plum"/>
                                     </ComboBox>
                                     <Label Content="Phase" Margin="320 3 0 0"/>
-                                    <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363 7 0 0">
+                                    <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
+                                        <ComboBoxItem Content="" />
                                         <ComboBoxItem Content="1" />
                                         <ComboBoxItem Content="3" />
                                     </ComboBox>

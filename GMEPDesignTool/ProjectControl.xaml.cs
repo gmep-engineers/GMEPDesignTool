@@ -357,6 +357,14 @@ namespace GMEPDesignTool
                         isAccepted = false;
                     }
                 }
+                if (PhaseFilter.SelectedIndex > 0)
+                {
+                    bool is3Ph = PhaseFilter.SelectedIndex == 2;
+                    if (equipment.Is3Ph != is3Ph)
+                    {
+                        isAccepted = false;
+                    }
+                }
                 e.Accepted = isAccepted;
             }
         }
