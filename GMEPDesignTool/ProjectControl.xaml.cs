@@ -378,5 +378,13 @@ namespace GMEPDesignTool
         {
             EquipmentViewSource.View.Refresh();
         }
+
+        private void ResetFilters_Click(object sender, RoutedEventArgs e)
+        {
+            PhaseFilter.SelectedIndex = 0;
+            VoltageFilter.SelectedValue = "";
+            PanelFilter.SelectedValue = "";
+            EquipmentFilter.Text = "";
+        }
     }
 }

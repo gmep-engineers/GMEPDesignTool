@@ -192,7 +192,7 @@
                                     
 
                                     <Label Margin="590 2 0 0">
-                                        <TextBlock TextDecorations="Underline" Foreground="Blue">[reset filters]</TextBlock>
+                                        <Hyperlink x:Name="ResetFilters" TextDecorations="Underline" Foreground="Blue" Click="ResetFilters_Click" >[reset filters]</Hyperlink>
                                     </Label>
                                     
                                     <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
