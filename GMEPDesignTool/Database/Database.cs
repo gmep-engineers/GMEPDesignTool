@@ -232,24 +232,29 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing equipment
                     string updateEquipmentQuery =
-                        "UPDATE electrical_equipment SET owner_id = @owner_id, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_three_phase, spec_sheet_id = @spec_sheet_id WHERE id = @id";
+                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client WHERE id = @id";
                     MySqlCommand updateEquipmentCommand = new MySqlCommand(
                         updateEquipmentQuery,
                         Connection
                     );
-                    updateEquipmentCommand.Parameters.AddWithValue("@owner_id", equipment.Owner);
+                    updateEquipmentCommand.Parameters.AddWithValue("@owner", equipment.Owner);
                     updateEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
                     updateEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
                     updateEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
                     updateEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
                     updateEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@is_three_phase",
-                        equipment.Is3Ph
-                    );
+                    updateEquipmentCommand.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
                     updateEquipmentCommand.Parameters.AddWithValue(
                         "@spec_sheet_id",
                         equipment.SpecSheetId
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue(
+                        "@aic_rating",
+                        equipment.AicRating
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue(
+                        "@spec_sheet_from_client",
+                        equipment.SpecSheetFromClient
                     );
                     updateEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
                     updateEquipmentCommand.ExecuteNonQuery();
@@ -259,32 +264,37 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new equipment
                     string insertEquipmentQuery =
-                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id) VALUES (@id, @projectId, @owner_id, @equip_no, @qty, @panel_id, @voltage, @amp, @is_three_phase, @spec_sheet_id)";
+                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client) VALUES (@id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client)";
                     MySqlCommand insertEquipmentCommand = new MySqlCommand(
                         insertEquipmentQuery,
                         Connection
                     );
                     insertEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
                     insertEquipmentCommand.Parameters.AddWithValue("@projectId", projectId);
-                    insertEquipmentCommand.Parameters.AddWithValue("@owner_id", equipment.Owner);
+                    insertEquipmentCommand.Parameters.AddWithValue("@owner", equipment.Owner);
                     insertEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
                     insertEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
                     insertEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
                     insertEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
                     insertEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@is_three_phase",
-                        equipment.Is3Ph
-                    );
+                    insertEquipmentCommand.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
                     insertEquipmentCommand.Parameters.AddWithValue(
                         "@spec_sheet_id",
                         equipment.SpecSheetId
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@aic_rating",
+                        equipment.AicRating
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@spec_sheet_from_client",
+                        equipment.SpecSheetFromClient
                     );
                     insertEquipmentCommand.ExecuteNonQuery();
                 }
             }
 
-            // Remove equipment that no longer exists
+            // Remove equipment that no longer exist
             foreach (var equipmentId in existingEquipmentIds)
             {
                 string deleteEquipmentQuery = "DELETE FROM electrical_equipment WHERE id = @id";
@@ -301,7 +311,7 @@ namespace GMEPDesignTool.Database
 
         public ObservableCollection<ElectricalService> GetProjectServices(string projectId)
         {
-            ObservableCollection<ElectricalService> ElectricalServices =
+            ObservableCollection<ElectricalService> services =
                 new ObservableCollection<ElectricalService>();
             string query = "SELECT * FROM electrical_services WHERE project_id = @projectId";
             OpenConnection();
@@ -310,23 +320,24 @@ namespace GMEPDesignTool.Database
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                ElectricalServices.Add(
+                services.Add(
                     new ElectricalService(
                         reader.GetString("id"),
                         reader.GetString("project_id"),
                         reader.GetString("name"),
-                        reader.GetInt16("electrical_service_type"),
+                        reader.GetInt32("electrical_service_type"),
                         reader.GetInt32("electrical_service_amp")
                     )
                 );
             }
+            reader.Close();
             CloseConnection();
-            return ElectricalServices;
+            return services;
         }
 
         public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectId)
         {
-            ObservableCollection<ElectricalPanel> ElectricalPanels =
+            ObservableCollection<ElectricalPanel> panels =
                 new ObservableCollection<ElectricalPanel>();
             string query = "SELECT * FROM electrical_panels WHERE project_id = @projectId";
             OpenConnection();
@@ -335,7 +346,7 @@ namespace GMEPDesignTool.Database
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                ElectricalPanels.Add(
+                panels.Add(
                     new ElectricalPanel(
                         reader.GetString("id"),
                         reader.GetString("project_id"),
@@ -349,13 +360,14 @@ namespace GMEPDesignTool.Database
                     )
                 );
             }
+            reader.Close();
             CloseConnection();
-            return ElectricalPanels;
+            return panels;
         }
 
         public ObservableCollection<ElectricalEquipment> GetProjectEquipment(string projectId)
         {
-            ObservableCollection<ElectricalEquipment> ElectricalEquipments =
+            ObservableCollection<ElectricalEquipment> equipments =
                 new ObservableCollection<ElectricalEquipment>();
             string query = "SELECT * FROM electrical_equipment WHERE project_id = @projectId";
             OpenConnection();
@@ -364,7 +376,7 @@ namespace GMEPDesignTool.Database
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                ElectricalEquipments.Add(
+                equipments.Add(
                     new ElectricalEquipment(
                         reader.GetString("id"),
                         reader.GetString("project_id"),
@@ -373,15 +385,18 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("qty"),
                         reader.GetString("panel_id"),
                         reader.GetInt32("voltage"),
-                        reader.GetInt32("amp"),
-                        reader.GetInt32("voltage") * reader.GetInt32("amp"),
+                        reader.GetFloat("amp"),
+                        reader.GetInt32("voltage") * reader.GetFloat("amp"),
                         reader.GetBoolean("is_three_phase"),
-                        reader.GetString("spec_sheet_id")
+                        reader.GetString("spec_sheet_id"),
+                        reader.GetInt32("aic_rating"),
+                        reader.GetBoolean("spec_sheet_from_client")
                     )
                 );
             }
+            reader.Close();
             CloseConnection();
-            return ElectricalEquipments;
+            return equipments;
         }
     }
 }
