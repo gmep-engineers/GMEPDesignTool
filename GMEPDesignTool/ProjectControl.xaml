@@ -263,13 +263,13 @@
                                                         </ComboBox>
 
                                                         <Label Content="AIC Rating" Margin="1090 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1090 40 0 0" Width="70" Text=""></TextBox>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1090 40 0 0" Width="70" Text="{Binding AicRating}"></TextBox>
 
                                                         <Button Margin="1180 -15 0 0" Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                         <Button Margin="1180 35 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
 
-                                                        <Label Content="From Client" Margin="1305 37 0 0" FontWeight="Bold"/>
-                                                        <CheckBox Margin="1290 43 0 0" />
+                                                        <Label Content="From Client" Margin="1305 37 0 0" FontWeight="Bold" />
+                                                           <CheckBox Margin="1290 43 0 0" IsChecked="{Binding SpecSheetFromClient}" />
                                                         
 
                                                         <!-- <Label Content="From Client" Margin="1190 0 0 0"  FontWeight="Bold"/>

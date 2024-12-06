@@ -20,6 +20,8 @@ namespace GMEPDesignTool
         private float va;
         private bool is3Ph;
         private string specSheetId;
+        private int aicRating;
+        private bool specSheetFromClient;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,7 +36,9 @@ namespace GMEPDesignTool
             float amp,
             float va,
             bool is3Ph,
-            string specSheetId
+            string specSheetId,
+            int aicRating,
+            bool specSheetFromClient
         )
         {
             this.id = id;
@@ -48,6 +52,8 @@ namespace GMEPDesignTool
             this.va = va;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
+            this.aicRating = aicRating;
+            this.specSheetFromClient = specSheetFromClient;
         }
 
         public string Id
@@ -188,6 +194,32 @@ namespace GMEPDesignTool
                 {
                     specSheetId = value;
                     OnPropertyChanged(nameof(SpecSheetId));
+                }
+            }
+        }
+
+        public int AicRating
+        {
+            get => aicRating;
+            set
+            {
+                if (aicRating != value)
+                {
+                    aicRating = value;
+                    OnPropertyChanged(nameof(AicRating));
+                }
+            }
+        }
+
+        public bool SpecSheetFromClient
+        {
+            get => specSheetFromClient;
+            set
+            {
+                if (specSheetFromClient != value)
+                {
+                    specSheetFromClient = value;
+                    OnPropertyChanged(nameof(SpecSheetFromClient));
                 }
             }
         }
