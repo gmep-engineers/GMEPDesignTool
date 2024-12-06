@@ -71,84 +71,80 @@
                     </GroupBox>
                     <GroupBox Header="Panels" Height="270" VerticalAlignment="Top" Margin="0 140 0 0">
                         <Grid>
-                            <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                                <ItemsControl ItemsSource="{Binding ElectricalPanels}">
+                            <ScrollViewer Margin="0 0 50 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding ElectricalPanels}" AlternationCount="2">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
+                                            <StackPanel Orientation="Vertical"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid Width="180">
-                                                <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="25,5,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
-                                                <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="25,28,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
-                                                <Label VerticalAlignment="Top" Margin="75,2,0,0" HorizontalAlignment="Left" Content="Bus (A)"/>
-                                                <Label VerticalAlignment="Top" Margin="75,25,0,0" HorizontalAlignment="Left" Content="Main (A)"/>
-                                                <Rectangle Width="80" Height="100" Stroke="Gray" HorizontalAlignment="Left" Margin="10 53" VerticalAlignment="Top">
-                                                    <Rectangle.Resources>
-                                                        <Style TargetType="Rectangle">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="0">
-                                                                    <Setter Property="Fill" Value="White"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="1">
-                                                                    <Setter Property="Fill" Value="LightBlue"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="2">
-                                                                    <Setter Property="Fill" Value="LightGreen"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="3">
-                                                                    <Setter Property="Fill" Value="Pink"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ColorIndex}" Value="4">
-                                                                    <Setter Property="Fill" Value="LightYellow"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Rectangle.Resources>
-                                                </Rectangle>
-                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15,60,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
-                                                    <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
-                                                    <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
-                                                </ComboBox>
-                                                <TextBox  Height="20" VerticalAlignment="Top" Margin="25,82,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
+                                            <Grid x:Name="PanelGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
+                                                <Grid Width="Auto">
+                                                    <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
+                                                        <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
+                                                        <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
+                                                    </ComboBox>
+                                                    <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
+                                                        <ComboBoxItem Content="White" Background="White" />
+                                                        <ComboBoxItem Content="Blue" Background="LightBlue" />
+                                                        <ComboBoxItem Content="Green" Background="LightGreen" />
+                                                        <ComboBoxItem Content="Red" Background="Pink" />
+                                                        <ComboBoxItem Content="Yellow" Background="LightYellow" />
+                                                    </ComboBox>
+                                                    <Rectangle Width="230" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" VerticalAlignment="Top">
+                                                        <Rectangle.Resources>
+                                                            <Style TargetType="Rectangle">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="0">
+                                                                        <Setter Property="Fill" Value="White"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="1">
+                                                                        <Setter Property="Fill" Value="LightBlue"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="2">
+                                                                        <Setter Property="Fill" Value="LightGreen"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="3">
+                                                                        <Setter Property="Fill" Value="Pink"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="4">
+                                                                        <Setter Property="Fill" Value="LightYellow"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Rectangle.Resources>
+                                                    </Rectangle>
+                                                    <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
 
-                                                <ComboBox Height="20" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="25,104,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
-                                                    <ComboBoxItem Content="White" Background="White" />
-                                                    <ComboBoxItem Content="Blue" Background="LightBlue" />
-                                                    <ComboBoxItem Content="Green" Background="LightGreen" />
-                                                    <ComboBoxItem Content="Red" Background="Pink" />
-                                                    <ComboBoxItem Content="Yellow" Background="LightYellow" />
-                                                    <!--
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor1]}" />
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor2]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor3]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor4]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor5]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor6]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor7]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor8]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor9]}"/>
-                                                        <ComboBoxItem Content=" " Background="{Binding ActiveUser.Colors[CustomColor10]}"/>
-                                                        -->
-                                                </ComboBox>
-                                                <Label VerticalAlignment="Top" Margin="25,126,0,0" Height="25"  HorizontalAlignment="Left" Foreground="Blue">
-                                                    <TextBlock TextDecorations="Underline">
-                                                             <Hyperlink Click="DeleteSelectedElectricalPanel" TextDecorations="Underline" CommandParameter="{Binding}">
-                                                                 [delete]
-                                                             </Hyperlink>                               
-                                                        </TextBlock>
-                                                </Label>
-                                                <TextBox Height="20" VerticalAlignment="Top" Margin="10,158,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" Margin="10,181,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
-                                                <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
-                                                <Label VerticalAlignment="Top" Margin="90,155,0,0" HorizontalAlignment="Left" Content="KVA"/>
-                                                <Label VerticalAlignment="Top" Margin="90,178,0,0" HorizontalAlignment="Left" Content="A"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 204 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                                <Label VerticalAlignment="Top" Margin="90,201,0,0" HorizontalAlignment="Left" Content="Fed From"/>
-                                                <Rectangle Height="230" Stroke="LightGray" HorizontalAlignment="Left" Margin="-17 0 0 0" VerticalAlignment="Top"/>
+                                                    <Label VerticalAlignment="Top" Margin="100,28,0,0" HorizontalAlignment="Left" Content="Main (A)" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="100,50,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
+                                                    <Label VerticalAlignment="Top" Margin="170,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="170,50,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
+                                                    <Label VerticalAlignment="Top" Margin="240,28,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="240 50 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label VerticalAlignment="Top" Margin="340,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="340,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
+                                                    <Label VerticalAlignment="Top" Margin="440,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="440,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
+                                                </Grid>
+                                                <Grid Margin="20 0" HorizontalAlignment="Right"  >
+                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
+                                                    <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalPanel" CommandParameter="{Binding}"/>
+                                                </Grid>
                                             </Grid>
+                                            <DataTemplate.Triggers>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                                    <Setter Property="Background" Value="White" TargetName="PanelGrid"/>
+                                                    <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="LightGray" TargetName="PanelGrid"/>
+                                                    <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -166,7 +162,6 @@
                         <Grid Width="Auto">
                             <StackPanel Orientation="Vertical" >
                                 <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" >
-                                    
                                     <Label Content="Panel" Margin="0 3 0 0"/>
                                     <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
                                     <Label Content="Voltage" Margin="150 3 0 0"/>
@@ -214,9 +209,9 @@
                                         <DataTemplate>
                                             <!-- Make Dynamic --> 
                                             <Grid x:Name="EquipmentGrid" Height="80" Margin="0 0 0 0" VerticalAlignment="Top">
-                                                <Grid Margin="0 0 50 0">
+                                                <Grid Width="Auto">
                                                     <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 0 0 0" Text="meow"  SelectedValue="{Binding Owner}" SelectedValuePath="Content">
+                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2 2 0 0" Text="meow"  SelectedValue="{Binding Owner}" SelectedValuePath="Content">
                                                                 <ComboBoxItem Content="General" />
                                                             <ComboBoxItem Content="Mechanical" />
                                                             <ComboBoxItem Content="Lighting" />
@@ -267,8 +262,10 @@
 
                                                         <Button Margin="1180 -15 0 0" Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                         <Button Margin="1180 35 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
+                                                        
+                                                        
 
-                                                        <Label Content="From Client" Margin="1305 37 0 0" FontWeight="Bold" />
+                                                        <Label Content="From Client" Margin="1305 37 150 0" FontWeight="Bold" />
                                                            <CheckBox Margin="1290 43 0 0" IsChecked="{Binding SpecSheetFromClient}" />
                                                         
 
@@ -285,9 +282,9 @@
                                                     </Grid>
 
                                                 </Grid>
-                                                <Grid>
-                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,100,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                                    <Button Height="20" Width="50"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="27 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                                <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right">
+                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
+                                                    <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
                                                 </Grid>
                                             </Grid>
                                             <DataTemplate.Triggers>

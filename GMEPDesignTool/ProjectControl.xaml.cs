@@ -127,8 +127,8 @@ namespace GMEPDesignTool
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
         {
             if (
-                sender is Hyperlink hyperlink
-                && hyperlink.CommandParameter is ElectricalPanel electricalPanel
+                sender is Button button
+                && button.CommandParameter is ElectricalPanel electricalPanel
             )
             {
                 RemoveElectricalPanel(electricalPanel);
