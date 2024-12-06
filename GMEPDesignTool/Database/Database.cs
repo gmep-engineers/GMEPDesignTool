@@ -98,7 +98,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing service
                     string updateServiceQuery =
-                        "UPDATE electrical_services SET name = @name, amp = @amp WHERE id = @id";
+                        "UPDATE electrical_services SET name = @name, electrical_service_amp = @amp, electrical_service_type = @type WHERE id = @id";
                     MySqlCommand updateServiceCommand = new MySqlCommand(
                         updateServiceQuery,
                         Connection
@@ -106,6 +106,7 @@ namespace GMEPDesignTool.Database
                     updateServiceCommand.Parameters.AddWithValue("@name", service.Name);
                     updateServiceCommand.Parameters.AddWithValue("@amp", service.Amp);
                     updateServiceCommand.Parameters.AddWithValue("@id", service.Id);
+                    updateServiceCommand.Parameters.AddWithValue("@type", service.Type);
                     updateServiceCommand.ExecuteNonQuery();
                     existingServiceIds.Remove(service.Id);
                 }
@@ -113,7 +114,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new service
                     string insertServiceQuery =
-                        "INSERT INTO electrical_services (id, project_id, name, amp) VALUES (@id, @projectId, @name, @amp)";
+                        "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp, electrical_service_type) VALUES (@id, @projectId, @name, @amp, @type)";
                     MySqlCommand insertServiceCommand = new MySqlCommand(
                         insertServiceQuery,
                         Connection
@@ -122,6 +123,7 @@ namespace GMEPDesignTool.Database
                     insertServiceCommand.Parameters.AddWithValue("@projectId", projectId);
                     insertServiceCommand.Parameters.AddWithValue("@name", service.Name);
                     insertServiceCommand.Parameters.AddWithValue("@amp", service.Amp);
+                    insertServiceCommand.Parameters.AddWithValue("@type", service.Type);
                     insertServiceCommand.ExecuteNonQuery();
                 }
             }
@@ -313,8 +315,8 @@ namespace GMEPDesignTool.Database
                         reader.GetString("id"),
                         reader.GetString("project_id"),
                         reader.GetString("name"),
-                        "0",
-                        reader.GetInt32("amp")
+                        reader.GetInt16("electrical_service_type"),
+                        reader.GetInt32("electrical_service_amp")
                     )
                 );
             }

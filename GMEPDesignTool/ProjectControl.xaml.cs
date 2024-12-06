@@ -218,7 +218,7 @@ namespace GMEPDesignTool
                 Guid.NewGuid().ToString(),
                 ProjectId,
                 "",
-                "",
+                0,
                 0
             );
             AddElectricalService(electricalService);
