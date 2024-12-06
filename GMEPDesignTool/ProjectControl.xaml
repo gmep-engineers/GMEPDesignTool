@@ -36,7 +36,7 @@
                                                 <Label Content="Name" />
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50" Text="{Binding Name}"/>
                                                 <Label Content="Voltage" Margin="0 25"/>
-                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" SelectedItem="{Binding Voltage}">
+                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" SelectedIndex="{Binding Type}">
                                                     <ComboBoxItem Content="120/208V 3-Φ" />
                                                     <ComboBoxItem Content="120/240V 1-Φ" />
                                                     <ComboBoxItem Content="277/480V 3-Φ" />

@@ -9,23 +9,25 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class ElectricalService : INotifyPropertyChanged
-  {
+    public class ElectricalService : INotifyPropertyChanged
+    {
         private string _id;
         private string _projectId;
         private string _name;
-        private string _voltage;
+        private int _type;
         private int _amp;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public ElectricalService(string id, string projectId, string name, string voltage, int amp)
+
+        public ElectricalService(string id, string projectId, string name, int type, int amp)
         {
             _id = id;
             _projectId = projectId;
             _name = name;
-            _voltage = voltage;
+            _type = type;
             _amp = amp;
         }
+
         public string Id
         {
             get => _id;
@@ -56,12 +58,12 @@ namespace GMEPDesignTool
             }
         }
 
-        public string Voltage
+        public int Type
         {
-            get => _voltage;
+            get => _type;
             set
             {
-                _voltage = value;
+                _type = value;
                 OnPropertyChanged();
             }
         }
@@ -80,15 +82,22 @@ namespace GMEPDesignTool
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public bool Verify()
         {
-          if (!Utils.IsUuid(Name))
-          { return false; }
-          if (!Utils.IsUuid(ProjectId))
-          { return false; }
-          if (!Utils.IsEquipName(Name))
-          { return false; }
-          return true;
+            if (!Utils.IsUuid(Name))
+            {
+                return false;
+            }
+            if (!Utils.IsUuid(ProjectId))
+            {
+                return false;
+            }
+            if (!Utils.IsEquipName(Name))
+            {
+                return false;
+            }
+            return true;
         }
-  }
+    }
 }
