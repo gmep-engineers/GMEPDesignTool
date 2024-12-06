@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GMEPDesignTool"
              xmlns:uc="clr-namespace:GMEPDesignTool"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -85,6 +86,7 @@
                                                 <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="25,28,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
                                                 <Label VerticalAlignment="Top" Margin="75,2,0,0" HorizontalAlignment="Left" Content="Bus (A)"/>
                                                 <Label VerticalAlignment="Top" Margin="75,25,0,0" HorizontalAlignment="Left" Content="Main (A)"/>
+                                                <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged"></xctk:ColorPicker>
                                                 <Rectangle Width="80" Height="100" Stroke="Gray" HorizontalAlignment="Left" Margin="10 53" VerticalAlignment="Top">
                                                     <Rectangle.Resources>
                                                         <Style TargetType="Rectangle">

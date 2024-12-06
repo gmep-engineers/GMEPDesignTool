@@ -373,5 +373,10 @@ namespace GMEPDesignTool
             PanelFilter.SelectedValue = "";
             EquipmentFilter.Text = "";
         }
+
+        private void ClrPcker_Background_SelectedColorChanged(
+            object sender,
+            RoutedPropertyChangedEventArgs<Color?> e
+        ) { }
     }
 }
