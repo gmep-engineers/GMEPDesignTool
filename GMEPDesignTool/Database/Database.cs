@@ -159,7 +159,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing panel
                     string updatePanelQuery =
-                        "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, name = @name, color_index = @color_index, fed_from_id = @fed_from_id WHERE id = @id";
+                        "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, num_breakers = @numBreakers, distance_from_parent = @distanceFromParent, aic_rating = @aicRating, name = @name, color_index = @color_index, fed_from_id = @fed_from_id WHERE id = @id";
                     MySqlCommand updatePanelCommand = new MySqlCommand(
                         updatePanelQuery,
                         Connection
@@ -174,6 +174,12 @@ namespace GMEPDesignTool.Database
                     updatePanelCommand.Parameters.AddWithValue("@color_index", panel.ColorIndex);
                     updatePanelCommand.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
                     updatePanelCommand.Parameters.AddWithValue("@id", panel.Id);
+                    updatePanelCommand.Parameters.AddWithValue("@aicRating", panel.AicRating);
+                    updatePanelCommand.Parameters.AddWithValue(
+                        "@distanceFromParent",
+                        panel.DistanceFromParent
+                    );
+                    updatePanelCommand.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
                     updatePanelCommand.ExecuteNonQuery();
                     existingPanelIds.Remove(panel.Id);
                 }
@@ -181,7 +187,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new panel
                     string insertPanelQuery =
-                        "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_index, fed_from_id) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_index, @fed_from_id)";
+                        "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_index, fed_from_id, num_breakers, distance_from_parent, aic_rating) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_index, @fed_from_id, @numBreakers, @distanceFromParent, @AicRating)";
                     MySqlCommand insertPanelCommand = new MySqlCommand(
                         insertPanelQuery,
                         Connection
@@ -197,6 +203,12 @@ namespace GMEPDesignTool.Database
                     insertPanelCommand.Parameters.AddWithValue("@name", panel.Name);
                     insertPanelCommand.Parameters.AddWithValue("@color_index", panel.ColorIndex);
                     insertPanelCommand.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
+                    insertPanelCommand.Parameters.AddWithValue("@AicRating", panel.AicRating);
+                    insertPanelCommand.Parameters.AddWithValue(
+                        "@distanceFromParent",
+                        panel.DistanceFromParent
+                    );
+                    insertPanelCommand.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
                     insertPanelCommand.ExecuteNonQuery();
                 }
             }
@@ -356,7 +368,10 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("is_distribution"),
                         reader.GetString("name"),
                         reader.GetInt32("color_index"),
-                        reader.GetString("fed_from_id")
+                        reader.GetString("fed_from_id"),
+                        reader.GetInt32("num_breakers"),
+                        reader.GetInt32("distance_from_parent"),
+                        reader.GetInt32("aic_rating")
                     )
                 );
             }

@@ -111,7 +111,10 @@ namespace GMEPDesignTool
                 false,
                 "",
                 0,
-                "MS-1"
+                "MS-1",
+                0,
+                0,
+                0
             );
             AddElectricalPanel(electricalPanel);
         }
