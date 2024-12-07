@@ -94,7 +94,7 @@
                                                         <ComboBoxItem Content="Red" Background="Pink" />
                                                         <ComboBoxItem Content="Yellow" Background="LightYellow" />
                                                     </ComboBox>
-                                                    <xctk:ColorPicker Name="ClrPcker_Background" Margin="95,2,0,0" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged"></xctk:ColorPicker>
+                                                    <xctk:ColorPicker Name="ClrPcker_Background"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="150,2 0,0" Height="25" Width="80"></xctk:ColorPicker>
                                                     <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" VerticalAlignment="Top">
                                                         <Rectangle.Resources>
                                                             <Style TargetType="Rectangle">
