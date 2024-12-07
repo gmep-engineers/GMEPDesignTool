@@ -20,6 +20,9 @@ namespace GMEPDesignTool
         private int _colorIndex;
         private string _fedFromId;
         private string _projectId;
+        private int _numBreakers;
+        private int _distanceFromParent;
+        private int _aicRating;
 
         // private bool _powered;
 
@@ -34,7 +37,10 @@ namespace GMEPDesignTool
             bool isDistribution,
             string name,
             int colorIndex,
-            string fedFromId
+            string fedFromId,
+            int numBreakers,
+            int distanceFromParent,
+            int aicRating
         )
         {
             _id = id;
@@ -46,6 +52,9 @@ namespace GMEPDesignTool
             _colorIndex = colorIndex;
             _fedFromId = fedFromId;
             _projectId = projectId;
+            _numBreakers = numBreakers;
+            _distanceFromParent = distanceFromParent;
+            _aicRating = aicRating;
         }
 
         public string Id
@@ -133,6 +142,36 @@ namespace GMEPDesignTool
             set
             {
                 _projectId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int NumBreakers
+        {
+            get => _numBreakers;
+            set
+            {
+                _numBreakers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int DistanceFromParent
+        {
+            get => _distanceFromParent;
+            set
+            {
+                _distanceFromParent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int AicRating
+        {
+            get => _aicRating;
+            set
+            {
+                _aicRating = value;
                 OnPropertyChanged();
             }
         }

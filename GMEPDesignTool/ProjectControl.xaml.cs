@@ -111,7 +111,10 @@ namespace GMEPDesignTool
                 false,
                 "",
                 0,
-                "MS-1"
+                "MS-1",
+                0,
+                0,
+                0
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -127,8 +130,8 @@ namespace GMEPDesignTool
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
         {
             if (
-                sender is Hyperlink hyperlink
-                && hyperlink.CommandParameter is ElectricalPanel electricalPanel
+                sender is Button button
+                && button.CommandParameter is ElectricalPanel electricalPanel
             )
             {
                 RemoveElectricalPanel(electricalPanel);
