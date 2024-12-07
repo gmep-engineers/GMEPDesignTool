@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GMEPDesignTool"
              xmlns:uc="clr-namespace:GMEPDesignTool"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -93,6 +94,7 @@
                                                         <ComboBoxItem Content="Red" Background="Pink" />
                                                         <ComboBoxItem Content="Yellow" Background="LightYellow" />
                                                     </ComboBox>
+                                                    <xctk:ColorPicker Name="ClrPcker_Background" Margin="95,2,0,0" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged"></xctk:ColorPicker>
                                                     <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" VerticalAlignment="Top">
                                                         <Rectangle.Resources>
                                                             <Style TargetType="Rectangle">
