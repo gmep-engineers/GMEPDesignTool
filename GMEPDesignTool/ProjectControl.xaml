@@ -25,7 +25,7 @@
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="5"/>
-                        <RowDefinition Height="600"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Header="Electrical Services"  VerticalAlignment="Top">
                         <Grid>
@@ -185,11 +185,20 @@
                     <GroupBox Grid.Row="5" Header="Equipment" Height="Auto" VerticalAlignment="Top" >
                         <Grid Width="Auto">
                             <StackPanel Orientation="Vertical" >
-                                <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" >
-                                    <Label Content="Panel" Margin="0 3 0 0"/>
-                                    <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="40 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
-                                    <Label Content="Voltage" Margin="150 3 0 0"/>
-                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="203 7 0 0">
+                                
+                                <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" Margin="0 3 0 0" >
+                                    <Label Content="Category" Margin="0 3 0 0"/>
+                                    <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Content">
+                                        <ComboBoxItem Content="" />
+                                        <ComboBoxItem Content="General" />
+                                        <ComboBoxItem Content="Mechanical" />
+                                        <ComboBoxItem Content="Lighting" />
+                                        <ComboBoxItem Content="Plumbing" />
+                                    </ComboBox>
+                                    <Label Content="Panel" Margin="150 3 0 0"/>
+                                    <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
+                                    <Label Content="Voltage" Margin="280 3 0 0"/>
+                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
                                         <ComboBoxItem Content="" Background="White" />
                                         <ComboBoxItem Content="115" Background="NavajoWhite" />
                                         <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
@@ -199,18 +208,18 @@
                                         <ComboBoxItem Content="460" Background="Thistle"/>
                                         <ComboBoxItem Content="480" Background="Plum"/>
                                     </ComboBox>
-                                    <Label Content="Phase" Margin="320 3 0 0"/>
-                                    <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="363 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
+                                    <Label Content="Phase" Margin="420 3 0 0"/>
+                                    <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
                                         <ComboBoxItem Content="" />
                                         <ComboBoxItem Content="1" />
                                         <ComboBoxItem Content="3" />
                                     </ComboBox>
 
-                                    <Label Content="Equip #" Margin="430 3 0 0"/>
-                                    <TextBox x:Name="EquipmentFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="482 7 0 0" Width="69" TextChanged="EquipmentFilter_TextChanged"></TextBox>
+                                    <Label Content="Equip #" Margin="510 3 0 0"/>
+                                    <TextBox x:Name="EquipmentFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 7 0 0" Width="69" TextChanged="EquipmentFilter_TextChanged"></TextBox>
 
 
-                                    <Label Margin="590 2 0 0">
+                                    <Label Margin="670 2 0 0">
                                         <Hyperlink x:Name="ResetFilters" TextDecorations="Underline" Foreground="Blue" Click="ResetFilters_Click" >[reset filters]</Hyperlink>
                                     </Label>
 

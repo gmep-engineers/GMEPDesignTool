@@ -347,7 +347,18 @@ namespace GMEPDesignTool
                     && int.TryParse(selectedVoltageString, out int selectedVoltage)
                 )
                 {
+                    Trace.Write(selectedVoltageString);
                     if (equipment.Voltage != selectedVoltage)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    CategoryFilter.SelectedValue is string selectedCategory
+                    && selectedCategory != ""
+                )
+                {
+                    if (equipment.Category.ToString() != selectedCategory)
                     {
                         isAccepted = false;
                     }
