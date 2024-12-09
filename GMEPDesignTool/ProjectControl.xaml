@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GMEPDesignTool"
              xmlns:uc="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EquipmentViewSource" Source="{Binding ElectricalEquipments}" />
     </UserControl.Resources>
@@ -40,10 +41,12 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid x:Name="ServiceGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
-                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedValue="{Binding Config}" SelectedValuePath="Content">
+                                                <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                <ComboBox Height="20" Width="110" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedValue="{Binding Config}" SelectedValuePath="Content">
                                                     <ComboBoxItem Content="Switch Gear" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Multi Meter" HorizontalContentAlignment="Left" />
                                                 </ComboBox>
+                                                <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                 <Label Content="Name" Margin="10,27,0,0" />
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}"/>
                                                 <Label Content="Voltage" Margin="100 27 0 0"/>
@@ -99,40 +102,21 @@
                                         <DataTemplate>
                                             <Grid x:Name="PanelGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
-                                                    <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
+                                                    <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                    <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
                                                         <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                         <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                     </ComboBox>
-                                                    <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
+                                                   <!-- <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
                                                         <ComboBoxItem Content="White" Background="White" />
                                                         <ComboBoxItem Content="Blue" Background="LightBlue" />
                                                         <ComboBoxItem Content="Green" Background="LightGreen" />
                                                         <ComboBoxItem Content="Red" Background="Pink" />
                                                         <ComboBoxItem Content="Yellow" Background="LightYellow" />
-                                                    </ComboBox>
-                                                    <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" VerticalAlignment="Top">
-                                                        <Rectangle.Resources>
-                                                            <Style TargetType="Rectangle">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="0">
-                                                                        <Setter Property="Fill" Value="White"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="1">
-                                                                        <Setter Property="Fill" Value="LightBlue"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="2">
-                                                                        <Setter Property="Fill" Value="LightGreen"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="3">
-                                                                        <Setter Property="Fill" Value="Pink"/>
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding ColorIndex}" Value="4">
-                                                                        <Setter Property="Fill" Value="LightYellow"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Rectangle.Resources>
-                                                    </Rectangle>
+                                                    </ComboBox>-->
+                                                    <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+
+
                                                     <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
                                                     <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
 
@@ -241,37 +225,32 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <!-- Make Dynamic -->
-                                            <Grid x:Name="EquipmentGrid" Height="80" Margin="0 0 0 0" VerticalAlignment="Top">
+                                            <Grid x:Name="EquipmentGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
                                                     <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2 2 0 0" Text="meow"  SelectedValue="{Binding Category}" SelectedValuePath="Content">
+                                                        <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 2 0 0" Text="meow"  SelectedValue="{Binding Category}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="General" />
                                                             <ComboBoxItem Content="Mechanical" />
                                                             <ComboBoxItem Content="Lighting" />
                                                             <ComboBoxItem Content="Plumbing" />
                                                         </ComboBox>
-                                                        <Label Content="Owner" Margin="20 18 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 40 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Content">
+                                                        <Rectangle Width="820" Height="55" Stroke="Gray" HorizontalAlignment="Left" Margin="0 28 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+                                                        <Label Content="Owner" Margin="20 23 0 0" FontWeight="Bold"/>
+                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 45 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="Arco" />
                                                             <ComboBoxItem Content="Chick-Fil-A" />
                                                             <ComboBoxItem Content="Circle-K" />
                                                             <ComboBoxItem Content="Shell" />
                                                         </ComboBox>
 
-                                                        <Label Content="Equip #" Margin="200 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200 40 0 0" Width="69" Text="{Binding EquipNo}"></TextBox>
+                                                        <Label Content="Equip #" Margin="200 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200 45 0 0" Width="69" Text="{Binding EquipNo}"></TextBox>
 
-                                                        <Label Content="Qty." Margin="300 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 40 0 0" Width="43" Text="{Binding Qty}"></TextBox>
-
-                                                        <Label Content="Panel" Margin="370 0 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 20 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-
-                                                        <Label Content="Distance" Margin="370 35 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 55 0 0" Width="150" Text="{Binding DistanceFromParent}"></TextBox>
+                                                      
                                                         
-                                                        <Label Content="Voltage" Margin="550 18 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="550 40 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
+                                                        <Label Content="Voltage" Margin="300 23 0 0" FontWeight="Bold"/>
+                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="115" Background="NavajoWhite" />
                                                             <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
                                                             <ComboBoxItem Content="208" Background="PaleGreen"/>
@@ -281,28 +260,37 @@
                                                             <ComboBoxItem Content="480" Background="Plum"/>
                                                         </ComboBox>
 
-                                                        <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730 40 0 0" Width="50" Text="{Binding Amp}"></TextBox>
+                                                        <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 45 0 0" Width="50" Text="{Binding Amp}"></TextBox>
 
-                                                        <Label Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="810 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="810 40 0 0" Width="70" Text="{Binding Va}"></TextBox>
+                                                        <Label Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 45 0 0" Width="70" Text="{Binding Va}"></TextBox>
 
-                                                        <Label Content="Phase" Margin="910 18 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="910 40 0 0" SelectedIndex="{Binding Is3Ph}">
+                                                        <Label Content="Phase" Margin="660 23 0 0" FontWeight="Bold"/>
+                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="660 45 0 0" SelectedIndex="{Binding Is3Ph}">
                                                             <ComboBoxItem Content="1" />
                                                             <ComboBoxItem Content="3" />
                                                         </ComboBox>
+                                                        
+                                                        <Label Content="Qty." Margin="840 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="840 45 0 0" Width="43" Text="{Binding Qty}"></TextBox>
 
-                                                        <Label Content="AIC Rating" Margin="1090 18 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1090 40 0 0" Width="70" Text="{Binding AicRating}"></TextBox>
+                                                        <Label Content="Panel" Margin="910 5 0 0" FontWeight="Bold"/>
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="910 25 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
-                                                        <Button Margin="1180 -15 0 0" Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
-                                                        <Button Margin="1180 35 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
+                                                        <Label Content="Distance" Margin="910 40 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="910 60 0 0" Width="150" Text="{Binding DistanceFromParent}"></TextBox>
+
+                                                        <Label Content="AIC Rating" Margin="1090 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1090 45 0 0" Width="70" Text="{Binding AicRating}"></TextBox>
+
+                                                        <Button Margin="1180 -10 0 0" Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
+                                                        <Button Margin="1180 40 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
 
 
 
-                                                        <Label Content="From Client" Margin="1305 37 150 0" FontWeight="Bold" />
-                                                        <CheckBox Margin="1290 43 0 0" IsChecked="{Binding SpecSheetFromClient}" />
+                                                        <Label Content="From Client" Margin="1305 42 150 0" FontWeight="Bold" />
+                                                        <CheckBox Margin="1290 48 0 0" IsChecked="{Binding SpecSheetFromClient}" />
 
 
                                                         <!-- <Label Content="From Client" Margin="1190 0 0 0"  FontWeight="Bold"/>

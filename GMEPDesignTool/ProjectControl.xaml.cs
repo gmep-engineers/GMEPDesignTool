@@ -90,6 +90,25 @@ namespace GMEPDesignTool
             SaveText.Text = "*SAVING*";
         }
 
+        public void ChangeColors(string id, string colorCode)
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                if (panel.FedFromId == id)
+                {
+                    panel.ColorCode = colorCode;
+                    ChangeColors(panel.Id, colorCode);
+                }
+            }
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (equipment.PanelId == id)
+                {
+                    equipment.ColorCode = colorCode;
+                }
+            }
+        }
+
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
@@ -110,7 +129,7 @@ namespace GMEPDesignTool
                 false,
                 false,
                 "",
-                0,
+                "White",
                 "MS-1",
                 0,
                 0,
@@ -198,11 +217,18 @@ namespace GMEPDesignTool
 
         private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalPanel.Name))
+            if (sender is ElectricalPanel panel)
             {
-                GetNames();
+                if (e.PropertyName == nameof(ElectricalPanel.Name))
+                {
+                    GetNames();
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
+                {
+                    ChangeColors(panel.Id, panel.ColorCode);
+                }
+                StartTimer();
             }
-            StartTimer();
         }
 
         //Service Functions
@@ -223,7 +249,8 @@ namespace GMEPDesignTool
                 "",
                 0,
                 0,
-                "Switch Gear"
+                "Switch Gear",
+                "White"
             );
             AddElectricalService(electricalService);
         }
@@ -249,12 +276,19 @@ namespace GMEPDesignTool
 
         private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalService.Name))
+            if (sender is ElectricalService service)
             {
-                Trace.WriteLine("ElectricalService name changed");
-                GetNames();
+                if (e.PropertyName == nameof(ElectricalService.Name))
+                {
+                    Trace.WriteLine("ElectricalService name changed");
+                    GetNames();
+                }
+                if (e.PropertyName == nameof(ElectricalService.ColorCode))
+                {
+                    ChangeColors(service.Id, service.ColorCode);
+                }
+                StartTimer();
             }
-            StartTimer();
         }
 
         //Equipment Functions
@@ -283,7 +317,8 @@ namespace GMEPDesignTool
                 0,
                 false,
                 0,
-                "General"
+                "General",
+                "White"
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -308,7 +343,10 @@ namespace GMEPDesignTool
 
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            StartTimer();
+            if (sender is ElectricalEquipment equipment)
+            {
+                StartTimer();
+            }
         }
 
         private void EquipmentViewSource_Filter(object sender, FilterEventArgs e)
@@ -392,5 +430,10 @@ namespace GMEPDesignTool
             PanelFilter.SelectedValue = "";
             EquipmentFilter.Text = "";
         }
+
+        private void ClrPcker_Background_SelectedColorChanged(
+            object sender,
+            RoutedPropertyChangedEventArgs<Color?> e
+        ) { }
     }
 }

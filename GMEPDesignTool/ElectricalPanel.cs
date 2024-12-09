@@ -17,7 +17,7 @@ namespace GMEPDesignTool
         private bool _isMlo;
         private bool _isDistribution;
         private string _name;
-        private int _colorIndex;
+        private string _colorCode;
         private string _fedFromId;
         private string _projectId;
         private int _numBreakers;
@@ -36,7 +36,7 @@ namespace GMEPDesignTool
             bool isMlo,
             bool isDistribution,
             string name,
-            int colorIndex,
+            string colorCode,
             string fedFromId,
             int numBreakers,
             int distanceFromParent,
@@ -49,7 +49,7 @@ namespace GMEPDesignTool
             _isMlo = isMlo;
             _isDistribution = isDistribution;
             _name = name;
-            _colorIndex = colorIndex;
+            _colorCode = colorCode;
             _fedFromId = fedFromId;
             _projectId = projectId;
             _numBreakers = numBreakers;
@@ -117,12 +117,12 @@ namespace GMEPDesignTool
             }
         }
 
-        public int ColorIndex
+        public string ColorCode
         {
-            get => _colorIndex;
+            get => _colorCode;
             set
             {
-                _colorIndex = value;
+                _colorCode = value;
                 OnPropertyChanged();
             }
         }
