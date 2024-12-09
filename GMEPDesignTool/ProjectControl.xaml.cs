@@ -90,6 +90,18 @@ namespace GMEPDesignTool
             SaveText.Text = "*SAVING*";
         }
 
+        public void ChangeColors(string id, string colorCode)
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                if (panel.FedFromId == id)
+                {
+                    panel.ColorCode = colorCode;
+                    ChangeColors(panel.Id, colorCode);
+                }
+            }
+        }
+
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
@@ -198,11 +210,18 @@ namespace GMEPDesignTool
 
         private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalPanel.Name))
+            if (sender is ElectricalPanel panel)
             {
-                GetNames();
+                if (e.PropertyName == nameof(ElectricalPanel.Name))
+                {
+                    GetNames();
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
+                {
+                    ChangeColors(panel.Id, panel.ColorCode);
+                }
+                StartTimer();
             }
-            StartTimer();
         }
 
         //Service Functions
@@ -250,12 +269,19 @@ namespace GMEPDesignTool
 
         private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalService.Name))
+            if (sender is ElectricalService service)
             {
-                Trace.WriteLine("ElectricalService name changed");
-                GetNames();
+                if (e.PropertyName == nameof(ElectricalService.Name))
+                {
+                    Trace.WriteLine("ElectricalService name changed");
+                    GetNames();
+                }
+                if (e.PropertyName == nameof(ElectricalService.ColorCode))
+                {
+                    ChangeColors(service.Id, service.ColorCode);
+                }
+                StartTimer();
             }
-            StartTimer();
         }
 
         //Equipment Functions
