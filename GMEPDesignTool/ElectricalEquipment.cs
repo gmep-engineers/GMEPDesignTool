@@ -22,6 +22,8 @@ namespace GMEPDesignTool
         private string specSheetId;
         private int aicRating;
         private bool specSheetFromClient;
+        int distanceFromParent;
+        string category;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -38,7 +40,9 @@ namespace GMEPDesignTool
             bool is3Ph,
             string specSheetId,
             int aicRating,
-            bool specSheetFromClient
+            bool specSheetFromClient,
+            int distanceFromParent,
+            string category
         )
         {
             this.id = id;
@@ -54,6 +58,8 @@ namespace GMEPDesignTool
             this.specSheetId = specSheetId;
             this.aicRating = aicRating;
             this.specSheetFromClient = specSheetFromClient;
+            this.distanceFromParent = distanceFromParent;
+            this.category = category;
         }
 
         public string Id
@@ -220,6 +226,30 @@ namespace GMEPDesignTool
                 {
                     specSheetFromClient = value;
                     OnPropertyChanged(nameof(SpecSheetFromClient));
+                }
+            }
+        }
+        public int DistanceFromParent
+        {
+            get => distanceFromParent;
+            set
+            {
+                if (distanceFromParent != value)
+                {
+                    distanceFromParent = value;
+                    OnPropertyChanged(nameof(DistanceFromParent));
+                }
+            }
+        }
+        public string Category
+        {
+            get => category;
+            set
+            {
+                if (category != value)
+                {
+                    category = value;
+                    OnPropertyChanged(nameof(Category));
                 }
             }
         }

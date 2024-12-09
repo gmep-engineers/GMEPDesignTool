@@ -281,7 +281,9 @@ namespace GMEPDesignTool
                 false,
                 "",
                 0,
-                false
+                false,
+                0,
+                "General"
             );
             AddElectricalEquipment(electricalEquipment);
         }

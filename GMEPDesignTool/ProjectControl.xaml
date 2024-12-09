@@ -235,7 +235,7 @@
                                             <Grid x:Name="EquipmentGrid" Height="80" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
                                                     <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2 2 0 0" Text="meow"  SelectedValue="{Binding Owner}" SelectedValuePath="Content">
+                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2 2 0 0" Text="meow"  SelectedValue="{Binding Category}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="General" />
                                                             <ComboBoxItem Content="Mechanical" />
                                                             <ComboBoxItem Content="Lighting" />
@@ -255,9 +255,12 @@
                                                         <Label Content="Qty." Margin="300 18 0 0" FontWeight="Bold"/>
                                                         <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 40 0 0" Width="43" Text="{Binding Qty}"></TextBox>
 
-                                                        <Label Content="Panel" Margin="370 18 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 40 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                        <Label Content="Panel" Margin="370 0 0 0" FontWeight="Bold"/>
+                                                        <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 20 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
+                                                        <Label Content="Distance" Margin="370 35 0 0" FontWeight="Bold"/>
+                                                        <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 55 0 0" Width="150" Text="{Binding distanceFromParent}"></TextBox>
+                                                        
                                                         <Label Content="Voltage" Margin="550 18 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="550 40 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Content">
                                                             <ComboBoxItem Content="115" Background="NavajoWhite" />
