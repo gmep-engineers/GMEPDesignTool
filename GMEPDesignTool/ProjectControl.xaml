@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GMEPDesignTool"
              xmlns:uc="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EquipmentViewSource" Source="{Binding ElectricalEquipments}" />
     </UserControl.Resources>
@@ -44,6 +45,7 @@
                                                     <ComboBoxItem Content="Switch Gear" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Multi Meter" HorizontalContentAlignment="Left" />
                                                 </ComboBox>
+                                                <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                 <Label Content="Name" Margin="10,27,0,0" />
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}"/>
                                                 <Label Content="Voltage" Margin="100 27 0 0"/>
@@ -99,19 +101,20 @@
                                         <DataTemplate>
                                             <Grid x:Name="PanelGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
-                                                    <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
+                                                    <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                    <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
                                                         <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                         <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                     </ComboBox>
-                                                    <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
+                                                   <!-- <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
                                                         <ComboBoxItem Content="White" Background="White" />
                                                         <ComboBoxItem Content="Blue" Background="LightBlue" />
                                                         <ComboBoxItem Content="Green" Background="LightGreen" />
                                                         <ComboBoxItem Content="Red" Background="Pink" />
                                                         <ComboBoxItem Content="Yellow" Background="LightYellow" />
-                                                    </ComboBox>
-                                                    <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" VerticalAlignment="Top">
-                                                        <Rectangle.Resources>
+                                                    </ComboBox>-->
+                                                    <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top">
+                                                        <!--<Rectangle.Resources>
                                                             <Style TargetType="Rectangle">
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding ColorIndex}" Value="0">
@@ -131,7 +134,7 @@
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-                                                        </Rectangle.Resources>
+                                                        </Rectangle.Resources>-->
                                                     </Rectangle>
                                                     <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
                                                     <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
