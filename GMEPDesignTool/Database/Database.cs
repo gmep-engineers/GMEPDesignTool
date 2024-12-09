@@ -247,7 +247,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing equipment
                     string updateEquipmentQuery =
-                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client WHERE id = @id";
+                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category WHERE id = @id";
                     MySqlCommand updateEquipmentCommand = new MySqlCommand(
                         updateEquipmentQuery,
                         Connection
@@ -271,6 +271,11 @@ namespace GMEPDesignTool.Database
                         "@spec_sheet_from_client",
                         equipment.SpecSheetFromClient
                     );
+                    updateEquipmentCommand.Parameters.AddWithValue(
+                        "@distanceFromParent",
+                        equipment.DistanceFromParent
+                    );
+                    updateEquipmentCommand.Parameters.AddWithValue("@category", equipment.Category);
                     updateEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
                     updateEquipmentCommand.ExecuteNonQuery();
                     existingEquipmentIds.Remove(equipment.Id);
@@ -279,7 +284,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new equipment
                     string insertEquipmentQuery =
-                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client) VALUES (@id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client)";
+                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category) VALUES (@id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category)";
                     MySqlCommand insertEquipmentCommand = new MySqlCommand(
                         insertEquipmentQuery,
                         Connection
@@ -305,6 +310,11 @@ namespace GMEPDesignTool.Database
                         "@spec_sheet_from_client",
                         equipment.SpecSheetFromClient
                     );
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@distanceFromParent",
+                        equipment.DistanceFromParent
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue("@category", equipment.Category);
                     insertEquipmentCommand.ExecuteNonQuery();
                 }
             }
@@ -409,7 +419,9 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("is_three_phase"),
                         reader.GetString("spec_sheet_id"),
                         reader.GetInt32("aic_rating"),
-                        reader.GetBoolean("spec_sheet_from_client")
+                        reader.GetBoolean("spec_sheet_from_client"),
+                        reader.GetInt32("distance_from_parent"),
+                        reader.GetString("category")
                     )
                 );
             }
