@@ -110,7 +110,7 @@ namespace GMEPDesignTool
                 false,
                 false,
                 "",
-                "",
+                "White",
                 "MS-1",
                 0,
                 0,
@@ -223,7 +223,8 @@ namespace GMEPDesignTool
                 "",
                 0,
                 0,
-                "Switch Gear"
+                "Switch Gear",
+                "White"
             );
             AddElectricalService(electricalService);
         }

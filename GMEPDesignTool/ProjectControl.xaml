@@ -41,7 +41,8 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid x:Name="ServiceGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
-                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedValue="{Binding Config}" SelectedValuePath="Content">
+                                                <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                <ComboBox Height="20" Width="110" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedValue="{Binding Config}" SelectedValuePath="Content">
                                                     <ComboBoxItem Content="Switch Gear" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Multi Meter" HorizontalContentAlignment="Left" />
                                                 </ComboBox>

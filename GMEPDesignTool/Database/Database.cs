@@ -98,7 +98,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing service
                     string updateServiceQuery =
-                        "UPDATE electrical_services SET name = @name, electrical_service_amp = @amp, electrical_service_type = @type, electrical_service_meter_config = @config WHERE id = @id";
+                        "UPDATE electrical_services SET name = @name, electrical_service_amp = @amp, electrical_service_type = @type, electrical_service_meter_config = @config, color_code = @color_code WHERE id = @id";
                     MySqlCommand updateServiceCommand = new MySqlCommand(
                         updateServiceQuery,
                         Connection
@@ -108,6 +108,7 @@ namespace GMEPDesignTool.Database
                     updateServiceCommand.Parameters.AddWithValue("@id", service.Id);
                     updateServiceCommand.Parameters.AddWithValue("@type", service.Type);
                     updateServiceCommand.Parameters.AddWithValue("@config", service.Config);
+                    updateServiceCommand.Parameters.AddWithValue("@color_code", service.ColorCode);
                     updateServiceCommand.ExecuteNonQuery();
                     existingServiceIds.Remove(service.Id);
                 }
@@ -115,7 +116,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new service
                     string insertServiceQuery =
-                        "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp, electrical_service_type, electrical_service_meter_config) VALUES (@id, @projectId, @name, @amp, @type, @config)";
+                        "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp, electrical_service_type, electrical_service_meter_config, color_code) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code)";
                     MySqlCommand insertServiceCommand = new MySqlCommand(
                         insertServiceQuery,
                         Connection
@@ -126,6 +127,7 @@ namespace GMEPDesignTool.Database
                     insertServiceCommand.Parameters.AddWithValue("@amp", service.Amp);
                     insertServiceCommand.Parameters.AddWithValue("@type", service.Type);
                     insertServiceCommand.Parameters.AddWithValue("@config", service.Config);
+                    insertServiceCommand.Parameters.AddWithValue("@color_code", service.ColorCode);
 
                     insertServiceCommand.ExecuteNonQuery();
                 }
@@ -352,7 +354,8 @@ namespace GMEPDesignTool.Database
                         reader.GetString("name"),
                         reader.GetInt32("electrical_service_type"),
                         reader.GetInt32("electrical_service_amp"),
-                        reader.GetString("electrical_service_meter_config")
+                        reader.GetString("electrical_service_meter_config"),
+                        reader.GetString("color_code")
                     )
                 );
             }
