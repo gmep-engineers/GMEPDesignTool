@@ -222,7 +222,8 @@ namespace GMEPDesignTool
                 ProjectId,
                 "",
                 0,
-                0
+                0,
+                "Switch Gear"
             );
             AddElectricalService(electricalService);
         }
@@ -238,8 +239,8 @@ namespace GMEPDesignTool
         public void DeleteSelectedElectricalService(object sender, EventArgs e)
         {
             if (
-                sender is Hyperlink hyperlink
-                && hyperlink.CommandParameter is ElectricalService electricalService
+                sender is Button button
+                && button.CommandParameter is ElectricalService electricalService
             )
             {
                 RemoveElectricalService(electricalService);
