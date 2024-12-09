@@ -22,38 +22,47 @@
                 <Grid Background="White">
                     <GroupBox Header="Electrical Services" Height="140" VerticalAlignment="Top">
                         <Grid>
-                            <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                            <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <!-- Make Dynamic -->
-                                <ItemsControl ItemsSource="{Binding ElectricalServices}">
+                                <ItemsControl ItemsSource="{Binding ElectricalServices}" AlternationCount="2">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"/>
+                                            <StackPanel Orientation="Vertical"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 0 0">
-                                                <Label Content="Name" />
-                                                <TextBox Height="20" VerticalAlignment="Top" Margin="55,5,0,0" HorizontalAlignment="Left" Width="50" Text="{Binding Name}"/>
-                                                <Label Content="Voltage" Margin="0 25"/>
-                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 30" SelectedIndex="{Binding Type}">
+                                            <Grid x:Name="ServiceGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
+                                                <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="2,2,0,0" HorizontalContentAlignment="Right" SelectedValue="{Binding Config}" SelectedValuePath="Content">
+                                                    <ComboBoxItem Content="Switch Gear" HorizontalContentAlignment="Left"/>
+                                                    <ComboBoxItem Content="Multi Meter" HorizontalContentAlignment="Left" />
+                                                </ComboBox>
+                                                <Label Content="Name" Margin="10,27,0,0" />
+                                                <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}"/>
+                                                <Label Content="Voltage" Margin="100 27 0 0"/>
+                                                <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedIndex="{Binding Type}">
                                                     <ComboBoxItem Content="120/208V 3-Φ" />
                                                     <ComboBoxItem Content="120/240V 1-Φ" />
                                                     <ComboBoxItem Content="277/480V 3-Φ" />
                                                     <ComboBoxItem Content="120/240V 3-Φ" />
                                                 </ComboBox>
-                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="0 50 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55 55 0 0" Width="50" Text="{Binding Amp}"></TextBox>
-
-                                                <Label VerticalAlignment="Top" Margin="0,75,0,0" HorizontalAlignment="Left" Foreground="Blue" >
-                                                    <TextBlock TextDecorations="Underline">
-                                                        <Hyperlink Click="DeleteSelectedElectricalService" TextDecorations="Underline" CommandParameter="{Binding}">
-                                                            [delete]
-                                                        </Hyperlink>
-                                                    </TextBlock>                    
-                                                </Label>
-                                                <Rectangle Height="95" Stroke="LightGray" HorizontalAlignment="Left" Margin="-25 0 0 0" VerticalAlignment="Top"/>
+                                                <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="230 27 0 0"/>
+                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="230 50 0 0" Width="50" Text="{Binding Amp}"></TextBox>
+                                                <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right">
+                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
+                                                    <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalService" CommandParameter="{Binding}"/>
+                                                </Grid>
                                             </Grid>
+                                            <DataTemplate.Triggers>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                                    <Setter Property="Background" Value="White" TargetName="ServiceGrid"/>
+                                                    <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                    <Setter Property="Background" Value="LightGray" TargetName="ServiceGrid"/>
+                                                    <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

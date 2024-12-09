@@ -16,16 +16,25 @@ namespace GMEPDesignTool
         private string _name;
         private int _type;
         private int _amp;
+        private string _config;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ElectricalService(string id, string projectId, string name, int type, int amp)
+        public ElectricalService(
+            string id,
+            string projectId,
+            string name,
+            int type,
+            int amp,
+            string config
+        )
         {
             _id = id;
             _projectId = projectId;
             _name = name;
             _type = type;
             _amp = amp;
+            _config = config;
         }
 
         public string Id
@@ -74,6 +83,15 @@ namespace GMEPDesignTool
             set
             {
                 _amp = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Config
+        {
+            get => _config;
+            set
+            {
+                _config = value;
                 OnPropertyChanged();
             }
         }
