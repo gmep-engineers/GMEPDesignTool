@@ -100,6 +100,13 @@ namespace GMEPDesignTool
                     ChangeColors(panel.Id, colorCode);
                 }
             }
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (equipment.PanelId == id)
+                {
+                    equipment.ColorCode = colorCode;
+                }
+            }
         }
 
         //Electrical Panel Functions
@@ -310,7 +317,8 @@ namespace GMEPDesignTool
                 0,
                 false,
                 0,
-                "General"
+                "General",
+                "White"
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -335,7 +343,10 @@ namespace GMEPDesignTool
 
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            StartTimer();
+            if (sender is ElectricalEquipment equipment)
+            {
+                StartTimer();
+            }
         }
 
         private void EquipmentViewSource_Filter(object sender, FilterEventArgs e)
