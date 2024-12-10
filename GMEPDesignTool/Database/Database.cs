@@ -145,6 +145,7 @@ namespace GMEPDesignTool.Database
             {
                 if (existingEquipmentIds.Contains(equipment.Id))
                 {
+                    SyncEquipmentQuantity(equipment);
                     UpdateEquipment(equipment);
                     existingEquipmentIds.Remove(equipment.Id);
                 }
@@ -157,20 +158,60 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
         }
 
+        public void SyncEquipmentQuantity(ElectricalEquipment equipment)
+        {
+            // Get the current count of entries with the same group_id
+            string countQuery =
+                "SELECT COUNT(*) FROM electrical_equipment WHERE group_id = @groupId";
+            MySqlCommand countCommand = new MySqlCommand(countQuery, Connection);
+            countCommand.Parameters.AddWithValue("@groupId", equipment.Id);
+            int currentCount = Convert.ToInt32(countCommand.ExecuteScalar());
+
+            // If the current count is less than the qty, add new entries
+            if (currentCount < equipment.Qty)
+            {
+                int entriesToAdd = equipment.Qty - currentCount;
+                for (int i = 0; i < entriesToAdd; i++)
+                {
+                    InsertEquipment(equipment.ProjectId, equipment);
+                }
+            }
+            // If the current count is more than the qty, remove excess entries
+            else if (currentCount > equipment.Qty)
+            {
+                int entriesToRemove = currentCount - equipment.Qty;
+                string deleteQuery =
+                    "DELETE FROM electrical_equipment WHERE group_id = @groupId LIMIT @limit";
+                MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, Connection);
+                deleteCommand.Parameters.AddWithValue("@groupId", equipment.Id);
+                deleteCommand.Parameters.AddWithValue("@limit", entriesToRemove);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
         private HashSet<string> GetExistingIds(
             string tableName,
             string columnName,
             string projectId
         )
         {
-            string query = $"SELECT id FROM {tableName} WHERE {columnName} = @projectId";
+            var idType = "";
+            if (tableName == "electrical_equipment")
+            {
+                idType = "group_id";
+            }
+            else
+            {
+                idType = "id";
+            }
+            string query = $"SELECT {idType} FROM {tableName} WHERE {columnName} = @projectId";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = command.ExecuteReader();
             HashSet<string> ids = new HashSet<string>();
             while (reader.Read())
             {
-                ids.Add(reader.GetString("id"));
+                ids.Add(reader.GetString($"{idType}"));
             }
             reader.Close();
             return ids;
@@ -245,11 +286,10 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
-            command.Parameters.AddWithValue("@qty", equipment.Qty);
             command.Parameters.AddWithValue("@panel_id", equipment.PanelId);
             command.Parameters.AddWithValue("@voltage", equipment.Voltage);
             command.Parameters.AddWithValue("@amp", equipment.Amp);
@@ -270,14 +310,13 @@ namespace GMEPDesignTool.Database
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @group_id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, owner_id, equip_no, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @group_id, @projectId, @owner, @equip_no, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
-            command.Parameters.AddWithValue("@qty", equipment.Qty);
             command.Parameters.AddWithValue("@panel_id", equipment.PanelId);
             command.Parameters.AddWithValue("@voltage", equipment.Voltage);
             command.Parameters.AddWithValue("@amp", equipment.Amp);
@@ -296,9 +335,18 @@ namespace GMEPDesignTool.Database
 
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
+            var idType = "";
+            if (tableName == "electrical_equipment")
+            {
+                idType = "group_id";
+            }
+            else
+            {
+                idType = "id";
+            }
             foreach (var id in ids)
             {
-                string query = $"DELETE FROM {tableName} WHERE id = @id";
+                string query = $"DELETE FROM {tableName} WHERE {idType} = @id";
                 MySqlCommand command = new MySqlCommand(query, Connection);
                 command.Parameters.AddWithValue("@id", id);
                 command.ExecuteNonQuery();
@@ -375,15 +423,21 @@ namespace GMEPDesignTool.Database
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = command.ExecuteReader();
+            Dictionary<string, ElectricalEquipment> equipmentDict =
+                new Dictionary<string, ElectricalEquipment>();
+            Dictionary<string, int> qtyDict = new Dictionary<string, int>();
+
             while (reader.Read())
             {
-                equipments.Add(
-                    new ElectricalEquipment(
-                        reader.GetString("id"),
+                string groupId = reader.GetString("group_id");
+                if (!equipmentDict.ContainsKey(groupId))
+                {
+                    var newEquip = new ElectricalEquipment(
+                        groupId,
                         reader.GetString("project_id"),
                         reader.GetString("owner_id"),
                         reader.GetString("equip_no"),
-                        reader.GetInt32("qty"),
+                        0,
                         reader.GetString("panel_id"),
                         reader.GetInt32("voltage"),
                         reader.GetFloat("amp"),
@@ -395,9 +449,19 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("distance_from_parent"),
                         reader.GetString("category"),
                         reader.GetString("color_code")
-                    )
-                );
+                    );
+                    equipmentDict[groupId] = newEquip;
+                    qtyDict[groupId] = 0;
+                }
+                qtyDict[groupId]++;
             }
+
+            foreach (var pair in equipmentDict)
+            {
+                pair.Value.Qty = qtyDict[pair.Key];
+                equipments.Add(pair.Value);
+            }
+
             reader.Close();
             CloseConnection();
             return equipments;
