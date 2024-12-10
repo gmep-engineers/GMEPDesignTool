@@ -273,7 +273,15 @@
                                                         </ComboBox>
                                                         
                                                         <Label Content="Qty." Margin="840 23 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="840 45 0 0" Width="43" Text="{Binding Qty}"></TextBox>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="840 45 0 0" Width="43">
+                                                            <TextBox.Text>
+                                                                <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
+                                                                    <Binding.ValidationRules>
+                                                                        <local:MinimumValueValidationRule Minimum="1"/>
+                                                                    </Binding.ValidationRules>
+                                                                </Binding>
+                                                            </TextBox.Text>
+                                                        </TextBox>
 
                                                         <Label Content="Panel" Margin="910 5 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="910 25 0 0" SelectedValue="{Binding PanelId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
@@ -287,22 +295,8 @@
                                                         <Button Margin="1180 -10 0 0" Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                         <Button Margin="1180 40 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
 
-
-
                                                         <Label Content="From Client" Margin="1305 42 150 0" FontWeight="Bold" />
                                                         <CheckBox Margin="1290 48 0 0" IsChecked="{Binding SpecSheetFromClient}" />
-
-
-                                                        <!-- <Label Content="From Client" Margin="1190 0 0 0"  FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="1190 25 0 0" Width="70" Text=""></TextBox>
-
-
-                                                       <Label Margin="525 0 0 0">
-                                                            <TextBlock x:Name="ViewSpecSheet" TextDecorations="Underline">[view spec sheet]</TextBlock>
-                                                        </Label>
-                                                        <Label Margin="525 25 0 0">
-                                                            <TextBlock TextDecorations="Underline" Foreground="Blue">[edit spec sheet]</TextBlock>
-                                                        </Label>-->
                                                     </Grid>
 
                                                 </Grid>

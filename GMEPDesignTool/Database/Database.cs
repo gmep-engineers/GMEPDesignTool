@@ -70,6 +70,7 @@ namespace GMEPDesignTool.Database
             return id;
         }
 
+        //Update Project Functions
         public void UpdateProject(
             string projectId,
             ObservableCollection<ElectricalService> services,
@@ -79,269 +80,277 @@ namespace GMEPDesignTool.Database
         {
             OpenConnection();
 
-            // Update Electrical Services
-            string selectServicesQuery =
-                "SELECT id FROM electrical_services WHERE project_id = @projectId";
-            MySqlCommand selectServicesCommand = new MySqlCommand(selectServicesQuery, Connection);
-            selectServicesCommand.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader servicesReader = selectServicesCommand.ExecuteReader();
-            HashSet<string> existingServiceIds = new HashSet<string>();
-            while (servicesReader.Read())
-            {
-                existingServiceIds.Add(servicesReader.GetString("id"));
-            }
-            servicesReader.Close();
+            UpdateServices(projectId, services);
+            UpdatePanels(projectId, panels);
+            UpdateEquipments(projectId, equipments);
+
+            CloseConnection();
+        }
+
+        private void UpdateServices(
+            string projectId,
+            ObservableCollection<ElectricalService> services
+        )
+        {
+            var existingServiceIds = GetExistingIds("electrical_services", "project_id", projectId);
 
             foreach (var service in services)
             {
                 if (existingServiceIds.Contains(service.Id))
                 {
-                    // Update existing service
-                    string updateServiceQuery =
-                        "UPDATE electrical_services SET name = @name, electrical_service_amp = @amp, electrical_service_type = @type, electrical_service_meter_config = @config, color_code = @color_code WHERE id = @id";
-                    MySqlCommand updateServiceCommand = new MySqlCommand(
-                        updateServiceQuery,
-                        Connection
-                    );
-                    updateServiceCommand.Parameters.AddWithValue("@name", service.Name);
-                    updateServiceCommand.Parameters.AddWithValue("@amp", service.Amp);
-                    updateServiceCommand.Parameters.AddWithValue("@id", service.Id);
-                    updateServiceCommand.Parameters.AddWithValue("@type", service.Type);
-                    updateServiceCommand.Parameters.AddWithValue("@config", service.Config);
-                    updateServiceCommand.Parameters.AddWithValue("@color_code", service.ColorCode);
-                    updateServiceCommand.ExecuteNonQuery();
+                    UpdateService(service);
                     existingServiceIds.Remove(service.Id);
                 }
                 else
                 {
-                    // Insert new service
-                    string insertServiceQuery =
-                        "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp, electrical_service_type, electrical_service_meter_config, color_code) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code)";
-                    MySqlCommand insertServiceCommand = new MySqlCommand(
-                        insertServiceQuery,
-                        Connection
-                    );
-                    insertServiceCommand.Parameters.AddWithValue("@id", service.Id);
-                    insertServiceCommand.Parameters.AddWithValue("@projectId", projectId);
-                    insertServiceCommand.Parameters.AddWithValue("@name", service.Name);
-                    insertServiceCommand.Parameters.AddWithValue("@amp", service.Amp);
-                    insertServiceCommand.Parameters.AddWithValue("@type", service.Type);
-                    insertServiceCommand.Parameters.AddWithValue("@config", service.Config);
-                    insertServiceCommand.Parameters.AddWithValue("@color_code", service.ColorCode);
-
-                    insertServiceCommand.ExecuteNonQuery();
+                    InsertService(projectId, service);
                 }
             }
 
-            // Remove services that no longer exist
-            foreach (var serviceId in existingServiceIds)
-            {
-                string deleteServiceQuery = "DELETE FROM electrical_services WHERE id = @id";
-                MySqlCommand deleteServiceCommand = new MySqlCommand(
-                    deleteServiceQuery,
-                    Connection
-                );
-                deleteServiceCommand.Parameters.AddWithValue("@id", serviceId);
-                deleteServiceCommand.ExecuteNonQuery();
-            }
+            DeleteRemovedItems("electrical_services", existingServiceIds);
+        }
 
-            // Update Electrical Panels
-            string selectPanelsQuery =
-                "SELECT id FROM electrical_panels WHERE project_id = @projectId";
-            MySqlCommand selectPanelsCommand = new MySqlCommand(selectPanelsQuery, Connection);
-            selectPanelsCommand.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader panelsReader = selectPanelsCommand.ExecuteReader();
-            HashSet<string> existingPanelIds = new HashSet<string>();
-            while (panelsReader.Read())
-            {
-                existingPanelIds.Add(panelsReader.GetString("id"));
-            }
-            panelsReader.Close();
+        private void UpdatePanels(string projectId, ObservableCollection<ElectricalPanel> panels)
+        {
+            var existingPanelIds = GetExistingIds("electrical_panels", "project_id", projectId);
 
             foreach (var panel in panels)
             {
                 if (existingPanelIds.Contains(panel.Id))
                 {
-                    // Update existing panel
-                    string updatePanelQuery =
-                        "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, num_breakers = @numBreakers, distance_from_parent = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, fed_from_id = @fed_from_id WHERE id = @id";
-                    MySqlCommand updatePanelCommand = new MySqlCommand(
-                        updatePanelQuery,
-                        Connection
-                    );
-                    updatePanelCommand.Parameters.AddWithValue("@bus", panel.BusSize);
-                    updatePanelCommand.Parameters.AddWithValue("@main", panel.MainSize);
-                    updatePanelCommand.Parameters.AddWithValue(
-                        "@is_distribution",
-                        panel.IsDistribution
-                    );
-                    updatePanelCommand.Parameters.AddWithValue("@name", panel.Name);
-                    updatePanelCommand.Parameters.AddWithValue("@color_code", panel.ColorCode);
-                    updatePanelCommand.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
-                    updatePanelCommand.Parameters.AddWithValue("@id", panel.Id);
-                    updatePanelCommand.Parameters.AddWithValue("@aicRating", panel.AicRating);
-                    updatePanelCommand.Parameters.AddWithValue(
-                        "@distanceFromParent",
-                        panel.DistanceFromParent
-                    );
-                    updatePanelCommand.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
-                    updatePanelCommand.ExecuteNonQuery();
+                    UpdatePanel(panel);
                     existingPanelIds.Remove(panel.Id);
                 }
                 else
                 {
-                    // Insert new panel
-                    string insertPanelQuery =
-                        "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_code, fed_from_id, num_breakers, distance_from_parent, aic_rating) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @fed_from_id, @numBreakers, @distanceFromParent, @AicRating)";
-                    MySqlCommand insertPanelCommand = new MySqlCommand(
-                        insertPanelQuery,
-                        Connection
-                    );
-                    insertPanelCommand.Parameters.AddWithValue("@id", panel.Id);
-                    insertPanelCommand.Parameters.AddWithValue("@projectId", projectId);
-                    insertPanelCommand.Parameters.AddWithValue("@bus", panel.BusSize);
-                    insertPanelCommand.Parameters.AddWithValue("@main", panel.MainSize);
-                    insertPanelCommand.Parameters.AddWithValue(
-                        "@is_distribution",
-                        panel.IsDistribution
-                    );
-                    insertPanelCommand.Parameters.AddWithValue("@name", panel.Name);
-                    insertPanelCommand.Parameters.AddWithValue("@color_code", panel.ColorCode);
-                    insertPanelCommand.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
-                    insertPanelCommand.Parameters.AddWithValue("@AicRating", panel.AicRating);
-                    insertPanelCommand.Parameters.AddWithValue(
-                        "@distanceFromParent",
-                        panel.DistanceFromParent
-                    );
-                    insertPanelCommand.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
-                    insertPanelCommand.ExecuteNonQuery();
+                    InsertPanel(projectId, panel);
                 }
             }
 
-            // Remove panels that no longer exist
-            foreach (var panelId in existingPanelIds)
-            {
-                string deletePanelQuery = "DELETE FROM electrical_panels WHERE id = @id";
-                MySqlCommand deletePanelCommand = new MySqlCommand(deletePanelQuery, Connection);
-                deletePanelCommand.Parameters.AddWithValue("@id", panelId);
-                deletePanelCommand.ExecuteNonQuery();
-            }
+            DeleteRemovedItems("electrical_panels", existingPanelIds);
+        }
 
-            // Update Electrical Equipment
-            string selectEquipmentsQuery =
-                "SELECT id FROM electrical_equipment WHERE project_id = @projectId";
-            MySqlCommand selectEquipmentsCommand = new MySqlCommand(
-                selectEquipmentsQuery,
-                Connection
+        private void UpdateEquipments(
+            string projectId,
+            ObservableCollection<ElectricalEquipment> equipments
+        )
+        {
+            var existingEquipmentIds = GetExistingIds(
+                "electrical_equipment",
+                "project_id",
+                projectId
             );
-            selectEquipmentsCommand.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader equipmentsReader = selectEquipmentsCommand.ExecuteReader();
-            HashSet<string> existingEquipmentIds = new HashSet<string>();
-            while (equipmentsReader.Read())
-            {
-                existingEquipmentIds.Add(equipmentsReader.GetString("id"));
-            }
-            equipmentsReader.Close();
 
             foreach (var equipment in equipments)
             {
                 if (existingEquipmentIds.Contains(equipment.Id))
                 {
-                    // Update existing equipment
-                    string updateEquipmentQuery =
-                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE id = @id";
-                    MySqlCommand updateEquipmentCommand = new MySqlCommand(
-                        updateEquipmentQuery,
-                        Connection
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue("@owner", equipment.Owner);
-                    updateEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
-                    updateEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
-                    updateEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
-                    updateEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
-                    updateEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
-                    updateEquipmentCommand.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@spec_sheet_id",
-                        equipment.SpecSheetId
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@aic_rating",
-                        equipment.AicRating
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@spec_sheet_from_client",
-                        equipment.SpecSheetFromClient
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@distanceFromParent",
-                        equipment.DistanceFromParent
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue("@category", equipment.Category);
-                    updateEquipmentCommand.Parameters.AddWithValue(
-                        "@color_code",
-                        equipment.ColorCode
-                    );
-                    updateEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
-                    updateEquipmentCommand.ExecuteNonQuery();
+                    SyncEquipmentQuantity(equipment);
+                    UpdateEquipment(equipment);
                     existingEquipmentIds.Remove(equipment.Id);
                 }
                 else
                 {
-                    // Insert new equipment
-                    string insertEquipmentQuery =
-                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
-                    MySqlCommand insertEquipmentCommand = new MySqlCommand(
-                        insertEquipmentQuery,
-                        Connection
-                    );
-                    insertEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
-                    insertEquipmentCommand.Parameters.AddWithValue("@projectId", projectId);
-                    insertEquipmentCommand.Parameters.AddWithValue("@owner", equipment.Owner);
-                    insertEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
-                    insertEquipmentCommand.Parameters.AddWithValue("@qty", equipment.Qty);
-                    insertEquipmentCommand.Parameters.AddWithValue("@panel_id", equipment.PanelId);
-                    insertEquipmentCommand.Parameters.AddWithValue("@voltage", equipment.Voltage);
-                    insertEquipmentCommand.Parameters.AddWithValue("@amp", equipment.Amp);
-                    insertEquipmentCommand.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@spec_sheet_id",
-                        equipment.SpecSheetId
-                    );
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@aic_rating",
-                        equipment.AicRating
-                    );
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@spec_sheet_from_client",
-                        equipment.SpecSheetFromClient
-                    );
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@distanceFromParent",
-                        equipment.DistanceFromParent
-                    );
-                    insertEquipmentCommand.Parameters.AddWithValue("@category", equipment.Category);
-                    insertEquipmentCommand.Parameters.AddWithValue(
-                        "@color_code",
-                        equipment.ColorCode
-                    );
-                    insertEquipmentCommand.ExecuteNonQuery();
+                    InsertEquipment(projectId, equipment);
                 }
             }
 
-            // Remove equipment that no longer exist
-            foreach (var equipmentId in existingEquipmentIds)
-            {
-                string deleteEquipmentQuery = "DELETE FROM electrical_equipment WHERE id = @id";
-                MySqlCommand deleteEquipmentCommand = new MySqlCommand(
-                    deleteEquipmentQuery,
-                    Connection
-                );
-                deleteEquipmentCommand.Parameters.AddWithValue("@id", equipmentId);
-                deleteEquipmentCommand.ExecuteNonQuery();
-            }
+            DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
+        }
 
-            CloseConnection();
+        public void SyncEquipmentQuantity(ElectricalEquipment equipment)
+        {
+            // Get the current count of entries with the same group_id
+            string countQuery =
+                "SELECT COUNT(*) FROM electrical_equipment WHERE group_id = @groupId";
+            MySqlCommand countCommand = new MySqlCommand(countQuery, Connection);
+            countCommand.Parameters.AddWithValue("@groupId", equipment.Id);
+            int currentCount = Convert.ToInt32(countCommand.ExecuteScalar());
+
+            // If the current count is less than the qty, add new entries
+            if (currentCount < equipment.Qty)
+            {
+                int entriesToAdd = equipment.Qty - currentCount;
+                for (int i = 0; i < entriesToAdd; i++)
+                {
+                    InsertEquipment(equipment.ProjectId, equipment);
+                }
+            }
+            // If the current count is more than the qty, remove excess entries
+            else if (currentCount > equipment.Qty)
+            {
+                int entriesToRemove = currentCount - equipment.Qty;
+                string deleteQuery =
+                    "DELETE FROM electrical_equipment WHERE group_id = @groupId LIMIT @limit";
+                MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, Connection);
+                deleteCommand.Parameters.AddWithValue("@groupId", equipment.Id);
+                deleteCommand.Parameters.AddWithValue("@limit", entriesToRemove);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
+        private HashSet<string> GetExistingIds(
+            string tableName,
+            string columnName,
+            string projectId
+        )
+        {
+            var idType = "";
+            if (tableName == "electrical_equipment")
+            {
+                idType = "group_id";
+            }
+            else
+            {
+                idType = "id";
+            }
+            string query = $"SELECT {idType} FROM {tableName} WHERE {columnName} = @projectId";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            HashSet<string> ids = new HashSet<string>();
+            while (reader.Read())
+            {
+                ids.Add(reader.GetString($"{idType}"));
+            }
+            reader.Close();
+            return ids;
+        }
+
+        private void UpdateService(ElectricalService service)
+        {
+            string query =
+                "UPDATE electrical_services SET name = @name, electrical_service_amp = @amp, electrical_service_type = @type, electrical_service_meter_config = @config, color_code = @color_code WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@name", service.Name);
+            command.Parameters.AddWithValue("@amp", service.Amp);
+            command.Parameters.AddWithValue("@id", service.Id);
+            command.Parameters.AddWithValue("@type", service.Type);
+            command.Parameters.AddWithValue("@config", service.Config);
+            command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertService(string projectId, ElectricalService service)
+        {
+            string query =
+                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp, electrical_service_type, electrical_service_meter_config, color_code) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", service.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@name", service.Name);
+            command.Parameters.AddWithValue("@amp", service.Amp);
+            command.Parameters.AddWithValue("@type", service.Type);
+            command.Parameters.AddWithValue("@config", service.Config);
+            command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.ExecuteNonQuery();
+        }
+
+        private void UpdatePanel(ElectricalPanel panel)
+        {
+            string query =
+                "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, num_breakers = @numBreakers, distance_from_parent = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, fed_from_id = @fed_from_id WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@bus", panel.BusSize);
+            command.Parameters.AddWithValue("@main", panel.MainSize);
+            command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
+            command.Parameters.AddWithValue("@name", panel.Name);
+            command.Parameters.AddWithValue("@color_code", panel.ColorCode);
+            command.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@id", panel.Id);
+            command.Parameters.AddWithValue("@aicRating", panel.AicRating);
+            command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
+            command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertPanel(string projectId, ElectricalPanel panel)
+        {
+            string query =
+                "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_code, fed_from_id, num_breakers, distance_from_parent, aic_rating) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @fed_from_id, @numBreakers, @distanceFromParent, @AicRating)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", panel.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@bus", panel.BusSize);
+            command.Parameters.AddWithValue("@main", panel.MainSize);
+            command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
+            command.Parameters.AddWithValue("@name", panel.Name);
+            command.Parameters.AddWithValue("@color_code", panel.ColorCode);
+            command.Parameters.AddWithValue("@fed_from_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@AicRating", panel.AicRating);
+            command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
+            command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
+            command.ExecuteNonQuery();
+        }
+
+        private void UpdateEquipment(ElectricalEquipment equipment)
+        {
+            string query =
+                "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE group_id = @group_id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@owner", equipment.Owner);
+            command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
+            command.Parameters.AddWithValue("@panel_id", equipment.PanelId);
+            command.Parameters.AddWithValue("@voltage", equipment.Voltage);
+            command.Parameters.AddWithValue("@amp", equipment.Amp);
+            command.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
+            command.Parameters.AddWithValue("@spec_sheet_id", equipment.SpecSheetId);
+            command.Parameters.AddWithValue("@aic_rating", equipment.AicRating);
+            command.Parameters.AddWithValue(
+                "@spec_sheet_from_client",
+                equipment.SpecSheetFromClient
+            );
+            command.Parameters.AddWithValue("@distanceFromParent", equipment.DistanceFromParent);
+            command.Parameters.AddWithValue("@category", equipment.Category);
+            command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
+            command.Parameters.AddWithValue("@group_id", equipment.Id);
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertEquipment(string projectId, ElectricalEquipment equipment)
+        {
+            string query =
+                "INSERT INTO electrical_equipment (id, group_id, project_id, owner_id, equip_no, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @group_id, @projectId, @owner, @equip_no, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+            command.Parameters.AddWithValue("@group_id", equipment.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@owner", equipment.Owner);
+            command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
+            command.Parameters.AddWithValue("@panel_id", equipment.PanelId);
+            command.Parameters.AddWithValue("@voltage", equipment.Voltage);
+            command.Parameters.AddWithValue("@amp", equipment.Amp);
+            command.Parameters.AddWithValue("@is_3ph", equipment.Is3Ph);
+            command.Parameters.AddWithValue("@spec_sheet_id", equipment.SpecSheetId);
+            command.Parameters.AddWithValue("@aic_rating", equipment.AicRating);
+            command.Parameters.AddWithValue(
+                "@spec_sheet_from_client",
+                equipment.SpecSheetFromClient
+            );
+            command.Parameters.AddWithValue("@distanceFromParent", equipment.DistanceFromParent);
+            command.Parameters.AddWithValue("@category", equipment.Category);
+            command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
+            command.ExecuteNonQuery();
+        }
+
+        private void DeleteRemovedItems(string tableName, HashSet<string> ids)
+        {
+            var idType = "";
+            if (tableName == "electrical_equipment")
+            {
+                idType = "group_id";
+            }
+            else
+            {
+                idType = "id";
+            }
+            foreach (var id in ids)
+            {
+                string query = $"DELETE FROM {tableName} WHERE {idType} = @id";
+                MySqlCommand command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+            }
         }
 
         public ObservableCollection<ElectricalService> GetProjectServices(string projectId)
@@ -414,15 +423,21 @@ namespace GMEPDesignTool.Database
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = command.ExecuteReader();
+            Dictionary<string, ElectricalEquipment> equipmentDict =
+                new Dictionary<string, ElectricalEquipment>();
+            Dictionary<string, int> qtyDict = new Dictionary<string, int>();
+
             while (reader.Read())
             {
-                equipments.Add(
-                    new ElectricalEquipment(
-                        reader.GetString("id"),
+                string groupId = reader.GetString("group_id");
+                if (!equipmentDict.ContainsKey(groupId))
+                {
+                    var newEquip = new ElectricalEquipment(
+                        groupId,
                         reader.GetString("project_id"),
                         reader.GetString("owner_id"),
                         reader.GetString("equip_no"),
-                        reader.GetInt32("qty"),
+                        0,
                         reader.GetString("panel_id"),
                         reader.GetInt32("voltage"),
                         reader.GetFloat("amp"),
@@ -434,9 +449,19 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("distance_from_parent"),
                         reader.GetString("category"),
                         reader.GetString("color_code")
-                    )
-                );
+                    );
+                    equipmentDict[groupId] = newEquip;
+                    qtyDict[groupId] = 0;
+                }
+                qtyDict[groupId]++;
             }
+
+            foreach (var pair in equipmentDict)
+            {
+                pair.Value.Qty = qtyDict[pair.Key];
+                equipments.Add(pair.Value);
+            }
+
             reader.Close();
             CloseConnection();
             return equipments;

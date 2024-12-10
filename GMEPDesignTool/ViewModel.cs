@@ -126,11 +126,11 @@ namespace GMEPDesignTool
             return true;
         }
 
-        public void OpenProject(string projectName)
+        public void OpenProject(string projectNo)
         {
             foreach (TabItem tab in Tabs)
             {
-                if ((string)tab.Header == projectName)
+                if ((string)tab.Header == projectNo)
                 {
                     return;
                 }
@@ -138,8 +138,8 @@ namespace GMEPDesignTool
             Tabs.Add(
                 new TabItem
                 {
-                    Header = projectName,
-                    Content = new ProjectControl(projectName),
+                    Header = projectNo,
+                    Content = new ProjectControl(projectNo),
                     IsSelected = true,
                 }
             );
