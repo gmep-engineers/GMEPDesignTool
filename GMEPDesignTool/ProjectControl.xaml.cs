@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -435,5 +436,23 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+    }
+
+    public class MinimumValueValidationRule : ValidationRule
+    {
+        public int Minimum { get; set; }
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            int intValue;
+            if (int.TryParse(value.ToString(), out intValue))
+            {
+                if (intValue >= Minimum)
+                {
+                    return ValidationResult.ValidResult;
+                }
+            }
+            return new ValidationResult(false, $"Value should be at least {Minimum}.");
+        }
     }
 }
