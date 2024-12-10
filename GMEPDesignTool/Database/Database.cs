@@ -229,7 +229,7 @@ namespace GMEPDesignTool.Database
 
             // Update Electrical Equipment
             string selectEquipmentsQuery =
-                "SELECT id FROM electrical_equipment WHERE project_id = @projectId";
+                "SELECT group_id FROM electrical_equipment WHERE project_id = @projectId";
             MySqlCommand selectEquipmentsCommand = new MySqlCommand(
                 selectEquipmentsQuery,
                 Connection
@@ -239,7 +239,7 @@ namespace GMEPDesignTool.Database
             HashSet<string> existingEquipmentIds = new HashSet<string>();
             while (equipmentsReader.Read())
             {
-                existingEquipmentIds.Add(equipmentsReader.GetString("id"));
+                existingEquipmentIds.Add(equipmentsReader.GetString("group_id"));
             }
             equipmentsReader.Close();
 
@@ -249,7 +249,7 @@ namespace GMEPDesignTool.Database
                 {
                     // Update existing equipment
                     string updateEquipmentQuery =
-                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE id = @id";
+                        "UPDATE electrical_equipment SET owner_id = @owner, equip_no = @equip_no, qty = @qty, panel_id = @panel_id, voltage = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, distance_from_parent=@distanceFromParent, category=@category, color_code = @color_code WHERE group_id = @group_id";
                     MySqlCommand updateEquipmentCommand = new MySqlCommand(
                         updateEquipmentQuery,
                         Connection
@@ -282,7 +282,7 @@ namespace GMEPDesignTool.Database
                         "@color_code",
                         equipment.ColorCode
                     );
-                    updateEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
+                    updateEquipmentCommand.Parameters.AddWithValue("@group_id", equipment.Id);
                     updateEquipmentCommand.ExecuteNonQuery();
                     existingEquipmentIds.Remove(equipment.Id);
                 }
@@ -290,12 +290,16 @@ namespace GMEPDesignTool.Database
                 {
                     // Insert new equipment
                     string insertEquipmentQuery =
-                        "INSERT INTO electrical_equipment (id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
+                        "INSERT INTO electrical_equipment (id, group_id, project_id, owner_id, equip_no, qty, panel_id, voltage, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, distance_from_parent, category, color_code) VALUES (@id, @group_id @projectId, @owner, @equip_no, @qty, @panel_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
                     MySqlCommand insertEquipmentCommand = new MySqlCommand(
                         insertEquipmentQuery,
                         Connection
                     );
-                    insertEquipmentCommand.Parameters.AddWithValue("@id", equipment.Id);
+                    insertEquipmentCommand.Parameters.AddWithValue(
+                        "@id",
+                        Guid.NewGuid().ToString()
+                    );
+                    insertEquipmentCommand.Parameters.AddWithValue("@group_id", equipment.Id);
                     insertEquipmentCommand.Parameters.AddWithValue("@projectId", projectId);
                     insertEquipmentCommand.Parameters.AddWithValue("@owner", equipment.Owner);
                     insertEquipmentCommand.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -332,12 +336,13 @@ namespace GMEPDesignTool.Database
             // Remove equipment that no longer exist
             foreach (var equipmentId in existingEquipmentIds)
             {
-                string deleteEquipmentQuery = "DELETE FROM electrical_equipment WHERE id = @id";
+                string deleteEquipmentQuery =
+                    "DELETE FROM electrical_equipment WHERE group_id = @group_id";
                 MySqlCommand deleteEquipmentCommand = new MySqlCommand(
                     deleteEquipmentQuery,
                     Connection
                 );
-                deleteEquipmentCommand.Parameters.AddWithValue("@id", equipmentId);
+                deleteEquipmentCommand.Parameters.AddWithValue("@group_id", equipmentId);
                 deleteEquipmentCommand.ExecuteNonQuery();
             }
 

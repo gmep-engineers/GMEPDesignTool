@@ -36,10 +36,10 @@ namespace GMEPDesignTool
 
         public Database.Database database = new Database.Database();
 
-        public ProjectControl(string projectName)
+        public ProjectControl(string projectNo)
         {
             InitializeComponent();
-            ProjectId = database.GetProjectId(projectName);
+            ProjectId = database.GetProjectId(projectNo);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
