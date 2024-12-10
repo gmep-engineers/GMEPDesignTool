@@ -39,12 +39,12 @@ namespace GMEPDesignTool.Database
             }
         }
 
-        public string GetProjectId(string projectName)
+        public string GetProjectId(string projectNo)
         {
-            string query = "SELECT id FROM projects WHERE gmep_project_name = @projectName";
+            string query = "SELECT id FROM projects WHERE gmep_project_no = @projectNo";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@projectName", projectName);
+            command.Parameters.AddWithValue("@projectNo", projectNo);
             MySqlDataReader reader = command.ExecuteReader();
 
             string id = null;
@@ -59,10 +59,10 @@ namespace GMEPDesignTool.Database
                 // Project name does not exist, insert a new entry with a generated ID
                 id = Guid.NewGuid().ToString();
                 string insertQuery =
-                    "INSERT INTO projects (id, gmep_project_name) VALUES (@id, @projectName)";
+                    "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
-                insertCommand.Parameters.AddWithValue("@projectName", projectName);
+                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.ExecuteNonQuery();
             }
 
