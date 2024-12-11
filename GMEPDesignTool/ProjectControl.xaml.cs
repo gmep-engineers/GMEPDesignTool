@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 namespace GMEPDesignTool
 {
@@ -110,6 +112,156 @@ namespace GMEPDesignTool
             }
         }
 
+        public void setAmps()
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                float poles = getServicePoles(panel);
+                if (poles == 1)
+                {
+                    panel.Amp = 0;
+                }
+                else
+                {
+                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel)) / poles);
+                }
+            }
+        }
+
+        public float getServicePoles(ElectricalPanel panel)
+        {
+            float poles = 1;
+
+            // Traverse the panels connected to the given id
+            foreach (var panel2 in ElectricalPanels)
+            {
+                if (panel.FedFromId == panel2.Id)
+                {
+                    poles = getServicePoles(panel2);
+                }
+            }
+
+            // Traverse the services connected to the given id
+            foreach (var service in ElectricalServices)
+            {
+                if (service.Id == panel.FedFromId)
+                {
+                    if (service.Type == 1)
+                    {
+                        poles = 2;
+                    }
+                    else
+                    {
+                        poles = 3;
+                    }
+                }
+            }
+
+            return poles;
+        }
+
+        public float calculateChildrenAmps(ElectricalPanel panel)
+        {
+            float amp = 0;
+
+            // Find the panel with the given id
+            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == panel.Id);
+            if (panelcheck != null)
+            {
+                // Calculate the amp for the panel
+                foreach (var childPanel in ElectricalPanels)
+                {
+                    if (
+                        childPanel.FedFromId == panel.Id
+                        && childPanel.Id != childPanel.FedFromId
+                        && panel.Id != childPanel.Id
+                    )
+                    {
+                        amp += calculateChildrenAmps(childPanel);
+                    }
+                }
+
+                foreach (var equipment in ElectricalEquipments)
+                {
+                    if (equipment.PanelId == panel.Id)
+                    {
+                        amp += equipment.Amp * equipment.Qty;
+                    }
+                }
+            }
+
+            return amp;
+        }
+
+        public void setKVAs()
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.Kva = Convert.ToInt32(calculateKVA(panel));
+            }
+        }
+
+        public float calculateKVA(ElectricalPanel panel)
+        {
+            float kva = 0;
+            foreach (var childPanel in ElectricalPanels)
+            {
+                if (
+                    childPanel.FedFromId == panel.Id
+                    && childPanel.Id != childPanel.FedFromId
+                    && panel.Id != childPanel.Id
+                )
+                {
+                    kva += calculateKVA(childPanel);
+                }
+            }
+
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (equipment.PanelId == panel.Id)
+                {
+                    kva += equipment.Voltage * equipment.Amp * equipment.Qty;
+                }
+            }
+            return kva;
+        }
+
+        private bool checkCycles(ElectricalPanel startingPanel)
+        {
+            var visited = new HashSet<string>();
+            var stack = new HashSet<string>();
+
+            return HasCycle(startingPanel.Id, visited, stack);
+        }
+
+        private bool HasCycle(string panelId, HashSet<string> visited, HashSet<string> stack)
+        {
+            if (stack.Contains(panelId))
+            {
+                return true;
+            }
+
+            if (visited.Contains(panelId))
+            {
+                return false;
+            }
+
+            visited.Add(panelId);
+            stack.Add(panelId);
+
+            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == panelId);
+            if (panel != null && !string.IsNullOrEmpty(panel.FedFromId))
+            {
+                if (HasCycle(panel.FedFromId, visited, stack))
+                {
+                    return true;
+                }
+            }
+
+            stack.Remove(panelId);
+            return false;
+        }
+
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
@@ -132,6 +284,8 @@ namespace GMEPDesignTool
                 "",
                 "White",
                 "MS-1",
+                0,
+                0,
                 0,
                 0,
                 0
@@ -220,6 +374,26 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalPanel panel)
             {
+                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                {
+                    if (checkCycles(panel))
+                    {
+                        MessageBox.Show(
+                            $"Cycle detected in the panel hierarchy involving panel {panel.Id}.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                        //Task.Run(() => panel.FedFromId = "");
+                        Dispatcher.BeginInvoke(() => panel.FedFromId = "");
+                    }
+                    else
+                    {
+                        setKVAs();
+                        setAmps();
+                    }
+                }
+
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     GetNames();
@@ -346,6 +520,23 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                    || e.PropertyName == nameof(ElectricalEquipment.PanelId)
+                    || e.PropertyName == nameof(ElectricalEquipment.Qty)
+                )
+                {
+                    setKVAs();
+                    setAmps();
+                }
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                )
+                {
+                    equipment.Va = equipment.Voltage * equipment.Amp;
+                }
                 StartTimer();
             }
         }

@@ -405,7 +405,9 @@ namespace GMEPDesignTool.Database
                         reader.GetString("fed_from_id"),
                         reader.GetInt32("num_breakers"),
                         reader.GetInt32("distance_from_parent"),
-                        reader.GetInt32("aic_rating")
+                        reader.GetInt32("aic_rating"),
+                        0,
+                        0
                     )
                 );
             }
