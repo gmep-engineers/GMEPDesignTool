@@ -298,7 +298,8 @@ namespace GMEPDesignTool
                             MessageBoxButton.OK,
                             MessageBoxImage.Error
                         );
-                        //Dispatcher.Invoke(() => panel.FedFromId = "");
+                        //Task.Run(() => panel.FedFromId = "");
+                        Dispatcher.BeginInvoke(() => panel.FedFromId = "");
                     }
                     else
                     {
