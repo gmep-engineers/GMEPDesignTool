@@ -131,9 +131,9 @@
                                                     <Label VerticalAlignment="Top" Margin="330,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
                                                     <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="330,55,0,0" HorizontalAlignment="Left"/>
                                                     <Label VerticalAlignment="Top" Margin="430,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="430,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
-                                                    <Label VerticalAlignment="Top" Margin="530,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="530,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="430,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
+                                                    <Label VerticalAlignment="Top" Margin="530,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold" />
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="530,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Amp}" />
                                                     <Label VerticalAlignment="Top" Margin="630,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
                                                     <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="630,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
                                                 </Grid>
@@ -264,7 +264,7 @@
                                                         <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 45 0 0" Width="50" Text="{Binding Amp}"></TextBox>
 
                                                         <Label Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 23 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 45 0 0" Width="70" Text="{Binding Va}"></TextBox>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 45 0 0" Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
 
                                                         <Label Content="Phase" Margin="660 23 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="660 45 0 0" SelectedIndex="{Binding Is3Ph}">

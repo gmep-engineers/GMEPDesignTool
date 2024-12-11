@@ -23,6 +23,8 @@ namespace GMEPDesignTool
         private int _numBreakers;
         private int _distanceFromParent;
         private int _aicRating;
+        private int _kva;
+        private int _amp;
 
         // private bool _powered;
 
@@ -40,7 +42,9 @@ namespace GMEPDesignTool
             string fedFromId,
             int numBreakers,
             int distanceFromParent,
-            int aicRating
+            int aicRating,
+            int kva,
+            int amp
         )
         {
             _id = id;
@@ -55,6 +59,8 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
+            _kva = kva;
+            _amp = amp;
         }
 
         public string Id
@@ -172,6 +178,26 @@ namespace GMEPDesignTool
             set
             {
                 _aicRating = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Kva
+        {
+            get => _kva;
+            set
+            {
+                _kva = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Amp
+        {
+            get => _amp;
+            set
+            {
+                _amp = value;
                 OnPropertyChanged();
             }
         }

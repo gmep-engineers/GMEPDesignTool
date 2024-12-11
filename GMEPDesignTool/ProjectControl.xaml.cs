@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -110,6 +111,71 @@ namespace GMEPDesignTool
             }
         }
 
+        public void setKVAs()
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id));
+            }
+        }
+
+        public float calculateKVA(string id)
+        {
+            float kva = 0;
+            foreach (var panel in ElectricalPanels)
+            {
+                if (panel.FedFromId == id && panel.Id != panel.FedFromId && id != panel.Id)
+                {
+                    kva += calculateKVA(panel.Id);
+                }
+            }
+
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (equipment.PanelId == id)
+                {
+                    kva += equipment.Voltage * equipment.Amp * equipment.Qty;
+                }
+            }
+            return kva;
+        }
+
+        private bool checkCycles(ElectricalPanel startingPanel)
+        {
+            var visited = new HashSet<string>();
+            var stack = new HashSet<string>();
+
+            return HasCycle(startingPanel.Id, visited, stack);
+        }
+
+        private bool HasCycle(string panelId, HashSet<string> visited, HashSet<string> stack)
+        {
+            if (stack.Contains(panelId))
+            {
+                return true;
+            }
+
+            if (visited.Contains(panelId))
+            {
+                return false;
+            }
+
+            visited.Add(panelId);
+            stack.Add(panelId);
+
+            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == panelId);
+            if (panel != null && !string.IsNullOrEmpty(panel.FedFromId))
+            {
+                if (HasCycle(panel.FedFromId, visited, stack))
+                {
+                    return true;
+                }
+            }
+
+            stack.Remove(panelId);
+            return false;
+        }
+
         //Electrical Panel Functions
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
@@ -132,6 +198,8 @@ namespace GMEPDesignTool
                 "",
                 "White",
                 "MS-1",
+                0,
+                0,
                 0,
                 0,
                 0
@@ -220,6 +288,24 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalPanel panel)
             {
+                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                {
+                    if (checkCycles(panel))
+                    {
+                        MessageBox.Show(
+                            $"Cycle detected in the panel hierarchy involving panel {panel.Id}.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                        //Dispatcher.Invoke(() => panel.FedFromId = "");
+                    }
+                    else
+                    {
+                        setKVAs();
+                    }
+                }
+
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     GetNames();
@@ -346,6 +432,22 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                    || e.PropertyName == nameof(ElectricalEquipment.PanelId)
+                    || e.PropertyName == nameof(ElectricalEquipment.Qty)
+                )
+                {
+                    setKVAs();
+                }
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                )
+                {
+                    equipment.Va = equipment.Voltage * equipment.Amp;
+                }
                 StartTimer();
             }
         }
