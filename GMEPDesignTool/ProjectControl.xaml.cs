@@ -462,6 +462,10 @@ namespace GMEPDesignTool
                 {
                     ChangeColors(service.Id, service.ColorCode);
                 }
+                if (e.PropertyName == nameof(ElectricalService.Type))
+                {
+                    setAmps();
+                }
                 StartTimer();
             }
         }
