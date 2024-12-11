@@ -19,6 +19,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 namespace GMEPDesignTool
 {
@@ -111,28 +112,113 @@ namespace GMEPDesignTool
             }
         }
 
+        public void setAmps()
+        {
+            foreach (var panel in ElectricalPanels)
+            {
+                float poles = getServicePoles(panel);
+                if (poles == 1)
+                {
+                    panel.Amp = 0;
+                }
+                else
+                {
+                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel)) / poles);
+                }
+            }
+        }
+
+        public float getServicePoles(ElectricalPanel panel)
+        {
+            float poles = 1;
+
+            // Traverse the panels connected to the given id
+            foreach (var panel2 in ElectricalPanels)
+            {
+                if (panel.FedFromId == panel2.Id)
+                {
+                    poles = getServicePoles(panel2);
+                }
+            }
+
+            // Traverse the services connected to the given id
+            foreach (var service in ElectricalServices)
+            {
+                if (service.Id == panel.FedFromId)
+                {
+                    if (service.Type == 1)
+                    {
+                        poles = 2;
+                    }
+                    else
+                    {
+                        poles = 3;
+                    }
+                }
+            }
+
+            return poles;
+        }
+
+        public float calculateChildrenAmps(ElectricalPanel panel)
+        {
+            float amp = 0;
+
+            // Find the panel with the given id
+            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == panel.Id);
+            if (panelcheck != null)
+            {
+                // Calculate the amp for the panel
+                foreach (var childPanel in ElectricalPanels)
+                {
+                    if (
+                        childPanel.FedFromId == panel.Id
+                        && childPanel.Id != childPanel.FedFromId
+                        && panel.Id != childPanel.Id
+                    )
+                    {
+                        amp += calculateChildrenAmps(childPanel);
+                    }
+                }
+
+                foreach (var equipment in ElectricalEquipments)
+                {
+                    if (equipment.PanelId == panel.Id)
+                    {
+                        amp += equipment.Amp * equipment.Qty;
+                    }
+                }
+            }
+
+            return amp;
+        }
+
         public void setKVAs()
         {
             foreach (var panel in ElectricalPanels)
             {
-                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id));
+                panel.Kva = Convert.ToInt32(calculateKVA(panel));
             }
         }
 
-        public float calculateKVA(string id)
+        public float calculateKVA(ElectricalPanel panel)
         {
             float kva = 0;
-            foreach (var panel in ElectricalPanels)
+            foreach (var childPanel in ElectricalPanels)
             {
-                if (panel.FedFromId == id && panel.Id != panel.FedFromId && id != panel.Id)
+                if (
+                    childPanel.FedFromId == panel.Id
+                    && childPanel.Id != childPanel.FedFromId
+                    && panel.Id != childPanel.Id
+                )
                 {
-                    kva += calculateKVA(panel.Id);
+                    kva += calculateKVA(childPanel);
                 }
             }
 
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == id)
+                if (equipment.PanelId == panel.Id)
                 {
                     kva += equipment.Voltage * equipment.Amp * equipment.Qty;
                 }
@@ -304,6 +390,7 @@ namespace GMEPDesignTool
                     else
                     {
                         setKVAs();
+                        setAmps();
                     }
                 }
 
@@ -441,6 +528,7 @@ namespace GMEPDesignTool
                 )
                 {
                     setKVAs();
+                    setAmps();
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
