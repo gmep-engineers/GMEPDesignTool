@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
+        public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
         public string ProjectId { get; set; }
@@ -46,6 +47,7 @@ namespace GMEPDesignTool
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
+            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
@@ -631,6 +633,51 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+
+        //Transformer Functions
+        public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
+        {
+            //electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            ElectricalTransformers.Add(electricalTransformer);
+            //GetNames();
+            // StartTimer();
+        }
+
+        public void AddNewElectricalTransformer(object sender, EventArgs e)
+        {
+            Trace.WriteLine("new transformer");
+            ElectricalTransformer electricalTransformer = new ElectricalTransformer(
+                Guid.NewGuid().ToString(),
+                ProjectId,
+                "",
+                0,
+                "",
+                0,
+                0,
+                false,
+                0
+            );
+            AddElectricalTransformer(electricalTransformer);
+        }
+
+        public void RemoveElectricalService(ElectricalTransformer electricalTransformer)
+        {
+            //electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
+            ElectricalTransformers.Remove(electricalTransformer);
+            // GetNames();
+            // StartTimer();
+        }
+
+        /*public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)
+        {
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalService electricalService
+            )
+            {
+                RemoveElectricalService(electricalService);
+            }
+        }*/
     }
 
     public class MinimumValueValidationRule : ValidationRule
