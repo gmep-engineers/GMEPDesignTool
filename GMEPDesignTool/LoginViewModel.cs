@@ -25,5 +25,13 @@ namespace GMEPDesignTool
                 _loginWindow.Close();
             });
         }
+
+        public void closeApp()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                _loginWindow.Close();
+            });
+        }
     }
 }

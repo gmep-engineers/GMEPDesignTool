@@ -31,7 +31,11 @@ namespace GMEPDesignTool
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             LoginViewModel.openApp();
-            ;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            LoginViewModel.closeApp();
         }
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
