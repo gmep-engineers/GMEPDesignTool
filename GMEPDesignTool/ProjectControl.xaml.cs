@@ -661,7 +661,7 @@ namespace GMEPDesignTool
             AddElectricalTransformer(electricalTransformer);
         }
 
-        public void RemoveElectricalService(ElectricalTransformer electricalTransformer)
+        public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
             //electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalTransformers.Remove(electricalTransformer);
@@ -669,16 +669,16 @@ namespace GMEPDesignTool
             // StartTimer();
         }
 
-        /*public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)
+        public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)
         {
             if (
                 sender is Button button
-                && button.CommandParameter is ElectricalService electricalService
+                && button.CommandParameter is ElectricalTransformer electricalTransformer
             )
             {
-                RemoveElectricalService(electricalService);
+                RemoveElectricalTransformer(electricalTransformer);
             }
-        }*/
+        }
     }
 
     public class MinimumValueValidationRule : ValidationRule
