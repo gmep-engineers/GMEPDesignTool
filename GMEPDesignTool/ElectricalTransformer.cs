@@ -18,6 +18,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _inputVoltageIndex;
         private int _outputVoltageIndex;
+        private string _name;
         private bool _isThreePhase;
         private int _kva;
 
@@ -31,6 +32,7 @@ namespace GMEPDesignTool
             string colorCode,
             int inputVoltageIndex,
             int outputVoltageIndex,
+            string name,
             bool isThreePhase,
             int kva
         )
@@ -42,6 +44,7 @@ namespace GMEPDesignTool
             _distanceFromParent = distanceFromParent;
             _inputVoltageIndex = inputVoltageIndex;
             _outputVoltageIndex = outputVoltageIndex;
+            _name = name;
             _isThreePhase = isThreePhase;
             _kva = kva;
         }
@@ -112,6 +115,16 @@ namespace GMEPDesignTool
             set
             {
                 _outputVoltageIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
                 OnPropertyChanged();
             }
         }
