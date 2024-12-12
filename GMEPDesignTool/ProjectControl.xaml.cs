@@ -290,6 +290,7 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
+                0,
                 0
             );
             AddElectricalPanel(electricalPanel);

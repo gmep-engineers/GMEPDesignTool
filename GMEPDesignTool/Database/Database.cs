@@ -249,7 +249,7 @@ namespace GMEPDesignTool.Database
         private void UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, num_breakers = @numBreakers, distance_from_parent = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, fed_from_id = @fed_from_id WHERE id = @id";
+                "UPDATE electrical_panels SET bus = @bus, main = @main, is_distribution = @is_distribution, type = @type, num_breakers = @numBreakers, distance_from_parent = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, fed_from_id = @fed_from_id WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -261,13 +261,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@aicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
+            command.Parameters.AddWithValue("@type", panel.Type);
             command.ExecuteNonQuery();
         }
 
         private void InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_code, fed_from_id, num_breakers, distance_from_parent, aic_rating) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @fed_from_id, @numBreakers, @distanceFromParent, @AicRating)";
+                "INSERT INTO electrical_panels (id, project_id, bus, main, is_distribution, name, color_code, fed_from_id, num_breakers, distance_from_parent, aic_rating, type) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @fed_from_id, @numBreakers, @distanceFromParent, @AicRating, @type)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -280,6 +281,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@AicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
+            command.Parameters.AddWithValue("@type", panel.Type);
             command.ExecuteNonQuery();
         }
 
@@ -407,7 +409,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("distance_from_parent"),
                         reader.GetInt32("aic_rating"),
                         0,
-                        0
+                        0,
+                        reader.GetInt32("type")
                     )
                 );
             }

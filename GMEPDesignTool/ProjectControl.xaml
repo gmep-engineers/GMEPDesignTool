@@ -114,28 +114,37 @@
                                                         <ComboBoxItem Content="Red" Background="Pink" />
                                                         <ComboBoxItem Content="Yellow" Background="LightYellow" />
                                                     </ComboBox>-->
-                                                    <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+                                                    <Rectangle Width="450" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
 
 
                                                     <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
                                                     <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
 
-                                                    <Label VerticalAlignment="Top" Margin="100,28,0,0" HorizontalAlignment="Left" Content="Main (A)" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="100,50,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
-                                                    <Label VerticalAlignment="Top" Margin="170,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="170,50,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
-                                                    <Label VerticalAlignment="Top" Margin="240,28,0,0" HorizontalAlignment="Left" Content="# Breakers" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="240,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper"/>
-                                                    <Label VerticalAlignment="Top" Margin="330,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="330 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                                    <Label VerticalAlignment="Top" Margin="330,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="330,55,0,0" HorizontalAlignment="Left"/>
-                                                    <Label VerticalAlignment="Top" Margin="430,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="430,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
-                                                    <Label VerticalAlignment="Top" Margin="530,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold" />
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="530,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Amp}" />
-                                                    <Label VerticalAlignment="Top" Margin="630,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="630,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
+                                                    <Label Content="Voltage" Margin="100 27 0 0" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedIndex="{Binding Type}">
+                                                        <ComboBoxItem Content="120/208V 3-Φ" />
+                                                        <ComboBoxItem Content="120/240V 1-Φ" />
+                                                        <ComboBoxItem Content="277/480V 3-Φ" />
+                                                        <ComboBoxItem Content="120/240V 3-Φ" />
+                                                    </ComboBox>
+
+                                                    <Label VerticalAlignment="Top" Margin="230,28,0,0" HorizontalAlignment="Left" Content="Main (A)" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding MainSize}" Height="20" VerticalAlignment="Top" Margin="230,50,0,0" HorizontalAlignment="Left" Width="50"  TextAlignment="Right" CharacterCasing="Upper"/>
+                                                    <Label VerticalAlignment="Top" Margin="300,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding BusSize}" Height="20" VerticalAlignment="Top" Margin="300,50,0,0" HorizontalAlignment="Left" Width="50" TextAlignment="Right" CharacterCasing="Upper"/>
+                                                    
+                                                    <Label VerticalAlignment="Top" Margin="370,28,0,0" HorizontalAlignment="Left" Content="# Breakers" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="370,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper"/>
+                                                    <Label VerticalAlignment="Top" Margin="460,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label VerticalAlignment="Top" Margin="460,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="460,55,0,0" HorizontalAlignment="Left"/>
+                                                    <Label VerticalAlignment="Top" Margin="560,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="560,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
+                                                    <Label VerticalAlignment="Top" Margin="660,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold" />
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="660,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Amp}" />
+                                                    <Label VerticalAlignment="Top" Margin="760,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="760,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
                                                 </Grid>
                                                 <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                     <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
