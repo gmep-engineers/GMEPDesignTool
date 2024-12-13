@@ -291,7 +291,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0
+                0,
+                new Dictionary<string, string>()
             );
             AddElectricalPanel(electricalPanel);
         }
