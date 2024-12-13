@@ -389,9 +389,9 @@ namespace GMEPDesignTool
             }
             foreach (var transformer in ElectricalTransformers)
             {
-                if (fedFromBackup.ContainsKey(transformer.Id))
+                if (transformerBackup.ContainsKey(transformer.Id))
                 {
-                    transformer.ParentId = fedFromBackup[transformer.Id];
+                    transformer.ParentId = transformerBackup[transformer.Id];
                 }
             }
         }
