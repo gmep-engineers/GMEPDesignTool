@@ -410,8 +410,7 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("aic_rating"),
                         0,
                         0,
-                        reader.GetInt32("type"),
-                        new Dictionary<string, string>()
+                        reader.GetInt32("type")
                     )
                 );
             }

@@ -26,7 +26,6 @@ namespace GMEPDesignTool
         private int _kva;
         private int _amp;
         private int _type;
-        private Dictionary<string, string> _fedFromNames;
 
         // private bool _powered;
 
@@ -47,8 +46,7 @@ namespace GMEPDesignTool
             int aicRating,
             int kva,
             int amp,
-            int type,
-            Dictionary<string, string> fedFromNames
+            int type
         )
         {
             _id = id;
@@ -66,7 +64,6 @@ namespace GMEPDesignTool
             _kva = kva;
             _amp = amp;
             _type = type;
-            _fedFromNames = fedFromNames;
         }
 
         public string Id
@@ -85,15 +82,6 @@ namespace GMEPDesignTool
             set
             {
                 _busSize = value;
-                OnPropertyChanged();
-            }
-        }
-        public Dictionary<string, string> FedFromNames
-        {
-            get => _fedFromNames;
-            set
-            {
-                _fedFromNames = value;
                 OnPropertyChanged();
             }
         }

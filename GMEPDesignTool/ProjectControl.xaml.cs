@@ -291,8 +291,7 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0,
-                new Dictionary<string, string>()
+                0
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -330,6 +329,11 @@ namespace GMEPDesignTool
                 panelBackup[equipment.Id] = equipment.PanelId;
             }
 
+            Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformerBackup[transformer.Id] = transformer.ParentId;
+            }
             FedFromNames.Clear();
             PanelNames.Clear();
             PanelNames.Add(new KeyValuePair<string, string>("", ""));
@@ -357,6 +361,17 @@ namespace GMEPDesignTool
                     PanelNames.Add(value);
                 }
             }
+            foreach (ElectricalTransformer transformer in ElectricalTransformers)
+            {
+                if (transformer.Name != "")
+                {
+                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                        transformer.Id,
+                        transformer.Name
+                    );
+                    FedFromNames.Add(value);
+                }
+            }
             //adding backup values
             foreach (var equipment in ElectricalEquipments)
             {
@@ -370,6 +385,13 @@ namespace GMEPDesignTool
                 if (fedFromBackup.ContainsKey(panel.Id))
                 {
                     panel.FedFromId = fedFromBackup[panel.Id];
+                }
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (fedFromBackup.ContainsKey(transformer.Id))
+                {
+                    transformer.ParentId = fedFromBackup[transformer.Id];
                 }
             }
         }
@@ -393,7 +415,6 @@ namespace GMEPDesignTool
                     }
                     else
                     {
-                        populateTransformers();
                         setKVAs();
                         setAmps();
                     }
@@ -642,8 +663,8 @@ namespace GMEPDesignTool
         {
             //electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
-            //GetNames();
-            // StartTimer();
+            GetNames();
+            StartTimer();
         }
 
         public void AddNewElectricalTransformer(object sender, EventArgs e)
@@ -664,7 +685,7 @@ namespace GMEPDesignTool
             AddElectricalTransformer(electricalTransformer);
         }
 
-        public void populateTransformers()
+        /*public void populateTransformers()
         {
             Dictionary<string, ElectricalService> services =
                 new Dictionary<string, ElectricalService>();
@@ -688,15 +709,17 @@ namespace GMEPDesignTool
                         "",
                         panel.Type,
                         services[panel.FedFromId].Type,
-                        services[panel.FedFromId].Name + "->To->" + panel.Name,
+                        "Transformer",
                         false,
                         0
                     );
+
                     AddElectricalTransformer(electricalTransformer);
-                    panel.FedFromId = electricalTransformer.Id;
+                    //Dispatcher.BeginInvoke(() => panel.FedFromId = electricalTransformer.Id);
                 }
             }
-        }
+            GetNames();
+        }*/
 
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
