@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -93,6 +94,67 @@ namespace GMEPDesignTool
             timer.Stop();
             timer.Start();
             SaveText.Text = "*SAVING*";
+        }
+
+        public void setPower()
+        {
+            Dictionary<string, ElectricalService> services =
+                new Dictionary<string, ElectricalService>();
+            foreach (var service in ElectricalServices)
+            {
+                services[service.Id] = service;
+            }
+            Dictionary<string, ElectricalPanel> panels = new Dictionary<string, ElectricalPanel>();
+            foreach (var panel in ElectricalPanels)
+            {
+                panels[panel.Id] = panel;
+                panel.Powered = false;
+            }
+            Dictionary<string, ElectricalTransformer> transformers =
+                new Dictionary<string, ElectricalTransformer>();
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformers[transformer.Id] = transformer;
+                transformer.Powered = false;
+            }
+
+            // Recursive function to set power for panels and transformers
+            bool SetPowerRecursive(string id, int requiredVoltage)
+            {
+                if (panels.TryGetValue(id, out var panel))
+                {
+                    if (panel.Type == requiredVoltage)
+                    {
+                        panel.Powered = SetPowerRecursive(panel.FedFromId, panel.Type);
+                        return panel.Powered;
+                    }
+                }
+                else if (transformers.TryGetValue(id, out var transformer))
+                {
+                    if (transformer.InputVoltageIndex == requiredVoltage)
+                    {
+                        transformer.Powered = SetPowerRecursive(
+                            transformer.ParentId,
+                            transformer.OutputVoltageIndex
+                        );
+                        return transformer.Powered;
+                    }
+                }
+                else if (services.TryGetValue(id, out var service))
+                {
+                    if (service.Type == requiredVoltage)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // Start the recursion from services
+            foreach (var panel in panels)
+            {
+                panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId, panel.Value.Type);
+            }
         }
 
         public void ChangeColors(string id, string colorCode)
@@ -291,7 +353,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0
+                0,
+                false
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -680,53 +743,18 @@ namespace GMEPDesignTool
                 0,
                 "",
                 false,
-                0
+                0,
+                false
             );
             AddElectricalTransformer(electricalTransformer);
         }
-
-        /*public void populateTransformers()
-        {
-            Dictionary<string, ElectricalService> services =
-                new Dictionary<string, ElectricalService>();
-            foreach (var service in ElectricalServices)
-            {
-                services[service.Id] = service;
-            }
-
-            foreach (var panel in ElectricalPanels)
-            {
-                if (
-                    services.ContainsKey(panel.FedFromId)
-                    && services[panel.FedFromId].Type != panel.Type
-                )
-                {
-                    ElectricalTransformer electricalTransformer = new ElectricalTransformer(
-                        Guid.NewGuid().ToString(),
-                        ProjectId,
-                        panel.FedFromId,
-                        0,
-                        "",
-                        panel.Type,
-                        services[panel.FedFromId].Type,
-                        "Transformer",
-                        false,
-                        0
-                    );
-
-                    AddElectricalTransformer(electricalTransformer);
-                    //Dispatcher.BeginInvoke(() => panel.FedFromId = electricalTransformer.Id);
-                }
-            }
-            GetNames();
-        }*/
 
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
             //electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalTransformers.Remove(electricalTransformer);
-            // GetNames();
-            // StartTimer();
+            GetNames();
+            StartTimer();
         }
 
         public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)

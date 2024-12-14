@@ -21,7 +21,7 @@ namespace GMEPDesignTool
         private string _name;
         private bool _isThreePhase;
         private int _kva;
-
+        private bool _powered;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalTransformer(
@@ -34,7 +34,8 @@ namespace GMEPDesignTool
             int outputVoltageIndex,
             string name,
             bool isThreePhase,
-            int kva
+            int kva,
+            bool powered
         )
         {
             _id = id;
@@ -47,6 +48,7 @@ namespace GMEPDesignTool
             _name = name;
             _isThreePhase = isThreePhase;
             _kva = kva;
+            _powered = powered;
         }
 
         public string Id
@@ -145,6 +147,16 @@ namespace GMEPDesignTool
             set
             {
                 _kva = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool Powered
+        {
+            get => _powered;
+            set
+            {
+                _powered = value;
                 OnPropertyChanged();
             }
         }
