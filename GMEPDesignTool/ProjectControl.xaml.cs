@@ -131,11 +131,11 @@ namespace GMEPDesignTool
                 }
                 else if (transformers.TryGetValue(id, out var transformer))
                 {
-                    if (transformer.InputVoltageIndex == requiredVoltage)
+                    if (transformer.OutputVoltageIndex == requiredVoltage)
                     {
                         transformer.Powered = SetPowerRecursive(
                             transformer.ParentId,
-                            transformer.OutputVoltageIndex
+                            transformer.InputVoltageIndex
                         );
                         return transformer.Powered;
                     }
@@ -154,6 +154,13 @@ namespace GMEPDesignTool
             foreach (var panel in panels)
             {
                 panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId, panel.Value.Type);
+            }
+            foreach (var transformer in transformers)
+            {
+                transformer.Value.Powered = SetPowerRecursive(
+                    transformer.Value.ParentId,
+                    transformer.Value.InputVoltageIndex
+                );
             }
         }
 
