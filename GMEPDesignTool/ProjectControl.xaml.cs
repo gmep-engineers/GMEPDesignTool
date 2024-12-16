@@ -49,7 +49,7 @@ namespace GMEPDesignTool
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
+            ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
@@ -80,6 +80,7 @@ namespace GMEPDesignTool
 
             SaveText.Text = "";
             GetNames();
+            setPower();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -88,7 +89,8 @@ namespace GMEPDesignTool
                 ProjectId,
                 ElectricalServices,
                 ElectricalPanels,
-                ElectricalEquipments
+                ElectricalEquipments,
+                ElectricalTransformers
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
