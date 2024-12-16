@@ -665,7 +665,8 @@ namespace GMEPDesignTool
                 false,
                 0,
                 "General",
-                "White"
+                "White",
+                false
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -817,7 +818,7 @@ namespace GMEPDesignTool
                 ProjectId,
                 "",
                 0,
-                "",
+                "White",
                 0,
                 0,
                 "",

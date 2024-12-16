@@ -338,6 +338,13 @@
                                                             <ComboBoxItem Content="Lighting" />
                                                             <ComboBoxItem Content="Plumbing" />
                                                         </ComboBox>
+                                                        <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="220,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                                            <Image.ToolTip>
+                                                                <ToolTip>
+                                                                    <TextBlock Text="Powered" />
+                                                                </ToolTip>
+                                                            </Image.ToolTip>
+                                                        </Image>
                                                         <Rectangle Width="820" Height="55" Stroke="Gray" HorizontalAlignment="Left" Margin="0 28 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                         <Label Content="Owner" Margin="20 23 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 45 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Content">

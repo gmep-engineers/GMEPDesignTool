@@ -28,6 +28,7 @@ namespace GMEPDesignTool
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string colorCode;
+        private bool powered;
 
         public ElectricalEquipment(
             string id,
@@ -45,7 +46,8 @@ namespace GMEPDesignTool
             bool specSheetFromClient,
             int distanceFromParent,
             string category,
-            string colorCode
+            string colorCode,
+            bool powered
         )
         {
             this.id = id;
@@ -64,6 +66,7 @@ namespace GMEPDesignTool
             this.distanceFromParent = distanceFromParent;
             this.category = category;
             this.colorCode = colorCode;
+            this.powered = powered;
         }
 
         public string ColorCode
@@ -221,15 +224,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public int AicRating
+        public bool Powered
         {
-            get => aicRating;
+            get => powered;
             set
             {
-                if (aicRating != value)
+                if (powered != value)
                 {
-                    aicRating = value;
-                    OnPropertyChanged(nameof(AicRating));
+                    powered = value;
+                    OnPropertyChanged(nameof(Powered));
                 }
             }
         }

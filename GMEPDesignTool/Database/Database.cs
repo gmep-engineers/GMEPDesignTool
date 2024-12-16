@@ -525,7 +525,8 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("spec_sheet_from_client"),
                         reader.GetInt32("distance_from_parent"),
                         reader.GetString("category"),
-                        reader.GetString("color_code")
+                        reader.GetString("color_code"),
+                        false
                     );
                     equipmentDict[groupId] = newEquip;
                     qtyDict[groupId] = 0;
