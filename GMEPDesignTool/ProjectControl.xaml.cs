@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 namespace GMEPDesignTool
@@ -65,6 +66,10 @@ namespace GMEPDesignTool
             foreach (var equipment in ElectricalEquipments)
             {
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             }
 
             this.DataContext = this;
@@ -501,6 +506,7 @@ namespace GMEPDesignTool
                 if (
                     e.PropertyName == nameof(ElectricalPanel.Type)
                     || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                    || e.PropertyName == nameof(ElectricalPanel.Name)
                 )
                 {
                     setPower();
@@ -574,6 +580,14 @@ namespace GMEPDesignTool
                 {
                     setAmps();
                 }
+                if (
+                    e.PropertyName == nameof(ElectricalService.Type)
+                    || e.PropertyName == nameof(ElectricalService.Name)
+                )
+                {
+                    setPower();
+                }
+                { }
                 StartTimer();
             }
         }
@@ -743,7 +757,7 @@ namespace GMEPDesignTool
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
-            //electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
             GetNames();
             StartTimer();
@@ -770,7 +784,7 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
-            //electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
+            electricalTransformer.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalTransformers.Remove(electricalTransformer);
             GetNames();
             StartTimer();
@@ -784,6 +798,30 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalTransformer(electricalTransformer);
+            }
+        }
+
+        private void ElectricalTransformer_PropertyChanged(
+            object? sender,
+            PropertyChangedEventArgs e
+        )
+        {
+            if (sender is ElectricalTransformer transformer)
+            {
+                if (
+                    e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.ParentId)
+                    || e.PropertyName == nameof(ElectricalTransformer.Name)
+                )
+                {
+                    setPower();
+                }
+                if (e.PropertyName == nameof(ElectricalTransformer.Name))
+                {
+                    GetNames();
+                }
+                StartTimer();
             }
         }
     }

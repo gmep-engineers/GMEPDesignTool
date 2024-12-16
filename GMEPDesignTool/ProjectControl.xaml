@@ -50,6 +50,13 @@
                                                     <ComboBoxItem Content="Switch Gear" HorizontalContentAlignment="Left"/>
                                                     <ComboBoxItem Content="Multi Meter" HorizontalContentAlignment="Left" />
                                                 </ComboBox>
+                                                <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="230,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25">
+                                                    <Image.ToolTip>
+                                                        <ToolTip>
+                                                            <TextBlock Text="Powered" />
+                                                        </ToolTip>
+                                                    </Image.ToolTip>
+                                                </Image>
                                                 <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                 <Label Content="Name" Margin="10,27,0,0" />
                                                 <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}"/>
@@ -107,22 +114,29 @@
                                             <Grid x:Name="PanelGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
                                                     <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                    <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                                        <Image.ToolTip>
+                                                            <ToolTip>
+                                                                <TextBlock Text="Powered" />
+                                                            </ToolTip>
+                                                        </Image.ToolTip>
+                                                    </Image>
+                                                    <Rectangle Width="360" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+
+
+                                                    <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left"/>
                                                     
-                                                   
-                                                    <Rectangle Width="280" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
-
-
-                                                   
-                                                    <Label Content="Input Voltage" Margin="10 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 50 0 0" SelectedIndex="{Binding InputVoltageIndex}">
+                                                    <Label Content="Input Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedIndex="{Binding InputVoltageIndex}">
                                                         <ComboBoxItem Content="120/208V 3-Φ" />
                                                         <ComboBoxItem Content="120/240V 1-Φ" />
                                                         <ComboBoxItem Content="277/480V 3-Φ" />
                                                         <ComboBoxItem Content="120/240V 3-Φ" />
                                                     </ComboBox>
                                                     
-                                                    <Label Content="Output Voltage" Margin="140 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="140 50 0 0" SelectedIndex="{Binding OutputVoltageIndex}">
+                                                    <Label Content="Output Voltage" Margin="240 27 0 0" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="240 50 0 0" SelectedIndex="{Binding OutputVoltageIndex}">
                                                         <ComboBoxItem Content="120/208V 3-Φ" />
                                                         <ComboBoxItem Content="120/240V 1-Φ" />
                                                         <ComboBoxItem Content="277/480V 3-Φ" />
@@ -131,12 +145,12 @@
 
                                                     
                                                
-                                                    <Label VerticalAlignment="Top" Margin="300,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                                    <Label VerticalAlignment="Top" Margin="300,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="300,55,0,0" HorizontalAlignment="Left"/>
-                                                    <Label VerticalAlignment="Top" Margin="400,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="400,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
+                                                    <Label VerticalAlignment="Top" Margin="380,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="380 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label VerticalAlignment="Top" Margin="380,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="380,55,0,0" HorizontalAlignment="Left"/>
+                                                    <Label VerticalAlignment="Top" Margin="490,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="490,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
                                                 </Grid>
                                                 <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                     <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -186,7 +200,13 @@
                                                         <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                         <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                     </ComboBox>
-                                                    <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}"/>
+                                                    <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                                        <Image.ToolTip>
+                                                            <ToolTip>
+                                                                <TextBlock Text="Powered" />
+                                                            </ToolTip>
+                                                        </Image.ToolTip>
+                                                    </Image>
                                                     <Rectangle Width="450" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
 
 
