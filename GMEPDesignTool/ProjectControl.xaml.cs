@@ -121,6 +121,10 @@ namespace GMEPDesignTool
             // Recursive function to set power for panels and transformers
             bool SetPowerRecursive(string id, int requiredVoltage)
             {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return false;
+                }
                 if (panels.TryGetValue(id, out var panel))
                 {
                     if (panel.Type == requiredVoltage)
@@ -354,7 +358,7 @@ namespace GMEPDesignTool
                 false,
                 "",
                 "White",
-                "MS-1",
+                "",
                 0,
                 0,
                 0,
@@ -494,6 +498,14 @@ namespace GMEPDesignTool
                 {
                     GetNames();
                 }
+                if (
+                    e.PropertyName == nameof(ElectricalPanel.Type)
+                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                )
+                {
+                    setPower();
+                }
+
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
                 {
                     ChangeColors(panel.Id, panel.ColorCode);

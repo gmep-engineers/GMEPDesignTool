@@ -7,9 +7,11 @@
              xmlns:uc="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EquipmentViewSource" Source="{Binding ElectricalEquipments}" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </UserControl.Resources>
     <Grid Background="White">
         <TabControl>
@@ -184,13 +186,7 @@
                                                         <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                         <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                     </ComboBox>
-                                                    <!-- <ComboBox Height="20" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="75,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding ColorIndex}">
-                                    <ComboBoxItem Content="White" Background="White" />
-                                    <ComboBoxItem Content="Blue" Background="LightBlue" />
-                                    <ComboBoxItem Content="Green" Background="LightGreen" />
-                                    <ComboBoxItem Content="Red" Background="Pink" />
-                                    <ComboBoxItem Content="Yellow" Background="LightYellow" />
-                                </ComboBox>-->
+                                                    <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}"/>
                                                     <Rectangle Width="450" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
 
 
