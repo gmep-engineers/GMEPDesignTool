@@ -261,7 +261,9 @@ namespace GMEPDesignTool
 
             // Find the panel with the given id
             var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == id);
-            if (panelcheck != null)
+            var transformercheck = ElectricalTransformers.FirstOrDefault(p => p.Id == id);
+
+            if (panelcheck != null || transformercheck != null)
             {
                 // Calculate the amp for the panel
                 foreach (var panel in ElectricalPanels)
@@ -282,7 +284,7 @@ namespace GMEPDesignTool
                         amp += calculateChildrenAmps(transformer.Id);
                     }
                 }
-
+                // Add amps for equipment directly under the given id
                 foreach (var equipment in ElectricalEquipments)
                 {
                     if (equipment.ParentId == id)
@@ -520,7 +522,11 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalPanel panel)
             {
-                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                if (
+                    e.PropertyName == nameof(ElectricalPanel.Type)
+                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                    || e.PropertyName == nameof(ElectricalPanel.Name)
+                )
                 {
                     if (checkCycles(panel.Id))
                     {
@@ -536,22 +542,18 @@ namespace GMEPDesignTool
                     }
                     else
                     {
-                        setKVAs();
-                        setAmps();
+                        setPower();
                     }
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                {
+                    setKVAs();
+                    setAmps();
                 }
 
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     GetNames();
-                }
-                if (
-                    e.PropertyName == nameof(ElectricalPanel.Type)
-                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
-                    || e.PropertyName == nameof(ElectricalPanel.Name)
-                )
-                {
-                    setPower();
                 }
 
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
@@ -609,6 +611,13 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalService service)
             {
+                if (
+                    e.PropertyName == nameof(ElectricalService.Type)
+                    || e.PropertyName == nameof(ElectricalService.Name)
+                )
+                {
+                    setPower();
+                }
                 if (e.PropertyName == nameof(ElectricalService.Name))
                 {
                     Trace.WriteLine("ElectricalService name changed");
@@ -622,14 +631,7 @@ namespace GMEPDesignTool
                 {
                     setAmps();
                 }
-                if (
-                    e.PropertyName == nameof(ElectricalService.Type)
-                    || e.PropertyName == nameof(ElectricalService.Name)
-                )
-                {
-                    setPower();
-                }
-                { }
+
                 StartTimer();
             }
         }
@@ -850,7 +852,12 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalTransformer transformer)
             {
-                if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+                if (
+                    e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.ParentId)
+                    || e.PropertyName == nameof(ElectricalTransformer.Name)
+                )
                 {
                     if (checkCycles(transformer.Id))
                     {
@@ -866,23 +873,19 @@ namespace GMEPDesignTool
                     }
                     else
                     {
-                        setKVAs();
-                        setAmps();
+                        setPower();
                     }
+                }
+                if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+                {
+                    setKVAs();
+                    setAmps();
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
                 {
                     ChangeColors(transformer.Id, transformer.ColorCode);
                 }
-                if (
-                    e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
-                    || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
-                    || e.PropertyName == nameof(ElectricalTransformer.ParentId)
-                    || e.PropertyName == nameof(ElectricalTransformer.Name)
-                )
-                {
-                    setPower();
-                }
+
                 if (e.PropertyName == nameof(ElectricalTransformer.Name))
                 {
                     GetNames();
