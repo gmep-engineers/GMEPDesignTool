@@ -204,35 +204,42 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                float poles = getServicePoles(panel);
+                float poles = getServicePoles(panel.Id, panel.FedFromId);
                 if (poles == 1)
                 {
                     panel.Amp = 0;
                 }
                 else
                 {
-                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel)) / poles);
+                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel.Id)) / poles);
                 }
             }
         }
 
-        public float getServicePoles(ElectricalPanel panel)
+        public float getServicePoles(string id, string parent)
         {
             float poles = 1;
 
             // Traverse the panels connected to the given id
-            foreach (var panel2 in ElectricalPanels)
+            foreach (var panel in ElectricalPanels)
             {
-                if (panel.FedFromId == panel2.Id)
+                if (parent == panel.Id)
                 {
-                    poles = getServicePoles(panel2);
+                    poles = getServicePoles(panel.Id, panel.FedFromId);
+                }
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (parent == transformer.Id)
+                {
+                    poles = getServicePoles(transformer.Id, transformer.ParentId);
                 }
             }
 
             // Traverse the services connected to the given id
             foreach (var service in ElectricalServices)
             {
-                if (service.Id == panel.FedFromId)
+                if (service.Id == parent)
                 {
                     if (service.Type == 1)
                     {
@@ -248,30 +255,37 @@ namespace GMEPDesignTool
             return poles;
         }
 
-        public float calculateChildrenAmps(ElectricalPanel panel)
+        public float calculateChildrenAmps(string id)
         {
             float amp = 0;
 
             // Find the panel with the given id
-            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == panel.Id);
+            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == id);
             if (panelcheck != null)
             {
                 // Calculate the amp for the panel
-                foreach (var childPanel in ElectricalPanels)
+                foreach (var panel in ElectricalPanels)
+                {
+                    if (panel.FedFromId == id && panel.Id != panel.FedFromId && id != panel.Id)
+                    {
+                        amp += calculateChildrenAmps(panel.Id);
+                    }
+                }
+                foreach (var transformer in ElectricalTransformers)
                 {
                     if (
-                        childPanel.FedFromId == panel.Id
-                        && childPanel.Id != childPanel.FedFromId
-                        && panel.Id != childPanel.Id
+                        transformer.ParentId == id
+                        && transformer.Id != transformer.ParentId
+                        && id != transformer.Id
                     )
                     {
-                        amp += calculateChildrenAmps(childPanel);
+                        amp += calculateChildrenAmps(transformer.Id);
                     }
                 }
 
                 foreach (var equipment in ElectricalEquipments)
                 {
-                    if (equipment.PanelId == panel.Id)
+                    if (equipment.PanelId == id)
                     {
                         amp += equipment.Amp * equipment.Qty;
                     }
@@ -285,28 +299,38 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                panel.Kva = Convert.ToInt32(calculateKVA(panel));
+                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id));
             }
+            //foreach (var transformer in ElectricalTransformers)
+            //{
+            //transformer.Kva = Convert.ToInt32(calculateKVA(transformer.Id));
+            //}
         }
 
-        public float calculateKVA(ElectricalPanel panel)
+        public float calculateKVA(string Id)
         {
             float kva = 0;
-            foreach (var childPanel in ElectricalPanels)
+            foreach (var panel in ElectricalPanels)
             {
-                if (
-                    childPanel.FedFromId == panel.Id
-                    && childPanel.Id != childPanel.FedFromId
-                    && panel.Id != childPanel.Id
-                )
+                if (panel.FedFromId == Id && panel.Id != panel.FedFromId && Id != panel.Id)
                 {
-                    kva += calculateKVA(childPanel);
+                    kva += calculateKVA(panel.Id);
                 }
             }
-
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (
+                    transformer.ParentId == Id
+                    && transformer.Id != transformer.ParentId
+                    && Id != transformer.Id
+                )
+                {
+                    kva += calculateKVA(transformer.Id);
+                }
+            }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == panel.Id)
+                if (equipment.PanelId == Id)
                 {
                     kva += equipment.Voltage * equipment.Amp * equipment.Qty;
                 }
@@ -314,7 +338,7 @@ namespace GMEPDesignTool
             return kva;
         }
 
-        private bool checkCycles(String Id)
+        private bool checkCycles(string Id)
         {
             var visited = new HashSet<string>();
             var stack = new HashSet<string>();
