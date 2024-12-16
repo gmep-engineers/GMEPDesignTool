@@ -193,7 +193,7 @@ namespace GMEPDesignTool
             }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == id)
+                if (equipment.ParentId == id)
                 {
                     equipment.ColorCode = colorCode;
                 }
@@ -285,7 +285,7 @@ namespace GMEPDesignTool
 
                 foreach (var equipment in ElectricalEquipments)
                 {
-                    if (equipment.PanelId == id)
+                    if (equipment.ParentId == id)
                     {
                         amp += equipment.Amp * equipment.Qty;
                     }
@@ -330,7 +330,7 @@ namespace GMEPDesignTool
             }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == Id)
+                if (equipment.ParentId == Id)
                 {
                     kva += equipment.Voltage * equipment.Amp * equipment.Qty;
                 }
@@ -445,7 +445,7 @@ namespace GMEPDesignTool
             Dictionary<string, string> panelBackup = new Dictionary<string, string>();
             foreach (var equipment in ElectricalEquipments)
             {
-                panelBackup[equipment.Id] = equipment.PanelId;
+                panelBackup[equipment.Id] = equipment.ParentId;
             }
 
             Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
@@ -489,6 +489,7 @@ namespace GMEPDesignTool
                         transformer.Name
                     );
                     FedFromNames.Add(value);
+                    PanelNames.Add(value);
                 }
             }
             //adding backup values
@@ -496,7 +497,7 @@ namespace GMEPDesignTool
             {
                 if (panelBackup.ContainsKey(equipment.Id))
                 {
-                    equipment.PanelId = panelBackup[equipment.Id];
+                    equipment.ParentId = panelBackup[equipment.Id];
                 }
             }
             foreach (var panel in ElectricalPanels)
@@ -690,7 +691,7 @@ namespace GMEPDesignTool
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
-                    || e.PropertyName == nameof(ElectricalEquipment.PanelId)
+                    || e.PropertyName == nameof(ElectricalEquipment.ParentId)
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )
                 {
@@ -733,7 +734,7 @@ namespace GMEPDesignTool
                     string panelKey = selectedPanel.Key;
                     if (
                         !string.IsNullOrEmpty(panelKey)
-                        && (equipment.PanelId == null || equipment.PanelId != panelKey)
+                        && (equipment.ParentId == null || equipment.ParentId != panelKey)
                     )
                     {
                         isAccepted = false;

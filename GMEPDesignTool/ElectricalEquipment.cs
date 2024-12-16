@@ -14,7 +14,7 @@ namespace GMEPDesignTool
         private string owner;
         private string equipNo;
         private int qty;
-        private string panelId;
+        private string parentId;
         private int voltage;
         private float amp;
         private float va;
@@ -35,7 +35,7 @@ namespace GMEPDesignTool
             string owner,
             string equipNo,
             int qty,
-            string panelId,
+            string parentId,
             int voltage,
             float amp,
             float va,
@@ -53,7 +53,7 @@ namespace GMEPDesignTool
             this.owner = owner;
             this.equipNo = equipNo;
             this.qty = qty;
-            this.panelId = panelId;
+            this.parentId = parentId;
             this.voltage = voltage;
             this.amp = amp;
             this.va = va;
@@ -143,15 +143,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public string PanelId
+        public string ParentId
         {
-            get => panelId;
+            get => parentId;
             set
             {
-                if (panelId != value)
+                if (parentId != value)
                 {
-                    panelId = value;
-                    OnPropertyChanged(nameof(PanelId));
+                    parentId = value;
+                    OnPropertyChanged(nameof(ParentId));
                 }
             }
         }
@@ -286,7 +286,7 @@ namespace GMEPDesignTool
             {
                 return false;
             }
-            if (!Utils.IsUuid(PanelId))
+            if (!Utils.IsUuid(ParentId))
             {
                 return false;
             }
