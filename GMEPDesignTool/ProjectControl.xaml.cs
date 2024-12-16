@@ -183,6 +183,14 @@ namespace GMEPDesignTool
                     ChangeColors(panel.Id, colorCode);
                 }
             }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (transformer.ParentId == id)
+                {
+                    transformer.ColorCode = colorCode;
+                    ChangeColors(transformer.Id, colorCode);
+                }
+            }
             foreach (var equipment in ElectricalEquipments)
             {
                 if (equipment.PanelId == id)
@@ -306,30 +314,30 @@ namespace GMEPDesignTool
             return kva;
         }
 
-        private bool checkCycles(ElectricalPanel startingPanel)
+        private bool checkCycles(String Id)
         {
             var visited = new HashSet<string>();
             var stack = new HashSet<string>();
 
-            return HasCycle(startingPanel.Id, visited, stack);
+            return HasCycle(Id, visited, stack);
         }
 
-        private bool HasCycle(string panelId, HashSet<string> visited, HashSet<string> stack)
+        private bool HasCycle(string Id, HashSet<string> visited, HashSet<string> stack)
         {
-            if (stack.Contains(panelId))
+            if (stack.Contains(Id))
             {
                 return true;
             }
 
-            if (visited.Contains(panelId))
+            if (visited.Contains(Id))
             {
                 return false;
             }
 
-            visited.Add(panelId);
-            stack.Add(panelId);
+            visited.Add(Id);
+            stack.Add(Id);
 
-            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == panelId);
+            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == Id);
             if (panel != null && !string.IsNullOrEmpty(panel.FedFromId))
             {
                 if (HasCycle(panel.FedFromId, visited, stack))
@@ -337,8 +345,16 @@ namespace GMEPDesignTool
                     return true;
                 }
             }
+            var transformer = ElectricalTransformers.FirstOrDefault(t => t.Id == Id);
+            if (transformer != null && !string.IsNullOrEmpty(transformer.ParentId))
+            {
+                if (HasCycle(transformer.ParentId, visited, stack))
+                {
+                    return true;
+                }
+            }
 
-            stack.Remove(panelId);
+            stack.Remove(Id);
             return false;
         }
 
@@ -481,7 +497,7 @@ namespace GMEPDesignTool
             {
                 if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
                 {
-                    if (checkCycles(panel))
+                    if (checkCycles(panel.Id))
                     {
                         MessageBox.Show(
                             $"Cycle detected in the panel hierarchy involving panel {panel.Id}.",
@@ -491,6 +507,7 @@ namespace GMEPDesignTool
                         );
                         //Task.Run(() => panel.FedFromId = "");
                         Dispatcher.BeginInvoke(() => panel.FedFromId = "");
+                        return;
                     }
                     else
                     {
@@ -808,6 +825,30 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalTransformer transformer)
             {
+                if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+                {
+                    if (checkCycles(transformer.Id))
+                    {
+                        MessageBox.Show(
+                            $"Cycle detected in the panel hierarchy involving transformer {transformer.Id}.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                        //Task.Run(() => panel.FedFromId = "");
+                        Dispatcher.BeginInvoke(() => transformer.ParentId = "");
+                        return;
+                    }
+                    else
+                    {
+                        setKVAs();
+                        setAmps();
+                    }
+                }
+                if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
+                {
+                    ChangeColors(transformer.Id, transformer.ColorCode);
+                }
                 if (
                     e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
                     || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
