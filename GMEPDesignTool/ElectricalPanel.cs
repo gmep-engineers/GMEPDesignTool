@@ -25,8 +25,8 @@ namespace GMEPDesignTool
         private int _aicRating;
         private int _kva;
         private int _amp;
-
-        // private bool _powered;
+        private int _type;
+        private bool _powered;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,7 +44,9 @@ namespace GMEPDesignTool
             int distanceFromParent,
             int aicRating,
             int kva,
-            int amp
+            int amp,
+            int type,
+            bool powered
         )
         {
             _id = id;
@@ -61,6 +63,8 @@ namespace GMEPDesignTool
             _aicRating = aicRating;
             _kva = kva;
             _amp = amp;
+            _type = type;
+            _powered = powered;
         }
 
         public string Id
@@ -198,6 +202,25 @@ namespace GMEPDesignTool
             set
             {
                 _amp = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Type
+        {
+            get => _type;
+            set
+            {
+                _type = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool Powered
+        {
+            get => _powered;
+            set
+            {
+                _powered = value;
                 OnPropertyChanged();
             }
         }

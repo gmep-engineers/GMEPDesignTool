@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -19,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
 namespace GMEPDesignTool
@@ -32,6 +34,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
+        public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
         public string ProjectId { get; set; }
@@ -46,6 +49,7 @@ namespace GMEPDesignTool
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
+            ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
@@ -63,6 +67,10 @@ namespace GMEPDesignTool
             {
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
             }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            }
 
             this.DataContext = this;
 
@@ -72,6 +80,7 @@ namespace GMEPDesignTool
 
             SaveText.Text = "";
             GetNames();
+            setPower();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -80,7 +89,8 @@ namespace GMEPDesignTool
                 ProjectId,
                 ElectricalServices,
                 ElectricalPanels,
-                ElectricalEquipments
+                ElectricalEquipments,
+                ElectricalTransformers
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
@@ -93,6 +103,102 @@ namespace GMEPDesignTool
             SaveText.Text = "*SAVING*";
         }
 
+        public void setPower()
+        {
+            Dictionary<string, ElectricalService> services =
+                new Dictionary<string, ElectricalService>();
+            foreach (var service in ElectricalServices)
+            {
+                services[service.Id] = service;
+            }
+            Dictionary<string, ElectricalPanel> panels = new Dictionary<string, ElectricalPanel>();
+            foreach (var panel in ElectricalPanels)
+            {
+                panels[panel.Id] = panel;
+                panel.Powered = false;
+            }
+            Dictionary<string, ElectricalTransformer> transformers =
+                new Dictionary<string, ElectricalTransformer>();
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformers[transformer.Id] = transformer;
+                transformer.Powered = false;
+            }
+
+            // Recursive function to set power for panels and transformers
+            bool SetPowerRecursive(string id, int requiredVoltage)
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return false;
+                }
+                if (panels.TryGetValue(id, out var panel))
+                {
+                    if (panel.Type == requiredVoltage)
+                    {
+                        panel.Powered = SetPowerRecursive(panel.FedFromId, panel.Type);
+                        return panel.Powered;
+                    }
+                }
+                else if (transformers.TryGetValue(id, out var transformer))
+                {
+                    if (transformer.OutputVoltageIndex == requiredVoltage)
+                    {
+                        transformer.Powered = SetPowerRecursive(
+                            transformer.ParentId,
+                            findTransformerType(transformer)
+                        );
+                        return transformer.Powered;
+                    }
+                }
+                else if (services.TryGetValue(id, out var service))
+                {
+                    if (service.Type == requiredVoltage)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            int findTransformerType(ElectricalTransformer transformer)
+            {
+                var transformerVoltageType = 4;
+                var combinedInput = (transformer.InputVoltageIndex, transformer.IsThreePhase);
+                switch (combinedInput)
+                {
+                    case (0, true):
+                        transformerVoltageType = 0;
+                        break;
+                    case (1, false):
+                        transformerVoltageType = 1;
+                        break;
+                    case (1, true):
+                        transformerVoltageType = 3;
+                        break;
+                    case (2, true):
+                        transformerVoltageType = 2;
+                        break;
+                    default:
+                        transformerVoltageType = 4;
+                        break;
+                }
+                return transformerVoltageType;
+            }
+
+            // Start the recursion from services
+            foreach (var panel in panels)
+            {
+                panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId, panel.Value.Type);
+            }
+            foreach (var transformer in transformers)
+            {
+                transformer.Value.Powered = SetPowerRecursive(
+                    transformer.Value.ParentId,
+                    findTransformerType(transformer.Value)
+                );
+            }
+        }
+
         public void ChangeColors(string id, string colorCode)
         {
             foreach (var panel in ElectricalPanels)
@@ -103,9 +209,17 @@ namespace GMEPDesignTool
                     ChangeColors(panel.Id, colorCode);
                 }
             }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (transformer.ParentId == id)
+                {
+                    transformer.ColorCode = colorCode;
+                    ChangeColors(transformer.Id, colorCode);
+                }
+            }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == id)
+                if (equipment.ParentId == id)
                 {
                     equipment.ColorCode = colorCode;
                 }
@@ -116,35 +230,42 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                float poles = getServicePoles(panel);
+                float poles = getServicePoles(panel.Id, panel.FedFromId);
                 if (poles == 1)
                 {
                     panel.Amp = 0;
                 }
                 else
                 {
-                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel)) / poles);
+                    panel.Amp = (int)((1.25 * calculateChildrenAmps(panel.Id)) / poles);
                 }
             }
         }
 
-        public float getServicePoles(ElectricalPanel panel)
+        public float getServicePoles(string id, string parent)
         {
             float poles = 1;
 
             // Traverse the panels connected to the given id
-            foreach (var panel2 in ElectricalPanels)
+            foreach (var panel in ElectricalPanels)
             {
-                if (panel.FedFromId == panel2.Id)
+                if (parent == panel.Id)
                 {
-                    poles = getServicePoles(panel2);
+                    poles = getServicePoles(panel.Id, panel.FedFromId);
+                }
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (parent == transformer.Id)
+                {
+                    poles = getServicePoles(transformer.Id, transformer.ParentId);
                 }
             }
 
             // Traverse the services connected to the given id
             foreach (var service in ElectricalServices)
             {
-                if (service.Id == panel.FedFromId)
+                if (service.Id == parent)
                 {
                     if (service.Type == 1)
                     {
@@ -160,30 +281,39 @@ namespace GMEPDesignTool
             return poles;
         }
 
-        public float calculateChildrenAmps(ElectricalPanel panel)
+        public float calculateChildrenAmps(string id)
         {
             float amp = 0;
 
             // Find the panel with the given id
-            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == panel.Id);
-            if (panelcheck != null)
+            var panelcheck = ElectricalPanels.FirstOrDefault(p => p.Id == id);
+            var transformercheck = ElectricalTransformers.FirstOrDefault(p => p.Id == id);
+
+            if (panelcheck != null || transformercheck != null)
             {
                 // Calculate the amp for the panel
-                foreach (var childPanel in ElectricalPanels)
+                foreach (var panel in ElectricalPanels)
                 {
-                    if (
-                        childPanel.FedFromId == panel.Id
-                        && childPanel.Id != childPanel.FedFromId
-                        && panel.Id != childPanel.Id
-                    )
+                    if (panel.FedFromId == id && panel.Id != panel.FedFromId && id != panel.Id)
                     {
-                        amp += calculateChildrenAmps(childPanel);
+                        amp += calculateChildrenAmps(panel.Id);
                     }
                 }
-
+                foreach (var transformer in ElectricalTransformers)
+                {
+                    if (
+                        transformer.ParentId == id
+                        && transformer.Id != transformer.ParentId
+                        && id != transformer.Id
+                    )
+                    {
+                        amp += calculateChildrenAmps(transformer.Id);
+                    }
+                }
+                // Add amps for equipment directly under the given id
                 foreach (var equipment in ElectricalEquipments)
                 {
-                    if (equipment.PanelId == panel.Id)
+                    if (equipment.ParentId == id)
                     {
                         amp += equipment.Amp * equipment.Qty;
                     }
@@ -197,28 +327,38 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                panel.Kva = Convert.ToInt32(calculateKVA(panel));
+                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id));
             }
+            //foreach (var transformer in ElectricalTransformers)
+            //{
+            //transformer.Kva = Convert.ToInt32(calculateKVA(transformer.Id));
+            //}
         }
 
-        public float calculateKVA(ElectricalPanel panel)
+        public float calculateKVA(string Id)
         {
             float kva = 0;
-            foreach (var childPanel in ElectricalPanels)
+            foreach (var panel in ElectricalPanels)
             {
-                if (
-                    childPanel.FedFromId == panel.Id
-                    && childPanel.Id != childPanel.FedFromId
-                    && panel.Id != childPanel.Id
-                )
+                if (panel.FedFromId == Id && panel.Id != panel.FedFromId && Id != panel.Id)
                 {
-                    kva += calculateKVA(childPanel);
+                    kva += calculateKVA(panel.Id);
                 }
             }
-
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (
+                    transformer.ParentId == Id
+                    && transformer.Id != transformer.ParentId
+                    && Id != transformer.Id
+                )
+                {
+                    kva += calculateKVA(transformer.Id);
+                }
+            }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.PanelId == panel.Id)
+                if (equipment.ParentId == Id)
                 {
                     kva += equipment.Voltage * equipment.Amp * equipment.Qty;
                 }
@@ -226,30 +366,30 @@ namespace GMEPDesignTool
             return kva;
         }
 
-        private bool checkCycles(ElectricalPanel startingPanel)
+        private bool checkCycles(string Id)
         {
             var visited = new HashSet<string>();
             var stack = new HashSet<string>();
 
-            return HasCycle(startingPanel.Id, visited, stack);
+            return HasCycle(Id, visited, stack);
         }
 
-        private bool HasCycle(string panelId, HashSet<string> visited, HashSet<string> stack)
+        private bool HasCycle(string Id, HashSet<string> visited, HashSet<string> stack)
         {
-            if (stack.Contains(panelId))
+            if (stack.Contains(Id))
             {
                 return true;
             }
 
-            if (visited.Contains(panelId))
+            if (visited.Contains(Id))
             {
                 return false;
             }
 
-            visited.Add(panelId);
-            stack.Add(panelId);
+            visited.Add(Id);
+            stack.Add(Id);
 
-            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == panelId);
+            var panel = ElectricalPanels.FirstOrDefault(p => p.Id == Id);
             if (panel != null && !string.IsNullOrEmpty(panel.FedFromId))
             {
                 if (HasCycle(panel.FedFromId, visited, stack))
@@ -257,8 +397,16 @@ namespace GMEPDesignTool
                     return true;
                 }
             }
+            var transformer = ElectricalTransformers.FirstOrDefault(t => t.Id == Id);
+            if (transformer != null && !string.IsNullOrEmpty(transformer.ParentId))
+            {
+                if (HasCycle(transformer.ParentId, visited, stack))
+                {
+                    return true;
+                }
+            }
 
-            stack.Remove(panelId);
+            stack.Remove(Id);
             return false;
         }
 
@@ -283,12 +431,14 @@ namespace GMEPDesignTool
                 false,
                 "",
                 "White",
-                "MS-1",
+                "",
                 0,
                 0,
                 0,
                 0,
-                0
+                0,
+                0,
+                false
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -323,9 +473,14 @@ namespace GMEPDesignTool
             Dictionary<string, string> panelBackup = new Dictionary<string, string>();
             foreach (var equipment in ElectricalEquipments)
             {
-                panelBackup[equipment.Id] = equipment.PanelId;
+                panelBackup[equipment.Id] = equipment.ParentId;
             }
 
+            Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformerBackup[transformer.Id] = transformer.ParentId;
+            }
             FedFromNames.Clear();
             PanelNames.Clear();
             PanelNames.Add(new KeyValuePair<string, string>("", ""));
@@ -353,12 +508,24 @@ namespace GMEPDesignTool
                     PanelNames.Add(value);
                 }
             }
+            foreach (ElectricalTransformer transformer in ElectricalTransformers)
+            {
+                if (transformer.Name != "")
+                {
+                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                        transformer.Id,
+                        transformer.Name
+                    );
+                    FedFromNames.Add(value);
+                    PanelNames.Add(value);
+                }
+            }
             //adding backup values
             foreach (var equipment in ElectricalEquipments)
             {
                 if (panelBackup.ContainsKey(equipment.Id))
                 {
-                    equipment.PanelId = panelBackup[equipment.Id];
+                    equipment.ParentId = panelBackup[equipment.Id];
                 }
             }
             foreach (var panel in ElectricalPanels)
@@ -368,15 +535,26 @@ namespace GMEPDesignTool
                     panel.FedFromId = fedFromBackup[panel.Id];
                 }
             }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                if (transformerBackup.ContainsKey(transformer.Id))
+                {
+                    transformer.ParentId = transformerBackup[transformer.Id];
+                }
+            }
         }
 
         private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalPanel panel)
             {
-                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                if (
+                    e.PropertyName == nameof(ElectricalPanel.Type)
+                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                    || e.PropertyName == nameof(ElectricalPanel.Name)
+                )
                 {
-                    if (checkCycles(panel))
+                    if (checkCycles(panel.Id))
                     {
                         MessageBox.Show(
                             $"Cycle detected in the panel hierarchy involving panel {panel.Id}.",
@@ -386,18 +564,24 @@ namespace GMEPDesignTool
                         );
                         //Task.Run(() => panel.FedFromId = "");
                         Dispatcher.BeginInvoke(() => panel.FedFromId = "");
+                        return;
                     }
                     else
                     {
-                        setKVAs();
-                        setAmps();
+                        setPower();
                     }
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                {
+                    setKVAs();
+                    setAmps();
                 }
 
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     GetNames();
                 }
+
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
                 {
                     ChangeColors(panel.Id, panel.ColorCode);
@@ -453,6 +637,13 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalService service)
             {
+                if (
+                    e.PropertyName == nameof(ElectricalService.Type)
+                    || e.PropertyName == nameof(ElectricalService.Name)
+                )
+                {
+                    setPower();
+                }
                 if (e.PropertyName == nameof(ElectricalService.Name))
                 {
                     Trace.WriteLine("ElectricalService name changed");
@@ -466,6 +657,7 @@ namespace GMEPDesignTool
                 {
                     setAmps();
                 }
+
                 StartTimer();
             }
         }
@@ -497,7 +689,8 @@ namespace GMEPDesignTool
                 false,
                 0,
                 "General",
-                "White"
+                "White",
+                false
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -527,7 +720,7 @@ namespace GMEPDesignTool
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
-                    || e.PropertyName == nameof(ElectricalEquipment.PanelId)
+                    || e.PropertyName == nameof(ElectricalEquipment.ParentId)
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )
                 {
@@ -570,7 +763,7 @@ namespace GMEPDesignTool
                     string panelKey = selectedPanel.Key;
                     if (
                         !string.IsNullOrEmpty(panelKey)
-                        && (equipment.PanelId == null || equipment.PanelId != panelKey)
+                        && (equipment.ParentId == null || equipment.ParentId != panelKey)
                     )
                     {
                         isAccepted = false;
@@ -631,6 +824,103 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+
+        //Transformer Functions
+        public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
+        {
+            electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            ElectricalTransformers.Add(electricalTransformer);
+            GetNames();
+            StartTimer();
+        }
+
+        public void AddNewElectricalTransformer(object sender, EventArgs e)
+        {
+            Trace.WriteLine("new transformer");
+            ElectricalTransformer electricalTransformer = new ElectricalTransformer(
+                Guid.NewGuid().ToString(),
+                ProjectId,
+                "",
+                0,
+                "White",
+                0,
+                0,
+                "",
+                false,
+                0,
+                false
+            );
+            AddElectricalTransformer(electricalTransformer);
+        }
+
+        public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
+        {
+            electricalTransformer.PropertyChanged -= ElectricalService_PropertyChanged;
+            ElectricalTransformers.Remove(electricalTransformer);
+            GetNames();
+            StartTimer();
+        }
+
+        public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)
+        {
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalTransformer electricalTransformer
+            )
+            {
+                RemoveElectricalTransformer(electricalTransformer);
+            }
+        }
+
+        private void ElectricalTransformer_PropertyChanged(
+            object? sender,
+            PropertyChangedEventArgs e
+        )
+        {
+            if (sender is ElectricalTransformer transformer)
+            {
+                if (
+                    e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
+                    || e.PropertyName == nameof(ElectricalTransformer.ParentId)
+                    || e.PropertyName == nameof(ElectricalTransformer.Name)
+                    || e.PropertyName == nameof(ElectricalTransformer.IsThreePhase)
+                )
+                {
+                    if (checkCycles(transformer.Id))
+                    {
+                        MessageBox.Show(
+                            $"Cycle detected in the panel hierarchy involving transformer {transformer.Id}.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                        //Task.Run(() => panel.FedFromId = "");
+                        Dispatcher.BeginInvoke(() => transformer.ParentId = "");
+                        return;
+                    }
+                    else
+                    {
+                        setPower();
+                    }
+                }
+                if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+                {
+                    setKVAs();
+                    setAmps();
+                }
+                if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
+                {
+                    ChangeColors(transformer.Id, transformer.ColorCode);
+                }
+
+                if (e.PropertyName == nameof(ElectricalTransformer.Name))
+                {
+                    GetNames();
+                }
+                StartTimer();
+            }
+        }
     }
 
     public class MinimumValueValidationRule : ValidationRule

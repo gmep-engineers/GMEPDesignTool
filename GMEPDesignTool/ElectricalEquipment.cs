@@ -14,7 +14,7 @@ namespace GMEPDesignTool
         private string owner;
         private string equipNo;
         private int qty;
-        private string panelId;
+        private string parentId;
         private int voltage;
         private float amp;
         private float va;
@@ -28,6 +28,7 @@ namespace GMEPDesignTool
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string colorCode;
+        private bool powered;
 
         public ElectricalEquipment(
             string id,
@@ -35,7 +36,7 @@ namespace GMEPDesignTool
             string owner,
             string equipNo,
             int qty,
-            string panelId,
+            string parentId,
             int voltage,
             float amp,
             float va,
@@ -45,7 +46,8 @@ namespace GMEPDesignTool
             bool specSheetFromClient,
             int distanceFromParent,
             string category,
-            string colorCode
+            string colorCode,
+            bool powered
         )
         {
             this.id = id;
@@ -53,7 +55,7 @@ namespace GMEPDesignTool
             this.owner = owner;
             this.equipNo = equipNo;
             this.qty = qty;
-            this.panelId = panelId;
+            this.parentId = parentId;
             this.voltage = voltage;
             this.amp = amp;
             this.va = va;
@@ -64,6 +66,7 @@ namespace GMEPDesignTool
             this.distanceFromParent = distanceFromParent;
             this.category = category;
             this.colorCode = colorCode;
+            this.powered = powered;
         }
 
         public string ColorCode
@@ -143,15 +146,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public string PanelId
+        public string ParentId
         {
-            get => panelId;
+            get => parentId;
             set
             {
-                if (panelId != value)
+                if (parentId != value)
                 {
-                    panelId = value;
-                    OnPropertyChanged(nameof(PanelId));
+                    parentId = value;
+                    OnPropertyChanged(nameof(ParentId));
                 }
             }
         }
@@ -221,15 +224,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public int AicRating
+        public bool Powered
         {
-            get => aicRating;
+            get => powered;
             set
             {
-                if (aicRating != value)
+                if (powered != value)
                 {
-                    aicRating = value;
-                    OnPropertyChanged(nameof(AicRating));
+                    powered = value;
+                    OnPropertyChanged(nameof(Powered));
                 }
             }
         }
@@ -271,6 +274,19 @@ namespace GMEPDesignTool
             }
         }
 
+        public int AicRating
+        {
+            get => aicRating;
+            set
+            {
+                if (aicRating != value)
+                {
+                    aicRating = value;
+                    OnPropertyChanged(nameof(AicRating));
+                }
+            }
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -286,7 +302,7 @@ namespace GMEPDesignTool
             {
                 return false;
             }
-            if (!Utils.IsUuid(PanelId))
+            if (!Utils.IsUuid(ParentId))
             {
                 return false;
             }
