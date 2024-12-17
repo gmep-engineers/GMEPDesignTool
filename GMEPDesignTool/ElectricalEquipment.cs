@@ -274,6 +274,19 @@ namespace GMEPDesignTool
             }
         }
 
+        public int AicRating
+        {
+            get => aicRating;
+            set
+            {
+                if (aicRating != value)
+                {
+                    aicRating = value;
+                    OnPropertyChanged(nameof(AicRating));
+                }
+            }
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
