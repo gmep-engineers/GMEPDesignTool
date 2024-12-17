@@ -129,10 +129,9 @@
                                                     
                                                     <Label Content="Input Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
                                                     <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedIndex="{Binding InputVoltageIndex}">
-                                                        <ComboBoxItem Content="120/208V 3-Φ" />
-                                                        <ComboBoxItem Content="120/240V 1-Φ" />
-                                                        <ComboBoxItem Content="277/480V 3-Φ" />
-                                                        <ComboBoxItem Content="120/240V 3-Φ" />
+                                                        <ComboBoxItem Content="208V" />
+                                                        <ComboBoxItem Content="240V" />
+                                                        <ComboBoxItem Content="480V" />
                                                     </ComboBox>
                                                     
                                                     <Label Content="Phase" Margin="240 27 0 0" FontWeight="Bold"/>

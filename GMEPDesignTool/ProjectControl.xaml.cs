@@ -146,7 +146,7 @@ namespace GMEPDesignTool
                     {
                         transformer.Powered = SetPowerRecursive(
                             transformer.ParentId,
-                            transformer.InputVoltageIndex
+                            findTransformerType(transformer)
                         );
                         return transformer.Powered;
                     }
@@ -160,6 +160,30 @@ namespace GMEPDesignTool
                 }
                 return false;
             }
+            int findTransformerType(ElectricalTransformer transformer)
+            {
+                var transformerVoltageType = 4;
+                var combinedInput = (transformer.InputVoltageIndex, transformer.IsThreePhase);
+                switch (combinedInput)
+                {
+                    case (0, true):
+                        transformerVoltageType = 0;
+                        break;
+                    case (1, false):
+                        transformerVoltageType = 1;
+                        break;
+                    case (1, true):
+                        transformerVoltageType = 3;
+                        break;
+                    case (2, true):
+                        transformerVoltageType = 2;
+                        break;
+                    default:
+                        transformerVoltageType = 4;
+                        break;
+                }
+                return transformerVoltageType;
+            }
 
             // Start the recursion from services
             foreach (var panel in panels)
@@ -170,7 +194,7 @@ namespace GMEPDesignTool
             {
                 transformer.Value.Powered = SetPowerRecursive(
                     transformer.Value.ParentId,
-                    transformer.Value.InputVoltageIndex
+                    findTransformerType(transformer.Value)
                 );
             }
         }
@@ -860,6 +884,7 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
                     || e.PropertyName == nameof(ElectricalTransformer.ParentId)
                     || e.PropertyName == nameof(ElectricalTransformer.Name)
+                    || e.PropertyName == nameof(ElectricalTransformer.IsThreePhase)
                 )
                 {
                     if (checkCycles(transformer.Id))
