@@ -23,7 +23,7 @@ namespace GMEPDesignTool
         private int aicRating;
         private bool specSheetFromClient;
         int distanceFromParent;
-        string category;
+        int category;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,7 +45,7 @@ namespace GMEPDesignTool
             int aicRating,
             bool specSheetFromClient,
             int distanceFromParent,
-            string category,
+            int category,
             string colorCode,
             bool powered
         )
@@ -261,7 +261,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string Category
+        public int Category
         {
             get => category;
             set

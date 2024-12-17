@@ -47,9 +47,11 @@ namespace GMEPDesignTool
             InitializeComponent();
             ProjectId = database.GetProjectId(projectNo);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
-            ElectricalServices = database.GetProjectServices(ProjectId);
+            //ElectricalServices = database.GetProjectServices(ProjectId);
+            ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = database.GetProjectTransformers(ProjectId);
+            //ElectricalTransformers = database.GetProjectTransformers(ProjectId);
+            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
@@ -87,10 +89,10 @@ namespace GMEPDesignTool
         {
             database.UpdateProject(
                 ProjectId,
-                ElectricalServices,
+                //ElectricalServices,
                 ElectricalPanels,
-                ElectricalEquipments,
-                ElectricalTransformers
+                ElectricalEquipments //,
+            //ElectricalTransformers
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
@@ -425,8 +427,8 @@ namespace GMEPDesignTool
             ElectricalPanel electricalPanel = new ElectricalPanel(
                 Guid.NewGuid().ToString(),
                 ProjectId,
-                100,
-                100,
+                1,
+                1,
                 false,
                 false,
                 "",
@@ -437,7 +439,7 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0,
+                1,
                 false
             );
             AddElectricalPanel(electricalPanel);
@@ -680,7 +682,7 @@ namespace GMEPDesignTool
                 "",
                 1,
                 "",
-                115,
+                1,
                 0,
                 0,
                 false,
@@ -688,7 +690,7 @@ namespace GMEPDesignTool
                 0,
                 false,
                 0,
-                "General",
+                1,
                 "White",
                 false
             );
