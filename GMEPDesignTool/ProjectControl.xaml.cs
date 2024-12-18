@@ -375,12 +375,59 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id));
+                panel.Kva = Convert.ToInt32(calculateKVA(panel.Id) / 1000);
             }
-            //foreach (var transformer in ElectricalTransformers)
-            //{
-            //transformer.Kva = Convert.ToInt32(calculateKVA(transformer.Id));
-            //}
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformer.Kva = setKVAId(Convert.ToInt32(calculateKVA(transformer.Id) / 1000));
+            }
+            int setKVAId(int kva)
+            {
+                int id = 0;
+                switch (kva)
+                {
+                    case int n when (n < 45):
+                        id = 1;
+                        break;
+                    case int n when (n >= 45 && n < 75):
+                        id = 2;
+                        break;
+                    case int n when (n >= 75 && n < 112.5):
+                        id = 3;
+                        break;
+                    case int n when (n >= 112.5 && n < 150):
+                        id = 4;
+                        break;
+                    case int n when (n >= 150 && n < 225):
+                        id = 5;
+                        break;
+                    case int n when (n >= 225 && n < 300):
+                        id = 6;
+                        break;
+                    case int n when (n >= 300 && n < 500):
+                        id = 7;
+                        break;
+                    case int n when (n >= 500 && n < 750):
+                        id = 8;
+                        break;
+                    case int n when (n >= 750 && n < 1000):
+                        id = 9;
+                        break;
+                    case int n when (n >= 1000 && n < 1500):
+                        id = 10;
+                        break;
+                    case int n when (n >= 1500 && n < 2000):
+                        id = 11;
+                        break;
+                    case int n when (n >= 2000 && n < 2500):
+                        id = 12;
+                        break;
+                    case int n when (n >= 2500):
+                        id = 13;
+                        break;
+                }
+                return id;
+            }
         }
 
         public float calculateKVA(string Id)
@@ -408,9 +455,10 @@ namespace GMEPDesignTool
             {
                 if (equipment.ParentId == Id)
                 {
-                    kva += equipment.Voltage * equipment.Amp * equipment.Qty;
+                    kva += equipment.Va * equipment.Qty;
                 }
             }
+
             return kva;
         }
 
@@ -508,6 +556,36 @@ namespace GMEPDesignTool
             {
                 RemoveElectricalPanel(electricalPanel);
             }
+        }
+
+        private float idToVoltage(int voltageId)
+        {
+            int voltage = 0;
+            switch (voltageId)
+            {
+                case (1):
+                    voltage = 115;
+                    break;
+                case (2):
+                    voltage = 120;
+                    break;
+                case (3):
+                    voltage = 208;
+                    break;
+                case (4):
+                    voltage = 230;
+                    break;
+                case (5):
+                    voltage = 240;
+                    break;
+                case (6):
+                    voltage = 460;
+                    break;
+                case (7):
+                    voltage = 480;
+                    break;
+            }
+            return voltage;
         }
 
         public void GetNames()
@@ -768,6 +846,13 @@ namespace GMEPDesignTool
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                )
+                {
+                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
+                }
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
                     || e.PropertyName == nameof(ElectricalEquipment.ParentId)
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )
@@ -775,13 +860,7 @@ namespace GMEPDesignTool
                     setKVAs();
                     setAmps();
                 }
-                if (
-                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
-                )
-                {
-                    equipment.Va = equipment.Voltage * equipment.Amp;
-                }
+
                 StartTimer();
             }
         }
