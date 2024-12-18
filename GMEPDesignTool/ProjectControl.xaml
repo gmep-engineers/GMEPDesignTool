@@ -141,25 +141,18 @@
                                                     <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left"/>
                                                     
                                                     <Label Content="Input Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedIndex="{Binding InputVoltageIndex}">
-                                                        <ComboBoxItem Content="208V" />
-                                                        <ComboBoxItem Content="240V" />
-                                                        <ComboBoxItem Content="480V" />
+                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                                                        <ComboBoxItem Content="480V-120/208V-3" Tag="1" />
+                                                        <ComboBoxItem Content="208V-277/480V-3" Tag="2" />
+                                                        <ComboBoxItem Content="480V-120/240V-3" Tag="3" />
+                                                        <ComboBoxItem Content="240V-277/480V-3" Tag="4" />
+                                                        <ComboBoxItem Content="240V-120/208V-3" Tag="5" />
+                                                        <ComboBoxItem Content="208V-120/240V-3" Tag="6" />
+                                                        <ComboBoxItem Content="240V-120/208V-1" Tag="7" />
+                                                        <ComboBoxItem Content="208V-120/240V-1" Tag="8" />
                                                     </ComboBox>
                                                     
-                                                    <Label Content="Phase" Margin="240 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="240 50 0 0" SelectedIndex="{Binding IsThreePhase}">
-                                                        <ComboBoxItem Content="1" />
-                                                        <ComboBoxItem Content="3" />
-                                                    </ComboBox>
-
-                                                    <Label Content="Output Voltage" Margin="370 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="370 50 0 0" SelectedIndex="{Binding OutputVoltageIndex}">
-                                                        <ComboBoxItem Content="120/208V 3-Φ" />
-                                                        <ComboBoxItem Content="120/240V 1-Φ" />
-                                                        <ComboBoxItem Content="277/480V 3-Φ" />
-                                                        <ComboBoxItem Content="120/240V 3-Φ" />
-                                                    </ComboBox>
+                                                   
 
                                                     
                                                

@@ -75,8 +75,8 @@ namespace GMEPDesignTool.Database
             string projectId,
             ObservableCollection<ElectricalService> services,
             ObservableCollection<ElectricalPanel> panels,
-            ObservableCollection<ElectricalEquipment> equipments //,
-        // ObservableCollection<ElectricalTransformer> transformers
+            ObservableCollection<ElectricalEquipment> equipments,
+            ObservableCollection<ElectricalTransformer> transformers
         )
         {
             OpenConnection();
@@ -84,7 +84,7 @@ namespace GMEPDesignTool.Database
             UpdateServices(projectId, services);
             UpdatePanels(projectId, panels);
             UpdateEquipments(projectId, equipments);
-            //UpdateTransformers(projectId, transformers);
+            UpdateTransformers(projectId, transformers);
 
             CloseConnection();
         }
@@ -132,7 +132,7 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_panels", existingPanelIds);
         }
 
-        /*private void UpdateTransformers(
+        private void UpdateTransformers(
             string projectId,
             ObservableCollection<ElectricalTransformer> transformers
         )
@@ -157,7 +157,7 @@ namespace GMEPDesignTool.Database
             }
 
             DeleteRemovedItems("electrical_transformers", existingTransformerIds);
-        }*/
+        }
 
         private void UpdateEquipments(
             string projectId,
@@ -363,47 +363,37 @@ namespace GMEPDesignTool.Database
             command.ExecuteNonQuery();
         }
 
-        /*private void UpdateTransformer(ElectricalTransformer transformer)
+        private void UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, input_voltage_index = @input_voltage_index, project_id = @project_id, output_voltage_index = @output_voltage_index, kva = @kva, is_three_phase = @is_3ph, distance_from_parent = @distanceFromParent, color_code = @color_code, name = @name WHERE id = @id";
+                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
-            command.Parameters.AddWithValue("@is_3ph", transformer.IsThreePhase);
             command.Parameters.AddWithValue("@id", transformer.Id);
-            command.Parameters.AddWithValue("@input_voltage_index", transformer.InputVoltageIndex);
             command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
-            command.Parameters.AddWithValue(
-                "@output_voltage_index",
-                transformer.OutputVoltageIndex
-            );
+            command.Parameters.AddWithValue("@voltage", transformer.Voltage);
             command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
             command.Parameters.AddWithValue("@kva", transformer.Kva);
             command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
             command.Parameters.AddWithValue("@name", transformer.Name);
             command.ExecuteNonQuery();
-        }*/
+        }
 
-        /* private void InsertTransformer(string projectId, ElectricalTransformer transformer)
-         {
-             string query =
-                 "INSERT INTO electrical_transformers (id, project_id, parent_id, input_voltage_index, output_voltage_index, is_three_phase, distance_from_parent, color_code, kva, name) VALUES (@id, @project_id, @parent_id, @input_voltage_index, @output_voltage_index, @is_3ph, @distanceFromParent, @color_code, @kva, @name)";
-             MySqlCommand command = new MySqlCommand(query, Connection);
-             command.Parameters.AddWithValue("@id", transformer.Id);
-             command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
-             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
-             command.Parameters.AddWithValue("@input_voltage_index", transformer.InputVoltageIndex);
-             command.Parameters.AddWithValue(
-                 "@output_voltage_index",
-                 transformer.OutputVoltageIndex
-             );
-             command.Parameters.AddWithValue("@is_3ph", transformer.IsThreePhase);
-             command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
-             command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
-             command.Parameters.AddWithValue("@kva", transformer.Kva);
-             command.Parameters.AddWithValue("@name", transformer.Name);
-             command.ExecuteNonQuery();
-         }*/
+        private void InsertTransformer(string projectId, ElectricalTransformer transformer)
+        {
+            string query =
+                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", transformer.Id);
+            command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
+            command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
+            command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
+            command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
+            command.Parameters.AddWithValue("@kva", transformer.Kva);
+            command.Parameters.AddWithValue("@name", transformer.Name);
+            command.Parameters.AddWithValue("@voltage", transformer.Voltage);
+            command.ExecuteNonQuery();
+        }
 
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
@@ -544,36 +534,34 @@ namespace GMEPDesignTool.Database
             return equipments;
         }
 
-        /* public ObservableCollection<ElectricalTransformer> GetProjectTransformers(string projectId)
-         {
-             ObservableCollection<ElectricalTransformer> transformers =
-                 new ObservableCollection<ElectricalTransformer>();
-             string query = "SELECT * FROM electrical_transformers WHERE project_id = @projectId";
-             OpenConnection();
-             MySqlCommand command = new MySqlCommand(query, Connection);
-             command.Parameters.AddWithValue("@projectId", projectId);
-             MySqlDataReader reader = command.ExecuteReader();
-             while (reader.Read())
-             {
-                 transformers.Add(
-                     new ElectricalTransformer(
-                         reader.GetString("id"),
-                         reader.GetString("project_id"),
-                         reader.GetString("parent_id"),
-                         reader.GetInt32("distance_from_parent"),
-                         reader.GetString("color_code"),
-                         reader.GetInt32("input_voltage_index"),
-                         reader.GetInt32("output_voltage_index"),
-                         reader.GetString("name"),
-                         reader.GetBoolean("is_three_phase"),
-                         reader.GetInt32("kva"),
-                         false
-                     )
-                 );
-             }
-             reader.Close();
-             CloseConnection();
-             return transformers;
-         }*/
+        public ObservableCollection<ElectricalTransformer> GetProjectTransformers(string projectId)
+        {
+            ObservableCollection<ElectricalTransformer> transformers =
+                new ObservableCollection<ElectricalTransformer>();
+            string query = "SELECT * FROM electrical_transformers WHERE project_id = @projectId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                transformers.Add(
+                    new ElectricalTransformer(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("parent_id"),
+                        reader.GetInt32("parent_distance"),
+                        reader.GetString("color_code"),
+                        reader.GetInt32("voltage_id"),
+                        reader.GetString("name"),
+                        reader.GetInt32("kva_id"),
+                        false
+                    )
+                );
+            }
+            reader.Close();
+            CloseConnection();
+            return transformers;
+        }
     }
 }

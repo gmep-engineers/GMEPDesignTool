@@ -91,8 +91,8 @@ namespace GMEPDesignTool
                 ProjectId,
                 ElectricalServices,
                 ElectricalPanels,
-                ElectricalEquipments //,
-            //ElectricalTransformers
+                ElectricalEquipments,
+                ElectricalTransformers
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
@@ -144,11 +144,11 @@ namespace GMEPDesignTool
                 }
                 else if (transformers.TryGetValue(id, out var transformer))
                 {
-                    if (transformer.OutputVoltageIndex == requiredVoltage)
+                    if (findTransformerOutputVoltage(transformer) == requiredVoltage)
                     {
                         transformer.Powered = SetPowerRecursive(
                             transformer.ParentId,
-                            findTransformerType(transformer)
+                            findTransformerInputVoltage(transformer)
                         );
                         return transformer.Powered;
                     }
@@ -162,26 +162,72 @@ namespace GMEPDesignTool
                 }
                 return false;
             }
-            int findTransformerType(ElectricalTransformer transformer)
+            int findTransformerInputVoltage(ElectricalTransformer transformer)
             {
                 var transformerVoltageType = 5;
-                var combinedInput = (transformer.InputVoltageIndex, transformer.IsThreePhase);
-                switch (combinedInput)
+                switch (transformer.Voltage)
                 {
-                    case (0, true):
-                        transformerVoltageType = 0;
-                        break;
-                    case (1, false):
-                        transformerVoltageType = 1;
-                        break;
-                    case (1, true):
+                    case (1):
                         transformerVoltageType = 3;
                         break;
-                    case (2, true):
+                    case (2):
+                        transformerVoltageType = 1;
+                        break;
+                    case (3):
+                        transformerVoltageType = 3;
+                        break;
+                    case (4):
+                        transformerVoltageType = 4;
+                        break;
+                    case (5):
+                        transformerVoltageType = 4;
+                        break;
+                    case (6):
+                        transformerVoltageType = 1;
+                        break;
+                    case (7):
+                        transformerVoltageType = 2;
+                        break;
+                    case (8):
+                        transformerVoltageType = 5;
+                        break;
+                    default:
+                        transformerVoltageType = 5;
+                        break;
+                }
+                return transformerVoltageType;
+            }
+            int findTransformerOutputVoltage(ElectricalTransformer transformer)
+            {
+                var transformerVoltageType = 5;
+                switch (transformer.Voltage)
+                {
+                    case (1):
+                        transformerVoltageType = 1;
+                        break;
+                    case (2):
+                        transformerVoltageType = 3;
+                        break;
+                    case (3):
+                        transformerVoltageType = 4;
+                        break;
+                    case (4):
+                        transformerVoltageType = 3;
+                        break;
+                    case (5):
+                        transformerVoltageType = 1;
+                        break;
+                    case (6):
+                        transformerVoltageType = 4;
+                        break;
+                    case (7):
+                        transformerVoltageType = 2;
+                        break;
+                    case (8):
                         transformerVoltageType = 2;
                         break;
                     default:
-                        transformerVoltageType = 4;
+                        transformerVoltageType = 5;
                         break;
                 }
                 return transformerVoltageType;
@@ -196,7 +242,7 @@ namespace GMEPDesignTool
             {
                 transformer.Value.Powered = SetPowerRecursive(
                     transformer.Value.ParentId,
-                    findTransformerType(transformer.Value)
+                    findTransformerInputVoltage(transformer.Value)
                 );
             }
         }
@@ -845,11 +891,9 @@ namespace GMEPDesignTool
                 "",
                 0,
                 "White",
-                0,
-                0,
+                1,
                 "",
-                false,
-                0,
+                1,
                 false
             );
             AddElectricalTransformer(electricalTransformer);
@@ -882,11 +926,9 @@ namespace GMEPDesignTool
             if (sender is ElectricalTransformer transformer)
             {
                 if (
-                    e.PropertyName == nameof(ElectricalTransformer.InputVoltageIndex)
-                    || e.PropertyName == nameof(ElectricalTransformer.OutputVoltageIndex)
+                    e.PropertyName == nameof(ElectricalTransformer.Voltage)
                     || e.PropertyName == nameof(ElectricalTransformer.ParentId)
                     || e.PropertyName == nameof(ElectricalTransformer.Name)
-                    || e.PropertyName == nameof(ElectricalTransformer.IsThreePhase)
                 )
                 {
                     if (checkCycles(transformer.Id))
