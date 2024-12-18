@@ -37,6 +37,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
+        public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
 
@@ -54,6 +55,7 @@ namespace GMEPDesignTool
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
+            Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
 

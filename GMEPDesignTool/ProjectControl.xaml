@@ -315,25 +315,25 @@
                                 
                                 <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" Margin="0 3 0 0" >
                                     <Label Content="Category" Margin="0 3 0 0"/>
-                                    <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Content">
-                                        <ComboBoxItem Content="" />
-                                        <ComboBoxItem Content="General" />
-                                        <ComboBoxItem Content="Mechanical" />
-                                        <ComboBoxItem Content="Lighting" />
-                                        <ComboBoxItem Content="Plumbing" />
+                                    <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Tag">
+                                        <ComboBoxItem Content="" Tag="" />
+                                        <ComboBoxItem Content="General" Tag="1" />
+                                        <ComboBoxItem Content="Mechanical" Tag="2" />
+                                        <ComboBoxItem Content="Lighting" Tag="3" />
+                                        <ComboBoxItem Content="Plumbing" Tag="4" />
                                     </ComboBox>
                                     <Label Content="Panel" Margin="150 3 0 0"/>
                                     <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
                                     <Label Content="Voltage" Margin="280 3 0 0"/>
-                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Content" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
-                                        <ComboBoxItem Content="" Background="White" />
-                                        <ComboBoxItem Content="115" Background="NavajoWhite" />
-                                        <ComboBoxItem Content="120" Background="PaleGoldenrod"/>
-                                        <ComboBoxItem Content="208" Background="PaleGreen"/>
-                                        <ComboBoxItem Content="230" Background="PaleTurquoise"/>
-                                        <ComboBoxItem Content="240" Background="SkyBlue"/>
-                                        <ComboBoxItem Content="460" Background="Thistle"/>
-                                        <ComboBoxItem Content="480" Background="Plum"/>
+                                    <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Tag" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
+                                        <ComboBoxItem Content="" Background="White" Tag="" />
+                                        <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                        <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                        <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                        <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                        <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                        <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
+                                        <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
                                     </ComboBox>
                                     <Label Content="Phase" Margin="420 3 0 0"/>
                                     <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
@@ -387,12 +387,9 @@
                                                         </Image>
                                                         <Rectangle Width="820" Height="55" Stroke="Gray" HorizontalAlignment="Left" Margin="0 28 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                         <Label Content="Owner" Margin="20 23 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 45 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Content">
-                                                            <ComboBoxItem Content="Arco" />
-                                                            <ComboBoxItem Content="Chick-Fil-A" />
-                                                            <ComboBoxItem Content="Circle-K" />
-                                                            <ComboBoxItem Content="Shell" />
-                                                        </ComboBox>
+                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 45 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+
+
 
                                                         <Label Content="Equip #" Margin="200 23 0 0" FontWeight="Bold"/>
                                                         <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200 45 0 0" Width="69" Text="{Binding EquipNo}"></TextBox>

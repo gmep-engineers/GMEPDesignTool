@@ -70,6 +70,41 @@ namespace GMEPDesignTool.Database
             return id;
         }
 
+        public Dictionary<string, string> getOwners()
+        {
+            var owners = new Dictionary<string, string>();
+
+            try
+            {
+                OpenConnection();
+
+                string query = "SELECT id, name FROM owners";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, Connection))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string id = reader.GetString("id");
+                            string name = reader.GetString("name");
+                            owners.Add(id, name);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            finally
+            {
+                CloseConnection();
+            }
+
+            return owners;
+        }
+
         //Update Project Functions
         public void UpdateProject(
             string projectId,
@@ -317,7 +352,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET equip_no = @equip_no, parent_id = @parent_id, voltage_id = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
@@ -334,18 +369,19 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@category", equipment.Category);
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@group_id", equipment.Id);
+            command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.ExecuteNonQuery();
         }
 
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, voltage_id, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
-            //command.Parameters.AddWithValue("@owner", equipment.Owner);
+            command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
             command.Parameters.AddWithValue("@voltage", equipment.Voltage);
@@ -501,7 +537,7 @@ namespace GMEPDesignTool.Database
                     var newEquip = new ElectricalEquipment(
                         groupId,
                         reader.GetString("project_id"),
-                        "",
+                        reader.GetString("owner_id"),
                         reader.GetString("equip_no"),
                         0,
                         reader.GetString("parent_id"),
