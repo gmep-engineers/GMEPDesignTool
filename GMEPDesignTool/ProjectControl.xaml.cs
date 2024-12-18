@@ -47,8 +47,8 @@ namespace GMEPDesignTool
             InitializeComponent();
             ProjectId = database.GetProjectId(projectNo);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
-            //ElectricalServices = database.GetProjectServices(ProjectId);
-            ElectricalServices = new ObservableCollection<ElectricalService>();
+            ElectricalServices = database.GetProjectServices(ProjectId);
+            //ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             //ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
@@ -89,7 +89,7 @@ namespace GMEPDesignTool
         {
             database.UpdateProject(
                 ProjectId,
-                //ElectricalServices,
+                ElectricalServices,
                 ElectricalPanels,
                 ElectricalEquipments //,
             //ElectricalTransformers
@@ -164,7 +164,7 @@ namespace GMEPDesignTool
             }
             int findTransformerType(ElectricalTransformer transformer)
             {
-                var transformerVoltageType = 4;
+                var transformerVoltageType = 5;
                 var combinedInput = (transformer.InputVoltageIndex, transformer.IsThreePhase);
                 switch (combinedInput)
                 {
@@ -608,9 +608,9 @@ namespace GMEPDesignTool
                 Guid.NewGuid().ToString(),
                 ProjectId,
                 "",
-                0,
-                0,
-                "Switch Gear",
+                1,
+                1,
+                1,
                 "White"
             );
             AddElectricalService(electricalService);

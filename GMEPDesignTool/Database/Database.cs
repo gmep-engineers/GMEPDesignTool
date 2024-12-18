@@ -73,7 +73,7 @@ namespace GMEPDesignTool.Database
         //Update Project Functions
         public void UpdateProject(
             string projectId,
-            //ObservableCollection<ElectricalService> services,
+            ObservableCollection<ElectricalService> services,
             ObservableCollection<ElectricalPanel> panels,
             ObservableCollection<ElectricalEquipment> equipments //,
         // ObservableCollection<ElectricalTransformer> transformers
@@ -81,7 +81,7 @@ namespace GMEPDesignTool.Database
         {
             OpenConnection();
 
-            //UpdateServices(projectId, services);
+            UpdateServices(projectId, services);
             UpdatePanels(projectId, panels);
             UpdateEquipments(projectId, equipments);
             //UpdateTransformers(projectId, transformers);
@@ -425,33 +425,33 @@ namespace GMEPDesignTool.Database
             }
         }
 
-        /* public ObservableCollection<ElectricalService> GetProjectServices(string projectId)
-         {
-             ObservableCollection<ElectricalService> services =
-                 new ObservableCollection<ElectricalService>();
-             string query = "SELECT * FROM electrical_services WHERE project_id = @projectId";
-             OpenConnection();
-             MySqlCommand command = new MySqlCommand(query, Connection);
-             command.Parameters.AddWithValue("@projectId", projectId);
-             MySqlDataReader reader = command.ExecuteReader();
-             while (reader.Read())
-             {
-                 services.Add(
-                     new ElectricalService(
-                         reader.GetString("id"),
-                         reader.GetString("project_id"),
-                         reader.GetString("name"),
-                         reader.GetInt32("electrical_service_type"),
-                         reader.GetInt32("electrical_service_amp"),
-                         reader.GetString("electrical_service_meter_config"),
-                         reader.GetString("color_code")
-                     )
-                 );
-             }
-             reader.Close();
-             CloseConnection();
-             return services;
-         }*/
+        public ObservableCollection<ElectricalService> GetProjectServices(string projectId)
+        {
+            ObservableCollection<ElectricalService> services =
+                new ObservableCollection<ElectricalService>();
+            string query = "SELECT * FROM electrical_services WHERE project_id = @projectId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                services.Add(
+                    new ElectricalService(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("name"),
+                        reader.GetInt32("electrical_service_voltage_id"),
+                        reader.GetInt32("electrical_service_amp_rating_id"),
+                        reader.GetInt32("electrical_service_meter_config_id"),
+                        reader.GetString("color_code")
+                    )
+                );
+            }
+            reader.Close();
+            CloseConnection();
+            return services;
+        }
 
         public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectId)
         {
