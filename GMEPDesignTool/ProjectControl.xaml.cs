@@ -49,10 +49,8 @@ namespace GMEPDesignTool
             ProjectId = database.GetProjectId(projectNo);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
-            //ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
-            //ElectricalTransformers = database.GetProjectTransformers(ProjectId);
-            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
+            ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             Owners = database.getOwners();

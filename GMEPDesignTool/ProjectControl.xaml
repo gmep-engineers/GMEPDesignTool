@@ -68,7 +68,7 @@
                                                     <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
                                                 </ComboBox>
                                                 <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="230 27 0 0"/>
-                                                <ComboBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="230 50 100 0" Width="50" SelectedValue="{Binding Amp}" SelectedValuePath="Tag">
+                                                <ComboBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="230 50 100 0" Width="60" SelectedValue="{Binding Amp}" SelectedValuePath="Tag">
                                                     <ComboBoxItem Content="100" Tag="1"/>
                                                     <ComboBoxItem Content="200" Tag="2"/>
                                                     <ComboBoxItem Content="400" Tag="3"/>
@@ -134,14 +134,14 @@
                                                             </ToolTip>
                                                         </Image.ToolTip>
                                                     </Image>
-                                                    <Rectangle Width="490" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+                                                    <Rectangle Width="250" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
 
 
                                                     <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
                                                     <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left"/>
                                                     
-                                                    <Label Content="Input Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                                                    <Label Content="Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
                                                         <ComboBoxItem Content="480V-120/208V-3" Tag="1" />
                                                         <ComboBoxItem Content="208V-277/480V-3" Tag="2" />
                                                         <ComboBoxItem Content="480V-120/240V-3" Tag="3" />
@@ -151,17 +151,13 @@
                                                         <ComboBoxItem Content="240V-120/208V-1" Tag="7" />
                                                         <ComboBoxItem Content="208V-120/240V-1" Tag="8" />
                                                     </ComboBox>
-                                                    
-                                                   
-
-                                                    
-                                               
-                                                    <Label VerticalAlignment="Top" Margin="500,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="500 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                                    <Label VerticalAlignment="Top" Margin="500,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="500,55,0,0" HorizontalAlignment="Left"/>
-                                                    <Label VerticalAlignment="Top" Margin="610,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="610,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
+                    
+                                                    <Label VerticalAlignment="Top" Margin="270,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                                    <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="270 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label VerticalAlignment="Top" Margin="270,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="270,55,0,0" HorizontalAlignment="Left"/>
+                                                    <Label VerticalAlignment="Top" Margin="370,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="370,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
                                                 </Grid>
                                                 <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                     <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
