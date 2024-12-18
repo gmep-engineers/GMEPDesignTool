@@ -543,7 +543,7 @@ namespace GMEPDesignTool.Database
                         reader.GetString("parent_id"),
                         reader.GetInt32("voltage_id"),
                         reader.GetFloat("amp"),
-                        reader.GetInt32("voltage_id") * reader.GetFloat("amp"),
+                        idToVoltage(reader.GetInt32("voltage_id")) * reader.GetFloat("amp"),
                         reader.GetBoolean("is_three_phase"),
                         reader.GetString("spec_sheet_id"),
                         reader.GetInt32("aic_rating"),
@@ -568,6 +568,36 @@ namespace GMEPDesignTool.Database
             reader.Close();
             CloseConnection();
             return equipments;
+
+            float idToVoltage(int voltageId)
+            {
+                int voltage = 0;
+                switch (voltageId)
+                {
+                    case (1):
+                        voltage = 115;
+                        break;
+                    case (2):
+                        voltage = 120;
+                        break;
+                    case (3):
+                        voltage = 208;
+                        break;
+                    case (4):
+                        voltage = 230;
+                        break;
+                    case (5):
+                        voltage = 240;
+                        break;
+                    case (6):
+                        voltage = 460;
+                        break;
+                    case (7):
+                        voltage = 480;
+                        break;
+                }
+                return voltage;
+            }
         }
 
         public ObservableCollection<ElectricalTransformer> GetProjectTransformers(string projectId)
