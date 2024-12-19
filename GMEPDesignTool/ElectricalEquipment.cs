@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace GMEPDesignTool
 {
@@ -29,6 +30,7 @@ namespace GMEPDesignTool
 
         private string colorCode;
         private bool powered;
+        public CollectionViewSource voltageViewSource;
 
         public ElectricalEquipment(
             string id,
@@ -67,8 +69,34 @@ namespace GMEPDesignTool
             this.category = category;
             this.colorCode = colorCode;
             this.powered = powered;
+            this.voltageViewSource = new CollectionViewSource
+            {
+                Source = new Dictionary<int, string>
+                {
+                    { 1, "115" },
+                    { 2, "120" },
+                    { 3, "208" },
+                    { 4, "230" },
+                    { 5, "240" },
+                    { 6, "277" },
+                    { 7, "460" },
+                    { 8, "480" },
+                },
+            };
         }
 
+        public CollectionViewSource VoltageViewSource
+        {
+            get => voltageViewSource;
+            set
+            {
+                if (voltageViewSource != value)
+                {
+                    voltageViewSource = value;
+                    OnPropertyChanged(nameof(ColorCode));
+                }
+            }
+        }
         public string ColorCode
         {
             get => colorCode;

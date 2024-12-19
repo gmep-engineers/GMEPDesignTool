@@ -68,6 +68,7 @@ namespace GMEPDesignTool
             foreach (var equipment in ElectricalEquipments)
             {
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                equipment.VoltageViewSource
             }
             foreach (var transformer in ElectricalTransformers)
             {
