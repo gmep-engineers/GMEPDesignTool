@@ -579,9 +579,12 @@ namespace GMEPDesignTool
                     voltage = 240;
                     break;
                 case (6):
-                    voltage = 460;
+                    voltage = 277;
                     break;
                 case (7):
+                    voltage = 460;
+                    break;
+                case (8):
                     voltage = 480;
                     break;
             }
@@ -843,12 +846,36 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
+                if (e.PropertyName == nameof(ElectricalEquipment.Category))
+                {
+                    if (equipment.Category == 3)
+                    {
+                        Dispatcher.BeginInvoke(() => equipment.Voltage = 2);
+                    }
+                    else
+                    {
+                        Dispatcher.BeginInvoke(() => equipment.Voltage = 1);
+                    }
+                }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
                 )
                 {
-                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
+                    if (equipment.Category != 3)
+                    {
+                        equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
+                    }
+                }
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Va)
+                )
+                {
+                    if (equipment.Category == 3)
+                    {
+                        equipment.Amp = equipment.Va / idToVoltage(equipment.Voltage);
+                    }
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)

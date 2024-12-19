@@ -423,25 +423,21 @@
                                                       
                                                         
                                                         <Label Content="Voltage" Margin="300 23 0 0" FontWeight="Bold"/>
-                                                        <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                                                        <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
                                                             <ComboBox.Style>
                                                                 <Style TargetType="ComboBox">
                                                                     <Style.Triggers>
                                                                         <DataTrigger Binding="{Binding Category}" Value="1">
                                                                             <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                            <Setter Property="SelectedIndex" Value="0" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Category}" Value="2">
                                                                             <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                            <Setter Property="SelectedIndex" Value="0" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Category}" Value="3">
                                                                             <Setter Property="ItemsSource" Value="{StaticResource VoltageItemsCategory3}" />
-                                                                            <Setter Property="SelectedIndex" Value="0" />
                                                                         </DataTrigger>
                                                                         <DataTrigger Binding="{Binding Category}" Value="4">
                                                                             <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                            <Setter Property="SelectedIndex" Value="0" />
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
                                                                 </Style>
