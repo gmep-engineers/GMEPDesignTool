@@ -590,9 +590,12 @@ namespace GMEPDesignTool.Database
                         voltage = 240;
                         break;
                     case (6):
-                        voltage = 460;
+                        voltage = 277;
                         break;
                     case (7):
+                        voltage = 460;
+                        break;
+                    case (8):
                         voltage = 480;
                         break;
                 }

@@ -377,6 +377,22 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
+                                            <DataTemplate.Resources>
+                                                <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItemsCategory3">
+                                                    <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                    <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                                </x:Array>
+                                                <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItems">
+                                                    <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                                    <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                    <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                                    <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                                    <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                                    <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                                    <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
+                                                    <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
+                                                </x:Array>
+                                            </DataTemplate.Resources>
                                             <!-- Make Dynamic -->
                                             <Grid x:Name="EquipmentGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
@@ -407,24 +423,17 @@
                                                       
                                                         
                                                         <Label Content="Voltage" Margin="300 23 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
-                                                            <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
-                                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                            <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                                            <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                                            <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                                            <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
-                                                            <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
-                                                        </ComboBox>
+                                                        <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItems}" SelectedValue="{Binding Voltage}"/>
+
 
                                                         <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 23 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 45 0 0" Width="50" Text="{Binding Amp}"></TextBox>
+                                                        <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 45 0 0" Width="50" Text="{Binding Amp}"></TextBox>
 
-                                                        <Label Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 23 0 0" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 45 0 0" Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
+                                                        <Label x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 23 0 0" FontWeight="Bold"/>
+                                                        <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 45 0 0" Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
 
                                                         <Label Content="Phase" Margin="660 23 0 0" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="660 45 0 0" SelectedIndex="{Binding Is3Ph}">
+                                                        <ComboBox x:Name="PhaseBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="660 45 0 0" SelectedIndex="{Binding Is3Ph}">
                                                             <ComboBoxItem Content="1" />
                                                             <ComboBoxItem Content="3" />
                                                         </ComboBox>
@@ -471,6 +480,17 @@
                                                     <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
                                                     <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
                                                 </Trigger>
+                                                <DataTrigger Binding="{Binding Category}" Value="3">
+                                                    <Setter Value="Watts" Property="Content" TargetName="VALabel"/>
+                                                    <Setter Value="False" Property="IsEnabled" TargetName="PhaseBox"/>
+                                                    <Setter Value="0" Property="SelectedIndex" TargetName="PhaseBox"/>
+                                                    <Setter Value="False" TargetName="VABox" Property="IsReadOnly"/>
+                                                    <Setter Value="White" TargetName="VABox" Property="Background"/>
+                                                    <Setter Value="True" TargetName="AmpText" Property="IsReadOnly"/>
+                                                    <Setter Value="LightYellow" TargetName="AmpText" Property="Background"/>
+                                                    <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
+                                                    <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
+                                                </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
