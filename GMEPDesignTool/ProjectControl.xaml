@@ -423,26 +423,8 @@
                                                       
                                                         
                                                         <Label Content="Voltage" Margin="300 23 0 0" FontWeight="Bold"/>
-                                                        <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
-                                                            <ComboBox.Style>
-                                                                <Style TargetType="ComboBox">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Category}" Value="1">
-                                                                            <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Category}" Value="2">
-                                                                            <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Category}" Value="3">
-                                                                            <Setter Property="ItemsSource" Value="{StaticResource VoltageItemsCategory3}" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Category}" Value="4">
-                                                                            <Setter Property="ItemsSource" Value="{StaticResource VoltageItems}" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </ComboBox.Style>
-                                                        </ComboBox>
+                                                        <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItems}" SelectedValue="{Binding Voltage}"/>
+
 
                                                         <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 23 0 0" FontWeight="Bold"/>
                                                         <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="480 45 0 0" Width="50" Text="{Binding Amp}"></TextBox>
@@ -506,7 +488,8 @@
                                                     <Setter Value="White" TargetName="VABox" Property="Background"/>
                                                     <Setter Value="True" TargetName="AmpText" Property="IsReadOnly"/>
                                                     <Setter Value="LightYellow" TargetName="AmpText" Property="Background"/>
-                   
+                                                    <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
+                                                    <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
