@@ -852,7 +852,10 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
-                if (e.PropertyName == nameof(ElectricalEquipment.Category))
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Category)
+                    || e.PropertyName == nameof(ElectricalEquipment.ParentId)
+                )
                 {
                     equipment.VoltageViewSource.View.Refresh();
                     var voltage = equipment.Voltage;
@@ -962,13 +965,62 @@ namespace GMEPDesignTool
         {
             if (e.Item is KeyValuePair<int, string> voltageItem)
             {
+                e.Accepted = true; // Start with assuming acceptance
+
+                var parentId = equipment.ParentId;
+                foreach (var panel in ElectricalPanels)
+                {
+                    if (panel.Id == parentId)
+                    {
+                        e.Accepted = determineCompatiblePanelVoltage(panel.Type); // Combine with AND operator
+                    }
+                }
+
                 if (equipment != null && equipment.Category == 3)
                 {
-                    e.Accepted = voltageItem.Key == 2 || voltageItem.Key == 6;
+                    // Apply additional filter for category 3 using OR operator
+                    e.Accepted &= (voltageItem.Key == 2 || voltageItem.Key == 6);
                 }
-                else
+            }
+            bool determineCompatiblePanelVoltage(int panelVoltage)
+            {
+                switch (panelVoltage)
                 {
-                    e.Accepted = true;
+                    case 1:
+                        return (equipment.Is3Ph && voltageItem.Key == 3)
+                            || (!equipment.Is3Ph && (voltageItem.Key >= 1 && voltageItem.Key <= 3));
+                    case 2:
+                        return (
+                            !equipment.Is3Ph
+                            && (
+                                voltageItem.Key == 1
+                                || voltageItem.Key == 2
+                                || voltageItem.Key == 4
+                                || voltageItem.Key == 5
+                            )
+                        );
+                    case 3:
+                        return (equipment.Is3Ph && (voltageItem.Key == 7 || voltageItem.Key == 8))
+                            || (
+                                !equipment.Is3Ph
+                                && (
+                                    voltageItem.Key == 6
+                                    || voltageItem.Key == 8
+                                    || voltageItem.Key == 7
+                                )
+                            );
+                    case 4:
+                        return (equipment.Is3Ph && (voltageItem.Key == 4 || voltageItem.Key == 5))
+                            || (
+                                !equipment.Is3Ph
+                                && (
+                                    equipment.Voltage == 2
+                                    || equipment.Voltage == 4
+                                    || equipment.Voltage == 5
+                                )
+                            );
+                    default:
+                        return false;
                 }
             }
         }
