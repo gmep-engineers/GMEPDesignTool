@@ -426,6 +426,7 @@
                                                         <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="300 45 0 0" SelectedValuePath="Key" ItemsSource="{Binding VoltageViewSource.View}" SelectedValue="{Binding Voltage}">
                                                             <ComboBox.ItemTemplate>
                                                                 <DataTemplate>
+          
                                                                     <TextBlock Text="{Binding Value}"/>
                                                                 </DataTemplate>
                                                             </ComboBox.ItemTemplate>

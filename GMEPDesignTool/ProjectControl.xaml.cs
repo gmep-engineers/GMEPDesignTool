@@ -129,8 +129,16 @@ namespace GMEPDesignTool
                 transformer.Powered = false;
             }
 
+            Dictionary<string, ElectricalEquipment> equipments =
+                new Dictionary<string, ElectricalEquipment>();
+            foreach (var equipment in ElectricalEquipments)
+            {
+                equipments[equipment.Id] = equipment;
+                equipment.Powered = false;
+            }
+
             // Recursive function to set power for panels and transformers
-            bool SetPowerRecursive(string id, int requiredVoltage)
+            bool SetPowerRecursive(string id)
             {
                 if (string.IsNullOrEmpty(id))
                 {
@@ -138,114 +146,33 @@ namespace GMEPDesignTool
                 }
                 if (panels.TryGetValue(id, out var panel))
                 {
-                    if (panel.Type == requiredVoltage)
-                    {
-                        panel.Powered = SetPowerRecursive(panel.FedFromId, panel.Type);
-                        return panel.Powered;
-                    }
+                    panel.Powered = SetPowerRecursive(panel.FedFromId);
+                    return panel.Powered;
                 }
                 else if (transformers.TryGetValue(id, out var transformer))
                 {
-                    if (findTransformerOutputVoltage(transformer) == requiredVoltage)
-                    {
-                        transformer.Powered = SetPowerRecursive(
-                            transformer.ParentId,
-                            findTransformerInputVoltage(transformer)
-                        );
-                        return transformer.Powered;
-                    }
+                    transformer.Powered = SetPowerRecursive(transformer.ParentId);
+                    return transformer.Powered;
                 }
                 else if (services.TryGetValue(id, out var service))
                 {
-                    if (service.Type == requiredVoltage)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
-            }
-            int findTransformerInputVoltage(ElectricalTransformer transformer)
-            {
-                var transformerVoltageType = 5;
-                switch (transformer.Voltage)
-                {
-                    case (1):
-                        transformerVoltageType = 3;
-                        break;
-                    case (2):
-                        transformerVoltageType = 1;
-                        break;
-                    case (3):
-                        transformerVoltageType = 3;
-                        break;
-                    case (4):
-                        transformerVoltageType = 4;
-                        break;
-                    case (5):
-                        transformerVoltageType = 4;
-                        break;
-                    case (6):
-                        transformerVoltageType = 1;
-                        break;
-                    case (7):
-                        transformerVoltageType = 2;
-                        break;
-                    case (8):
-                        transformerVoltageType = 5;
-                        break;
-                    default:
-                        transformerVoltageType = 5;
-                        break;
-                }
-                return transformerVoltageType;
-            }
-            int findTransformerOutputVoltage(ElectricalTransformer transformer)
-            {
-                var transformerVoltageType = 5;
-                switch (transformer.Voltage)
-                {
-                    case (1):
-                        transformerVoltageType = 1;
-                        break;
-                    case (2):
-                        transformerVoltageType = 3;
-                        break;
-                    case (3):
-                        transformerVoltageType = 4;
-                        break;
-                    case (4):
-                        transformerVoltageType = 3;
-                        break;
-                    case (5):
-                        transformerVoltageType = 1;
-                        break;
-                    case (6):
-                        transformerVoltageType = 4;
-                        break;
-                    case (7):
-                        transformerVoltageType = 2;
-                        break;
-                    case (8):
-                        transformerVoltageType = 2;
-                        break;
-                    default:
-                        transformerVoltageType = 5;
-                        break;
-                }
-                return transformerVoltageType;
             }
 
             // Start the recursion from services
             foreach (var panel in panels)
             {
-                panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId, panel.Value.Type);
+                panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId);
             }
             foreach (var transformer in transformers)
             {
-                transformer.Value.Powered = SetPowerRecursive(
-                    transformer.Value.ParentId,
-                    findTransformerInputVoltage(transformer.Value)
-                );
+                transformer.Value.Powered = SetPowerRecursive(transformer.Value.ParentId);
+            }
+            foreach (var equipment in equipments)
+            {
+                equipment.Value.Powered = SetPowerRecursive(equipment.Value.ParentId);
             }
         }
 
@@ -680,8 +607,7 @@ namespace GMEPDesignTool
             if (sender is ElectricalPanel panel)
             {
                 if (
-                    e.PropertyName == nameof(ElectricalPanel.Type)
-                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                    e.PropertyName == nameof(ElectricalPanel.FedFromId)
                     || e.PropertyName == nameof(ElectricalPanel.Name)
                 )
                 {
@@ -768,10 +694,7 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalService service)
             {
-                if (
-                    e.PropertyName == nameof(ElectricalService.Type)
-                    || e.PropertyName == nameof(ElectricalService.Name)
-                )
+                if (e.PropertyName == nameof(ElectricalService.Name))
                 {
                     setPower();
                 }
@@ -855,12 +778,29 @@ namespace GMEPDesignTool
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Category)
                     || e.PropertyName == nameof(ElectricalEquipment.ParentId)
+                    || e.PropertyName == (nameof(ElectricalEquipment.Is3Ph))
                 )
                 {
                     equipment.VoltageViewSource.View.Refresh();
                     var voltage = equipment.Voltage;
-                    Dispatcher.BeginInvoke(() => equipment.Voltage = 9);
-                    Dispatcher.BeginInvoke(() => equipment.Voltage = voltage);
+
+                    var filteredItems = equipment
+                        .VoltageViewSource.View.OfType<KeyValuePair<int, string>>()
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                    if (filteredItems.TryGetValue(equipment.Voltage, out var value))
+                    {
+                        equipment.Voltage = 9;
+                        equipment.Voltage = voltage;
+                    }
+                    else
+                    {
+                        equipment.Voltage = 9;
+                        if (filteredItems.Any())
+                        {
+                            equipment.Voltage = filteredItems.Keys.First();
+                        }
+                    }
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -965,20 +905,19 @@ namespace GMEPDesignTool
         {
             if (e.Item is KeyValuePair<int, string> voltageItem)
             {
-                e.Accepted = true; // Start with assuming acceptance
+                e.Accepted = true;
 
                 var parentId = equipment.ParentId;
                 foreach (var panel in ElectricalPanels)
                 {
                     if (panel.Id == parentId)
                     {
-                        e.Accepted = determineCompatiblePanelVoltage(panel.Type); // Combine with AND operator
+                        e.Accepted = determineCompatiblePanelVoltage(panel.Type);
                     }
                 }
 
                 if (equipment != null && equipment.Category == 3)
                 {
-                    // Apply additional filter for category 3 using OR operator
                     e.Accepted &= (voltageItem.Key == 2 || voltageItem.Key == 6);
                 }
             }
@@ -1101,8 +1040,7 @@ namespace GMEPDesignTool
             if (sender is ElectricalTransformer transformer)
             {
                 if (
-                    e.PropertyName == nameof(ElectricalTransformer.Voltage)
-                    || e.PropertyName == nameof(ElectricalTransformer.ParentId)
+                    e.PropertyName == nameof(ElectricalTransformer.ParentId)
                     || e.PropertyName == nameof(ElectricalTransformer.Name)
                 )
                 {
