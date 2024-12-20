@@ -93,7 +93,7 @@ namespace GMEPDesignTool
                 if (voltageViewSource != value)
                 {
                     voltageViewSource = value;
-                    OnPropertyChanged(nameof(ColorCode));
+                    OnPropertyChanged(nameof(VoltageViewSource));
                 }
             }
         }

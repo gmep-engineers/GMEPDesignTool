@@ -68,7 +68,7 @@ namespace GMEPDesignTool
             foreach (var equipment in ElectricalEquipments)
             {
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
-                equipment.VoltageViewSource
+                equipment.VoltageViewSource.Filter += EquipmentVoltage_Filter;
             }
             foreach (var transformer in ElectricalTransformers)
             {
@@ -796,6 +796,7 @@ namespace GMEPDesignTool
         public void AddElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
             electricalEquipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+            electricalEquipment.VoltageViewSource.Filter += EquipmentVoltage_Filter;
             ElectricalEquipments.Add(electricalEquipment);
             StartTimer();
         }
@@ -828,6 +829,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
+            electricalEquipment.VoltageViewSource.Filter -= EquipmentVoltage_Filter;
             ElectricalEquipments.Remove(electricalEquipment);
             StartTimer();
         }
@@ -849,14 +851,7 @@ namespace GMEPDesignTool
             {
                 if (e.PropertyName == nameof(ElectricalEquipment.Category))
                 {
-                    if (equipment.Category == 3)
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 2);
-                    }
-                    else
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 1);
-                    }
+                    equipment.VoltageViewSource.View.Refresh();
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -954,6 +949,42 @@ namespace GMEPDesignTool
                     }
                 }
                 e.Accepted = isAccepted;
+            }
+        }
+
+        private void EquipmentVoltage_Filter(object sender, FilterEventArgs e)
+        {
+            if (sender is CollectionViewSource voltageViewSource)
+            {
+                if (e.Item is KeyValuePair<int, string> voltageItem)
+                {
+                    // Find the associated ElectricalEquipment object
+                    var equipment = FindAssociatedEquipment(voltageViewSource);
+
+                    if (equipment != null && equipment.Category == 3)
+                    {
+                        e.Accepted = voltageItem.Key == 2 || voltageItem.Key == 6;
+                    }
+                    else
+                    {
+                        e.Accepted = true;
+                    }
+                }
+                else
+                {
+                    e.Accepted = false;
+                }
+            }
+            ElectricalEquipment FindAssociatedEquipment(CollectionViewSource collectionViewSource)
+            {
+                foreach (var equipment in ElectricalEquipments)
+                {
+                    if (equipment.VoltageViewSource == collectionViewSource)
+                    {
+                        return equipment;
+                    }
+                }
+                return null;
             }
         }
 
