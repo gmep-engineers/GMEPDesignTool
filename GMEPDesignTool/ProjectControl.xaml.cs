@@ -638,7 +638,16 @@ namespace GMEPDesignTool
                 {
                     GetNames();
                 }
-
+                if (
+                    e.PropertyName == nameof(ElectricalPanel.Name)
+                    || e.PropertyName == nameof(ElectricalPanel.Type)
+                )
+                {
+                    foreach (var equipment in ElectricalEquipments)
+                    {
+                        refreshEquipmentVoltages(equipment);
+                    }
+                }
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
                 {
                     ChangeColors(panel.Id, panel.ColorCode);
@@ -781,26 +790,7 @@ namespace GMEPDesignTool
                     || e.PropertyName == (nameof(ElectricalEquipment.Is3Ph))
                 )
                 {
-                    equipment.VoltageViewSource.View.Refresh();
-                    var voltage = equipment.Voltage;
-
-                    var filteredItems = equipment
-                        .VoltageViewSource.View.OfType<KeyValuePair<int, string>>()
-                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-                    if (filteredItems.TryGetValue(equipment.Voltage, out var value))
-                    {
-                        equipment.Voltage = 9;
-                        equipment.Voltage = voltage;
-                    }
-                    else
-                    {
-                        equipment.Voltage = 9;
-                        if (filteredItems.Any())
-                        {
-                            equipment.Voltage = filteredItems.Keys.First();
-                        }
-                    }
+                    refreshEquipmentVoltages(equipment);
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -834,6 +824,30 @@ namespace GMEPDesignTool
                 }
 
                 StartTimer();
+            }
+        }
+
+        private void refreshEquipmentVoltages(ElectricalEquipment equipment)
+        {
+            equipment.VoltageViewSource.View.Refresh();
+            var voltage = equipment.Voltage;
+
+            var filteredItems = equipment
+                .VoltageViewSource.View.OfType<KeyValuePair<int, string>>()
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            if (filteredItems.TryGetValue(equipment.Voltage, out var value))
+            {
+                equipment.Voltage = 9;
+                equipment.Voltage = voltage;
+            }
+            else
+            {
+                equipment.Voltage = 9;
+                if (filteredItems.Any())
+                {
+                    equipment.Voltage = filteredItems.Keys.First();
+                }
             }
         }
 
@@ -953,9 +967,9 @@ namespace GMEPDesignTool
                             || (
                                 !equipment.Is3Ph
                                 && (
-                                    equipment.Voltage == 2
-                                    || equipment.Voltage == 4
-                                    || equipment.Voltage == 5
+                                    voltageItem.Key == 2
+                                    || voltageItem.Key == 4
+                                    || voltageItem.Key == 5
                                 )
                             );
                     default:
@@ -1095,6 +1109,18 @@ namespace GMEPDesignTool
                 }
             }
             return new ValidationResult(false, $"Value should be at least {Minimum}.");
+        }
+    }
+
+    public class NotEmptyValidationRule : ValidationRule
+    {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            if (string.IsNullOrWhiteSpace((string)value))
+            {
+                return new ValidationResult(false, "Field is required.");
+            }
+            return ValidationResult.ValidResult;
         }
     }
 }
