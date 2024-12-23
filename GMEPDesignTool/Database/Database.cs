@@ -69,6 +69,7 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return id;
         }
+    
 
         public Dictionary<string, string> getOwners()
         {

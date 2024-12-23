@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.Win32;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
@@ -1058,7 +1059,18 @@ namespace GMEPDesignTool
             PanelFilter.SelectedValue = "";
             EquipmentFilter.Text = "";
         }
-
+        private void ChangeSpecButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Handle the selected file path
+                string selectedFilePath = openFileDialog.FileName;
+                // You can bind this path to your ViewModel or handle it as needed
+                MessageBox.Show($"Selected file: {selectedFilePath}");
+            }
+        }
         private void ClrPcker_Background_SelectedColorChanged(
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
