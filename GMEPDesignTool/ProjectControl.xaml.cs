@@ -126,6 +126,13 @@ namespace GMEPDesignTool
                 transformers[transformer.Id] = transformer;
                 transformer.Powered = false;
             }
+            Dictionary<string, ElectricalEquipment> equipments =
+               new Dictionary<string, ElectricalEquipment>();
+            foreach (var equipment in ElectricalEquipments)
+            {
+                equipments[equipment.Id] = equipment;
+                equipment.Powered = false;
+            }
 
             // Recursive function to set power for panels and transformers
             bool SetPowerRecursive(string id, int requiredVoltage)
@@ -153,6 +160,31 @@ namespace GMEPDesignTool
                         return transformer.Powered;
                     }
                 }
+                else if (equipments.TryGetValue(id, out var equipment))
+                {
+                    foreach (var voltage in determineCompatibleEquipmentVoltage(equipment))
+                    {
+                        if (panels.TryGetValue(equipment.ParentId, out var panel2))
+                        {
+                            if (panel2.Type == voltage)
+                            {
+                                equipment.Powered = SetPowerRecursive(equipment.ParentId, voltage);
+                                return equipment.Powered;
+                            }
+                        }
+                        if (transformers.TryGetValue(equipment.ParentId, out var transformer2))
+                        {
+                            if (findTransformerOutputVoltage(transformer2) == voltage)
+                            {
+                                equipment.Powered = SetPowerRecursive(
+                                    transformer2.ParentId,
+                                    findTransformerInputVoltage(transformer2)
+                                );
+                                return equipment.Powered;
+                            }
+                        }
+                    }
+                }
                 else if (services.TryGetValue(id, out var service))
                 {
                     if (service.Type == requiredVoltage)
@@ -160,6 +192,7 @@ namespace GMEPDesignTool
                         return true;
                     }
                 }
+                
                 return false;
             }
             int findTransformerInputVoltage(ElectricalTransformer transformer)
@@ -232,6 +265,31 @@ namespace GMEPDesignTool
                 }
                 return transformerVoltageType;
             }
+            List<int> determineCompatibleEquipmentVoltage(ElectricalEquipment equipment)
+            {
+                List<int> compatibleVoltages = new List<int>();
+                if ((equipment.Is3Ph && equipment.Voltage == 3) ||
+                 (!equipment.Is3Ph && (equipment.Voltage >= 1 && equipment.Voltage <= 3)))
+                {
+                    compatibleVoltages.Add(1);
+                }
+                if (!equipment.Is3Ph &&
+                         (equipment.Voltage == 1 || equipment.Voltage == 2 || equipment.Voltage == 4 || equipment.Voltage == 5))
+                {
+                    compatibleVoltages.Add(2);
+                }
+                if ((equipment.Is3Ph && (equipment.Voltage == 7 || equipment.Voltage == 8)) ||
+                         (!equipment.Is3Ph && (equipment.Voltage == 6 || equipment.Voltage == 8 || equipment.Voltage == 7)))
+                {
+                    compatibleVoltages.Add(3);
+                }
+                if ((equipment.Is3Ph && (equipment.Voltage == 4 || equipment.Voltage == 5)) ||
+                         (!equipment.Is3Ph && (equipment.Voltage == 2 || equipment.Voltage == 4 || equipment.Voltage == 5)))
+                {
+                    compatibleVoltages.Add(4);
+                }
+               return compatibleVoltages;
+            }
 
             // Start the recursion from services
             foreach (var panel in panels)
@@ -244,6 +302,29 @@ namespace GMEPDesignTool
                     transformer.Value.ParentId,
                     findTransformerInputVoltage(transformer.Value)
                 );
+            }
+            foreach(var equipment in equipments)
+            {
+                foreach (var voltage in determineCompatibleEquipmentVoltage(equipment.Value))
+                {
+                    if (!string.IsNullOrEmpty(equipment.Value.ParentId) && (panels.TryGetValue(equipment.Value.ParentId, out var panel)))
+                    {
+                        if (panel.Type == voltage)
+                        {
+                            equipment.Value.Powered = SetPowerRecursive(equipment.Value.ParentId, voltage);
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(equipment.Value.ParentId) && transformers.TryGetValue(equipment.Value.ParentId, out var transformer))
+                    {
+                        if (findTransformerOutputVoltage(transformer) == voltage)
+                        {
+                            equipment.Value.Powered = SetPowerRecursive(
+                                transformer.ParentId,
+                                findTransformerInputVoltage(transformer)
+                            );
+                        }
+                    }
+                }
             }
         }
 
@@ -887,8 +968,12 @@ namespace GMEPDesignTool
                     setKVAs();
                     setAmps();
                 }
+                if (e.PropertyName == nameof(ElectricalEquipment.Voltage) || e.PropertyName == nameof(ElectricalEquipment.Is3Ph) || e.PropertyName == nameof(ElectricalEquipment.ParentId))
+                {
+                    setPower();
+                }
 
-                StartTimer();
+                 StartTimer();
             }
         }
 
