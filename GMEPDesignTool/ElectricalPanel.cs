@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace GMEPDesignTool
 {
@@ -27,6 +28,7 @@ namespace GMEPDesignTool
         private int _amp;
         private int _type;
         private bool _powered;
+        public CollectionViewSource _voltageViewSource;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -65,6 +67,29 @@ namespace GMEPDesignTool
             _amp = amp;
             _type = type;
             _powered = powered;
+            _voltageViewSource = new CollectionViewSource
+            {
+                Source = new Dictionary<int, string>
+                {
+                    { 1, "120/208V 3-Φ" },
+                    { 2, "120/240V 1-Φ" },
+                    { 3, "277/480V 3-Φ" },
+                    { 4, "120/240V 3-Φ" }
+                },
+            };
+        }
+
+        public CollectionViewSource VoltageViewSource
+        {
+            get => _voltageViewSource;
+            set
+            {
+                if (_voltageViewSource != value)
+                {
+                    _voltageViewSource = value;
+                    OnPropertyChanged(nameof(VoltageViewSource));
+                }
+            }
         }
 
         public string Id

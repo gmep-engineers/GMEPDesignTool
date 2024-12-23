@@ -64,6 +64,9 @@ namespace GMEPDesignTool
             foreach (var panel in ElectricalPanels)
             {
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                panel.VoltageViewSource.Filter += (sender, e) =>
+                    PanelVoltage_Filter(panel, e);
+            
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -439,6 +442,7 @@ namespace GMEPDesignTool
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+            electricalPanel.VoltageViewSource.Filter += (sender, e) => PanelVoltage_Filter(electricalPanel, e);
             ElectricalPanels.Add(electricalPanel);
             GetNames();
             StartTimer();
@@ -471,6 +475,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
+            electricalPanel.VoltageViewSource.Filter -= (sender, e) => PanelVoltage_Filter(electricalPanel, e);
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
             StartTimer();
@@ -630,6 +635,7 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
                 {
+                    refreshPanelVoltages(panel);
                     setKVAs();
                     setAmps();
                 }
@@ -638,21 +644,78 @@ namespace GMEPDesignTool
                 {
                     GetNames();
                 }
-                if (
-                    e.PropertyName == nameof(ElectricalPanel.Name)
-                    || e.PropertyName == nameof(ElectricalPanel.Type)
-                )
+                if (e.PropertyName == nameof(ElectricalPanel.Type))
                 {
                     foreach (var equipment in ElectricalEquipments)
                     {
                         refreshEquipmentVoltages(equipment);
+                    }
+                    foreach(var panel2 in ElectricalPanels)
+                    {
+                        if (panel != panel2){
+                            refreshPanelVoltages(panel2);
+                        }
                     }
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
                 {
                     ChangeColors(panel.Id, panel.ColorCode);
                 }
+              
                 StartTimer();
+            }
+        }
+
+        private void PanelVoltage_Filter(ElectricalPanel panel, FilterEventArgs e)
+        {
+            if (e.Item is KeyValuePair<int, string> voltageItem)
+            {
+                e.Accepted = false; // Initially set to false
+
+                var parentId = panel.FedFromId;
+                foreach (var panel2 in ElectricalPanels)
+                {
+                    if (panel2.Id == parentId)
+                    {
+                        e.Accepted = (panel2.Type == panel.Type);
+                        if (e.Accepted) break; // Exit loop if a match is found
+                    }
+                }
+
+                if (!e.Accepted) // Only check services if no matching panel was found
+                {
+                    foreach (var service in ElectricalServices)
+                    {
+                        if (service.Id == parentId)
+                        {
+                            e.Accepted = (service.Type == panel.Type);
+                            if (e.Accepted) break; // Exit loop if a match is found
+                        }
+                    }
+                }
+            }
+        }
+        private void refreshPanelVoltages(ElectricalPanel panel)
+        {
+            panel.VoltageViewSource.View.Refresh();
+            var voltage = panel.Type;
+
+            var filteredItems = panel
+                .VoltageViewSource.View.OfType<KeyValuePair<int, string>>()
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            if (filteredItems.TryGetValue(panel.Type, out var value))
+            {
+                panel.Type = 5;
+                panel.Type= voltage;
+            }
+            else
+            {
+                panel.Type = 5;
+                if (filteredItems.Any())
+                {
+                    panel.Type = filteredItems.Keys.First();
+                }
             }
         }
 
