@@ -822,6 +822,10 @@ namespace GMEPDesignTool
                     setKVAs();
                     setAmps();
                 }
+                if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
+                {
+                    setPower();
+                }
 
                 StartTimer();
             }
