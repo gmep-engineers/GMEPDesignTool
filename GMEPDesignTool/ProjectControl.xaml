@@ -397,20 +397,27 @@
                                             <Grid x:Name="EquipmentGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                                 <Grid Width="Auto">
                                                     <Grid Height="85" Width="Auto" VerticalAlignment="Top">
-                                                        <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
-                                                        <ComboBox Height="20" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 2 0 0" Text="meow"  SelectedValue="{Binding Category}" SelectedValuePath="Tag">
-                                                            <ComboBoxItem Content="General" Tag="1"/>
-                                                            <ComboBoxItem Content="Mechanical" Tag="2" />
-                                                            <ComboBoxItem Content="Lighting" Tag="3"/>
-                                                            <ComboBoxItem Content="Plumbing"  Tag="4"/>
-                                                        </ComboBox>
-                                                        <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="220,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
-                                                            <Image.ToolTip>
-                                                                <ToolTip>
-                                                                    <TextBlock Text="Powered" />
-                                                                </ToolTip>
-                                                            </Image.ToolTip>
-                                                        </Image>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
+                                                            <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
+                                                                <ComboBoxItem Content="General" Tag="1"/>
+                                                                <ComboBoxItem Content="Mechanical" Tag="2" />
+                                                                <ComboBoxItem Content="Lighting" Tag="3"/>
+                                                                <ComboBoxItem Content="Plumbing"  Tag="4"/>
+                                                            </ComboBox>
+                                                            <ComboBox x:Name="MountingBox" Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0"  SelectedValue="{Binding Mounting}" SelectedValuePath="Tag" Visibility="Collapsed">
+                                                                <ComboBoxItem Content="Recessed" Tag="1"/>
+                                                                <ComboBoxItem Content="Surface" Tag="2" />
+                                                                <ComboBoxItem Content="Pendant" Tag="3"/>
+                                                            </ComboBox>
+                                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                                                <Image.ToolTip>
+                                                                    <ToolTip>
+                                                                        <TextBlock Text="Powered" />
+                                                                    </ToolTip>
+                                                                </Image.ToolTip>
+                                                            </Image>
+                                                        </StackPanel>
                                                         <Rectangle Width="820" Height="55" Stroke="Gray" HorizontalAlignment="Left" Margin="0 28 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                         <Label Content="Owner" Margin="20 23 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20 45 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
@@ -490,6 +497,7 @@
                                                     <Setter Value="LightYellow" TargetName="AmpText" Property="Background"/>
                                                     <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
                                                     <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
+                                                    <Setter TargetName="MountingBox" Property="Visibility" Value="Visible"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>

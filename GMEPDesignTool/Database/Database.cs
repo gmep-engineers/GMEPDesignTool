@@ -352,7 +352,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, amp = @amp, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, mounting_type_id = @mounting WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
@@ -370,13 +370,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@group_id", equipment.Id);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
+            command.Parameters.AddWithValue("@mounting", equipment.Mounting);
             command.ExecuteNonQuery();
         }
 
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, amp, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, mounting_type_id) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @amp, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @mounting)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
@@ -396,6 +397,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@distanceFromParent", equipment.DistanceFromParent);
             command.Parameters.AddWithValue("@category", equipment.Category);
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
+            command.Parameters.AddWithValue("@mounting", equipment.Mounting);
             command.ExecuteNonQuery();
         }
 
@@ -551,7 +553,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("parent_distance"),
                         reader.GetInt32("category_id"),
                         reader.GetString("color_code"),
-                        false
+                        false,
+                        reader.GetInt32("mounting_type_id")
                     );
                     equipmentDict[groupId] = newEquip;
                     qtyDict[groupId] = 0;
