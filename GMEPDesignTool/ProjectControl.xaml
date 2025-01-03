@@ -394,9 +394,12 @@
                                                 </x:Array>
                                             </DataTemplate.Resources>
                                             <!-- Make Dynamic -->
-                                            <Grid x:Name="EquipmentGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
-                                                <Grid Width="Auto">
-                                                    <Grid Height="85" Width="Auto" VerticalAlignment="Top">
+                                            <Grid x:Name="EquipmentGrid" Margin="0 0 0 0" VerticalAlignment="Top">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="90"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid Grid.Row="0" Height="85" Width="Auto" VerticalAlignment="Top">
                                                         <StackPanel Orientation="Horizontal">
                                                             <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
                                                             <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
@@ -470,13 +473,14 @@
 
                                                         <Label Content="From Client" Margin="1305 42 150 0" FontWeight="Bold" />
                                                         <CheckBox Margin="1290 48 0 0" IsChecked="{Binding SpecSheetFromClient}" />
-                                                    </Grid>
-
-                                                </Grid>
-                                                <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right">
-                                                    <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                                    <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
-                                                </Grid>
+                                                 </Grid>
+                                                <Expander Grid.Row="1" HorizontalAlignment="Stretch" Header="Description" FontWeight="Bold">
+                                                    <TextBox Height="100" Margin="0 0 82 0"/>
+                                                </Expander>
+                                                <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
+                                                        <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
+                                                        <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                                 </Grid>
                                             </Grid>
                                             <DataTemplate.Triggers>
                                                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
