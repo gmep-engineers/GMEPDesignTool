@@ -25,6 +25,7 @@ namespace GMEPDesignTool
         int distanceFromParent;
         int category;
         int mounting;
+        private string description;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -49,7 +50,8 @@ namespace GMEPDesignTool
             int category,
             string colorCode,
             bool powered,
-            int mounting
+            int mounting,
+            string description
         )
         {
             this.id = id;
@@ -70,6 +72,20 @@ namespace GMEPDesignTool
             this.colorCode = colorCode;
             this.powered = powered;
             this.mounting = mounting;
+            this.description = description;
+        }
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
         }
 
         public string ColorCode

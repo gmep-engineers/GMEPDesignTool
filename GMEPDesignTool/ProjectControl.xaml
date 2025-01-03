@@ -474,8 +474,8 @@
                                                         <Label Content="From Client" Margin="1305 42 150 0" FontWeight="Bold" />
                                                         <CheckBox Margin="1290 48 0 0" IsChecked="{Binding SpecSheetFromClient}" />
                                                  </Grid>
-                                                <Expander Grid.Row="1" HorizontalAlignment="Stretch" Header="Description" FontWeight="Bold">
-                                                    <TextBox Height="100" Margin="0 0 82 0"/>
+                                                <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
+                                                    <TextBox Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}"/>
                                                 </Expander>
                                                 <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
