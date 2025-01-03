@@ -475,7 +475,7 @@
                                                         <CheckBox Margin="1290 48 0 0" IsChecked="{Binding SpecSheetFromClient}" />
                                                  </Grid>
                                                 <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
-                                                    <TextBox Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}"/>
+                                                    <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="25"/>
                                                 </Expander>
                                                 <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
@@ -502,6 +502,7 @@
                                                     <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
                                                     <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
                                                     <Setter TargetName="MountingBox" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="DescriptionBox" Property="MaxLength" Value="100"/>
                                                 </DataTrigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
