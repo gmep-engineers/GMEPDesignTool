@@ -24,6 +24,8 @@ namespace GMEPDesignTool
         private bool specSheetFromClient;
         int distanceFromParent;
         int category;
+        int mounting;
+        private string description;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,7 +49,9 @@ namespace GMEPDesignTool
             int distanceFromParent,
             int category,
             string colorCode,
-            bool powered
+            bool powered,
+            int mounting,
+            string description
         )
         {
             this.id = id;
@@ -67,6 +71,21 @@ namespace GMEPDesignTool
             this.category = category;
             this.colorCode = colorCode;
             this.powered = powered;
+            this.mounting = mounting;
+            this.description = description;
+        }
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
         }
 
         public string ColorCode
@@ -283,6 +302,18 @@ namespace GMEPDesignTool
                 {
                     aicRating = value;
                     OnPropertyChanged(nameof(AicRating));
+                }
+            }
+        }
+        public int Mounting
+        {
+            get => mounting;
+            set
+            {
+                if (mounting != value)
+                {
+                    mounting = value;
+                    OnPropertyChanged(nameof(Mounting));
                 }
             }
         }

@@ -127,7 +127,7 @@ namespace GMEPDesignTool
                 transformer.Powered = false;
             }
             Dictionary<string, ElectricalEquipment> equipments =
-               new Dictionary<string, ElectricalEquipment>();
+                new Dictionary<string, ElectricalEquipment>();
             foreach (var equipment in ElectricalEquipments)
             {
                 equipments[equipment.Id] = equipment;
@@ -192,7 +192,7 @@ namespace GMEPDesignTool
                         return true;
                     }
                 }
-                
+
                 return false;
             }
             int findTransformerInputVoltage(ElectricalTransformer transformer)
@@ -268,27 +268,54 @@ namespace GMEPDesignTool
             List<int> determineCompatibleEquipmentVoltage(ElectricalEquipment equipment)
             {
                 List<int> compatibleVoltages = new List<int>();
-                if ((equipment.Is3Ph && equipment.Voltage == 3) ||
-                 (!equipment.Is3Ph && (equipment.Voltage >= 1 && equipment.Voltage <= 3)))
+                if (
+                    (equipment.Is3Ph && equipment.Voltage == 3)
+                    || (!equipment.Is3Ph && (equipment.Voltage >= 1 && equipment.Voltage <= 3))
+                )
                 {
                     compatibleVoltages.Add(1);
                 }
-                if (!equipment.Is3Ph &&
-                         (equipment.Voltage == 1 || equipment.Voltage == 2 || equipment.Voltage == 4 || equipment.Voltage == 5))
+                if (
+                    !equipment.Is3Ph
+                    && (
+                        equipment.Voltage == 1
+                        || equipment.Voltage == 2
+                        || equipment.Voltage == 4
+                        || equipment.Voltage == 5
+                    )
+                )
                 {
                     compatibleVoltages.Add(2);
                 }
-                if ((equipment.Is3Ph && (equipment.Voltage == 7 || equipment.Voltage == 8)) ||
-                         (!equipment.Is3Ph && (equipment.Voltage == 6 || equipment.Voltage == 8 || equipment.Voltage == 7)))
+                if (
+                    (equipment.Is3Ph && (equipment.Voltage == 7 || equipment.Voltage == 8))
+                    || (
+                        !equipment.Is3Ph
+                        && (
+                            equipment.Voltage == 6
+                            || equipment.Voltage == 8
+                            || equipment.Voltage == 7
+                        )
+                    )
+                )
                 {
                     compatibleVoltages.Add(3);
                 }
-                if ((equipment.Is3Ph && (equipment.Voltage == 4 || equipment.Voltage == 5)) ||
-                         (!equipment.Is3Ph && (equipment.Voltage == 2 || equipment.Voltage == 4 || equipment.Voltage == 5)))
+                if (
+                    (equipment.Is3Ph && (equipment.Voltage == 4 || equipment.Voltage == 5))
+                    || (
+                        !equipment.Is3Ph
+                        && (
+                            equipment.Voltage == 2
+                            || equipment.Voltage == 4
+                            || equipment.Voltage == 5
+                        )
+                    )
+                )
                 {
                     compatibleVoltages.Add(4);
                 }
-               return compatibleVoltages;
+                return compatibleVoltages;
             }
 
             // Start the recursion from services
@@ -303,18 +330,27 @@ namespace GMEPDesignTool
                     findTransformerInputVoltage(transformer.Value)
                 );
             }
-            foreach(var equipment in equipments)
+            foreach (var equipment in equipments)
             {
                 foreach (var voltage in determineCompatibleEquipmentVoltage(equipment.Value))
                 {
-                    if (!string.IsNullOrEmpty(equipment.Value.ParentId) && (panels.TryGetValue(equipment.Value.ParentId, out var panel)))
+                    if (
+                        !string.IsNullOrEmpty(equipment.Value.ParentId)
+                        && (panels.TryGetValue(equipment.Value.ParentId, out var panel))
+                    )
                     {
                         if (panel.Type == voltage)
                         {
-                            equipment.Value.Powered = SetPowerRecursive(equipment.Value.ParentId, voltage);
+                            equipment.Value.Powered = SetPowerRecursive(
+                                equipment.Value.ParentId,
+                                voltage
+                            );
                         }
                     }
-                    if (!string.IsNullOrEmpty(equipment.Value.ParentId) && transformers.TryGetValue(equipment.Value.ParentId, out var transformer))
+                    if (
+                        !string.IsNullOrEmpty(equipment.Value.ParentId)
+                        && transformers.TryGetValue(equipment.Value.ParentId, out var transformer)
+                    )
                     {
                         if (findTransformerOutputVoltage(transformer) == voltage)
                         {
@@ -900,7 +936,9 @@ namespace GMEPDesignTool
                 0,
                 1,
                 "White",
-                false
+                false,
+                1,
+                ""
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -968,12 +1006,16 @@ namespace GMEPDesignTool
                     setKVAs();
                     setAmps();
                 }
-                if (e.PropertyName == nameof(ElectricalEquipment.Voltage) || e.PropertyName == nameof(ElectricalEquipment.Is3Ph) || e.PropertyName == nameof(ElectricalEquipment.ParentId))
+                if (
+                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
+                    || e.PropertyName == nameof(ElectricalEquipment.Is3Ph)
+                    || e.PropertyName == nameof(ElectricalEquipment.ParentId)
+                )
                 {
                     setPower();
                 }
 
-                 StartTimer();
+                StartTimer();
             }
         }
 
