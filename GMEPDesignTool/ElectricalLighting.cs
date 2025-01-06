@@ -16,7 +16,6 @@ namespace GMEPDesignTool
         private string manufacturer;
         private string modelNo;
         private int qty;
-        public int controlType;
         private bool occupancy;
         public int wattage;
         public bool emCapable;
@@ -37,7 +36,6 @@ namespace GMEPDesignTool
             string manufacturer,
             string modelNo,
             int qty,
-            int controlType,
             bool occupancy,
             int wattage,
             bool emCapable,
@@ -56,7 +54,6 @@ namespace GMEPDesignTool
             this.manufacturer = manufacturer;
             this.modelNo = modelNo;
             this.qty = qty;
-            this.controlType = controlType;
             this.occupancy = occupancy;
             this.wattage = wattage;
             this.emCapable = emCapable;
@@ -143,19 +140,6 @@ namespace GMEPDesignTool
                 {
                     qty = value;
                     OnPropertyChanged(nameof(Qty));
-                }
-            }
-        }
-
-        public int ControlType
-        {
-            get => controlType;
-            set
-            {
-                if (controlType != value)
-                {
-                    controlType = value;
-                    OnPropertyChanged(nameof(ControlType));
                 }
             }
         }

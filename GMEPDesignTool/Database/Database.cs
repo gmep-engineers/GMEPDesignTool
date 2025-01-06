@@ -111,7 +111,8 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalService> services,
             ObservableCollection<ElectricalPanel> panels,
             ObservableCollection<ElectricalEquipment> equipments,
-            ObservableCollection<ElectricalTransformer> transformers
+            ObservableCollection<ElectricalTransformer> transformers,
+            ObservableCollection<ElectricalLighting> lightings
         )
         {
             OpenConnection();
@@ -120,6 +121,7 @@ namespace GMEPDesignTool.Database
             UpdatePanels(projectId, panels);
             UpdateEquipments(projectId, equipments);
             UpdateTransformers(projectId, transformers);
+            UpdateLightings(projectId, lightings);
 
             CloseConnection();
         }
@@ -253,6 +255,65 @@ namespace GMEPDesignTool.Database
             }
         }
 
+        private void UpdateLightings(
+            string projectId,
+            ObservableCollection<ElectricalLighting> lightings
+        )
+        {
+            var existingLightingIds = GetExistingIds(
+                "electrical_lighting",
+                "project_id",
+                projectId
+            );
+
+            foreach (var lighting in lightings)
+            {
+                if (existingLightingIds.Contains(lighting.Id))
+                {
+                    SyncLightingQuantity(lighting);
+                    UpdateLighting(lighting);
+                    existingLightingIds.Remove(lighting.Id);
+                }
+                else
+                {
+                    InsertLighting(projectId, lighting);
+                }
+            }
+
+            DeleteRemovedItems("electrical_lighting", existingLightingIds);
+        }
+
+        public void SyncLightingQuantity(ElectricalLighting lighting)
+        {
+            // Get the current count of entries with the same group_id
+            string countQuery =
+                "SELECT COUNT(*) FROM electrical_lighting WHERE group_id = @groupId";
+            MySqlCommand countCommand = new MySqlCommand(countQuery, Connection);
+            countCommand.Parameters.AddWithValue("@groupId", lighting.Id);
+            int currentCount = Convert.ToInt32(countCommand.ExecuteScalar());
+
+            // If the current count is less than the qty, add new entries
+            if (currentCount < lighting.Qty)
+            {
+                int entriesToAdd = lighting.Qty - currentCount;
+                for (int i = 0; i < entriesToAdd; i++)
+                {
+                    InsertLighting(lighting.ProjectId, lighting);
+                }
+            }
+            // If the current count is more than the qty, remove excess entries
+            else if (currentCount > lighting.Qty)
+            {
+                int entriesToRemove = currentCount - lighting.Qty;
+                string deleteQuery =
+                    "DELETE FROM electrical_lighting WHERE group_id = @groupId LIMIT @limit";
+                MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, Connection);
+                deleteCommand.Parameters.AddWithValue("@groupId", lighting.Id);
+                deleteCommand.Parameters.AddWithValue("@limit", entriesToRemove);
+                deleteCommand.ExecuteNonQuery();
+            }
+        }
+
         private HashSet<string> GetExistingIds(
             string tableName,
             string columnName,
@@ -260,7 +321,7 @@ namespace GMEPDesignTool.Database
         )
         {
             var idType = "";
-            if (tableName == "electrical_equipment")
+            if (tableName == "electrical_equipment" || tableName == "electrical_lighting")
             {
                 idType = "group_id";
             }
@@ -400,6 +461,51 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@mounting", equipment.Mounting);
             command.Parameters.AddWithValue("@description", equipment.Description);
+            command.ExecuteNonQuery();
+        }
+
+        private void UpdateLighting(ElectricalLighting lighting)
+        {
+            string query =
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer_id = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId WHERE group_id = @group_id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
+            command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
+            command.Parameters.AddWithValue("@group_id", lighting.Id);
+            command.Parameters.AddWithValue("@manufacturer", lighting.Manufacturer);
+            command.Parameters.AddWithValue("@occupancy", lighting.Occupancy);
+            command.Parameters.AddWithValue("@wattage", lighting.Wattage);
+            command.Parameters.AddWithValue("@em_capable", lighting.EmCapable);
+            command.Parameters.AddWithValue("@mountingType", lighting.MountingType);
+            command.Parameters.AddWithValue("@tag", lighting.Tag);
+            command.Parameters.AddWithValue("@notes", lighting.Notes);
+            command.Parameters.AddWithValue("@voltageId", lighting.VoltageId);
+            command.Parameters.AddWithValue("@symbolId", lighting.SymbolId);
+            command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertLighting(string projectId, ElectricalLighting lighting)
+        {
+            string query =
+                "INSERT INTO electrical_lighting (id, group_id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id) VALUES (@id, @group_id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+            command.Parameters.AddWithValue("@group_id", lighting.Id);
+            command.Parameters.AddWithValue("@project_id", projectId);
+            command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
+            command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
+            command.Parameters.AddWithValue("@group_id", lighting.Id);
+            command.Parameters.AddWithValue("@manufacturer", lighting.Manufacturer);
+            command.Parameters.AddWithValue("@occupancy", lighting.Occupancy);
+            command.Parameters.AddWithValue("@wattage", lighting.Wattage);
+            command.Parameters.AddWithValue("@em_capable", lighting.EmCapable);
+            command.Parameters.AddWithValue("@mountingType", lighting.MountingType);
+            command.Parameters.AddWithValue("@tag", lighting.Tag);
+            command.Parameters.AddWithValue("@notes", lighting.Notes);
+            command.Parameters.AddWithValue("@voltageId", lighting.VoltageId);
+            command.Parameters.AddWithValue("@symbolId", lighting.SymbolId);
+            command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
             command.ExecuteNonQuery();
         }
 
@@ -607,6 +713,59 @@ namespace GMEPDesignTool.Database
                 }
                 return voltage;
             }
+        }
+
+        public ObservableCollection<ElectricalLighting> GetProjectLighting(string projectId)
+        {
+            ObservableCollection<ElectricalLighting> lightings =
+                new ObservableCollection<ElectricalLighting>();
+            string query = "SELECT * FROM electrical_lighting WHERE project_id = @projectId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            Dictionary<string, ElectricalLighting> lightingDict =
+                new Dictionary<string, ElectricalLighting>();
+            Dictionary<string, int> qtyDict = new Dictionary<string, int>();
+
+            while (reader.Read())
+            {
+                string groupId = reader.GetString("group_id");
+                if (!lightingDict.ContainsKey(groupId))
+                {
+                    var newLight = new ElectricalLighting(
+                        groupId,
+                        reader.GetString("project_id"),
+                        reader.GetString("parent_id"),
+                        reader.GetString("manufacturer_id"),
+                        reader.GetString("model_no"),
+                        0,
+                        reader.GetBoolean("occupancy"),
+                        reader.GetInt32("wattage"),
+                        reader.GetBoolean("em_capable"),
+                        reader.GetInt32("mounting_type_id"),
+                        reader.GetString("tag"),
+                        reader.GetString("notes"),
+                        reader.GetInt32("voltage_id"),
+                        reader.GetInt32("symbol_id"),
+                        reader.GetString("color_code"),
+                        false
+                    );
+                    lightingDict[groupId] = newLight;
+                    qtyDict[groupId] = 0;
+                }
+                qtyDict[groupId]++;
+            }
+
+            foreach (var pair in lightingDict)
+            {
+                pair.Value.Qty = qtyDict[pair.Key];
+                lightings.Add(pair.Value);
+            }
+
+            reader.Close();
+            CloseConnection();
+            return lightings;
         }
 
         public ObservableCollection<ElectricalTransformer> GetProjectTransformers(string projectId)
