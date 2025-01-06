@@ -403,8 +403,7 @@
                                                                 <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
                                                                     <ComboBoxItem Content="General" Tag="1"/>
                                                                     <ComboBoxItem Content="Mechanical" Tag="2" />
-                                                                    <ComboBoxItem Content="Lighting" Tag="3"/>
-                                                                    <ComboBoxItem Content="Plumbing"  Tag="4"/>
+                                                                    <ComboBoxItem Content="Plumbing"  Tag="3"/>
                                                                 </ComboBox>
                                                                 <ComboBox x:Name="MountingBox" Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0"  SelectedValue="{Binding Mounting}" SelectedValuePath="Tag" Visibility="Collapsed">
                                                                     <ComboBoxItem Content="Recessed" Tag="1"/>
@@ -505,19 +504,6 @@
                                                             <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
                                                             <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
                                                         </Trigger>
-                                                        <DataTrigger Binding="{Binding Category}" Value="3">
-                                                            <Setter Value="Watts" Property="Content" TargetName="VALabel"/>
-                                                            <Setter Value="False" Property="IsEnabled" TargetName="PhaseBox"/>
-                                                            <Setter Value="0" Property="SelectedIndex" TargetName="PhaseBox"/>
-                                                            <Setter Value="False" TargetName="VABox" Property="IsReadOnly"/>
-                                                            <Setter Value="White" TargetName="VABox" Property="Background"/>
-                                                            <Setter Value="True" TargetName="AmpText" Property="IsReadOnly"/>
-                                                            <Setter Value="LightYellow" TargetName="AmpText" Property="Background"/>
-                                                            <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
-                                                            <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
-                                                            <Setter TargetName="MountingBox" Property="Visibility" Value="Visible"/>
-                                                            <Setter TargetName="DescriptionBox" Property="MaxLength" Value="100"/>
-                                                        </DataTrigger>
                                                     </DataTemplate.Triggers>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -593,7 +579,7 @@
                                                         <StackPanel Orientation="Vertical" Grid.Row="0" Height="85" Width="Auto" VerticalAlignment="Top">
                                                             <StackPanel Orientation="Horizontal">
                                                                 <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
-                                                                <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Mounting}" SelectedValuePath="Tag">
+                                                                <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding MountingType}" SelectedValuePath="Tag">
                                                                     <ComboBoxItem Content="Recessed" Tag="1"/>
                                                                     <ComboBoxItem Content="Surface" Tag="2" />
                                                                     <ComboBoxItem Content="Pendant" Tag="3"/>

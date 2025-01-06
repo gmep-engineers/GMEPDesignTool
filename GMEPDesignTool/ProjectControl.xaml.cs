@@ -1028,36 +1028,12 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
-                if (e.PropertyName == nameof(ElectricalEquipment.Category))
-                {
-                    if (equipment.Category == 3)
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 2);
-                    }
-                    else
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 1);
-                    }
-                }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
                 )
                 {
-                    if (equipment.Category != 3)
-                    {
-                        equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
-                    }
-                }
-                if (
-                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Va)
-                )
-                {
-                    if (equipment.Category == 3)
-                    {
-                        equipment.Amp = equipment.Va / idToVoltage(equipment.Voltage);
-                    }
+                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
