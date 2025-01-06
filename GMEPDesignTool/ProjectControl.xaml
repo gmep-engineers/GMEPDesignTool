@@ -11,6 +11,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
     <UserControl.Resources>
         <CollectionViewSource x:Key="EquipmentViewSource" Source="{Binding ElectricalEquipments}" />
+        <CollectionViewSource x:Key="LightingViewSource" Source="{Binding ElectricalLightings}" />
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
     </UserControl.Resources>
     <Grid Background="White">
@@ -553,13 +554,13 @@
                                             </StackPanel>
                                             <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
                                                 <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 150 0" VerticalAlignment="Center"/>
-                                                <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalEquipment"/>
+                                                <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalLighting"/>
                                             </Grid>
                                             <Rectangle Width="9999" Height="1" Margin="0 38 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                         </Grid>
                                     </StackPanel>
                                     <ScrollViewer Margin="0 40 0 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                                        <ItemsControl ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" AlternationCount="2">
+                                        <ItemsControl ItemsSource="{Binding Source={StaticResource LightingViewSource}}" AlternationCount="2">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Vertical" Height="Auto"/>
@@ -568,7 +569,7 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <DataTemplate.Resources>
-                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItemsCategory3">
+                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItemsLighting">
                                                             <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
                                                             <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
                                                         </x:Array>
@@ -592,13 +593,7 @@
                                                         <StackPanel Orientation="Vertical" Grid.Row="0" Height="85" Width="Auto" VerticalAlignment="Top">
                                                             <StackPanel Orientation="Horizontal">
                                                                 <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
-                                                                <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
-                                                                    <ComboBoxItem Content="General" Tag="1"/>
-                                                                    <ComboBoxItem Content="Mechanical" Tag="2" />
-                                                                    <ComboBoxItem Content="Lighting" Tag="3"/>
-                                                                    <ComboBoxItem Content="Plumbing"  Tag="4"/>
-                                                                </ComboBox>
-                                                                <ComboBox x:Name="MountingBox" Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0"  SelectedValue="{Binding Mounting}" SelectedValuePath="Tag" Visibility="Collapsed">
+                                                                <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Mounting}" SelectedValuePath="Tag">
                                                                     <ComboBoxItem Content="Recessed" Tag="1"/>
                                                                     <ComboBoxItem Content="Surface" Tag="2" />
                                                                     <ComboBoxItem Content="Pendant" Tag="3"/>
@@ -616,31 +611,20 @@
                                                                     <Rectangle  Height="55" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                                     <StackPanel Orientation="Horizontal">
                                                                         <Grid Margin="10 0 0 0">
-                                                                            <Label Content="Owner" Margin="0 0 0 0" FontWeight="Bold"/>
-                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                                            <Label Content="Manufacturer ID" Margin="0 0 0 0" FontWeight="Bold"/>
+                                                                            <TextBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Text="{Binding Manufacturer}"/>
                                                                         </Grid>
-                                                                        <Grid Margin="20 0 0 0">
-                                                                            <Label Content="Equip #"  FontWeight="Bold"/>
-                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="69" Text="{Binding EquipNo}"></TextBox>
+                                                                        <Grid Margin="10 0 0 0">
+                                                                            <Label Content="Model #"  FontWeight="Bold"/>
+                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="69" Text="{Binding ModelNo}"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label Content="Voltage" FontWeight="Bold"/>
-                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItems}" SelectedValue="{Binding Voltage}"/>
-                                                                        </Grid>
-                                                                        <Grid Margin="20 0 0 0">
-                                                                            <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                            <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="50" Text="{Binding Amp}"></TextBox>
-                                                                        </Grid>
-                                                                        <Grid Margin="20 0 0 0">
-                                                                            <Label x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                            <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
+                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItemsLighting}" SelectedValue="{Binding VoltageId}"/>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 10 0">
-                                                                            <Label Content="Phase"  FontWeight="Bold"/>
-                                                                            <ComboBox x:Name="PhaseBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedIndex="{Binding Is3Ph}">
-                                                                                <ComboBoxItem Content="1" />
-                                                                                <ComboBoxItem Content="3" />
-                                                                            </ComboBox>
+                                                                            <Label  Content="Watts" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding Wattage}"></TextBox>
                                                                         </Grid>
                                                                     </StackPanel>
                                                                 </Grid>
@@ -662,22 +646,19 @@
                                                                     <ComboBox Height="20" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
                                                                     <Label Content="Distance" Margin="0 35 0 0" FontWeight="Bold"/>
-                                                                    <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 55 0 0" Width="150" Text="{Binding DistanceFromParent}"></TextBox>
+                                                                    <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 55 0 0" Width="150"></TextBox>
                                                                 </Grid>
 
                                                                 <Grid Margin="20 0 0 0">
                                                                     <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding AicRating}"></TextBox>
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70"></TextBox>
                                                                 </Grid>
 
                                                                 <Grid Margin="20 -40 0 0">
                                                                     <Button  Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                                     <Button Margin="0 60 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                                 </Grid>
-                                                                <Grid Margin="20 15 150 0" >
-                                                                    <CheckBox Margin="0 5 0 0" IsChecked="{Binding SpecSheetFromClient}" />
-                                                                    <Label Margin="15 0 0 0" Content="From Client" FontWeight="Bold" />
-                                                                </Grid>
+                                                               
                                                             </StackPanel>
                                                         </StackPanel>
                                                         <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
@@ -685,7 +666,7 @@
                                                         </Expander>
                                                         <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
-                                                            <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                                            <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalLighting" CommandParameter="{Binding}"/>
                                                         </Grid>
                                                     </Grid>
                                                     <DataTemplate.Triggers>
@@ -697,19 +678,6 @@
                                                             <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
                                                             <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
                                                         </Trigger>
-                                                        <DataTrigger Binding="{Binding Category}" Value="3">
-                                                            <Setter Value="Watts" Property="Content" TargetName="VALabel"/>
-                                                            <Setter Value="False" Property="IsEnabled" TargetName="PhaseBox"/>
-                                                            <Setter Value="0" Property="SelectedIndex" TargetName="PhaseBox"/>
-                                                            <Setter Value="False" TargetName="VABox" Property="IsReadOnly"/>
-                                                            <Setter Value="White" TargetName="VABox" Property="Background"/>
-                                                            <Setter Value="True" TargetName="AmpText" Property="IsReadOnly"/>
-                                                            <Setter Value="LightYellow" TargetName="AmpText" Property="Background"/>
-                                                            <Setter Value="{StaticResource VoltageItemsCategory3}" TargetName="VoltageBox" Property="ItemsSource"/>
-                                                            <Setter Value="{Binding Voltage}" TargetName="VoltageBox" Property="SelectedValue"/>
-                                                            <Setter TargetName="MountingBox" Property="Visibility" Value="Visible"/>
-                                                            <Setter TargetName="DescriptionBox" Property="MaxLength" Value="100"/>
-                                                        </DataTrigger>
                                                     </DataTemplate.Triggers>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

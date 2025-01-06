@@ -495,7 +495,6 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@project_id", projectId);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
-            command.Parameters.AddWithValue("@group_id", lighting.Id);
             command.Parameters.AddWithValue("@manufacturer", lighting.Manufacturer);
             command.Parameters.AddWithValue("@occupancy", lighting.Occupancy);
             command.Parameters.AddWithValue("@wattage", lighting.Wattage);
