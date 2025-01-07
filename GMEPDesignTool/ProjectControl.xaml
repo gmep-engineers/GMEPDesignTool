@@ -405,11 +405,7 @@
                                                                     <ComboBoxItem Content="Mechanical" Tag="2" />
                                                                     <ComboBoxItem Content="Plumbing"  Tag="3"/>
                                                                 </ComboBox>
-                                                                <ComboBox x:Name="MountingBox" Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0"  SelectedValue="{Binding Mounting}" SelectedValuePath="Tag" Visibility="Collapsed">
-                                                                    <ComboBoxItem Content="Recessed" Tag="1"/>
-                                                                    <ComboBoxItem Content="Surface" Tag="2" />
-                                                                    <ComboBoxItem Content="Pendant" Tag="3"/>
-                                                                </ComboBox>
+                                                               
                                                                 <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                                     <Image.ToolTip>
                                                                         <ToolTip>
@@ -521,21 +517,24 @@
                                         <Grid Background="Gainsboro">
                                             <StackPanel Orientation="Horizontal" Width="Auto" Height="37" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 3 0 0" >
                                                 <Label Content="Mounting" Margin="0 3 0 0"/>
-                                                <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0"  SelectedValuePath="Tag">
+                                                <ComboBox x:Name="MountingFilter" Height="20" Width="80" VerticalAlignment="Top" SelectionChanged="LightingFilter_SelectionChanged" HorizontalAlignment="Left" Margin="0 7 0 0"  SelectedValuePath="Tag">
                                                     <ComboBoxItem Content="" Tag="" />
-                                                    <ComboBoxItem Content="General" Tag="1" />
-                                                    <ComboBoxItem Content="Mechanical" Tag="2" />
-                                                    <ComboBoxItem Content="Lighting" Tag="3" />
-                                                    <ComboBoxItem Content="Plumbing" Tag="4" />
+                                                    <ComboBoxItem Content="Recessed" Tag="1" />
+                                                    <ComboBoxItem Content="Surface" Tag="2" />
+                                                    <ComboBoxItem Content="Pendant" Tag="3" />
+                                                </ComboBox>
+                                                <Label Content="Voltage" Margin="10 3 0 0"/>
+                                                <ComboBox x:Name="LightingVoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Tag" SelectionChanged="LightingFilter_SelectionChanged" HorizontalAlignment="Left" Margin="0 7 0 0">
+                                                    <ComboBoxItem Content="" Background="White" Tag="" />
+                                                    <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                    <ComboBoxItem Content="277" Background="Thistle" Tag="6"/>
                                                 </ComboBox>
                                                 <Label Content="Panel" Margin="10 3 0 0"/>
-                                                <ComboBox Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" ItemsSource="{Binding PanelNames}"  DisplayMemberPath="Value"/>
-
-
+                                                <ComboBox x:Name="LightingPanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" SelectionChanged="LightingFilter_SelectionChanged"  ItemsSource="{Binding PanelNames}"  DisplayMemberPath="Value"/>
                                                 <Label Content="Model #" Margin="10 3 0 0"/>
-                                                <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" Width="69"></TextBox>
+                                                <TextBox x:Name="ModelNumberFilter" Height="20" VerticalAlignment="Top" TextChanged="LightingFilter_TextChanged"  HorizontalAlignment="Left" Margin="0 7 0 0" Width="69"></TextBox>
                                                 <Label Margin="10 3 0 0">
-                                                    <Hyperlink TextDecorations="Underline" Foreground="Blue" >[reset filters]</Hyperlink>
+                                                    <Hyperlink TextDecorations="Underline" Click="LightingResetFilters_Click" Foreground="Blue" >[reset filters]</Hyperlink>
                                                 </Label>
                                             </StackPanel>
                                             <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">

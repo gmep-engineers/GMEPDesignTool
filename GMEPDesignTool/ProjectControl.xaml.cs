@@ -42,6 +42,8 @@ namespace GMEPDesignTool
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
 
+        public CollectionViewSource LightingViewSource { get; set; }
+
         public Database.Database database = new Database.Database();
 
         public ProjectControl(string projectNo)
@@ -58,6 +60,8 @@ namespace GMEPDesignTool
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
+            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
+            LightingViewSource.Filter += LightingViewSource_Filter;
 
             foreach (var service in ElectricalServices)
             {
@@ -1222,19 +1226,18 @@ namespace GMEPDesignTool
             }
         }
 
-        /*
-        private void EquipmentViewSource_Filter(object sender, FilterEventArgs e)
+        private void LightingViewSource_Filter(object sender, FilterEventArgs e)
         {
-            if (e.Item is ElectricalEquipment equipment)
+            if (e.Item is ElectricalLighting lighting)
             {
                 // Replace "FilterString" with the actual filter string
                 bool isAccepted = true;
                 if (
-                    !string.IsNullOrEmpty(EquipmentFilter.Text)
+                    !string.IsNullOrEmpty(ModelNumberFilter.Text)
                     && (
-                        equipment.EquipNo == null
-                        || !equipment.EquipNo.Contains(
-                            EquipmentFilter.Text,
+                        lighting.ModelNo == null
+                        || !lighting.ModelNo.Contains(
+                            ModelNumberFilter.Text,
                             StringComparison.OrdinalIgnoreCase
                         )
                     )
@@ -1243,68 +1246,60 @@ namespace GMEPDesignTool
                     isAccepted = false;
                 }
 
-                if (PanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
                 {
                     string panelKey = selectedPanel.Key;
                     if (
                         !string.IsNullOrEmpty(panelKey)
-                        && (equipment.ParentId == null || equipment.ParentId != panelKey)
+                        && (lighting.ParentId == null || lighting.ParentId != panelKey)
                     )
                     {
                         isAccepted = false;
                     }
                 }
                 if (
-                    VoltageFilter.SelectedValue is string selectedVoltageString
+                    LightingVoltageFilter.SelectedValue is string selectedVoltageString
                     && int.TryParse(selectedVoltageString, out int selectedVoltage)
                 )
                 {
                     Trace.Write(selectedVoltageString);
-                    if (equipment.Voltage != selectedVoltage)
+                    if (lighting.VoltageId != selectedVoltage)
                     {
                         isAccepted = false;
                     }
                 }
                 if (
-                    CategoryFilter.SelectedValue is string selectedCategory
+                    MountingFilter.SelectedValue is string selectedCategory
                     && selectedCategory != ""
                 )
                 {
-                    if (equipment.Category.ToString() != selectedCategory)
+                    if (lighting.MountingType.ToString() != selectedCategory)
                     {
                         isAccepted = false;
                     }
                 }
-                if (PhaseFilter.SelectedIndex > 0)
-                {
-                    bool is3Ph = PhaseFilter.SelectedIndex == 2;
-                    if (equipment.Is3Ph != is3Ph)
-                    {
-                        isAccepted = false;
-                    }
-                }
+
                 e.Accepted = isAccepted;
             }
         }
 
-        private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
+        private void LightingFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            EquipmentViewSource.View.Refresh();
+            LightingViewSource.View.Refresh();
         }
 
-        private void EquipmentFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LightingFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EquipmentViewSource.View.Refresh();
+            LightingViewSource.View.Refresh();
         }
 
-        private void ResetFilters_Click(object sender, RoutedEventArgs e)
+        private void LightingResetFilters_Click(object sender, RoutedEventArgs e)
         {
-            PhaseFilter.SelectedIndex = 0;
-            VoltageFilter.SelectedValue = "";
-            PanelFilter.SelectedValue = "";
-            EquipmentFilter.Text = "";
+            MountingFilter.SelectedIndex = 0;
+            LightingVoltageFilter.SelectedValue = "";
+            LightingPanelFilter.SelectedValue = "";
+            ModelNumberFilter.Text = "";
         }
-*/
 
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
