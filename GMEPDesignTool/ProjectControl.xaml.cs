@@ -34,12 +34,15 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
+        public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
+
+        public CollectionViewSource LightingViewSource { get; set; }
 
         public Database.Database database = new Database.Database();
 
@@ -51,11 +54,14 @@ namespace GMEPDesignTool
             ElectricalServices = database.GetProjectServices(ProjectId);
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = database.GetProjectTransformers(ProjectId);
+            ElectricalLightings = database.GetProjectLighting(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
+            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
+            LightingViewSource.Filter += LightingViewSource_Filter;
 
             foreach (var service in ElectricalServices)
             {
@@ -72,6 +78,10 @@ namespace GMEPDesignTool
             foreach (var transformer in ElectricalTransformers)
             {
                 transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            }
+            foreach (var lighting in ElectricalLightings)
+            {
+                lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             }
 
             this.DataContext = this;
@@ -92,7 +102,8 @@ namespace GMEPDesignTool
                 ElectricalServices,
                 ElectricalPanels,
                 ElectricalEquipments,
-                ElectricalTransformers
+                ElectricalTransformers,
+                ElectricalLightings
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
@@ -133,6 +144,13 @@ namespace GMEPDesignTool
                 equipments[equipment.Id] = equipment;
                 equipment.Powered = false;
             }
+            Dictionary<string, ElectricalLighting> lightings =
+                new Dictionary<string, ElectricalLighting>();
+            foreach (var lighting in ElectricalLightings)
+            {
+                lightings[lighting.Id] = lighting;
+                lighting.Powered = false;
+            }
 
             // Recursive function to set power for panels and transformers
             bool SetPowerRecursive(string id, int requiredVoltage)
@@ -162,7 +180,12 @@ namespace GMEPDesignTool
                 }
                 else if (equipments.TryGetValue(id, out var equipment))
                 {
-                    foreach (var voltage in determineCompatibleEquipmentVoltage(equipment))
+                    foreach (
+                        var voltage in determineCompatibleVoltage(
+                            equipment.Is3Ph,
+                            equipment.Voltage
+                        )
+                    )
                     {
                         if (panels.TryGetValue(equipment.ParentId, out var panel2))
                         {
@@ -181,6 +204,31 @@ namespace GMEPDesignTool
                                     findTransformerInputVoltage(transformer2)
                                 );
                                 return equipment.Powered;
+                            }
+                        }
+                    }
+                }
+                else if (lightings.TryGetValue(id, out var lighting))
+                {
+                    foreach (var voltage in determineCompatibleVoltage(false, lighting.VoltageId))
+                    {
+                        if (panels.TryGetValue(lighting.ParentId, out var panel2))
+                        {
+                            if (panel2.Type == voltage)
+                            {
+                                lighting.Powered = SetPowerRecursive(lighting.ParentId, voltage);
+                                return equipment.Powered;
+                            }
+                        }
+                        if (transformers.TryGetValue(lighting.ParentId, out var transformer2))
+                        {
+                            if (findTransformerOutputVoltage(transformer2) == voltage)
+                            {
+                                lighting.Powered = SetPowerRecursive(
+                                    transformer2.ParentId,
+                                    findTransformerInputVoltage(transformer2)
+                                );
+                                return lighting.Powered;
                             }
                         }
                     }
@@ -265,52 +313,27 @@ namespace GMEPDesignTool
                 }
                 return transformerVoltageType;
             }
-            List<int> determineCompatibleEquipmentVoltage(ElectricalEquipment equipment)
+            List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
             {
                 List<int> compatibleVoltages = new List<int>();
-                if (
-                    (equipment.Is3Ph && equipment.Voltage == 3)
-                    || (!equipment.Is3Ph && (equipment.Voltage >= 1 && equipment.Voltage <= 3))
-                )
+                if ((Is3Ph && Voltage == 3) || (!Is3Ph && (Voltage >= 1 && Voltage <= 3)))
                 {
                     compatibleVoltages.Add(1);
                 }
-                if (
-                    !equipment.Is3Ph
-                    && (
-                        equipment.Voltage == 1
-                        || equipment.Voltage == 2
-                        || equipment.Voltage == 4
-                        || equipment.Voltage == 5
-                    )
-                )
+                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 4 || Voltage == 5))
                 {
                     compatibleVoltages.Add(2);
                 }
                 if (
-                    (equipment.Is3Ph && (equipment.Voltage == 7 || equipment.Voltage == 8))
-                    || (
-                        !equipment.Is3Ph
-                        && (
-                            equipment.Voltage == 6
-                            || equipment.Voltage == 8
-                            || equipment.Voltage == 7
-                        )
-                    )
+                    (Is3Ph && (Voltage == 7 || Voltage == 8))
+                    || (!Is3Ph && (Voltage == 6 || Voltage == 8 || Voltage == 7))
                 )
                 {
                     compatibleVoltages.Add(3);
                 }
                 if (
-                    (equipment.Is3Ph && (equipment.Voltage == 4 || equipment.Voltage == 5))
-                    || (
-                        !equipment.Is3Ph
-                        && (
-                            equipment.Voltage == 2
-                            || equipment.Voltage == 4
-                            || equipment.Voltage == 5
-                        )
-                    )
+                    (Is3Ph && (Voltage == 4 || Voltage == 5))
+                    || (!Is3Ph && (Voltage == 2 || Voltage == 4 || Voltage == 5))
                 )
                 {
                     compatibleVoltages.Add(4);
@@ -332,7 +355,12 @@ namespace GMEPDesignTool
             }
             foreach (var equipment in equipments)
             {
-                foreach (var voltage in determineCompatibleEquipmentVoltage(equipment.Value))
+                foreach (
+                    var voltage in determineCompatibleVoltage(
+                        equipment.Value.Is3Ph,
+                        equipment.Value.Voltage
+                    )
+                )
                 {
                     if (
                         !string.IsNullOrEmpty(equipment.Value.ParentId)
@@ -355,6 +383,38 @@ namespace GMEPDesignTool
                         if (findTransformerOutputVoltage(transformer) == voltage)
                         {
                             equipment.Value.Powered = SetPowerRecursive(
+                                transformer.ParentId,
+                                findTransformerInputVoltage(transformer)
+                            );
+                        }
+                    }
+                }
+            }
+            foreach (var lighting in lightings)
+            {
+                foreach (var voltage in determineCompatibleVoltage(false, lighting.Value.VoltageId))
+                {
+                    if (
+                        !string.IsNullOrEmpty(lighting.Value.ParentId)
+                        && (panels.TryGetValue(lighting.Value.ParentId, out var panel))
+                    )
+                    {
+                        if (panel.Type == voltage)
+                        {
+                            lighting.Value.Powered = SetPowerRecursive(
+                                lighting.Value.ParentId,
+                                voltage
+                            );
+                        }
+                    }
+                    if (
+                        !string.IsNullOrEmpty(lighting.Value.ParentId)
+                        && transformers.TryGetValue(lighting.Value.ParentId, out var transformer)
+                    )
+                    {
+                        if (findTransformerOutputVoltage(transformer) == voltage)
+                        {
+                            lighting.Value.Powered = SetPowerRecursive(
                                 transformer.ParentId,
                                 findTransformerInputVoltage(transformer)
                             );
@@ -387,6 +447,13 @@ namespace GMEPDesignTool
                 if (equipment.ParentId == id)
                 {
                     equipment.ColorCode = colorCode;
+                }
+            }
+            foreach (var lighting in ElectricalLightings)
+            {
+                if (lighting.ParentId == id)
+                {
+                    lighting.ColorCode = colorCode;
                 }
             }
         }
@@ -965,36 +1032,12 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
-                if (e.PropertyName == nameof(ElectricalEquipment.Category))
-                {
-                    if (equipment.Category == 3)
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 2);
-                    }
-                    else
-                    {
-                        Dispatcher.BeginInvoke(() => equipment.Voltage = 1);
-                    }
-                }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Amp)
                 )
                 {
-                    if (equipment.Category != 3)
-                    {
-                        equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
-                    }
-                }
-                if (
-                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Va)
-                )
-                {
-                    if (equipment.Category == 3)
-                    {
-                        equipment.Amp = equipment.Va / idToVoltage(equipment.Voltage);
-                    }
+                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -1105,6 +1148,158 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+
+        //Lighting Functions
+
+        public void AddElectricalLighting(ElectricalLighting electricalLighting)
+        {
+            electricalLighting.PropertyChanged += ElectricalLighting_PropertyChanged;
+            ElectricalLightings.Add(electricalLighting);
+            StartTimer();
+        }
+
+        public void AddNewElectricalLighting(object sender, EventArgs e)
+        {
+            Trace.WriteLine("new panel");
+            ElectricalLighting electricalLighting = new ElectricalLighting(
+                Guid.NewGuid().ToString(),
+                ProjectId,
+                "",
+                "",
+                "",
+                1,
+                false,
+                0,
+                false,
+                1,
+                "",
+                "",
+                2,
+                1,
+                "White",
+                false
+            );
+            AddElectricalLighting(electricalLighting);
+        }
+
+        public void RemoveElectricalLighting(ElectricalLighting electricalLighting)
+        {
+            electricalLighting.PropertyChanged -= ElectricalLighting_PropertyChanged;
+            ElectricalLightings.Remove(electricalLighting);
+            StartTimer();
+        }
+
+        public void DeleteSelectedElectricalLighting(object sender, EventArgs e)
+        {
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalLighting electricalLighting
+            )
+            {
+                RemoveElectricalLighting(electricalLighting);
+            }
+        }
+
+        private void ElectricalLighting_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is ElectricalLighting lighting)
+            {
+                if (
+                    e.PropertyName == nameof(ElectricalLighting.VoltageId)
+                    || e.PropertyName == nameof(ElectricalLighting.Wattage)
+                    || e.PropertyName == nameof(ElectricalLighting.ParentId)
+                    || e.PropertyName == nameof(ElectricalLighting.Qty)
+                )
+                {
+                    setKVAs();
+                    setAmps();
+                }
+                if (
+                    e.PropertyName == nameof(ElectricalLighting.VoltageId)
+                    || e.PropertyName == nameof(ElectricalLighting.ParentId)
+                )
+                {
+                    setPower();
+                }
+
+                StartTimer();
+            }
+        }
+
+        private void LightingViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is ElectricalLighting lighting)
+            {
+                // Replace "FilterString" with the actual filter string
+                bool isAccepted = true;
+                if (
+                    !string.IsNullOrEmpty(ModelNumberFilter.Text)
+                    && (
+                        lighting.ModelNo == null
+                        || !lighting.ModelNo.Contains(
+                            ModelNumberFilter.Text,
+                            StringComparison.OrdinalIgnoreCase
+                        )
+                    )
+                )
+                {
+                    isAccepted = false;
+                }
+
+                if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                {
+                    string panelKey = selectedPanel.Key;
+                    if (
+                        !string.IsNullOrEmpty(panelKey)
+                        && (lighting.ParentId == null || lighting.ParentId != panelKey)
+                    )
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    LightingVoltageFilter.SelectedValue is string selectedVoltageString
+                    && int.TryParse(selectedVoltageString, out int selectedVoltage)
+                )
+                {
+                    Trace.Write(selectedVoltageString);
+                    if (lighting.VoltageId != selectedVoltage)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    MountingFilter.SelectedValue is string selectedCategory
+                    && selectedCategory != ""
+                )
+                {
+                    if (lighting.MountingType.ToString() != selectedCategory)
+                    {
+                        isAccepted = false;
+                    }
+                }
+
+                e.Accepted = isAccepted;
+            }
+        }
+
+        private void LightingFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LightingViewSource.View.Refresh();
+        }
+
+        private void LightingFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LightingViewSource.View.Refresh();
+        }
+
+        private void LightingResetFilters_Click(object sender, RoutedEventArgs e)
+        {
+            MountingFilter.SelectedIndex = 0;
+            LightingVoltageFilter.SelectedValue = "";
+            LightingPanelFilter.SelectedValue = "";
+            ModelNumberFilter.Text = "";
+        }
 
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
