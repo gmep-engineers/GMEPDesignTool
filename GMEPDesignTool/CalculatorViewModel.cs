@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 
 namespace GMEPDesignTool
@@ -26,18 +27,6 @@ namespace GMEPDesignTool
             ElectricalEquipments = equipments;
             ElectricalLightings = lightings;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class PanelCalculation : INotifyPropertyChanged
-    {
-        public PanelCalculation(ElectricalPanel panel) { }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
