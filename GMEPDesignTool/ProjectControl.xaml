@@ -25,6 +25,7 @@
             <TabItem Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top">
                 <Grid Background="White">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="200"/>
@@ -32,9 +33,14 @@
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="*"/>
-                
                     </Grid.RowDefinitions>
-                    <GroupBox Grid.Row="0" Header="Electrical Services"  VerticalAlignment="Top">
+                    <Grid Background="LightSlateGray">
+                        <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
+                        <Label Content="Electrical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25 0 0 0" FontWeight="Bold" Foreground="White"/>
+                        <Button Content="Calculate" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 20 0" FontWeight="Bold"/>
+                        
+                    </Grid>
+                    <GroupBox Grid.Row="1" Header="Electrical Services"  VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <!-- Make Dynamic -->
@@ -114,8 +120,8 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
-                    <GroupBox Grid.Row="2" Header="Transformers" Height="Auto" VerticalAlignment="Top">
+                    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GroupBox Grid.Row="3" Header="Transformers" Height="Auto" VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding ElectricalTransformers}" AlternationCount="2">
@@ -203,9 +209,9 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GridSplitter Grid.Row="4" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
                     <!-- New Transformer-->
-                    <GroupBox Grid.Row="4" Header="Panels" Height="Auto" VerticalAlignment="Top">
+                    <GroupBox Grid.Row="5" Header="Panels" Height="Auto" VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding ElectricalPanels}" AlternationCount="2">
@@ -319,9 +325,9 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="5" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GridSplitter Grid.Row="6" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
                     <!-- End Transformer-->
-                    <TabControl Grid.Row="6">
+                    <TabControl Grid.Row="7">
                         <TabItem Header="Equipment">
                             <GroupBox  Header="Equipment" Height="Auto" VerticalAlignment="Top" >
                                 <Grid Width="Auto">
