@@ -5,8 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="Calculator" Height="450" Width="800">
-    <Grid>
-        
+        Title="Calculator" Height="450" Width="800"
+        Icon="/GMEPE-LogoTransparent.png"
+        >
+    
+    <Grid Background="SlateGray">
+        <Border Background="Transparent" CornerRadius="5">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5" Color="Black" />
+            </Border.Effect>
+            <Grid Background="White" Margin="15 15 15 15">
+                <StackPanel Orientation="Vertical" >
+                    <Grid Height="30" >
+                        <Label Content="Panels"/>
+                    </Grid>
+                    <DataGrid AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID"/>
+                            <DataGridTextColumn Header="Name"/>
+                            <DataGridTextColumn  Header="Load Kva"/>
+                            <DataGridTextColumn Header="Load Amperage"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Grid Height="30" >
+                        <Label Content="Transformers"/>
+                    </Grid>
+                    <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ElectricalTransformers}">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="{Binding ColorCode}" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
+                            <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </StackPanel>
+                <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
+                    <Grid>
+                        <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  Margin="10,0,0,0" />
+                        <Label Content="GMEPE Design Tool" Margin="40 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
+                        <Button Content="Export" Width="100" Height="20" HorizontalAlignment="Right" Margin=" 0 0 10 0"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

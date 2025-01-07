@@ -1393,6 +1393,21 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
+
+        private void Calculate_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Calculator calculator = new Calculator(
+                    ElectricalServices,
+                    ElectricalPanels,
+                    ElectricalTransformers,
+                    ElectricalEquipments,
+                    ElectricalLightings
+                );
+                calculator.Show();
+            });
+        }
     }
 
     public class MinimumValueValidationRule : ValidationRule
