@@ -543,7 +543,7 @@ namespace GMEPDesignTool.Database
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
             var idType = "";
-            if (tableName == "electrical_equipment")
+            if (tableName == "electrical_equipment" || tableName == "electrical_lighting")
             {
                 idType = "group_id";
             }
