@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="Calculator" Height="450" Width="800"
-        Icon="/GMEPE-LogoTransparent.png"
+        Title="GMEP Design Tool" Height="450" Width="800"
+        Icon="/gmep.ico"
         >
     
     <Grid Background="SlateGray">
@@ -15,34 +15,28 @@
                 <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5" Color="Black" />
             </Border.Effect>
             <Grid Background="White" Margin="15 15 15 15">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="300"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0">
+                <GroupBox>
                     <GroupBox.Header>
                         <TextBlock FontSize="15" FontWeight="Bold" Foreground="DarkSlateGray">Results</TextBlock>
                     </GroupBox.Header>
                     <TabControl Margin="0 0 0 50">
-                    <TabItem Header="Panels">
-                        <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalPanels}">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="{Binding ColorCode}" />
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
-                                <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
-                                <DataGridTextColumn Binding="{Binding Kva}"  Header="Load Kva"/>
-                                <DataGridTextColumn Binding="{Binding Amp}" Header="Load Amperage"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </TabItem>
-                    <TabItem Header="Transformers">
-                        <GroupBox Header="Transformers"  Grid.Row="2" >
+                        <TabItem Header="Panels">
+                            <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalPanels}">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="{Binding ColorCode}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                    <DataGridTextColumn Binding="{Binding Kva}"  Header="Load Kva"/>
+                                    <DataGridTextColumn Binding="{Binding Amp}" Header="Load Amperage"/>
+                                    <DataGridTextColumn  Header="Status"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem Header="Transformers">
                             <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalTransformers}">
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
@@ -52,54 +46,52 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
                                     <DataGridTextColumn Binding="{Binding Name }" Header="Name"/>
-                                            <DataGridTemplateColumn Header="Kva">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <ComboBox Height="20" Margin="10 10 10 10" VerticalAlignment="Top" 
+                                    <DataGridTemplateColumn Header="Kva">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Height="20" Margin="10 10 10 10" VerticalAlignment="Top" 
                                   IsEnabled="False" 
                                   SelectedValue="{Binding Kva}" SelectedValuePath="Tag">
-                                                            <ComboBoxItem Content="45" Tag="1" />
-                                                            <ComboBoxItem Content="75" Tag="2" />
-                                                            <ComboBoxItem Content="112.5" Tag="3" />
-                                                            <ComboBoxItem Content="150" Tag="4" />
-                                                            <ComboBoxItem Content="225" Tag="5" />
-                                                            <ComboBoxItem Content="300" Tag="6" />
-                                                            <ComboBoxItem Content="500" Tag="7" />
-                                                            <ComboBoxItem Content="750" Tag="8" />
-                                                            <ComboBoxItem Content="1000" Tag="9" />
-                                                            <ComboBoxItem Content="1500" Tag="10" />
-                                                            <ComboBoxItem Content="2000" Tag="11" />
-                                                            <ComboBoxItem Content="2500" Tag="12" />
-                                                            <ComboBoxItem Content="TOO HIGH" Tag="13"/>
-                                                        </ComboBox>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                                <DataGridTemplateColumn.CellStyle>
-                                                    <Style TargetType="DataGridCell">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Kva}" Value="13">
-                                                                <Setter Property="Background" Value="Crimson" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </DataGridTemplateColumn.CellStyle>
-                                            </DataGridTemplateColumn>
-                                        </DataGrid.Columns>
+                                                    <ComboBoxItem Content="45" Tag="1" />
+                                                    <ComboBoxItem Content="75" Tag="2" />
+                                                    <ComboBoxItem Content="112.5" Tag="3" />
+                                                    <ComboBoxItem Content="150" Tag="4" />
+                                                    <ComboBoxItem Content="225" Tag="5" />
+                                                    <ComboBoxItem Content="300" Tag="6" />
+                                                    <ComboBoxItem Content="500" Tag="7" />
+                                                    <ComboBoxItem Content="750" Tag="8" />
+                                                    <ComboBoxItem Content="1000" Tag="9" />
+                                                    <ComboBoxItem Content="1500" Tag="10" />
+                                                    <ComboBoxItem Content="2000" Tag="11" />
+                                                    <ComboBoxItem Content="2500" Tag="12" />
+                                                    <ComboBoxItem Content="TOO HIGH" Tag="13"/>
+                                                </ComboBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellStyle>
+                                            <Style TargetType="DataGridCell">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Kva}" Value="13">
+                                                        <Setter Property="Background" Value="Crimson" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTemplateColumn.CellStyle>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Status"/>
+                                </DataGrid.Columns>
                             </DataGrid>
-                        </GroupBox>
-                    </TabItem>
-                </TabControl>
+                        </TabItem>
+                    </TabControl>
                 </GroupBox>
-                <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1"/>
-                <GroupBox Grid.Row="2" Header="wow"></GroupBox>
-            </Grid>
-            <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
-                <Grid>
-                    <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  Margin="10,0,0,0" />
-                    <Label Content="GMEPE Design Tool" Margin="40 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
-                    <Button Content="Export" Width="100" Height="20" HorizontalAlignment="Right" Margin=" 0 0 10 0"/>
-                </Grid>
-            </Border>
+                <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
+                    <Grid>
+                        <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  Margin="10,0,0,0" />
+                        <Label Content="GMEPE Design Tool" Margin="40 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
+                        <Image HorizontalAlignment="Right" Height="18" Width="18"  VerticalAlignment="Center"  Source="/Green_tick.png" Margin="0,0,120,0" />
+                        <Button Content="Export" Width="100" Height="20" HorizontalAlignment="Right" Margin=" 0 0 10 0"/>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
     </Grid>
