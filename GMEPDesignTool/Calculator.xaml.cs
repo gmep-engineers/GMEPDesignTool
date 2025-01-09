@@ -28,7 +28,10 @@ namespace GMEPDesignTool
 {
     public partial class Calculator : Window
     {
+        public string ProjectId;
+
         public Calculator(
+            string projectId,
             ObservableCollection<ElectricalService> services,
             ObservableCollection<ElectricalPanel> panels,
             ObservableCollection<ElectricalTransformer> transformers,
@@ -37,6 +40,7 @@ namespace GMEPDesignTool
         )
         {
             InitializeComponent();
+            this.ProjectId = projectId;
 
             // Create the ViewModel
             var viewModel = new CalculatorViewModel(

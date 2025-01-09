@@ -93,6 +93,7 @@ namespace GMEPDesignTool
             SaveText.Text = "";
             GetNames();
             setPower();
+            this.Unloaded += new RoutedEventHandler(Project_Unloaded);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -1398,14 +1399,44 @@ namespace GMEPDesignTool
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Calculator calculator1)
+                    {
+                        if (calculator1.ProjectId == ProjectId)
+                        {
+                            calculator1.Activate();
+                            return;
+                        }
+                    }
+                }
                 Calculator calculator = new Calculator(
+                    ProjectId,
                     ElectricalServices,
                     ElectricalPanels,
                     ElectricalTransformers,
                     ElectricalEquipments,
                     ElectricalLightings
                 );
+
                 calculator.Show();
+            });
+        }
+
+        public void Project_Unloaded(object? sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Calculator calculator)
+                    {
+                        if (calculator.ProjectId == ProjectId)
+                        {
+                            window.Close();
+                        }
+                    }
+                }
             });
         }
     }
