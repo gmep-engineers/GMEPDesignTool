@@ -12,10 +12,13 @@
     <None Remove="gmep.ico" />
     <None Remove="GMEPE-LogoTransparent.png" />
 	<None Include="PowerIcon.gif" />
+	<None Include="Green_tick.png" />
+	<None Include="RedX.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
@@ -24,6 +27,8 @@
     <Resource Include="gmep.ico" />
     <Resource Include="GMEPE-LogoTransparent.png" />
 	<Resource Include="PowerIcon.gif" />
+	<Resource Include="Green_tick.png" />
+	<Resource Include="RedX.png" />
   </ItemGroup>
 
   <ItemGroup>

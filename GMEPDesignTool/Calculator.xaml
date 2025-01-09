@@ -1,0 +1,133 @@
+﻿<Window x:Class="GMEPDesignTool.Calculator"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="GMEP Design Tool" Height="450" Width="800"
+        Icon="/gmep.ico"
+        >
+    
+    <Grid Background="SlateGray">
+        <Border Background="Transparent" CornerRadius="5">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="3" Opacity="0.5" Color="Black" />
+            </Border.Effect>
+            <Grid Background="White" Margin="15 15 15 15">
+                <GroupBox>
+                    <GroupBox.Header>
+                        <TextBlock FontSize="15" FontWeight="Bold" Foreground="DarkSlateGray">Results</TextBlock>
+                    </GroupBox.Header>
+                    <TabControl Margin="0 0 0 50">
+                        <TabItem Header="Panels">
+                            <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalPanels}">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="{Binding ColorCode}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
+                                    <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                    <DataGridTextColumn Binding="{Binding Kva}"  Header="Load Kva"/>
+                                    <DataGridTextColumn Binding="{Binding Amp}" Header="Load Amperage"/>
+                                    <DataGridTemplateColumn Header="Status">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="Green"/>
+                                                            <Setter Property="Text" Value="Okay!"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                            <Style.Triggers>
+                                                                <!-- Triggers -->
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                        <TabItem Header="Transformers">
+                            <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalTransformers}">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="{Binding ColorCode}" />
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
+                                    <DataGridTextColumn Binding="{Binding Name }" Header="Name"/>
+                                    <DataGridTemplateColumn Header="Kva">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox Height="20" Margin="10 10 10 10" VerticalAlignment="Top" 
+                                  IsEnabled="False" 
+                                  SelectedValue="{Binding Kva}" SelectedValuePath="Tag">
+                                                    <ComboBoxItem Content="45" Tag="1" />
+                                                    <ComboBoxItem Content="75" Tag="2" />
+                                                    <ComboBoxItem Content="112.5" Tag="3" />
+                                                    <ComboBoxItem Content="150" Tag="4" />
+                                                    <ComboBoxItem Content="225" Tag="5" />
+                                                    <ComboBoxItem Content="300" Tag="6" />
+                                                    <ComboBoxItem Content="500" Tag="7" />
+                                                    <ComboBoxItem Content="750" Tag="8" />
+                                                    <ComboBoxItem Content="1000" Tag="9" />
+                                                    <ComboBoxItem Content="1500" Tag="10" />
+                                                    <ComboBoxItem Content="2000" Tag="11" />
+                                                    <ComboBoxItem Content="2500" Tag="12" />
+                                                    <ComboBoxItem Content="TOO HIGH" Tag="13"/>
+                                                </ComboBox>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                        <DataGridTemplateColumn.CellStyle>
+                                            <Style TargetType="DataGridCell">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Kva}" Value="13">
+                                                        <Setter Property="Background" Value="Crimson" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTemplateColumn.CellStyle>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Status">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="Green"/>
+                                                            <Setter Property="Text" Value="Okay!"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Kva}" Value="13">
+                                                                    <Setter Property="Foreground" Value="Crimson"/>
+                                                                    <Setter Property="Text" Value="Error!"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </TabItem>
+                    </TabControl>
+                </GroupBox>
+                <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
+                    <Grid HorizontalAlignment="Center">
+                        <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  />
+                        <Label Content="GMEPE Design Tool" Margin="30 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

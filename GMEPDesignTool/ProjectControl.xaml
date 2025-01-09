@@ -25,6 +25,7 @@
             <TabItem Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top">
                 <Grid Background="White">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="200"/>
@@ -32,9 +33,14 @@
                         <RowDefinition Height="200"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="*"/>
-                
                     </Grid.RowDefinitions>
-                    <GroupBox Grid.Row="0" Header="Electrical Services"  VerticalAlignment="Top">
+                    <Grid Background="LightSlateGray">
+                        <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
+                        <Label Content="Electrical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25 0 0 0" FontWeight="Bold" Foreground="White"/>
+                        <Button Content="Calculate" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 20 0" FontWeight="Bold" Click="Calculate_Click"/>
+                        
+                    </Grid>
+                    <GroupBox Grid.Row="1" Header="Electrical Services"  VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <!-- Make Dynamic -->
@@ -114,8 +120,8 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
-                    <GroupBox Grid.Row="2" Header="Transformers" Height="Auto" VerticalAlignment="Top">
+                    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GroupBox Grid.Row="3" Header="Transformers" Height="Auto" VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding ElectricalTransformers}" AlternationCount="2">
@@ -157,23 +163,7 @@
                                                     <Label VerticalAlignment="Top" Margin="270,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
                                                     <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="270 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                     <Label VerticalAlignment="Top" Margin="270,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="270,55,0,0" HorizontalAlignment="Left"/>
-                                                    <Label VerticalAlignment="Top" Margin="370,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <ComboBox Height="20" VerticalAlignment="Top" Margin="370,50,150,0" HorizontalAlignment="Left" Width="90"  IsReadOnly="True" IsEnabled="False" SelectedValue="{Binding Kva}" SelectedValuePath="Tag">
-                                                        <ComboBoxItem Content="45" Tag="1"/>
-                                                        <ComboBoxItem Content="75" Tag="2"/>
-                                                        <ComboBoxItem Content="112.5" Tag="3"/>
-                                                        <ComboBoxItem Content="150" Tag="4"/>
-                                                        <ComboBoxItem Content="225" Tag="5"/>
-                                                        <ComboBoxItem Content="300" Tag="6"/>
-                                                        <ComboBoxItem Content="500" Tag="7"/>
-                                                        <ComboBoxItem Content="750" Tag="8"/>
-                                                        <ComboBoxItem Content="1000" Tag="9"/>
-                                                        <ComboBoxItem Content="1500" Tag="10"/>
-                                                        <ComboBoxItem Content="2000" Tag="11"/>
-                                                        <ComboBoxItem Content="2500" Tag="12"/>
-                                                        <ComboBoxItem Content="TOO HIGH" Tag="13"/>
-                                                    </ComboBox>
+                                                    <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="270,55,150,0" HorizontalAlignment="Left"/>
                                                 </Grid>
                                                 <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                     <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -203,9 +193,9 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GridSplitter Grid.Row="4" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
                     <!-- New Transformer-->
-                    <GroupBox Grid.Row="4" Header="Panels" Height="Auto" VerticalAlignment="Top">
+                    <GroupBox Grid.Row="5" Header="Panels" Height="Auto" VerticalAlignment="Top">
                         <Grid>
                             <ScrollViewer Margin="0 0 50 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <ItemsControl ItemsSource="{Binding ElectricalPanels}" AlternationCount="2">
@@ -284,12 +274,9 @@
                                                     <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                     <Label VerticalAlignment="Top" Margin="460,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
                                                     <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="460,55,0,0" HorizontalAlignment="Left"/>
-                                                    <Label VerticalAlignment="Top" Margin="560,28,0,0" HorizontalAlignment="Left" Content="KVA" FontWeight="Bold"/>
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="560,50,0,0" HorizontalAlignment="Left" Width="80" TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Kva}"/>
-                                                    <Label VerticalAlignment="Top" Margin="660,28,0,0" HorizontalAlignment="Left" Content="A" FontWeight="Bold" />
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="660,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" IsReadOnly="True" Background="LightYellow" Text="{Binding Amp}" />
-                                                    <Label VerticalAlignment="Top" Margin="760,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                                    <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="760,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
+                                       
+                                                    <Label VerticalAlignment="Top" Margin="560,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
+                                                    <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="560,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
                                                 </Grid>
                                                 <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                     <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -319,9 +306,9 @@
                             </Grid>
                         </Grid>
                     </GroupBox>
-                    <GridSplitter Grid.Row="5" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
+                    <GridSplitter Grid.Row="6" HorizontalAlignment="Stretch" Height="5" VerticalAlignment="Top"/>
                     <!-- End Transformer-->
-                    <TabControl Grid.Row="6">
+                    <TabControl Grid.Row="7">
                         <TabItem Header="Equipment">
                             <GroupBox  Header="Equipment" Height="Auto" VerticalAlignment="Top" >
                                 <Grid Width="Auto">

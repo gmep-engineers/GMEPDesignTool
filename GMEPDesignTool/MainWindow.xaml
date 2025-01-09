@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         xmlns:uc="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized"
+        Title="GMEP Design Tool" Height="450" Width="800" WindowState="Maximized"
         Icon="/gmep.ico">
  
     <Grid Margin="0,0,0,-6">
