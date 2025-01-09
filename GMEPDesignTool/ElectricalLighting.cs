@@ -26,6 +26,8 @@ namespace GMEPDesignTool
         public int symbolId;
         public string colorCode;
         private bool powered;
+        private string description;
+        private int dimmingId;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,7 +47,9 @@ namespace GMEPDesignTool
             int voltageId,
             int symbolId,
             string colorCode,
-            bool powered
+            bool powered,
+            string description,
+            int dimmingId
         )
         {
             this.id = id;
@@ -64,6 +68,8 @@ namespace GMEPDesignTool
             this.symbolId = symbolId;
             this.colorCode = colorCode;
             this.powered = powered;
+            this.description = description;
+            this.dimmingId = dimmingId;
         }
 
         public string Id
@@ -270,6 +276,32 @@ namespace GMEPDesignTool
                 {
                     powered = value;
                     OnPropertyChanged(nameof(Powered));
+                }
+            }
+        }
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+
+        public int DimmingId
+        {
+            get => dimmingId;
+            set
+            {
+                if (dimmingId != value)
+                {
+                    dimmingId = value;
+                    OnPropertyChanged(nameof(DimmingId));
                 }
             }
         }

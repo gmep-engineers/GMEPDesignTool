@@ -471,7 +471,7 @@
                                                             </StackPanel>
                                                         </StackPanel>
                                                         <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
-                                                            <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="25"/>
+                                                            <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="25" TextWrapping="Wrap" AcceptsReturn="True" />
                                                         </Expander>
                                                         <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
@@ -594,9 +594,22 @@
                                                                             <Label Content="Voltage" FontWeight="Bold"/>
                                                                             <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItemsLighting}" SelectedValue="{Binding VoltageId}"/>
                                                                         </Grid>
-                                                                        <Grid Margin="20 0 10 0">
+                                                                        <Grid Margin="20 0 0 0">
                                                                             <Label  Content="Watts" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
                                                                             <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding Wattage}"></TextBox>
+                                                                        </Grid>
+                                                                        <Grid Margin="20 0 0 0">
+                                                                            <Label Content="Dimming Type" FontWeight="Bold"/>
+                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding DimmingId}">
+                                                                                <ComboBoxItem Content="0-10V" Tag="1"/>
+                                                                                <ComboBoxItem Content="Line Voltage" Tag="2"/>
+                                                                                <ComboBoxItem Content="Switch" Tag="3"/>
+                                                                            </ComboBox>
+                                                                        </Grid>
+                                                                        <Grid Margin="20 25 10 0">
+                                                                            <CheckBox  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
+                                                                            <Label Content="EM" FontWeight="Bold" Margin="15 0 0 0"/>
+
                                                                         </Grid>
                                                                     </StackPanel>
                                                                 </Grid>
@@ -633,8 +646,15 @@
                                                                
                                                             </StackPanel>
                                                         </StackPanel>
-                                                        <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
-                                                            <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="25"/>
+                                                        <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description/Notes" FontWeight="Bold">
+                                                            <TabControl>
+                                                                <TabItem Header="Description">
+                                                                    <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="100" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                                </TabItem>
+                                                                <TabItem Header="Notes">
+                                                                    <TextBox Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Notes}" MaxLength="127" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                                </TabItem>
+                                                            </TabControl>
                                                         </Expander>
                                                         <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
