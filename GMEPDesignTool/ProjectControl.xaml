@@ -607,9 +607,7 @@
                                                                             </ComboBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 25 10 0">
-                                                                            <CheckBox  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
-                                                                            <Label Content="EM" FontWeight="Bold" Margin="15 0 0 0"/>
-
+                                                                            <CheckBox Content="EM" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
                                                                         </Grid>
                                                                     </StackPanel>
                                                                 </Grid>
@@ -634,16 +632,14 @@
                                                                     <TextBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 55 0 0" Width="150"></TextBox>
                                                                 </Grid>
 
-                                                                <Grid Margin="20 0 0 0">
-                                                                    <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70"></TextBox>
-                                                                </Grid>
-
                                                                 <Grid Margin="20 -40 0 0">
                                                                     <Button  Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                                     <Button Margin="0 60 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
                                                                 </Grid>
-                                                               
+                                                                <Grid Margin="20 25 10 0">
+                                                                    <CheckBox Content="From Client" FontWeight="Bold" IsChecked="{Binding SpecSheetFromClient}"/>
+                                                                </Grid>
+
                                                             </StackPanel>
                                                         </StackPanel>
                                                         <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description/Notes" FontWeight="Bold">

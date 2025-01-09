@@ -467,7 +467,7 @@ namespace GMEPDesignTool.Database
         private void UpdateLighting(ElectricalLighting lighting)
         {
             string query =
-                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer_id = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, dimming_type_id = @dimmingId WHERE group_id = @group_id";
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer_id = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, dimming_type_id = @dimmingId, spec_sheet_from_client=@specFromClient WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
@@ -484,14 +484,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
             command.Parameters.AddWithValue("@description", lighting.Description);
             command.Parameters.AddWithValue("@dimmingId", lighting.DimmingId);
-
+            command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.ExecuteNonQuery();
         }
 
         private void InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, group_id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, dimming_type_id) VALUES (@id, @group_id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @dimmingId)";
+                "INSERT INTO electrical_lighting (id, group_id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, dimming_type_id, spec_sheet_from_client) VALUES (@id, @group_id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @dimmingId, @specFromClient)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", lighting.Id);
@@ -510,6 +510,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
             command.Parameters.AddWithValue("@description", lighting.Description);
             command.Parameters.AddWithValue("@dimmingId", lighting.DimmingId);
+            command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.ExecuteNonQuery();
         }
 
@@ -755,7 +756,8 @@ namespace GMEPDesignTool.Database
                         reader.GetString("color_code"),
                         false,
                         reader.GetString("description"),
-                        reader.GetInt32("dimming_type_id")
+                        reader.GetInt32("dimming_type_id"),
+                        reader.GetBoolean("spec_sheet_from_client")
                     );
                     lightingDict[groupId] = newLight;
                     qtyDict[groupId] = 0;
