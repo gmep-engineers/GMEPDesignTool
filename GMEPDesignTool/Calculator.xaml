@@ -32,7 +32,24 @@
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
                                     <DataGridTextColumn Binding="{Binding Kva}"  Header="Load Kva"/>
                                     <DataGridTextColumn Binding="{Binding Amp}" Header="Load Amperage"/>
-                                    <DataGridTextColumn  Header="Status"/>
+                                    <DataGridTemplateColumn Header="Status">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="Green"/>
+                                                            <Setter Property="Text" Value="Okay!"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                            <Style.Triggers>
+                                                                <!-- Triggers -->
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>
@@ -78,18 +95,36 @@
                                             </Style>
                                         </DataGridTemplateColumn.CellStyle>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Status"/>
+                                    <DataGridTemplateColumn Header="Status">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="Green"/>
+                                                            <Setter Property="Text" Value="Okay!"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Kva}" Value="13">
+                                                                    <Setter Property="Foreground" Value="Crimson"/>
+                                                                    <Setter Property="Text" Value="Error!"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>
                     </TabControl>
                 </GroupBox>
                 <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
-                    <Grid>
-                        <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  Margin="10,0,0,0" />
-                        <Label Content="GMEPE Design Tool" Margin="40 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
-                        <Image HorizontalAlignment="Right" Height="18" Width="18"  VerticalAlignment="Center"  Source="/Green_tick.png" Margin="0,0,120,0" />
-                        <Button Content="Export" Width="100" Height="20" HorizontalAlignment="Right" Margin=" 0 0 10 0"/>
+                    <Grid HorizontalAlignment="Center">
+                        <Image HorizontalAlignment="Left" Height="30"  VerticalAlignment="Center" Width="30" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  />
+                        <Label Content="GMEPE Design Tool" Margin="30 0 0 0" VerticalAlignment="Center" FontWeight="Bold" Foreground="DarkSlateGray"/>
                     </Grid>
                 </Border>
             </Grid>
