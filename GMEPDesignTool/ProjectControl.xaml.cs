@@ -1178,6 +1178,9 @@ namespace GMEPDesignTool
                 2,
                 1,
                 "White",
+                false,
+                "",
+                3,
                 false
             );
             AddElectricalLighting(electricalLighting);
