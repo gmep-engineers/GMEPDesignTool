@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -1145,6 +1146,23 @@ namespace GMEPDesignTool
             EquipmentFilter.Text = "";
         }
 
+        private void UploadEquipmentSpec(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+            if (sender is Button button && button.CommandParameter is ElectricalEquipment equipment)
+            {
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string filePath = openFileDialog.FileName;
+                    byte[] fileData = File.ReadAllBytes(filePath);
+
+                    // Save the file data to the database
+                    //equipment.SpecSheet = fileData;
+                }
+            }
+        }
+
         private void ClrPcker_Background_SelectedColorChanged(
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
@@ -1181,7 +1199,8 @@ namespace GMEPDesignTool
                 false,
                 "",
                 3,
-                false
+                false,
+                []
             );
             AddElectricalLighting(electricalLighting);
         }
@@ -1303,6 +1322,46 @@ namespace GMEPDesignTool
             LightingVoltageFilter.SelectedValue = "";
             LightingPanelFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
+        }
+
+        public void UploadLightingSpec(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string filePath = openFileDialog.FileName;
+                    byte[] fileData = File.ReadAllBytes(filePath);
+                    lighting.SpecSheet = fileData;
+                }
+            }
+        }
+
+        public void ViewLightingSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                if (lighting.SpecSheet != null && lighting.SpecSheet.Length > 0)
+                {
+                    string filePath = System.IO.Path.Combine(
+                        System.IO.Path.GetTempPath(),
+                        $"{lighting.Id}_SpecSheet.pdf"
+                    );
+                    File.WriteAllBytes(filePath, lighting.SpecSheet);
+                    Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No spec sheet available for this lighting.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
         }
 
         //Transformer Functions
