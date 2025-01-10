@@ -460,10 +460,46 @@
                                                                     <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding AicRating}"></TextBox>
                                                                 </Grid>
 
-                                                                <Grid Margin="20 -40 0 0">
-                                                                    <Button  Height="20" Width="100" Content="View Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
-                                                                    <Button Margin="0 60 0 0" Height="20" Width="100" Content="Change Spec" FontWeight="Bold" HorizontalAlignment="Left"/>
-                                                                </Grid>
+                                                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 0 0 0">
+                                                                    <Button Height="20" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
+                                                                        <Button.Style>
+                                                                            <Style TargetType="Button">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                                <Style.Triggers>
+                                                                                    <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
+                                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                    </DataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Button.Style>
+                                                                    </Button>
+                                                                    <StackPanel Orientation="Horizontal" Margin="0 0 0 2">
+                                                                        <Button Height="20" Width="100" FontWeight="Bold" HorizontalAlignment="Center" Click="UploadSpec" CommandParameter="{Binding}">
+                                                                            <Button.Style>
+                                                                                <Style TargetType="Button">
+                                                                                    <Setter Property="Content" Value="Change Spec"/>
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
+                                                                                            <Setter Property="Content" Value="Upload Spec"/>
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </Button.Style>
+                                                                        </Button>
+                                                                        <Button Height="20" Width="50" FontSize="9" Content="Delete" Background="Crimson" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Click="DeleteSpec" CommandParameter="{Binding}">
+                                                                            <Button.Style>
+                                                                                <Style TargetType="Button">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                    <Style.Triggers>
+                                                                                        <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
+                                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                                        </DataTrigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </Button.Style>
+                                                                        </Button>
+                                                                    </StackPanel>
+                                                                </StackPanel>
                                                                 <Grid Margin="20 15 150 0" >
                                                                     <CheckBox Margin="0 5 0 0" IsChecked="{Binding SpecSheetFromClient}" />
                                                                     <Label Margin="15 0 0 0" Content="From Client" FontWeight="Bold" />
@@ -633,7 +669,7 @@
                                                                 </Grid>
 
                                                                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 0 0 0">
-                                                                    <Button Height="20" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewLightingSpec" CommandParameter="{Binding}">
+                                                                    <Button Height="20" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
                                                                         <Button.Style>
                                                                             <Style TargetType="Button">
                                                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -646,7 +682,7 @@
                                                                         </Button.Style>
                                                                     </Button>
                                                                     <StackPanel Orientation="Horizontal" Margin="0 0 0 2">
-                                                                        <Button Height="20" Width="100" FontWeight="Bold" HorizontalAlignment="Center" Click="UploadLightingSpec" CommandParameter="{Binding}">
+                                                                        <Button Height="20" Width="100" FontWeight="Bold" HorizontalAlignment="Center" Click="UploadSpec" CommandParameter="{Binding}">
                                                                             <Button.Style>
                                                                                 <Style TargetType="Button">
                                                                                     <Setter Property="Content" Value="Change Spec"/>
@@ -658,7 +694,7 @@
                                                                                 </Style>
                                                                             </Button.Style>
                                                                         </Button>
-                                                                        <Button Height="20" Width="50" FontSize="9" Content="Delete" Background="Crimson" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Click="DeleteLightingSpec" CommandParameter="{Binding}">
+                                                                        <Button Height="20" Width="50" FontSize="9" Content="Delete" Background="Crimson" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Click="DeleteSpec" CommandParameter="{Binding}">
                                                                             <Button.Style>
                                                                                 <Style TargetType="Button">
                                                                                     <Setter Property="Visibility" Value="Visible"/>

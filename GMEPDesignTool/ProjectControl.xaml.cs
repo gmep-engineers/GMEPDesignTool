@@ -1016,6 +1016,10 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
+            if (electricalEquipment.SpecSheetId.Length != 0)
+            {
+                s3.DeleteFileAsync(electricalEquipment.SpecSheetId);
+            }
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
             ElectricalEquipments.Remove(electricalEquipment);
             StartTimer();
@@ -1148,27 +1152,12 @@ namespace GMEPDesignTool
             EquipmentFilter.Text = "";
         }
 
-        private void UploadEquipmentSpec(object sender, EventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
-            if (sender is Button button && button.CommandParameter is ElectricalEquipment equipment)
-            {
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    string filePath = openFileDialog.FileName;
-                    byte[] fileData = File.ReadAllBytes(filePath);
-
-                    // Save the file data to the database
-                    //equipment.SpecSheet = fileData;
-                }
-            }
-        }
-
         private void ClrPcker_Background_SelectedColorChanged(
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+
+
 
         //Lighting Functions
 
@@ -1330,57 +1319,7 @@ namespace GMEPDesignTool
             ModelNumberFilter.Text = "";
         }
 
-        public void UploadLightingSpec(object sender, EventArgs e)
-        {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
-            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
-            {
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    string filePath = openFileDialog.FileName;
-                    if (lighting.SpecSheetId.Length != 0) {
-                        s3.DeleteFileAsync(lighting.SpecSheetId);
-                    }
-                    string keyName = Guid.NewGuid().ToString();
-                    s3.UploadFileAsync(keyName, filePath);
-                    lighting.SpecSheetId = keyName;
-                }
-            }
-        }
-
-        public void ViewLightingSpec(object sender, EventArgs e)
-        {
-            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
-            {
-                if (lighting.SpecSheetId != null && lighting.SpecSheetId.Length > 0)
-                {
-                    string filePath = System.IO.Path.Combine(
-                        System.IO.Path.GetTempPath(),
-                        $"{lighting.Id}_SpecSheet.pdf"
-                    );
-                    s3.DownloadAndOpenFileAsync(lighting.SpecSheetId, filePath);
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "No spec sheet available for this lighting.",
-                        "Information",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information
-                    );
-                }
-            }
-        }
-
-        public void DeleteLightingSpec(object sender, EventArgs e)
-        {
-            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
-            {
-                s3.DeleteFileAsync(lighting.SpecSheetId);
-                lighting.SpecSheetId = "";
-            }
-        }
+   
 
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
@@ -1518,6 +1457,95 @@ namespace GMEPDesignTool
                     }
                 }
             });
+        }
+        public void UploadSpec(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+
+                if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+                {
+                    if (lighting.SpecSheetId.Length != 0)
+                    {
+                        s3.DeleteFileAsync(lighting.SpecSheetId);
+                    }
+                    string keyName = Guid.NewGuid().ToString();
+                    s3.UploadFileAsync(keyName, filePath);
+                    lighting.SpecSheetId = keyName;
+                }
+                else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+                {
+                    if (equipment.SpecSheetId.Length != 0)
+                    {
+                        s3.DeleteFileAsync(equipment.SpecSheetId);
+                    }
+                    string keyName = Guid.NewGuid().ToString();
+                    s3.UploadFileAsync(keyName, filePath);
+                    equipment.SpecSheetId = keyName;
+                }
+            }
+        }
+        
+
+        public void ViewSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                if (lighting.SpecSheetId != null && lighting.SpecSheetId.Length > 0)
+                {
+                    string filePath = System.IO.Path.Combine(
+                        System.IO.Path.GetTempPath(),
+                        $"{lighting.Id}_SpecSheet.pdf"
+                    );
+                    s3.DownloadAndOpenFileAsync(lighting.SpecSheetId, filePath);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No spec sheet available for this lighting.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
+            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            {
+                if (equipment.SpecSheetId != null && equipment.SpecSheetId.Length > 0)
+                {
+                    string filePath = System.IO.Path.Combine(
+                        System.IO.Path.GetTempPath(),
+                        $"{equipment.Id}_SpecSheet.pdf"
+                    );
+                    s3.DownloadAndOpenFileAsync(equipment.SpecSheetId, filePath);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No spec sheet available for this equipment.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
+        }
+
+        public void DeleteSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                s3.DeleteFileAsync(lighting.SpecSheetId);
+                lighting.SpecSheetId = "";
+            }
+            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            {
+                s3.DeleteFileAsync(equipment.SpecSheetId);
+                equipment.SpecSheetId = "";
+            }
         }
     }
 
