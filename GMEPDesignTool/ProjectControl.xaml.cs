@@ -1364,6 +1364,14 @@ namespace GMEPDesignTool
             }
         }
 
+        public void DeleteLightingSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                lighting.SpecSheet = [];
+            }
+        }
+
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
