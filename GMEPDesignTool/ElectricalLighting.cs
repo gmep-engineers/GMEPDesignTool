@@ -29,7 +29,7 @@ namespace GMEPDesignTool
         private string description;
         private int dimmingId;
         private bool specSheetFromClient;
-        private byte[] specSheet; // Added field
+        private string specSheet; // Added field
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,7 +53,7 @@ namespace GMEPDesignTool
             string description,
             int dimmingId,
             bool specSheetFromClient, // Added parameter
-            byte[] specSheet // Added parameter
+            string specSheet // Added parameter
         )
         {
             this.id = id;
@@ -325,7 +325,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public byte[] SpecSheet // Added property
+        public string SpecSheet // Added property
         {
             get => specSheet;
             set

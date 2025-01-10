@@ -1202,7 +1202,7 @@ namespace GMEPDesignTool
                 "",
                 3,
                 false,
-                []
+                ""
             );
             AddElectricalLighting(electricalLighting);
         }
@@ -1335,8 +1335,12 @@ namespace GMEPDesignTool
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string filePath = openFileDialog.FileName;
-                    byte[] fileData = File.ReadAllBytes(filePath);
-                    lighting.SpecSheet = fileData;
+                    if (lighting.SpecSheet.Length != 0) {
+                        s3.DeleteFileAsync(lighting.SpecSheet);
+                    }
+                    string keyName = Guid.NewGuid().ToString();
+                    s3.UploadFileAsync(keyName, filePath);
+                    lighting.SpecSheet = keyName;
                 }
             }
         }
@@ -1351,8 +1355,7 @@ namespace GMEPDesignTool
                         System.IO.Path.GetTempPath(),
                         $"{lighting.Id}_SpecSheet.pdf"
                     );
-                    File.WriteAllBytes(filePath, lighting.SpecSheet);
-                    Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+                    s3.DownloadAndOpenFileAsync(lighting.SpecSheet, filePath);
                 }
                 else
                 {
@@ -1370,7 +1373,8 @@ namespace GMEPDesignTool
         {
             if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
             {
-                lighting.SpecSheet = [];
+                s3.DeleteFileAsync(lighting.SpecSheet);
+                lighting.SpecSheet = "";
             }
         }
 

@@ -767,7 +767,7 @@ namespace GMEPDesignTool.Database
                         reader.GetString("description"),
                         reader.GetInt32("dimming_type_id"),
                         reader.GetBoolean("spec_sheet_from_client"),
-                        (byte[])reader["spec_sheet"]
+                        reader.GetString("spec_sheet")
                     );
                     lightingDict[groupId] = newLight;
                     qtyDict[groupId] = 0;
