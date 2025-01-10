@@ -9,6 +9,13 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
 using MySql.Data.MySqlClient;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using System.Diagnostics;
 
 namespace GMEPDesignTool.Database
 {
@@ -809,4 +816,98 @@ namespace GMEPDesignTool.Database
             return transformers;
         }
     }
+    public class S3
+    {
+        private readonly IAmazonS3 _s3Client;
+        private readonly string _bucketName;
+
+        public S3()
+        {
+            _bucketName = Properties.Settings.Default.bucket_name;
+            _s3Client = new AmazonS3Client(Properties.Settings.Default.aws_access_key_id, Properties.Settings.Default.aws_secret_access_key, RegionEndpoint.USEast1);
+        }
+
+        public async Task UploadFileAsync(string keyName, string filePath)
+        {
+            try
+            {
+                var putRequest = new PutObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = keyName,
+                    FilePath = filePath,
+                    ContentType = "application/pdf"
+                };
+
+                PutObjectResponse response = await _s3Client.PutObjectAsync(putRequest);
+                Console.WriteLine("File uploaded successfully.");
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
+            }
+        }
+
+        public async Task DownloadAndOpenFileAsync(string keyName, string downloadFilePath)
+        {
+            try
+            {
+                var getRequest = new GetObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = keyName
+                };
+
+                using (GetObjectResponse response = await _s3Client.GetObjectAsync(getRequest))
+                using (Stream responseStream = response.ResponseStream)
+                using (FileStream fileStream = new FileStream(downloadFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    await responseStream.CopyToAsync(fileStream);
+                    Console.WriteLine("File downloaded successfully.");
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = downloadFilePath,
+                    UseShellExecute = true
+                });
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error encountered on server. Message:'{0}' when reading an object", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when reading an object", e.Message);
+            }
+        }
+
+        public async Task DeleteFileAsync(string keyName)
+        {
+            try
+            {
+                var deleteRequest = new DeleteObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = keyName
+                };
+
+                DeleteObjectResponse response = await _s3Client.DeleteObjectAsync(deleteRequest);
+                Console.WriteLine("File deleted successfully.");
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error encountered on server. Message:'{0}' when deleting an object", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when deleting an object", e.Message);
+            }
+        }
+    }
+
 }

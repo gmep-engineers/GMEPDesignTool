@@ -47,6 +47,8 @@ namespace GMEPDesignTool
 
         public Database.Database database = new Database.Database();
 
+        public Database.S3 s3 = new Database.S3();
+
         public ProjectControl(string projectNo)
         {
             InitializeComponent();
