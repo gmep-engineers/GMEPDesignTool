@@ -3,6 +3,13 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignore settings files
+GMEPDesignTool/Properties/Settings.settings
+GMEPDesignTool/Properties/Settings.Designer.cs
+
+# Ignore App.config
+GMEPDesignTool/App.config
+
 # User-specific files
 *.rsuser
 *.suo
