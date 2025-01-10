@@ -29,6 +29,7 @@ namespace GMEPDesignTool
         private string description;
         private int dimmingId;
         private bool specSheetFromClient;
+        private string specSheetId; // Renamed field
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,7 +52,8 @@ namespace GMEPDesignTool
             bool powered,
             string description,
             int dimmingId,
-            bool specSheetFromClient // Added parameter
+            bool specSheetFromClient, // Added parameter
+            string specSheetId // Renamed parameter
         )
         {
             this.id = id;
@@ -73,6 +75,7 @@ namespace GMEPDesignTool
             this.description = description;
             this.dimmingId = dimmingId;
             this.specSheetFromClient = specSheetFromClient; // Added assignment
+            this.specSheetId = specSheetId; // Renamed assignment
         }
 
         public string Id
@@ -318,6 +321,19 @@ namespace GMEPDesignTool
                 {
                     specSheetFromClient = value;
                     OnPropertyChanged(nameof(SpecSheetFromClient));
+                }
+            }
+        }
+
+        public string SpecSheetId // Renamed property
+        {
+            get => specSheetId;
+            set
+            {
+                if (specSheetId != value)
+                {
+                    specSheetId = value;
+                    OnPropertyChanged(nameof(SpecSheetId));
                 }
             }
         }

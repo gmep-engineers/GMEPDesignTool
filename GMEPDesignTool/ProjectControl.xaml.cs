@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,8 @@ namespace GMEPDesignTool
         public CollectionViewSource LightingViewSource { get; set; }
 
         public Database.Database database = new Database.Database();
+
+        public Database.S3 s3 = new Database.S3();
 
         public ProjectControl(string projectNo)
         {
@@ -1013,6 +1016,10 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
         {
+            if (electricalEquipment.SpecSheetId.Length != 0)
+            {
+                s3.DeleteFileAsync(electricalEquipment.SpecSheetId);
+            }
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
             ElectricalEquipments.Remove(electricalEquipment);
             StartTimer();
@@ -1150,6 +1157,8 @@ namespace GMEPDesignTool
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
 
+
+
         //Lighting Functions
 
         public void AddElectricalLighting(ElectricalLighting electricalLighting)
@@ -1181,13 +1190,18 @@ namespace GMEPDesignTool
                 false,
                 "",
                 3,
-                false
+                false,
+                ""
             );
             AddElectricalLighting(electricalLighting);
         }
 
         public void RemoveElectricalLighting(ElectricalLighting electricalLighting)
         {
+            if (electricalLighting.SpecSheetId.Length != 0)
+            {
+                s3.DeleteFileAsync(electricalLighting.SpecSheetId);
+            }
             electricalLighting.PropertyChanged -= ElectricalLighting_PropertyChanged;
             ElectricalLightings.Remove(electricalLighting);
             StartTimer();
@@ -1304,6 +1318,8 @@ namespace GMEPDesignTool
             LightingPanelFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
+
+   
 
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
@@ -1441,6 +1457,95 @@ namespace GMEPDesignTool
                     }
                 }
             });
+        }
+        public void UploadSpec(object sender, EventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "PDF files (*.pdf)|*.pdf";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+
+                if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+                {
+                    if (lighting.SpecSheetId.Length != 0)
+                    {
+                        s3.DeleteFileAsync(lighting.SpecSheetId);
+                    }
+                    string keyName = Guid.NewGuid().ToString();
+                    s3.UploadFileAsync(keyName, filePath);
+                    lighting.SpecSheetId = keyName;
+                }
+                else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+                {
+                    if (equipment.SpecSheetId.Length != 0)
+                    {
+                        s3.DeleteFileAsync(equipment.SpecSheetId);
+                    }
+                    string keyName = Guid.NewGuid().ToString();
+                    s3.UploadFileAsync(keyName, filePath);
+                    equipment.SpecSheetId = keyName;
+                }
+            }
+        }
+        
+
+        public void ViewSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                if (lighting.SpecSheetId != null && lighting.SpecSheetId.Length > 0)
+                {
+                    string filePath = System.IO.Path.Combine(
+                        System.IO.Path.GetTempPath(),
+                        $"{lighting.Id}_SpecSheet.pdf"
+                    );
+                    s3.DownloadAndOpenFileAsync(lighting.SpecSheetId, filePath);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No spec sheet available for this lighting.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
+            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            {
+                if (equipment.SpecSheetId != null && equipment.SpecSheetId.Length > 0)
+                {
+                    string filePath = System.IO.Path.Combine(
+                        System.IO.Path.GetTempPath(),
+                        $"{equipment.Id}_SpecSheet.pdf"
+                    );
+                    s3.DownloadAndOpenFileAsync(equipment.SpecSheetId, filePath);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No spec sheet available for this equipment.",
+                        "Information",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+            }
+        }
+
+        public void DeleteSpec(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+            {
+                s3.DeleteFileAsync(lighting.SpecSheetId);
+                lighting.SpecSheetId = "";
+            }
+            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            {
+                s3.DeleteFileAsync(equipment.SpecSheetId);
+                equipment.SpecSheetId = "";
+            }
         }
     }
 
