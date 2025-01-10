@@ -1335,12 +1335,12 @@ namespace GMEPDesignTool
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string filePath = openFileDialog.FileName;
-                    if (lighting.SpecSheet.Length != 0) {
-                        s3.DeleteFileAsync(lighting.SpecSheet);
+                    if (lighting.SpecSheetId.Length != 0) {
+                        s3.DeleteFileAsync(lighting.SpecSheetId);
                     }
                     string keyName = Guid.NewGuid().ToString();
                     s3.UploadFileAsync(keyName, filePath);
-                    lighting.SpecSheet = keyName;
+                    lighting.SpecSheetId = keyName;
                 }
             }
         }
@@ -1349,13 +1349,13 @@ namespace GMEPDesignTool
         {
             if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
             {
-                if (lighting.SpecSheet != null && lighting.SpecSheet.Length > 0)
+                if (lighting.SpecSheetId != null && lighting.SpecSheetId.Length > 0)
                 {
                     string filePath = System.IO.Path.Combine(
                         System.IO.Path.GetTempPath(),
                         $"{lighting.Id}_SpecSheet.pdf"
                     );
-                    s3.DownloadAndOpenFileAsync(lighting.SpecSheet, filePath);
+                    s3.DownloadAndOpenFileAsync(lighting.SpecSheetId, filePath);
                 }
                 else
                 {
@@ -1373,8 +1373,8 @@ namespace GMEPDesignTool
         {
             if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
             {
-                s3.DeleteFileAsync(lighting.SpecSheet);
-                lighting.SpecSheet = "";
+                s3.DeleteFileAsync(lighting.SpecSheetId);
+                lighting.SpecSheetId = "";
             }
         }
 

@@ -638,7 +638,7 @@
                                                                             <Style TargetType="Button">
                                                                                 <Setter Property="Visibility" Value="Visible"/>
                                                                                 <Style.Triggers>
-                                                                                    <DataTrigger Binding="{Binding SpecSheet.Length}" Value="0">
+                                                                                    <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
                                                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
@@ -651,7 +651,7 @@
                                                                                 <Style TargetType="Button">
                                                                                     <Setter Property="Content" Value="Change Spec"/>
                                                                                     <Style.Triggers>
-                                                                                        <DataTrigger Binding="{Binding SpecSheet.Length}" Value="0">
+                                                                                        <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
                                                                                             <Setter Property="Content" Value="Upload Spec"/>
                                                                                         </DataTrigger>
                                                                                     </Style.Triggers>
@@ -663,7 +663,7 @@
                                                                                 <Style TargetType="Button">
                                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                                     <Style.Triggers>
-                                                                                        <DataTrigger Binding="{Binding SpecSheet.Length}" Value="0">
+                                                                                        <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
                                                                                             <Setter Property="Visibility" Value="Collapsed"/>
                                                                                         </DataTrigger>
                                                                                     </Style.Triggers>
