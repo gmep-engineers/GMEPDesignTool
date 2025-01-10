@@ -1209,6 +1209,10 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalLighting(ElectricalLighting electricalLighting)
         {
+            if (electricalLighting.SpecSheetId.Length != 0)
+            {
+                s3.DeleteFileAsync(electricalLighting.SpecSheetId);
+            }
             electricalLighting.PropertyChanged -= ElectricalLighting_PropertyChanged;
             ElectricalLightings.Remove(electricalLighting);
             StartTimer();
