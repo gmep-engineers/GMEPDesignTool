@@ -878,11 +878,11 @@ namespace GMEPDesignTool.Database
             }
             catch (AmazonS3Exception e)
             {
-                Console.WriteLine("Error encountered on server. Message:'{0}' when reading an object", e.Message);
+                Console.WriteLine("Error encountered on server. Message:'{0}' when reading an object.", e.Message);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unknown encountered on server. Message:'{0}' when reading an object", e.Message);
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when reading an object.", e.Message);
             }
         }
 
