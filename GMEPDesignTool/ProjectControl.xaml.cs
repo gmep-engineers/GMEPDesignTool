@@ -551,7 +551,7 @@ namespace GMEPDesignTool
                 {
                     if (equipment.ParentId == id)
                     {
-                        amp += equipment.Amp * equipment.Qty;
+                        amp += equipment.Fla * equipment.Qty;
                     }
                 }
             }
@@ -1042,14 +1042,14 @@ namespace GMEPDesignTool
             {
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                    || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
                 {
-                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Amp;
+                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Fla;
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Amp)
+                    || e.PropertyName == nameof(ElectricalEquipment.Fla)
                     || e.PropertyName == nameof(ElectricalEquipment.ParentId)
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )

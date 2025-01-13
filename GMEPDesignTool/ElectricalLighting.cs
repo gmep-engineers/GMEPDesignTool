@@ -27,7 +27,7 @@ namespace GMEPDesignTool
         public string colorCode;
         private bool powered;
         private string description;
-        private int dimmingId;
+        private int controlTypeId;
         private bool specSheetFromClient;
         private string specSheetId; // Renamed field
 
@@ -51,7 +51,7 @@ namespace GMEPDesignTool
             string colorCode,
             bool powered,
             string description,
-            int dimmingId,
+            int controlTypeId,
             bool specSheetFromClient, // Added parameter
             string specSheetId // Renamed parameter
         )
@@ -73,7 +73,7 @@ namespace GMEPDesignTool
             this.colorCode = colorCode;
             this.powered = powered;
             this.description = description;
-            this.dimmingId = dimmingId;
+            this.controlTypeId = controlTypeId;
             this.specSheetFromClient = specSheetFromClient; // Added assignment
             this.specSheetId = specSheetId; // Renamed assignment
         }
@@ -299,15 +299,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public int DimmingId
+        public int ControlTypeId
         {
-            get => dimmingId;
+            get => controlTypeId;
             set
             {
-                if (dimmingId != value)
+                if (controlTypeId != value)
                 {
-                    dimmingId = value;
-                    OnPropertyChanged(nameof(DimmingId));
+                    controlTypeId = value;
+                    OnPropertyChanged(nameof(ControlTypeId));
                 }
             }
         }
