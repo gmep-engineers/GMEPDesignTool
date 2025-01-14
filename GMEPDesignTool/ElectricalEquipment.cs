@@ -16,7 +16,7 @@ namespace GMEPDesignTool
         private int qty;
         private string parentId;
         private int voltage;
-        private float amp;
+        private float fla;
         private float va;
         private bool is3Ph;
         private string specSheetId;
@@ -40,7 +40,7 @@ namespace GMEPDesignTool
             int qty,
             string parentId,
             int voltage,
-            float amp,
+            float fla,
             float va,
             bool is3Ph,
             string specSheetId,
@@ -61,7 +61,7 @@ namespace GMEPDesignTool
             this.qty = qty;
             this.parentId = parentId;
             this.voltage = voltage;
-            this.amp = amp;
+            this.fla = fla;
             this.va = va;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
@@ -191,15 +191,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Amp
+        public float Fla
         {
-            get => amp;
+            get => fla;
             set
             {
-                if (amp != value)
+                if (fla != value)
                 {
-                    amp = value;
-                    OnPropertyChanged(nameof(Amp));
+                    fla = value;
+                    OnPropertyChanged(nameof(Fla));
                 }
             }
         }

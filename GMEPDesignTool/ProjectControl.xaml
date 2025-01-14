@@ -419,7 +419,7 @@
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                            <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="50" Text="{Binding Amp}"></TextBox>
+                                                                            <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="50" Text="{Binding Fla}"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
@@ -635,8 +635,8 @@
                                                                             <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding Wattage}"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
-                                                                            <Label Content="Dimming Type" FontWeight="Bold"/>
-                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding DimmingId}">
+                                                                            <Label Content="Control Type" FontWeight="Bold"/>
+                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding ControlTypeId}">
                                                                                 <ComboBoxItem Content="0-10V" Tag="1"/>
                                                                                 <ComboBoxItem Content="Line Voltage" Tag="2"/>
                                                                                 <ComboBoxItem Content="Switch" Tag="3"/>
