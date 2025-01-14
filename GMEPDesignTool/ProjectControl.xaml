@@ -419,7 +419,7 @@
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label Content="Amp" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                            <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="50" Text="{Binding Amp}"></TextBox>
+                                                                            <TextBox x:Name="AmpText" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="50" Text="{Binding Fla}"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
