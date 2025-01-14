@@ -472,7 +472,7 @@ namespace GMEPDesignTool.Database
             string query =
                 "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, control_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @controlTypeId, @specFromClient, @specSheetId, @qty)";
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+            command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);

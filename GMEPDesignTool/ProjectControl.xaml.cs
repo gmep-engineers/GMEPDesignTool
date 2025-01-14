@@ -1045,7 +1045,7 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
                 {
-                    equipment.Va = idToVoltage(equipment.Voltage) * equipment.Fla;
+                    equipment.Va = (float)Math.Round(idToVoltage(equipment.Voltage) * equipment.Fla, 0, MidpointRounding.AwayFromZero);
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -1564,6 +1564,27 @@ namespace GMEPDesignTool
                 }
             }
             return new ValidationResult(false, $"Value should be at least {Minimum}.");
+        }
+    }
+   
+    public class RoundToNearestDecimalConverter : IValueConverter
+    {
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double doubleValue)
+            {
+                return Math.Round(doubleValue, 1, MidpointRounding.AwayFromZero).ToString("F1");
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            if (double.TryParse(value.ToString(), out double doubleValue))
+            {
+                return Math.Round(doubleValue, 1, MidpointRounding.AwayFromZero);
+            }
+            return value;
         }
     }
 }
