@@ -30,6 +30,8 @@ namespace GMEPDesignTool
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private bool _isRecessed;
+
         public ElectricalPanel(
             string id,
             string projectId,
@@ -46,7 +48,8 @@ namespace GMEPDesignTool
             int kva,
             int amp,
             int type,
-            bool powered
+            bool powered,
+            bool isRecessed
         )
         {
             _id = id;
@@ -65,6 +68,17 @@ namespace GMEPDesignTool
             _amp = amp;
             _type = type;
             _powered = powered;
+            _isRecessed = isRecessed;
+        }
+
+        public bool IsRecessed
+        {
+            get => _isRecessed;
+            set
+            {
+                _isRecessed = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Id

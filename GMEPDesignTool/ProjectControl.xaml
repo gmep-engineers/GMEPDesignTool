@@ -213,6 +213,10 @@
                                                             <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                             <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                                         </ComboBox>
+                                                        <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsRecessed}">
+                                                            <ComboBoxItem Content="Surface" HorizontalContentAlignment="Left"/>
+                                                            <ComboBoxItem Content="Recessed" HorizontalContentAlignment="Left" />
+                                                        </ComboBox>
                                                         <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                             <Image.ToolTip>
                                                                 <ToolTip>
