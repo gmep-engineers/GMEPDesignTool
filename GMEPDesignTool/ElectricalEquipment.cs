@@ -26,6 +26,8 @@ namespace GMEPDesignTool
         int category;
         int mounting;
         private string description;
+        private int mcaId;
+        private string hp;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,7 +53,9 @@ namespace GMEPDesignTool
             string colorCode,
             bool powered,
             int mounting,
-            string description
+            string description,
+            int mcaId,
+            string hp
         )
         {
             this.id = id;
@@ -73,6 +77,8 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.mounting = mounting;
             this.description = description;
+            this.mcaId = mcaId;
+            this.hp = hp;
         }
 
         public string Description
@@ -314,6 +320,32 @@ namespace GMEPDesignTool
                 {
                     mounting = value;
                     OnPropertyChanged(nameof(Mounting));
+                }
+            }
+        }
+
+        public int McaId
+        {
+            get => mcaId;
+            set
+            {
+                if (mcaId != value)
+                {
+                    mcaId = value;
+                    OnPropertyChanged(nameof(McaId));
+                }
+            }
+        }
+
+        public string Hp
+        {
+            get => hp;
+            set
+            {
+                if (hp != value)
+                {
+                    hp = value;
+                    OnPropertyChanged(nameof(Hp));
                 }
             }
         }

@@ -1010,6 +1010,8 @@ namespace GMEPDesignTool
                 "White",
                 false,
                 1,
+                "",
+                0,
                 ""
             );
             AddElectricalEquipment(electricalEquipment);
