@@ -722,6 +722,7 @@ namespace GMEPDesignTool
                 0,
                 0,
                 1,
+                false,
                 false
             );
             AddElectricalPanel(electricalPanel);
@@ -792,6 +793,11 @@ namespace GMEPDesignTool
             {
                 panelBackup[equipment.Id] = equipment.ParentId;
             }
+            Dictionary<string, string> lightingBackup = new Dictionary<string, string>();
+            foreach (var lighting in ElectricalLightings)
+            {
+                lightingBackup[lighting.Id] = lighting.ParentId;
+            }
 
             Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
             foreach (var transformer in ElectricalTransformers)
@@ -843,6 +849,13 @@ namespace GMEPDesignTool
                 if (panelBackup.ContainsKey(equipment.Id))
                 {
                     equipment.ParentId = panelBackup[equipment.Id];
+                }
+            }
+            foreach (var lighting in ElectricalLightings)
+            {
+                if (lightingBackup.ContainsKey(lighting.Id))
+                {
+                    lighting.ParentId = lightingBackup[lighting.Id];
                 }
             }
             foreach (var panel in ElectricalPanels)
@@ -1009,7 +1022,11 @@ namespace GMEPDesignTool
                 "White",
                 false,
                 1,
-                ""
+                "",
+                0,
+                "",
+                true,
+                false
             );
             AddElectricalEquipment(electricalEquipment);
         }

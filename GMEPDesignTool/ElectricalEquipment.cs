@@ -26,11 +26,15 @@ namespace GMEPDesignTool
         int category;
         int mounting;
         private string description;
+        private int mcaId;
+        private string hp;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string colorCode;
         private bool powered;
+        private bool hasPlug;
+        private bool lockingConnector;
 
         public ElectricalEquipment(
             string id,
@@ -51,7 +55,11 @@ namespace GMEPDesignTool
             string colorCode,
             bool powered,
             int mounting,
-            string description
+            string description,
+            int mcaId,
+            string hp,
+            bool hasPlug,
+            bool lockingConnector
         )
         {
             this.id = id;
@@ -73,6 +81,10 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.mounting = mounting;
             this.description = description;
+            this.mcaId = mcaId;
+            this.hp = hp;
+            this.hasPlug = hasPlug;
+            this.lockingConnector = lockingConnector;
         }
 
         public string Description
@@ -256,6 +268,32 @@ namespace GMEPDesignTool
             }
         }
 
+        public bool HasPlug
+        {
+            get => hasPlug;
+            set
+            {
+                if (hasPlug != value)
+                {
+                    hasPlug = value;
+                    OnPropertyChanged(nameof(HasPlug));
+                }
+            }
+        }
+
+        public bool LockingConnector
+        {
+            get => lockingConnector;
+            set
+            {
+                if (lockingConnector != value)
+                {
+                    lockingConnector = value;
+                    OnPropertyChanged(nameof(LockingConnector));
+                }
+            }
+        }
+
         public bool SpecSheetFromClient
         {
             get => specSheetFromClient;
@@ -314,6 +352,32 @@ namespace GMEPDesignTool
                 {
                     mounting = value;
                     OnPropertyChanged(nameof(Mounting));
+                }
+            }
+        }
+
+        public int McaId
+        {
+            get => mcaId;
+            set
+            {
+                if (mcaId != value)
+                {
+                    mcaId = value;
+                    OnPropertyChanged(nameof(McaId));
+                }
+            }
+        }
+
+        public string Hp
+        {
+            get => hp;
+            set
+            {
+                if (hp != value)
+                {
+                    hp = value;
+                    OnPropertyChanged(nameof(Hp));
                 }
             }
         }
