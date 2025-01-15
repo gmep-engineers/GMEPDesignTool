@@ -433,9 +433,7 @@
                                                                             <Label Content="HP" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
                                                                             <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" ></TextBox>
                                                                             <Label Content="MCA" FontWeight="Bold"/>
-                                                                            <ComboBox Height="30" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag">
-                                                                                <ComboBoxItem/>
-                                                                            </ComboBox>
+                                                                            <ComboBox Height="30" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag" IsEnabled="False" />
                                                                         </StackPanel>
                                                                     </StackPanel>
                                                                 </Grid>
