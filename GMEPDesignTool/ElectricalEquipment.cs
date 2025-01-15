@@ -33,6 +33,8 @@ namespace GMEPDesignTool
 
         private string colorCode;
         private bool powered;
+        private bool hasPlug;
+        private bool lockingConnector;
 
         public ElectricalEquipment(
             string id,
@@ -55,7 +57,9 @@ namespace GMEPDesignTool
             int mounting,
             string description,
             int mcaId,
-            string hp
+            string hp,
+            bool hasPlug,
+            bool lockingConnector
         )
         {
             this.id = id;
@@ -79,6 +83,8 @@ namespace GMEPDesignTool
             this.description = description;
             this.mcaId = mcaId;
             this.hp = hp;
+            this.hasPlug = hasPlug;
+            this.lockingConnector = lockingConnector;
         }
 
         public string Description
@@ -258,6 +264,32 @@ namespace GMEPDesignTool
                 {
                     powered = value;
                     OnPropertyChanged(nameof(Powered));
+                }
+            }
+        }
+
+        public bool HasPlug
+        {
+            get => hasPlug;
+            set
+            {
+                if (hasPlug != value)
+                {
+                    hasPlug = value;
+                    OnPropertyChanged(nameof(HasPlug));
+                }
+            }
+        }
+
+        public bool LockingConnector
+        {
+            get => lockingConnector;
+            set
+            {
+                if (lockingConnector != value)
+                {
+                    lockingConnector = value;
+                    OnPropertyChanged(nameof(LockingConnector));
                 }
             }
         }

@@ -392,7 +392,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, mounting_type_id = @mounting, mca_id = @mca_id, hp = @hp WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, mounting_type_id = @mounting, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
@@ -414,13 +414,15 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@mounting", equipment.Mounting);
             command.Parameters.AddWithValue("@mca_id", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
+            command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
+            command.Parameters.AddWithValue("@locking_connector", equipment.LockingConnector);
             command.ExecuteNonQuery();
         }
 
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, mounting_type_id, description, mca_id, hp) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @mounting, @description, @mca_id, @hp)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, mounting_type_id, description, mca_id, hp, has_plug, locking_connector) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @mounting, @description, @mca_id, @hp, @has_plug, @locking_connector)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
@@ -444,6 +446,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@description", equipment.Description);
             command.Parameters.AddWithValue("@mca_id", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
+            command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
+            command.Parameters.AddWithValue("@locking_connector", equipment.LockingConnector);
             command.ExecuteNonQuery();
         }
 
@@ -470,6 +474,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
+
             command.ExecuteNonQuery();
         }
 
@@ -657,7 +662,9 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("mounting_type_id"),
                         reader.GetString("description"),
                         reader.GetInt32("mca_id"),
-                        reader.GetString("hp")
+                        reader.GetString("hp"),
+                        reader.GetBoolean("has_plug"),
+                        reader.GetBoolean("locking_connector")
                     );
                     equipmentDict[groupId] = newEquip;
                     qtyDict[groupId] = 0;
