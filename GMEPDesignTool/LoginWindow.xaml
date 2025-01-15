@@ -10,13 +10,15 @@
         <Grid>
             <Image HorizontalAlignment="Left" Height="150"  VerticalAlignment="Center" Width="150" Source="/GMEPE-LogoTransparent.png" Stretch="Fill"  Margin="126,0,0,0" />
             <Border Background="White" CornerRadius="20" Margin="400,0,0,0">
-                <Grid>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <TextBlock Text="GMEP Design Tool" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="25" FontWeight="Bold" Margin="0,26,0,0" Foreground="DodgerBlue" FontFamily="Roboto"/>
-                    <TextBox Width="228" Height="40" FontSize="20" Text="" HorizontalAlignment="Center" Margin="0,100,0,308"/>
-                    <PasswordBox Width="228" Height="40" FontSize="20" HorizontalAlignment="Center" Margin="0,169,0,239"/>
-                    <Button Content="Log In" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,248,0,0" Click="Login_Click"/>
-                    <Button Content="Exit" HorizontalAlignment="Center" FontWeight="Bold" Background="SlateGray" Foreground="White"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,304,0,0" Click="Exit_Click"/>
-                </Grid>
+                    <Label Content="Email" Margin="0,26,0,0" FontWeight="Bold"/>
+                    <TextBox x:Name="EmailBox" Width="228" Height="40" FontSize="20" Text="" HorizontalAlignment="Center" />
+                    <Label Content="Password" Margin="0,26,0,0" FontWeight="Bold"/>
+                    <PasswordBox x:Name="PasswordBox" Width="228" Height="40" FontSize="20" HorizontalAlignment="Center" Password="" />
+                    <Button Content="Log In" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,26,0,0" Click="Login_Click"/>
+                    <Button Content="Exit" HorizontalAlignment="Center" FontWeight="Bold" Background="SlateGray" Foreground="White"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,26,0,0" Click="Exit_Click"/>
+                </StackPanel>
             </Border>
         </Grid>
     </Border>
