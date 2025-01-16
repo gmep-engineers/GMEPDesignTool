@@ -378,7 +378,7 @@ namespace GMEPDesignTool.Database
         private void UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -392,13 +392,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
             command.Parameters.AddWithValue("@type", panel.Type);
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
+            command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
             command.ExecuteNonQuery();
         }
 
         private void InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed)";
+                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -413,6 +414,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
             command.Parameters.AddWithValue("@type", panel.Type);
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
+            command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
             command.ExecuteNonQuery();
         }
 
@@ -637,7 +639,7 @@ namespace GMEPDesignTool.Database
                         reader.GetString("project_id"),
                         reader.GetInt32("bus_amp_rating_id"),
                         reader.GetInt32("main_amp_rating_id"),
-                        false,
+                        reader.GetBoolean("is_mlo"),
                         reader.GetBoolean("is_distribution"),
                         reader.GetString("name"),
                         reader.GetString("color_code"),
