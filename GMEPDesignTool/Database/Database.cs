@@ -420,7 +420,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, mounting_type_id = @mounting, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, tag=@tag, width=@width, depth=@depth, height=@height WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, tag=@tag, width=@width, depth=@depth, height=@height WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
@@ -439,7 +439,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@group_id", equipment.Id);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
-            command.Parameters.AddWithValue("@mounting", equipment.Mounting);
+            command.Parameters.AddWithValue("@connection", equipment.Connection);
             command.Parameters.AddWithValue("@mca_id", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
             command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
@@ -454,7 +454,7 @@ namespace GMEPDesignTool.Database
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, mounting_type_id, description, mca_id, hp, has_plug, locking_connector, tag, width, depth, height) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @mounting, @description, @mca_id, @hp, @has_plug, @locking_connector, @tag, @width, @depth, @height)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, tag, width, depth, height) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @tag, @width, @depth, @height)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
@@ -474,7 +474,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@distanceFromParent", equipment.DistanceFromParent);
             command.Parameters.AddWithValue("@category", equipment.Category);
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
-            command.Parameters.AddWithValue("@mounting", equipment.Mounting);
+            command.Parameters.AddWithValue("@connection", equipment.Connection);
             command.Parameters.AddWithValue("@description", equipment.Description);
             command.Parameters.AddWithValue("@mca_id", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
@@ -517,7 +517,7 @@ namespace GMEPDesignTool.Database
         private void InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, control_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty)";
+                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -695,7 +695,7 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("category_id"),
                         reader.GetString("color_code"),
                         false,
-                        reader.GetInt32("mounting_type_id"),
+                        reader.GetInt32("connection_type_id"),
                         reader.GetString("description"),
                         reader.GetInt32("mca_id"),
                         reader.GetString("hp"),

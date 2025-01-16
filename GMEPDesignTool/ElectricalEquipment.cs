@@ -24,7 +24,7 @@ namespace GMEPDesignTool
         private bool specSheetFromClient;
         int distanceFromParent;
         int category;
-        int mounting;
+        int connection;
         private string description;
         private int mcaId;
         private string hp;
@@ -58,7 +58,7 @@ namespace GMEPDesignTool
             int category,
             string colorCode,
             bool powered,
-            int mounting,
+            int connection,
             string description,
             int mcaId,
             string hp,
@@ -87,7 +87,7 @@ namespace GMEPDesignTool
             this.category = category;
             this.colorCode = colorCode;
             this.powered = powered;
-            this.mounting = mounting;
+            this.connection = connection;
             this.description = description;
             this.mcaId = mcaId;
             this.hp = hp;
@@ -355,15 +355,15 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Mounting
+        public int Connection
         {
-            get => mounting;
+            get => connection;
             set
             {
-                if (mounting != value)
+                if (connection != value)
                 {
-                    mounting = value;
-                    OnPropertyChanged(nameof(Mounting));
+                    connection = value;
+                    OnPropertyChanged(nameof(Connection));
                 }
             }
         }
