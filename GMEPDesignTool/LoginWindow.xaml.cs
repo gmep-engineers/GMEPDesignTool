@@ -32,15 +32,16 @@ namespace GMEPDesignTool
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            if (database.LoginUser(EmailBox.Text, PasswordBox.Password))
+            /*if (database.LoginUser(EmailBox.Text, PasswordBox.Password))
             {
                 LoginViewModel.openApp();
             }
             else
             {
                 MessageBox.Show("Invalid email or password. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            
+            }*/
+            LoginViewModel.openApp();
+
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
