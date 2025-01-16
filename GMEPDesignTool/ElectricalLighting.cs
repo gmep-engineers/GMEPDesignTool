@@ -27,9 +27,9 @@ namespace GMEPDesignTool
         public string colorCode;
         private bool powered;
         private string description;
-        private int controlTypeId;
+        private int driverTypeId;
         private bool specSheetFromClient;
-        private string specSheetId; // Renamed field
+        private string specSheetId; 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,9 +51,9 @@ namespace GMEPDesignTool
             string colorCode,
             bool powered,
             string description,
-            int controlTypeId,
-            bool specSheetFromClient, // Added parameter
-            string specSheetId // Renamed parameter
+            int driverTypeId,
+            bool specSheetFromClient, 
+            string specSheetId 
         )
         {
             this.id = id;
@@ -73,9 +73,9 @@ namespace GMEPDesignTool
             this.colorCode = colorCode;
             this.powered = powered;
             this.description = description;
-            this.controlTypeId = controlTypeId;
-            this.specSheetFromClient = specSheetFromClient; // Added assignment
-            this.specSheetId = specSheetId; // Renamed assignment
+            this.driverTypeId = driverTypeId;
+            this.specSheetFromClient = specSheetFromClient; 
+            this.specSheetId = specSheetId; 
         }
 
         public string Id
@@ -299,15 +299,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public int ControlTypeId
+        public int DriverTypeId
         {
-            get => controlTypeId;
+            get => driverTypeId;
             set
             {
-                if (controlTypeId != value)
+                if (driverTypeId != value)
                 {
-                    controlTypeId = value;
-                    OnPropertyChanged(nameof(ControlTypeId));
+                    driverTypeId = value;
+                    OnPropertyChanged(nameof(DriverTypeId));
                 }
             }
         }

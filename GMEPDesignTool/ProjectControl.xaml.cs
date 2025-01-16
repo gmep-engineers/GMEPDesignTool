@@ -39,6 +39,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
+
+        public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
@@ -65,6 +67,11 @@ namespace GMEPDesignTool
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
             LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
             LightingViewSource.Filter += LightingViewSource_Filter;
+
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
+            symbolsPath = System.IO.Path.GetFullPath(symbolsPath);
+            ImagePaths = new ObservableCollection<string>(Directory.GetFiles(symbolsPath, "*.png").Select(System.IO.Path.GetFullPath));
 
             foreach (var service in ElectricalServices)
             {
@@ -97,6 +104,7 @@ namespace GMEPDesignTool
             GetNames();
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
+
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -1026,7 +1034,11 @@ namespace GMEPDesignTool
                 0,
                 "",
                 true,
-                false
+                false,
+                "",
+                0,
+                0,
+                0
             );
             AddElectricalEquipment(electricalEquipment);
         }
