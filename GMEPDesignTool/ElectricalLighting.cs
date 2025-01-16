@@ -29,7 +29,7 @@ namespace GMEPDesignTool
         private string description;
         private int controlTypeId;
         private bool specSheetFromClient;
-        private string specSheetId; // Renamed field
+        private string specSheetId; 
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -52,8 +52,8 @@ namespace GMEPDesignTool
             bool powered,
             string description,
             int controlTypeId,
-            bool specSheetFromClient, // Added parameter
-            string specSheetId // Renamed parameter
+            bool specSheetFromClient, 
+            string specSheetId 
         )
         {
             this.id = id;
@@ -74,8 +74,8 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.description = description;
             this.controlTypeId = controlTypeId;
-            this.specSheetFromClient = specSheetFromClient; // Added assignment
-            this.specSheetId = specSheetId; // Renamed assignment
+            this.specSheetFromClient = specSheetFromClient; 
+            this.specSheetId = specSheetId; 
         }
 
         public string Id

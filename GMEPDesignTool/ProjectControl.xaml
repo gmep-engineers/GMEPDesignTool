@@ -622,6 +622,20 @@
                                                                     <Rectangle  Height="55" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                                     <StackPanel Orientation="Horizontal">
                                                                         <Grid Margin="10 0 0 0">
+                                                                            <Label Content="Tag" Margin="0 0 0 0" FontWeight="Bold"/>
+                                                                            <TextBox Height="30" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Text="{Binding Tag}" MaxLength="7"/>
+                                                                        </Grid>
+                                                                        <Grid Margin="10 0 0 0">
+                                                                            <Label Content="Symbol" Margin="0 0 0 0" FontWeight="Bold"/>
+                                                                            <ComboBox Height="30" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedIndex="{Binding SymbolId}"  ItemsSource="{Binding DataContext.ImagePaths, RelativeSource={RelativeSource AncestorType=UserControl}}" >
+                                                                                <ComboBox.ItemTemplate>
+                                                                                    <DataTemplate>
+                                                                                        <Image Source="{Binding}" Height="25" Width="25" HorizontalAlignment="Center"/>
+                                                                                    </DataTemplate>
+                                                                                </ComboBox.ItemTemplate>
+                                                                            </ComboBox>
+                                                                        </Grid>
+                                                                        <Grid Margin="10 0 0 0">
                                                                             <Label Content="Manufacturer ID" Margin="0 0 0 0" FontWeight="Bold"/>
                                                                             <TextBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Text="{Binding Manufacturer}"/>
                                                                         </Grid>
