@@ -69,7 +69,7 @@
                                                     </Image>
                                                     <Rectangle Width="320" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                                     <Label Content="Name" Margin="10,27,0,0" />
-                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}"/>
+                                                    <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" Text="{Binding Name}" MaxLength="15"/>
                                                     <Label Content="Voltage" Margin="100 27 0 0"/>
                                                     <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
                                                         <ComboBoxItem Content="120/208V 3-Φ" Tag="1" />
@@ -147,7 +147,7 @@
 
 
                                                         <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left"/>
+                                                        <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left" MaxLength="7"/>
 
                                                         <Label Content="Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="20" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
@@ -164,7 +164,7 @@
                                                         <Label VerticalAlignment="Top" Margin="270,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
                                                         <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="270 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                         <Label VerticalAlignment="Top" Margin="270,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="270,55,150,0" HorizontalAlignment="Left"/>
+                                                        <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="270,55,150,0" HorizontalAlignment="Left" MaxLength="5"/>
                                                     </Grid>
                                                     <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -228,7 +228,7 @@
 
 
                                                         <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
-                                                        <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}"/>
+                                                        <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}" MaxLength="7"/>
                                                                         
                                                         <Label Content="Voltage" Margin="100 27 0 0" FontWeight="Bold"/>
                                                         <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
@@ -288,14 +288,14 @@
                                                      
 
                                                         <Label VerticalAlignment="Top" Margin="440,28,0,0" HorizontalAlignment="Left" Content="# Breakers" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="440,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper"/>
+                                                        <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="440,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper" MaxLength="2"/>
                                                         <Label VerticalAlignment="Top" Margin="550,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
                                                         <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="550 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding FedFromId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.FedFromNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                         <Label VerticalAlignment="Top" Margin="550,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="550,55,0,0" HorizontalAlignment="Left"/>
+                                                        <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="550,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
 
                                                         <Label VerticalAlignment="Top" Margin="650,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right"/>
+                                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
                                                     </Grid>
                                                     <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -428,7 +428,7 @@
                                                                             <Label Content="Owner"  FontWeight="Bold"/>
                                                                             <ComboBox Height="30" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                                             <Label Content="Equip #"  FontWeight="Bold"/>
-                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" Text="{Binding EquipNo}"></TextBox>
+                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" Text="{Binding EquipNo}" MaxLength="15"></TextBox>
                                                                         </StackPanel>
 
                                                                         <StackPanel Margin="20 0 0 0">
@@ -448,7 +448,7 @@
                                                                         </StackPanel>
                                                                         <StackPanel Orientation="Vertical" Margin="20 0 0 0">
                                                                             <Label Content="HP" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                            <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" ></TextBox>
+                                                                            <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" MaxLength="7"></TextBox>
                                                                             <Label Content="MCA" FontWeight="Bold"/>
                                                                             <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag" IsEnabled="False" />
                                                                         </StackPanel>
@@ -468,7 +468,7 @@
                                                                 </Grid>
                                                                 <StackPanel Orientation="Vertical" Margin="20 0 0 0">
                                                                     <Label Content="Qty." FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70">
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" MaxLength="1">
                                                                         <TextBox.Text>
                                                                             <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
                                                                                 <Binding.ValidationRules>
@@ -478,7 +478,7 @@
                                                                         </TextBox.Text>
                                                                     </TextBox>
                                                                     <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}"></TextBox>
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" MaxLength="10"></TextBox>
                                                                 </StackPanel>
                                                            
 
@@ -486,7 +486,7 @@
                                                                     <Label Content="Panel" FontWeight="Bold"/>
                                                                     <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                                     <Label Content="Distance" FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}"></TextBox>
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
                                                                 </StackPanel>
 
 
@@ -662,11 +662,11 @@
                                                                         </Grid>
                                                                         <Grid Margin="10 0 0 0">
                                                                             <Label Content="Manufacturer ID" Margin="0 0 0 0" FontWeight="Bold"/>
-                                                                            <TextBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Text="{Binding Manufacturer}"/>
+                                                                            <TextBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Text="{Binding Manufacturer}" MaxLength="36"/>
                                                                         </Grid>
                                                                         <Grid Margin="10 0 0 0">
                                                                             <Label Content="Model #"  FontWeight="Bold"/>
-                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="69" Text="{Binding ModelNo}"></TextBox>
+                                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="69" Text="{Binding ModelNo}" MaxLength="50"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label Content="Voltage" FontWeight="Bold"/>
@@ -691,7 +691,7 @@
                                                                 </Grid>
                                                                 <Grid Margin="20 0 0 0">
                                                                     <Label Content="Qty." FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="43">
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="43" MaxLength="5">
                                                                         <TextBox.Text>
                                                                             <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
                                                                                 <Binding.ValidationRules>
