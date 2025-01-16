@@ -387,6 +387,7 @@
                                                             <RowDefinition Height="*"/>
                                                         </Grid.RowDefinitions>
                                                         <StackPanel Orientation="Vertical" Grid.Row="0"  Height="160" Width="Auto" VerticalAlignment="Top">
+                                                            
                                                             <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
                                                                 <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
                                                                 <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
@@ -404,9 +405,14 @@
                                                                 </Image>
                                                             </StackPanel>
                                                             <StackPanel Orientation="Horizontal">
+                                                                
                                                                 <Grid HorizontalAlignment="Left">
                                                                     <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                                     <StackPanel Orientation="Horizontal">
+                                                                        <StackPanel Margin="10 0 10 20" Orientation="Vertical" VerticalAlignment="Center">
+                                                                            <Label Content="Tag"  FontWeight="Bold"/>
+                                                                            <TextBox Height="30" Width="100" Text="{Binding Tag}"/>
+                                                                        </StackPanel>
                                                                         <StackPanel Margin="10 0 0 0" Orientation="Vertical">
                                                                             <Label Content="Owner"  FontWeight="Bold"/>
                                                                             <ComboBox Height="30" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
@@ -434,6 +440,13 @@
                                                                             <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" ></TextBox>
                                                                             <Label Content="MCA" FontWeight="Bold"/>
                                                                             <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag" IsEnabled="False" />
+                                                                        </StackPanel>
+                                                                        <StackPanel Orientation="Vertical" Margin="20 0 0 0">
+                                                                            <Label Content="WxDxH" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                                            <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Width}" />
+                                                                            <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Depth}" />
+                                                                            <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Height}" />
+
                                                                         </StackPanel>
                                                                         <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 20 10 0">
                                                                             <CheckBox Content="Has Plug"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" IsChecked="{Binding HasPlug}" FontWeight="Bold" />

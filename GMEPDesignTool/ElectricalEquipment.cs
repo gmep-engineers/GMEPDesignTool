@@ -28,6 +28,10 @@ namespace GMEPDesignTool
         private string description;
         private int mcaId;
         private string hp;
+        private string tag;
+        private float width;
+        private float depth;
+        public float height;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -59,7 +63,11 @@ namespace GMEPDesignTool
             int mcaId,
             string hp,
             bool hasPlug,
-            bool lockingConnector
+            bool lockingConnector,
+            string tag,
+            float width,
+            float depth,
+            float height
         )
         {
             this.id = id;
@@ -85,6 +93,10 @@ namespace GMEPDesignTool
             this.hp = hp;
             this.hasPlug = hasPlug;
             this.lockingConnector = lockingConnector;
+            this.tag = tag;
+            this.width = width;
+            this.depth = depth;
+            this.height = height;
         }
 
         public string Description
@@ -382,6 +394,54 @@ namespace GMEPDesignTool
             }
         }
 
+        public string Tag
+        {
+            get => tag;
+            set
+            {
+                if (tag != value)
+                {
+                    tag = value;
+                    OnPropertyChanged(nameof(Tag));
+                }
+            }
+        }
+        public float Width
+        {
+            get => width;
+            set
+            {
+                if (width != value)
+                {
+                    width = value;
+                    OnPropertyChanged(nameof(Width));
+                }
+            }
+        }
+        public float Depth
+        {
+            get => depth;
+            set
+            {
+                if (depth != value)
+                {
+                    depth = value;
+                    OnPropertyChanged(nameof(Depth));
+                }
+            }
+        }
+        public float Height
+        {
+            get => height;
+            set
+            {
+                if (height != value)
+                {
+                    height = value;
+                    OnPropertyChanged(nameof(Height));
+                }
+            }
+        }
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
