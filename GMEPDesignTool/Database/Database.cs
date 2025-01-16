@@ -48,10 +48,7 @@ namespace GMEPDesignTool.Database
         }
         public bool LoginUser(string userName, string password)
         {
-            if (userName == "" || password == "")
-            {
-                return false;
-            }
+            
                 string query = @"
             SELECT e.password
             FROM email_addresses ea
@@ -61,17 +58,17 @@ namespace GMEPDesignTool.Database
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@employeeEmail", userName + "@gmepe.com");
             MySqlDataReader reader = command.ExecuteReader();
-            
 
             string hashedPassword = "";
+            bool result = false;
             if (reader.Read())
             {
                 hashedPassword = reader.GetString("password");
-                return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+                result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
 
             }
             CloseConnection();
-            return true;
+            return result;
             
 
 
