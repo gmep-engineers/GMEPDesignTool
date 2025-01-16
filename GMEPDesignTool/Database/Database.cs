@@ -16,6 +16,7 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using System.Diagnostics;
+using BCrypt.Net;
 
 namespace GMEPDesignTool.Database
 {
@@ -45,7 +46,33 @@ namespace GMEPDesignTool.Database
                 Connection.Close();
             }
         }
+        public bool LoginUser(string userName, string password)
+        {
+            
+                string query = @"
+            SELECT e.password
+            FROM email_addresses ea
+            JOIN employees e ON e.email_id = ea.id
+            WHERE ea.email_address = @employeeEmail";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@employeeEmail", userName + "@gmepe.com");
+            MySqlDataReader reader = command.ExecuteReader();
 
+            string hashedPassword = "";
+            bool result = false;
+            if (reader.Read())
+            {
+                hashedPassword = reader.GetString("password");
+                result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+
+            }
+            CloseConnection();
+            return result;
+            
+
+
+        }
         public string GetProjectId(string projectNo)
         {
             string query = "SELECT id FROM projects WHERE gmep_project_no = @projectNo";

@@ -21,6 +21,8 @@ namespace GMEPDesignTool
     {
         public LoginViewModel LoginViewModel { get; set; }
 
+        public Database.Database database = new Database.Database();
+
         public LoginWindow()
         {
             LoginViewModel = new LoginViewModel(this);
@@ -30,7 +32,15 @@ namespace GMEPDesignTool
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            LoginViewModel.openApp();
+            if (database.LoginUser(EmailBox.Text, PasswordBox.Password))
+            {
+                LoginViewModel.openApp();
+            }
+            else
+            {
+                MessageBox.Show("Invalid email or password. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
