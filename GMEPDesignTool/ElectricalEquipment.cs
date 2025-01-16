@@ -28,7 +28,6 @@ namespace GMEPDesignTool
         private string description;
         private int mcaId;
         private string hp;
-        private string tag;
         private float width;
         private float depth;
         public float height;
@@ -64,7 +63,6 @@ namespace GMEPDesignTool
             string hp,
             bool hasPlug,
             bool lockingConnector,
-            string tag,
             float width,
             float depth,
             float height
@@ -93,7 +91,6 @@ namespace GMEPDesignTool
             this.hp = hp;
             this.hasPlug = hasPlug;
             this.lockingConnector = lockingConnector;
-            this.tag = tag;
             this.width = width;
             this.depth = depth;
             this.height = height;
@@ -394,18 +391,6 @@ namespace GMEPDesignTool
             }
         }
 
-        public string Tag
-        {
-            get => tag;
-            set
-            {
-                if (tag != value)
-                {
-                    tag = value;
-                    OnPropertyChanged(nameof(Tag));
-                }
-            }
-        }
         public float Width
         {
             get => width;
