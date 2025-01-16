@@ -1035,7 +1035,6 @@ namespace GMEPDesignTool
                 "",
                 true,
                 false,
-                "",
                 0,
                 0,
                 0

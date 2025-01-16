@@ -424,10 +424,6 @@
                                                                 <Grid HorizontalAlignment="Left">
                                                                     <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                                     <StackPanel Orientation="Horizontal">
-                                                                        <StackPanel Margin="10 0 10 20" Orientation="Vertical" VerticalAlignment="Center">
-                                                                            <Label Content="Tag"  FontWeight="Bold"/>
-                                                                            <TextBox Height="30" Width="100" Text="{Binding Tag}"/>
-                                                                        </StackPanel>
                                                                         <StackPanel Margin="10 0 0 0" Orientation="Vertical">
                                                                             <Label Content="Owner"  FontWeight="Bold"/>
                                                                             <ComboBox Height="30" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
