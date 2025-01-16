@@ -681,8 +681,8 @@
                                                                             <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" Width="70" Text="{Binding Wattage}"></TextBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
-                                                                            <Label Content="Control Type" FontWeight="Bold"/>
-                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding ControlTypeId}">
+                                                                            <Label Content="Driver Type" FontWeight="Bold"/>
+                                                                            <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding DriverTypeId}">
                                                                                 <ComboBoxItem Content="0-10V" Tag="1"/>
                                                                                 <ComboBoxItem Content="Line Voltage" Tag="2"/>
                                                                                 <ComboBoxItem Content="Switch" Tag="3"/>

@@ -491,7 +491,7 @@ namespace GMEPDesignTool.Database
         private void UpdateLighting(ElectricalLighting lighting)
         {
             string query =
-                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer_id = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, control_type_id = @controlTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty WHERE id = @id";
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer_id = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
@@ -507,7 +507,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@symbolId", lighting.SymbolId);
             command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
             command.Parameters.AddWithValue("@description", lighting.Description);
-            command.Parameters.AddWithValue("@controlTypeId", lighting.ControlTypeId);
+            command.Parameters.AddWithValue("@driverTypeId", lighting.DriverTypeId);
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
@@ -518,7 +518,7 @@ namespace GMEPDesignTool.Database
         private void InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, control_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @controlTypeId, @specFromClient, @specSheetId, @qty)";
+                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer_id, wattage, em_capable, tag, symbol_id, description, control_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -535,7 +535,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@symbolId", lighting.SymbolId);
             command.Parameters.AddWithValue("@colorCode", lighting.colorCode);
             command.Parameters.AddWithValue("@description", lighting.Description);
-            command.Parameters.AddWithValue("@controlTypeId", lighting.ControlTypeId);
+            command.Parameters.AddWithValue("@driverTypeId", lighting.DriverTypeId);
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
@@ -787,7 +787,7 @@ namespace GMEPDesignTool.Database
                     reader.GetString("color_code"),
                     false,
                     reader.GetString("description"),
-                    reader.GetInt32("control_type_id"),
+                    reader.GetInt32("driver_type_id"),
                     reader.GetBoolean("spec_sheet_from_client"),
                     reader.GetString("spec_sheet_id")
                 ));
