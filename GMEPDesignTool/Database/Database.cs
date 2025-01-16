@@ -50,20 +50,19 @@ namespace GMEPDesignTool.Database
         {
             
                 string query = @"
-            SELECT e.password
-            FROM email_addresses ea
-            JOIN employees e ON e.email_id = ea.id
-            WHERE ea.email_address = @employeeEmail";
+            SELECT e.passhash
+            FROM employees e 
+            WHERE e.username = @username";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@employeeEmail", userName + "@gmepe.com");
+            command.Parameters.AddWithValue("@username", userName);
             MySqlDataReader reader = command.ExecuteReader();
 
             string hashedPassword = "";
             bool result = false;
             if (reader.Read())
             {
-                hashedPassword = reader.GetString("password");
+                hashedPassword = reader.GetString("passhash");
                 result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
 
             }
