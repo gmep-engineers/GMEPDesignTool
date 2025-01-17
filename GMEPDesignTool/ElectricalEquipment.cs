@@ -32,6 +32,8 @@ namespace GMEPDesignTool
         private float width;
         private float depth;
         public float height;
+        public int pole;
+        public int circuitNo; // Added field
         public bool CanAcceptChildren { get; set; }
         public ObservableCollection<ElectricalEquipment> Children { get; private set; }
 
@@ -68,7 +70,9 @@ namespace GMEPDesignTool
             bool lockingConnector,
             float width,
             float depth,
-            float height
+            float height,
+            int pole,
+            int circuitNo
         )
         {
             this.id = id;
@@ -97,6 +101,8 @@ namespace GMEPDesignTool
             this.width = width;
             this.depth = depth;
             this.height = height;
+            this.pole = pole; 
+            this.circuitNo = circuitNo; 
         }
 
         public string Description
@@ -427,6 +433,30 @@ namespace GMEPDesignTool
                 {
                     height = value;
                     OnPropertyChanged(nameof(Height));
+                }
+            }
+        }
+        public int Pole
+        {
+            get => pole;
+            set
+            {
+                if (pole != value)
+                {
+                    pole = value;
+                    OnPropertyChanged(nameof(Pole));
+                }
+            }
+        }
+        public int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
                 }
             }
         }
