@@ -3,33 +3,77 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.ComponentModel;
+using System.Net.Http.Headers;
+
+
 
 namespace GMEPDesignTool
 {
-    class ExampleViewModel : IDropTarget
+   public class CircuitManagerViewModel : ViewModelBase, IDropTarget
     {
-        public ObservableCollection<ElectricalEquipment> ElectricalEquipments;
+        public ElectricalPanel Panel { get; set; }
+        public ObservableCollection<ElectricalEquipment> Equipment { get; set; }
 
-        /*void IDropTarget.DragOver(IDropInfo dropInfo)
+        public int GridSize { get; set; }
+
+        public CircuitManagerViewModel(ElectricalPanel panel, ObservableCollection<ElectricalEquipment> equipment)
         {
-            ExampleItemViewModel sourceItem = dropInfo.Data as ExampleItemViewModel;
-            ExampleItemViewModel targetItem = dropInfo.TargetItem as ExampleItemViewModel;
+            Equipment=equipment;
+            Panel = panel;
+            GridSize = (int)Math.Ceiling((double)panel.NumBreakers / 2);
+        }
 
-            if (sourceItem != null && targetItem != null && targetItem.CanAcceptChildren)
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            ElectricalEquipment sourceItem = dropInfo.Data as ElectricalEquipment;
+            ElectricalEquipment targetItem = dropInfo.TargetItem as ElectricalEquipment;
+
+            if (sourceItem != null && targetItem != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                dropInfo.Effects = DragDropEffects.Copy;
+                dropInfo.Effects = DragDropEffects.Move;
             }
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            ExampleItemViewModel sourceItem = dropInfo.Data as ExampleItemViewModel;
-            ExampleItemViewModel targetItem = dropInfo.TargetItem as ExampleItemViewModel;
-            targetItem.Children.Add(sourceItem);
-        }*/
+            ElectricalEquipment sourceItem = dropInfo.Data as ElectricalEquipment;
+            ElectricalEquipment targetItem = dropInfo.TargetItem as ElectricalEquipment;
+
+            if (sourceItem != null && targetItem != null)
+            {
+                int sourceIndex = Equipment.IndexOf(sourceItem);
+                int targetIndex = Equipment.IndexOf(targetItem);
+
+                if (sourceIndex != -1 && targetIndex != -1)
+                {
+                    Equipment.Move(sourceIndex, targetIndex);
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
+    public class PanelCircuit : ViewModelBase
+    {
+        public int Id { get; set; }
+        public int connectedVoltage { get; set; }
+        public PanelCircuit(int id, int ConnectedVoltage)
+        {
+            Id = id;
+            ConnectedVoltage = connectedVoltage;
+        }
+
+    }
+  
 }

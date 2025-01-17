@@ -1184,7 +1184,29 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+        private void CircuitManager_Click(object sender, RoutedEventArgs e)
+        {
 
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalEquipment electricalEquipment
+            )
+            {
+                foreach(var panel in ElectricalPanels)
+                {
+                    if (electricalEquipment.ParentId == panel.Id)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+
+                            CircuitManager manager = new CircuitManager(panel, ElectricalEquipments);
+                            manager.Show();
+                        });
+                    }
+                }
+            }
+              
+        }
 
 
         //Lighting Functions

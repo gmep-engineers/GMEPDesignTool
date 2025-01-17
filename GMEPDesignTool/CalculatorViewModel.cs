@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace GMEPDesignTool
 {
-    public class CalculatorViewModel : INotifyPropertyChanged
+    public class CalculatorViewModel : ViewModelBase
     {
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }

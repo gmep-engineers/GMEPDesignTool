@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,12 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class CircuitManager : Window
     {
-        public CircuitManager()
+        public CircuitManager(ElectricalPanel panel, ObservableCollection<ElectricalEquipment> equipment)
         {
             InitializeComponent();
+            var viewModel = new CircuitManagerViewModel(panel, equipment);
+            this.DataContext = viewModel;
+            
         }
     }
 }

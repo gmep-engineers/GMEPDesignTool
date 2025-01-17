@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,8 @@ namespace GMEPDesignTool
         private float width;
         private float depth;
         public float height;
+        public bool CanAcceptChildren { get; set; }
+        public ObservableCollection<ElectricalEquipment> Children { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
