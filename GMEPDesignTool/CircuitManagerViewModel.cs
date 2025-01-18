@@ -17,14 +17,17 @@ namespace GMEPDesignTool
    public class CircuitManagerViewModel : ViewModelBase, IDropTarget
     {
         public ElectricalPanel Panel { get; set; }
-        public ObservableCollection<ElectricalEquipment> Equipment { get; set; }
+
+        public ObservableCollection<Circuit> Circuits { get; set; }
+        public ObservableCollection<ElectricalEquipment> Equipments { get; set; }
 
         public int GridSize { get; set; }
 
         public CircuitManagerViewModel(ElectricalPanel panel, ObservableCollection<ElectricalEquipment> equipment)
         {
-            Equipment=equipment;
+            Equipments=equipment;
             Panel = panel;
+            Circuits = panel.circuits;
             GridSize = (int)Math.Ceiling((double)panel.NumBreakers / 2);
         }
 
@@ -47,12 +50,12 @@ namespace GMEPDesignTool
 
             if (sourceItem != null && targetItem != null)
             {
-                int sourceIndex = Equipment.IndexOf(sourceItem);
-                int targetIndex = Equipment.IndexOf(targetItem);
+                int sourceIndex = Equipments.IndexOf(sourceItem);
+                int targetIndex = Equipments.IndexOf(targetItem);
 
                 if (sourceIndex != -1 && targetIndex != -1)
                 {
-                    Equipment.Move(sourceIndex, targetIndex);
+                    Equipments.Move(sourceIndex, targetIndex);
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace GMEPDesignTool
         private int _amp;
         private int _type;
         private bool _powered;
+        public ObservableCollection<ElectricalEquipment> equipments { get; set; }
+        public ObservableCollection<Circuit> circuits { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -69,6 +72,8 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
+            circuits = new ObservableCollection<Circuit>();
+            PopulateCircuits();
         }
 
         public bool IsRecessed
@@ -176,7 +181,8 @@ namespace GMEPDesignTool
             set
             {
                 _numBreakers = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(NumBreakers));
+                PopulateCircuits();
             }
         }
 
@@ -238,7 +244,26 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+        public void PopulateCircuits()
+        {
+            while (circuits.Count < NumBreakers)
+            {
+                circuits.Add(new Circuit(circuits.Count + 1, 0, 0));
+            }
+            while (circuits.Count > NumBreakers)
+            {
+                circuits.RemoveAt(circuits.Count - 1);
+            }
+        }
+        /*public void SetCircuits()
+        {
+            foreach()
+            foreach(var equipment in equipments)
+            {
 
+            }
+        }*/
+        
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -259,6 +284,54 @@ namespace GMEPDesignTool
                 return false;
             }
             return true;
+        }
+    }
+    public class Circuit : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int number;
+        public int kva;
+        public int amp;
+
+        public Circuit(int _number, int _kva, int _amp)
+        {
+            number = _number;
+            kva = _kva;
+            amp=_amp;
+        }
+
+        public int Amp
+        {
+            get => amp;
+            set
+            {
+                amp = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Kva
+        {
+            get => kva;
+            set
+            {
+                kva = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                number = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

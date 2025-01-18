@@ -927,7 +927,30 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
+        private void CircuitManager_Click(object sender, RoutedEventArgs e)
+        {
+            ObservableCollection<ElectricalEquipment> panelEquipment = new ObservableCollection<ElectricalEquipment>();
 
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalPanel panel
+            )
+            {
+                foreach (var equipment in ElectricalEquipments)
+                {
+                    if (equipment.ParentId == panel.Id)
+                    {
+                        panelEquipment.Add(equipment);
+                    }
+                }
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    CircuitManager manager = new CircuitManager(panel, panelEquipment);
+                    manager.Show();
+                });
+            }
+
+        }
         //Service Functions
         public void AddElectricalService(ElectricalService electricalService)
         {
@@ -1209,29 +1232,7 @@ namespace GMEPDesignTool
             return pole;
         }
       
-        private void CircuitManager_Click(object sender, RoutedEventArgs e)
-        {
-
-            if (
-                sender is Button button
-                && button.CommandParameter is ElectricalEquipment electricalEquipment
-            )
-            {
-                foreach(var panel in ElectricalPanels)
-                {
-                    if (electricalEquipment.ParentId == panel.Id)
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-
-                            CircuitManager manager = new CircuitManager(panel, ElectricalEquipments);
-                            manager.Show();
-                        });
-                    }
-                }
-            }
-    
-        }
+        
 
 
         //Lighting Functions
