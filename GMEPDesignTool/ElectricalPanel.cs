@@ -29,7 +29,9 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         public ObservableCollection<ElectricalEquipment> equipments { get; set; }
-        public ObservableCollection<Circuit> circuits { get; set; }
+        public ObservableCollection<Circuit> leftCircuits { get; set; }
+
+        public ObservableCollection<Circuit> rightCircuits { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -72,7 +74,8 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
-            circuits = new ObservableCollection<Circuit>();
+            leftCircuits = new ObservableCollection<Circuit>();
+            rightCircuits = new ObservableCollection<Circuit>();
             PopulateCircuits();
         }
 
@@ -246,13 +249,27 @@ namespace GMEPDesignTool
         }
         public void PopulateCircuits()
         {
-            while (circuits.Count < NumBreakers)
+            while (leftCircuits.Count + rightCircuits.Count < NumBreakers)
             {
-                circuits.Add(new Circuit(circuits.Count + 1, 0, 0));
+                if (rightCircuits.Count < leftCircuits.Count)
+                {
+                    leftCircuits.Add(new Circuit(leftCircuits.Count + 1, 0, 0));
+                }
+                else
+                {
+                    rightCircuits.Add(new Circuit(rightCircuits.Count + 1, 0, 0));
+                }
             }
-            while (circuits.Count > NumBreakers)
+            while (leftCircuits.Count + rightCircuits.Count > NumBreakers)
             {
-                circuits.RemoveAt(circuits.Count - 1);
+                if (rightCircuits.Count < leftCircuits.Count)
+                {
+                    leftCircuits.RemoveAt(leftCircuits.Count - 1);
+                }
+                else
+                {
+                    rightCircuits.RemoveAt(rightCircuits.Count - 1);
+                }
             }
         }
         /*public void SetCircuits()
@@ -293,6 +310,7 @@ namespace GMEPDesignTool
         public int number;
         public int kva;
         public int amp;
+        public int index;
 
         public Circuit(int _number, int _kva, int _amp)
         {
@@ -328,6 +346,7 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+       
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

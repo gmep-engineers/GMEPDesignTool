@@ -18,7 +18,8 @@ namespace GMEPDesignTool
     {
         public ElectricalPanel Panel { get; set; }
 
-        public ObservableCollection<Circuit> Circuits { get; set; }
+        public ObservableCollection<Circuit> LeftCircuits { get; set; }
+        public ObservableCollection<Circuit> RightCircuits { get; set; }
         public ObservableCollection<ElectricalEquipment> Equipments { get; set; }
 
         public int GridSize { get; set; }
@@ -27,7 +28,8 @@ namespace GMEPDesignTool
         {
             Equipments=equipment;
             Panel = panel;
-            Circuits = panel.circuits;
+            LeftCircuits = panel.leftCircuits;
+            RightCircuits = panel.rightCircuits;
             GridSize = (int)Math.Ceiling((double)panel.NumBreakers / 2);
         }
 
