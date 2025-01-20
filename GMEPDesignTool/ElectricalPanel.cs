@@ -304,8 +304,6 @@ namespace GMEPDesignTool
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
-                   
-
                 }
             }
         }

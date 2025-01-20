@@ -935,7 +935,7 @@ namespace GMEPDesignTool
                 && button.CommandParameter is ElectricalPanel panel
             )
             {
-             
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     CircuitManager manager = new CircuitManager(panel);
@@ -1067,6 +1067,7 @@ namespace GMEPDesignTool
                 s3.DeleteFileAsync(electricalEquipment.SpecSheetId);
             }
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
+            electricalEquipment.ParentId = "";
             ElectricalEquipments.Remove(electricalEquipment);
             StartTimer();
         }
