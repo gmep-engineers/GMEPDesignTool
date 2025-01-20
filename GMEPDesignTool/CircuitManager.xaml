@@ -32,13 +32,13 @@
                             <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="LightSlateGray">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Height" Value="150"/>
+                                        <Setter Property="Height" Value="160"/>
                                         <Style.Triggers>
                                         <DataTrigger Binding="{Binding Pole}" Value="1">
                                             <Setter Property="Height" Value="50"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Pole}" Value="2">
-                                            <Setter Property="Height" Value="100"/>
+                                            <Setter Property="Height" Value="110"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                     </Style>
@@ -133,7 +133,7 @@
                     <DataGridTextColumn  Binding="{Binding Amp}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False">
+            <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="3">
                 <DataGrid.Columns>
                     <DataGridTextColumn  Binding="{Binding Amp}" Width="*"/>
                     <DataGridTemplateColumn Width="*">
@@ -235,9 +235,7 @@
                                 </Style>
                             </Border.Style>
                             <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding Description}" Margin="5"/>
                                 <TextBlock Text="{Binding EquipNo}" Margin="5"/>
-                                <TextBlock Text="{Binding Voltage}" Margin="5"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

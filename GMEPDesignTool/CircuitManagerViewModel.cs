@@ -55,12 +55,19 @@ namespace GMEPDesignTool
 
             if (sourceItem != null && targetItem != null)
             {
-                int sourceIndex = LeftEquipments.IndexOf(sourceItem);
-                int targetIndex = LeftEquipments.IndexOf(targetItem);
+                ObservableCollection<ElectricalEquipment> sourceCollection = LeftEquipments.Contains(sourceItem) ? LeftEquipments : RightEquipments;
+                ObservableCollection<ElectricalEquipment> targetCollection = LeftEquipments.Contains(targetItem) ? LeftEquipments : RightEquipments;
+
+                int sourceIndex = sourceCollection.IndexOf(sourceItem);
+                int targetIndex = targetCollection.IndexOf(targetItem);
 
                 if (sourceIndex != -1 && targetIndex != -1)
                 {
-                    LeftEquipments.Move(sourceIndex, targetIndex);
+                    sourceCollection.RemoveAt(sourceIndex);
+                    targetCollection.Insert(targetIndex, sourceItem);
+                    Panel.SetCircuitNumbers();
+                    Panel.SetCircuitVa();
+
                 }
             }
         }
