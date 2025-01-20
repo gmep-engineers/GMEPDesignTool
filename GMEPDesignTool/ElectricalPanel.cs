@@ -375,6 +375,7 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public void UploadCircuits(ObservableCollection<ElectricalEquipment`>)
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
