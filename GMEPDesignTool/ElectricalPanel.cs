@@ -249,9 +249,11 @@ namespace GMEPDesignTool
         }
         public void PopulateCircuits()
         {
-            while (leftCircuits.Count + rightCircuits.Count < NumBreakers)
+            int totalCircuits = leftCircuits.Count + rightCircuits.Count;
+
+            while (totalCircuits < NumBreakers)
             {
-                if (rightCircuits.Count < leftCircuits.Count)
+                if (totalCircuits % 2 == 0)
                 {
                     leftCircuits.Add(new Circuit(leftCircuits.Count + 1, 0, 0));
                 }
@@ -259,18 +261,22 @@ namespace GMEPDesignTool
                 {
                     rightCircuits.Add(new Circuit(rightCircuits.Count + 1, 0, 0));
                 }
+                totalCircuits++;
             }
-            while (leftCircuits.Count + rightCircuits.Count > NumBreakers)
+
+            while (totalCircuits > NumBreakers)
             {
-                if (rightCircuits.Count < leftCircuits.Count)
-                {
-                    leftCircuits.RemoveAt(leftCircuits.Count - 1);
-                }
-                else
+                if (rightCircuits.Count > leftCircuits.Count)
                 {
                     rightCircuits.RemoveAt(rightCircuits.Count - 1);
                 }
+                else
+                {
+                    leftCircuits.RemoveAt(leftCircuits.Count - 1);
+                }
+                totalCircuits--;
             }
+
         }
         /*public void SetCircuits()
         {
