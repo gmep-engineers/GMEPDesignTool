@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Amazon.S3.Model;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
@@ -104,6 +105,17 @@ namespace GMEPDesignTool
             GetNames();
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
+
+            foreach (var equipment in ElectricalEquipments)
+            {
+                foreach (var panel in ElectricalPanels)
+                {
+                    if (equipment.ParentId == panel.Id)
+                    {
+                        panel.AssignEquipment(equipment);
+                    }
+                }
+            }
 
         }
 
