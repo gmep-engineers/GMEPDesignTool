@@ -189,6 +189,8 @@ namespace GMEPDesignTool
                 _numBreakers = value;
                 OnPropertyChanged(nameof(NumBreakers));
                 PopulateCircuits();
+                SetCircuitNumbers();
+                SetCircuitVa();
             }
         }
 
@@ -300,6 +302,8 @@ namespace GMEPDesignTool
                     {
                         rightEquipments.Remove(equipment);
                     }
+                    SetCircuitNumbers();
+                    SetCircuitVa();
                    
 
                 }
@@ -346,6 +350,14 @@ namespace GMEPDesignTool
         }
         public void SetCircuitVa()
         {
+            foreach (var circuit in leftCircuits)
+            {
+                circuit.Va = 0;
+            }
+            foreach (var circuit in rightCircuits)
+            {
+                circuit.Va = 0;
+            }
             foreach (var equipment in leftEquipments)
             {
                 int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
