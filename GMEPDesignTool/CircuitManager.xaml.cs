@@ -20,10 +20,10 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class CircuitManager : Window
     {
-        public CircuitManager(ElectricalPanel panel, ObservableCollection<ElectricalEquipment> equipment)
+        public CircuitManager(ElectricalPanel panel)
         {
             InitializeComponent();
-            var viewModel = new CircuitManagerViewModel(panel, equipment);
+            var viewModel = new CircuitManagerViewModel(panel);
             this.DataContext = viewModel;
             
         }

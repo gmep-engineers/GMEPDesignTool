@@ -20,13 +20,16 @@ namespace GMEPDesignTool
 
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
-        public ObservableCollection<ElectricalEquipment> Equipments { get; set; }
+        public ObservableCollection<ElectricalEquipment> LeftEquipments { get; set; }
+
+        public ObservableCollection<ElectricalEquipment> RightEquipments { get; set; }
 
         public int GridSize { get; set; }
 
-        public CircuitManagerViewModel(ElectricalPanel panel, ObservableCollection<ElectricalEquipment> equipment)
+        public CircuitManagerViewModel(ElectricalPanel panel)
         {
-            Equipments=equipment;
+            RightEquipments = panel.rightEquipments;
+            LeftEquipments = panel.leftEquipments;
             Panel = panel;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
@@ -52,12 +55,12 @@ namespace GMEPDesignTool
 
             if (sourceItem != null && targetItem != null)
             {
-                int sourceIndex = Equipments.IndexOf(sourceItem);
-                int targetIndex = Equipments.IndexOf(targetItem);
+                int sourceIndex = LeftEquipments.IndexOf(sourceItem);
+                int targetIndex = LeftEquipments.IndexOf(targetItem);
 
                 if (sourceIndex != -1 && targetIndex != -1)
                 {
-                    Equipments.Move(sourceIndex, targetIndex);
+                    LeftEquipments.Move(sourceIndex, targetIndex);
                 }
             }
         }

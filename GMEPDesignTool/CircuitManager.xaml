@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0" Margin="20 0 0 0"  ItemsSource="{Binding Equipments}" 
+            <ListBox Grid.Column="0" Margin="20 0 0 0"  ItemsSource="{Binding LeftEquipments}" 
                  dd:DragDrop.IsDragSource="True"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
@@ -54,21 +54,51 @@
                 </ListBox>
             <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn  Binding="{Binding Amp}" />
+                    <DataGridTextColumn Binding="{Binding Number}" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*"/>
+                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn Binding="{Binding Kva}" />
-                    <DataGridTextColumn  Binding="{Binding Amp}" />
+                    <DataGridTextColumn Binding="{Binding Number}" Width="*" />
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*"/>
+                    <DataGridTextColumn Binding="{Binding Va}" Width="*"/>
+                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <ListBox Grid.Column="3" Background="AliceBlue"  Margin="0 0 20 0" VerticalAlignment="Top"/>
+            <ListBox Grid.Column="3" Margin="20 0 20 0"  ItemsSource="{Binding RightEquipments}" 
+       dd:DragDrop.IsDragSource="True"
+       dd:DragDrop.IsDropTarget="True"
+       dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="LightSlateGray">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Height" Value="150"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Pole}" Value="1">
+                                            <Setter Property="Height" Value="50"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Pole}" Value="2">
+                                            <Setter Property="Height" Value="100"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding Description}" Margin="5"/>
+                                <TextBlock Text="{Binding EquipNo}" Margin="5"/>
+                                <TextBlock Text="{Binding Voltage}" Margin="5"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
         <Grid  Background="LightGray" Grid.Row="2">
             

@@ -34,6 +34,7 @@ namespace GMEPDesignTool
         public float height;
         public int pole;
         public int circuitNo; // Added field
+
         public bool CanAcceptChildren { get; set; }
         public ObservableCollection<ElectricalEquipment> Children { get; private set; }
 

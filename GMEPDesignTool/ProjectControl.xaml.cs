@@ -929,23 +929,16 @@ namespace GMEPDesignTool
         }
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
-            ObservableCollection<ElectricalEquipment> panelEquipment = new ObservableCollection<ElectricalEquipment>();
 
             if (
                 sender is Button button
                 && button.CommandParameter is ElectricalPanel panel
             )
             {
-                foreach (var equipment in ElectricalEquipments)
-                {
-                    if (equipment.ParentId == panel.Id)
-                    {
-                        panelEquipment.Add(equipment);
-                    }
-                }
+             
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    CircuitManager manager = new CircuitManager(panel, panelEquipment);
+                    CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
             }
@@ -1125,6 +1118,16 @@ namespace GMEPDesignTool
                 {
                     equipment.Pole = determineEquipmentPole(equipment.Is3Ph, equipment.Voltage);
                 }
+                if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
+                {
+                    foreach(var panel in ElectricalPanels)
+                    {
+                        if (panel.Id == equipment.ParentId)
+                        {
+                            panel.AssignEquipment(equipment);
+                        }
+                    }
+                }
                 StartTimer();
             }
         }
@@ -1193,6 +1196,7 @@ namespace GMEPDesignTool
             }
         }
 
+
         private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             EquipmentViewSource.View.Refresh();
@@ -1231,8 +1235,8 @@ namespace GMEPDesignTool
             }
             return pole;
         }
-      
         
+
 
 
         //Lighting Functions
