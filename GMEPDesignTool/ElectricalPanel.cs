@@ -329,21 +329,14 @@ namespace GMEPDesignTool
 
             foreach (var equipment in leftEquipments)
             {
-                if (leftCircuitIndex + equipment.Pole <= leftCircuits.Count)
-                {
-                    equipment.CircuitNo = leftCircuits[leftCircuitIndex].Number;
-                    leftCircuitIndex += equipment.Pole;
-                }
-               
+                 equipment.CircuitNo = leftCircuits[leftCircuitIndex].Number;
+                 leftCircuitIndex += equipment.Pole;
             }
 
             foreach (var equipment in rightEquipments)
             {
-                if (rightCircuitIndex + equipment.Pole <= rightCircuits.Count)
-                {
-                    equipment.CircuitNo = rightCircuits[rightCircuitIndex].Number;
-                    rightCircuitIndex += equipment.Pole;
-                }
+                  equipment.CircuitNo = rightCircuits[rightCircuitIndex].Number;
+                  rightCircuitIndex += equipment.Pole;
             }
         }
         public void SetCircuitVa()
@@ -359,14 +352,13 @@ namespace GMEPDesignTool
             foreach (var equipment in leftEquipments)
             {
                 int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
-                if (circuitIndex != -1)
+                if (circuitIndex != -1 && circuitIndex + equipment.Pole <= leftCircuits.Count)
                 {
                     for (int i = 0; i < equipment.Pole; i++)
                     {
-                        if (circuitIndex + i < leftCircuits.Count)
-                        {
-                            leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        }
+                        
+                         leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
+                        
                     }
                 }
             }
@@ -374,14 +366,11 @@ namespace GMEPDesignTool
             foreach (var equipment in rightEquipments)
             {
                 int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
-                if (circuitIndex != -1)
+                if (circuitIndex != -1  && circuitIndex + equipment.Pole <= rightCircuits.Count)
                 {
                     for (int i = 0; i < equipment.Pole; i++)
                     {
-                        if (circuitIndex + i < rightCircuits.Count)
-                        {
                             rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        }
                     }
                 }
             }
