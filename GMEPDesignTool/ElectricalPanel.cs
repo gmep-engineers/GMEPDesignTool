@@ -375,7 +375,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public void UploadEquipment(ObservableCollection<ElectricalEquipment> equipment)
+        public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
         {
             ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>(equipment);
             foreach (var equip in equipment)

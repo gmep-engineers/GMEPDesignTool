@@ -106,15 +106,9 @@ namespace GMEPDesignTool
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
-            foreach (var equipment in ElectricalEquipments)
+            foreach (var panel in ElectricalPanels)
             {
-                foreach (var panel in ElectricalPanels)
-                {
-                    if (equipment.ParentId == panel.Id)
-                    {
-                        panel.AssignEquipment(equipment);
-                    }
-                }
+                panel.DownloadEquipment(ElectricalEquipments);
             }
 
         }
