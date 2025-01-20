@@ -375,7 +375,16 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public void UploadCircuits(ObservableCollection<ElectricalEquipment`>)
+        public void UploadEquipment(ObservableCollection<ElectricalEquipment> equipment)
+        {
+            foreach (var equip in equipment)
+            {
+                if (equip.ParentId == Id)
+                {
+                    AssignEquipment(equip);
+                }
+            }
+        }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
