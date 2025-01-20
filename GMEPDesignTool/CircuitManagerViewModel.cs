@@ -26,6 +26,8 @@ namespace GMEPDesignTool
 
         public int GridSize { get; set; }
 
+     
+
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightEquipments = panel.rightEquipments;

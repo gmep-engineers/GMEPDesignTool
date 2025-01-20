@@ -28,6 +28,9 @@ namespace GMEPDesignTool
         private int _amp;
         private int _type;
         private bool _powered;
+        private int _phaseAVa;
+        private int _phaseBVa;
+        private int _phaseCVa;
         public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; }
         public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; }
         public ObservableCollection<Circuit> leftCircuits { get; set; }
@@ -75,6 +78,9 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
+            _phaseAVa = 14;
+            _phaseBVa = 14;
+            _phaseCVa = 14;
             leftCircuits = new ObservableCollection<Circuit>();
             rightCircuits = new ObservableCollection<Circuit>();
             leftEquipments = new ObservableCollection<ElectricalEquipment>();
@@ -91,7 +97,33 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
-
+        public int PhaseAVA
+        {
+            get => _phaseAVa;
+            set
+            {
+                _phaseAVa = value;
+                OnPropertyChanged(nameof(PhaseAVA));
+            }
+        }
+        public int PhaseBVA
+        {
+            get => _phaseBVa;
+            set
+            {
+                _phaseBVa = value;
+                OnPropertyChanged(nameof(PhaseBVA));
+            }
+        }
+        public int PhaseCVA
+        {
+            get => _phaseCVa;
+            set
+            {
+                _phaseCVa = value;
+                OnPropertyChanged(nameof(PhaseCVA));
+            }
+        }
         public string Id
         {
             get => _id;
@@ -349,6 +381,11 @@ namespace GMEPDesignTool
             {
                 circuit.Va = 0;
             }
+            PhaseAVA = 0;
+            PhaseBVA = 0;
+            PhaseCVA = 0;
+            int phaseNo = 0;
+            int phaseNo2 = 0;
             foreach (var equipment in leftEquipments)
             {
                 int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
@@ -358,7 +395,21 @@ namespace GMEPDesignTool
                     {
                         
                          leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        
+                        if (phaseNo == 0)
+                        {
+                            PhaseAVA += (int)equipment.Va;
+                            phaseNo++;
+                        }
+                        if (phaseNo == 1)
+                        {
+                            PhaseBVA += (int)equipment.Va;
+                            phaseNo++;
+                        }
+                        if (phaseNo == 2)
+                        {
+                            PhaseCVA += (int)equipment.Va;
+                            phaseNo = 0;
+                        }
                     }
                 }
             }
@@ -371,6 +422,21 @@ namespace GMEPDesignTool
                     for (int i = 0; i < equipment.Pole; i++)
                     {
                             rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
+                        if (phaseNo2 == 0)
+                        {
+                            PhaseAVA += (int)equipment.Va;
+                            phaseNo2++;
+                        }
+                        if (phaseNo == 1)
+                        {
+                            PhaseBVA += (int)equipment.Va;
+                            phaseNo2++;
+                        }
+                        if (phaseNo2 == 2)
+                        {
+                            PhaseCVA += (int)equipment.Va;
+                            phaseNo2 = 0;
+                        }
                     }
                 }
             }
@@ -469,7 +535,6 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
-       
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

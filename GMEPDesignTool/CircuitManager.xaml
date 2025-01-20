@@ -10,7 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="700"/>
+            <RowDefinition Height="600"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -242,8 +242,22 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <Grid  Background="LightGray" Grid.Row="2">
-            
+        <Grid Grid.Row="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="Phase A" FontWeight="Bold" Height="50" Width="100"/>
+                    <TextBox Text="{Binding Panel.PhaseAVa}" FontWeight="Bold" Height="50" Width="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="Phase B" FontWeight="Bold" Height="50" Width="100"/>
+                    <TextBox Text="{Binding Panel.PhaseBVa}" FontWeight="Bold" Height="50" Width="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <TextBox Text="Phase C" FontWeight="Bold" Height="50" Width="100"/>
+                    <TextBox Text="{Binding Panel.PhaseCVa}" FontWeight="Bold" Height="50" Width="100"/>
+                </StackPanel>
+            </StackPanel>
+
         </Grid>
     </Grid>
 </Window>
