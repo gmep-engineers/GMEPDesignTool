@@ -377,13 +377,30 @@ namespace GMEPDesignTool
         }
         public void UploadEquipment(ObservableCollection<ElectricalEquipment> equipment)
         {
+            ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>(equipment);
             foreach (var equip in equipment)
             {
                 if (equip.ParentId == Id)
                 {
-                    AssignEquipment(equip);
+                    temp.Add(equip);
                 }
             }
+            temp = new ObservableCollection<ElectricalEquipment>(temp.OrderBy(e => e.CircuitNo));
+            foreach (var equip in equipment)
+            {
+                if (equip.ParentId == Id)
+                {
+                    if (equip.CircuitNo % 2 != 0)
+                    {
+                        leftEquipments.Add(equip);
+                    }
+                    else
+                    {
+                        rightEquipments.Add(equip);
+                    }
+                }
+            }
+            SetCircuitVa();
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
