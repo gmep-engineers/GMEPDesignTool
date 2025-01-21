@@ -319,6 +319,7 @@ namespace GMEPDesignTool
         {
             if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Pole))
             {
+                SetCircuitNumbers();
                 SetCircuitVa();
             }
             if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
