@@ -264,7 +264,7 @@
             </StackPanel>
             <StackPanel Grid.Column="3" Margin="30 0 0 0">
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding PhaseAVa}" FontWeight="Bold" Height="50" />
+                <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
             </StackPanel>
             <StackPanel Grid.Column="4" Orientation="Vertical">
                 <TextBox Text="Total Feeder Amp" FontWeight="Bold" Height="50"/>
