@@ -384,8 +384,7 @@ namespace GMEPDesignTool
             PhaseAVA = 0;
             PhaseBVA = 0;
             PhaseCVA = 0;
-            int phaseNo = 0;
-            int phaseNo2 = 0;
+            int phaseIndex = 0;
             foreach (var equipment in leftEquipments)
             {
                 int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
@@ -395,25 +394,23 @@ namespace GMEPDesignTool
                     {
                         
                          leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        if (phaseNo == 0)
+                        switch (phaseIndex % 3)
                         {
-                            PhaseAVA += (int)equipment.Va;
-                            phaseNo++;
+                            case 0:
+                                PhaseAVA += (int)equipment.Va;
+                                break;
+                            case 1:
+                                PhaseBVA += (int)equipment.Va;
+                                break;
+                            case 2:
+                                PhaseCVA += (int)equipment.Va;
+                                break;
                         }
-                        if (phaseNo == 1)
-                        {
-                            PhaseBVA += (int)equipment.Va;
-                            phaseNo++;
-                        }
-                        if (phaseNo == 2)
-                        {
-                            PhaseCVA += (int)equipment.Va;
-                            phaseNo = 0;
-                        }
+                        phaseIndex++;
                     }
                 }
             }
-
+            phaseIndex = 0;
             foreach (var equipment in rightEquipments)
             {
                 int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
@@ -422,21 +419,19 @@ namespace GMEPDesignTool
                     for (int i = 0; i < equipment.Pole; i++)
                     {
                             rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        if (phaseNo2 == 0)
-                        {
-                            PhaseAVA += (int)equipment.Va;
-                            phaseNo2++;
-                        }
-                        if (phaseNo == 1)
-                        {
-                            PhaseBVA += (int)equipment.Va;
-                            phaseNo2++;
-                        }
-                        if (phaseNo2 == 2)
-                        {
-                            PhaseCVA += (int)equipment.Va;
-                            phaseNo2 = 0;
-                        }
+                            switch (phaseIndex % 3)
+                            {
+                                case 0:
+                                    PhaseAVA += (int)equipment.Va;
+                                    break;
+                                case 1:
+                                    PhaseBVA += (int)equipment.Va;
+                                    break;
+                                case 2:
+                                    PhaseCVA += (int)equipment.Va;
+                                    break;
+                            }
+                            phaseIndex++;
                     }
                 }
             }

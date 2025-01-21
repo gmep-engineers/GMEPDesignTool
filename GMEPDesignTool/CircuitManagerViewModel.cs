@@ -24,9 +24,27 @@ namespace GMEPDesignTool
 
         public ObservableCollection<ElectricalEquipment> RightEquipments { get; set; }
 
-        public int GridSize { get; set; }
 
-     
+        private int _phaseAVa;
+        public int PhaseAVa
+        {
+            get => _phaseAVa;
+            set => SetProperty(ref _phaseAVa, value);
+        }
+
+        private int _phaseBVa;
+        public int PhaseBVa
+        {
+            get => _phaseBVa;
+            set => SetProperty(ref _phaseBVa, value);
+        }
+
+        private int _phaseCVa;
+        public int PhaseCVa
+        {
+            get => _phaseCVa;
+            set => SetProperty(ref _phaseCVa, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -35,10 +53,33 @@ namespace GMEPDesignTool
             Panel = panel;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
-            GridSize = (int)Math.Ceiling((double)panel.NumBreakers / 2);
+            _phaseAVa = panel.PhaseAVA;
+            _phaseBVa = panel.PhaseBVA;
+            _phaseCVa = panel.PhaseCVA;
+            Panel.PropertyChanged += Panel_PropertyChanged;
         }
-
-        void IDropTarget.DragOver(IDropInfo dropInfo)
+        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) ||e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
+            {
+                if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))
+                {
+                    PhaseAVa = Panel.PhaseAVA;
+                    OnPropertyChanged(nameof(PhaseAVa));
+                }
+                else if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
+                {
+                    PhaseBVa = Panel.PhaseBVA;
+                    OnPropertyChanged(nameof(PhaseBVa));
+                }
+                else if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
+                {
+                    PhaseCVa = Panel.PhaseCVA;
+                    OnPropertyChanged(nameof(PhaseCVa));
+                }
+            }
+        }
+            void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             ElectricalEquipment sourceItem = dropInfo.Data as ElectricalEquipment;
             ElectricalEquipment targetItem = dropInfo.TargetItem as ElectricalEquipment;
@@ -81,16 +122,6 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-    public class PanelCircuit : ViewModelBase
-    {
-        public int Id { get; set; }
-        public int connectedVoltage { get; set; }
-        public PanelCircuit(int id, int ConnectedVoltage)
-        {
-            Id = id;
-            ConnectedVoltage = connectedVoltage;
-        }
-
-    }
+  
   
 }
