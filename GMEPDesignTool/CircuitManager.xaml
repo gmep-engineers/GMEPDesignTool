@@ -29,7 +29,7 @@
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="LightSlateGray">
+                            <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="LightSlateGray">
                                 <Border.Style>
                                     <Style TargetType="Border">
                                         <Setter Property="Height" Value="160"/>
@@ -260,7 +260,7 @@
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Vertical">
                 <TextBox Text="Phase C" FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding PhaseBVa}" FontWeight="Bold" Height="50" />
+                <TextBox Text="{Binding PhaseCVa}" FontWeight="Bold" Height="50" />
             </StackPanel>
             <StackPanel Grid.Column="3" Margin="30 0 0 0">
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
