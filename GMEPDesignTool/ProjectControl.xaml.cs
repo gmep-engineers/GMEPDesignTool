@@ -1059,7 +1059,6 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                1,
                 0
             );
             AddElectricalEquipment(electricalEquipment);
@@ -1117,13 +1116,7 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
-                if (
-                   e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                   || e.PropertyName == nameof(ElectricalEquipment.Is3Ph)
-                    )
-                {
-                    equipment.Pole = determineEquipmentPole(equipment.Is3Ph, equipment.Voltage);
-                }
+               
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {
                     foreach(var panel in ElectricalPanels)
@@ -1225,22 +1218,7 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
-        private int determineEquipmentPole (bool is3Ph, int voltageId)
-        {
-            int pole = 3;
-            if(is3Ph == false)
-            {
-                if (voltageId == 1 || voltageId == 2 || voltageId == 6)
-                {
-                    pole = 1;
-                }
-                else
-                {
-                    pole = 2;
-                }
-            }
-            return pole;
-        }
+       
         
 
 

@@ -33,7 +33,7 @@ namespace GMEPDesignTool
         private float depth;
         public float height;
         public int pole;
-        public int circuitNo; // Added field
+        public int circuitNo; 
 
         public bool CanAcceptChildren { get; set; }
         public ObservableCollection<ElectricalEquipment> Children { get; private set; }
@@ -72,7 +72,6 @@ namespace GMEPDesignTool
             float width,
             float depth,
             float height,
-            int pole,
             int circuitNo
         )
         {
@@ -102,8 +101,8 @@ namespace GMEPDesignTool
             this.width = width;
             this.depth = depth;
             this.height = height;
-            this.pole = pole; 
-            this.circuitNo = circuitNo; 
+            this.circuitNo = circuitNo;
+            determineEquipmentPole();
         }
 
         public string Description
@@ -218,6 +217,7 @@ namespace GMEPDesignTool
                 {
                     voltage = value;
                     OnPropertyChanged(nameof(Voltage));
+                    determineEquipmentPole();
                 }
             }
         }
@@ -257,6 +257,7 @@ namespace GMEPDesignTool
                 {
                     is3Ph = value;
                     OnPropertyChanged(nameof(Is3Ph));
+                    determineEquipmentPole();
                 }
             }
         }
@@ -460,6 +461,22 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(CircuitNo));
                 }
             }
+        }
+        private void determineEquipmentPole()
+        {
+            int pole = 3;
+            if (Is3Ph == false)
+            {
+                if (Voltage == 1 || voltage == 2 || Voltage == 6)
+                {
+                    pole = 1;
+                }
+                else
+                {
+                    pole = 2;
+                }
+            }
+            Pole = pole;
         }
         protected void OnPropertyChanged(string propertyName)
         {
