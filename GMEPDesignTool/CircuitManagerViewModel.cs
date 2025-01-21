@@ -21,7 +21,6 @@ namespace GMEPDesignTool
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
         public ObservableCollection<ElectricalEquipment> LeftEquipments { get; set; }
-
         public ObservableCollection<ElectricalEquipment> RightEquipments { get; set; }
 
 
