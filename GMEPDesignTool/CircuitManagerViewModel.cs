@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.ComponentModel;
 using System.Net.Http.Headers;
+using System.Globalization;
+using System.Windows.Data;
 
 
 
@@ -58,7 +60,12 @@ namespace GMEPDesignTool
             set => SetProperty(ref _name, value);
         }
 
-
+        private int _pole;
+        public int Pole
+        {
+            get => _pole;
+            set => SetProperty(ref _pole, value);
+        }
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightEquipments = panel.rightEquipments;
@@ -71,6 +78,7 @@ namespace GMEPDesignTool
             _phaseCVa = panel.PhaseCVA;
             _kva = panel.Kva;
             _name = panel.Name;
+            _pole = panel.Pole;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -97,9 +105,13 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(Kva));
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
+                {
+                    Name = Panel.Name;
+                    OnPropertyChanged(nameof(Name));
+                }
+                if (e.PropertyName == nameof(Pole))
             {
-                Name = Panel.Name;
-                OnPropertyChanged(nameof(Name));
+                Pole = Panel.Pole;
             }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
@@ -137,6 +149,7 @@ namespace GMEPDesignTool
                 }
             }
         }
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -145,6 +158,38 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-  
-  
+    public class PoleToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int pole)
+            {
+                return pole == 3 ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BindingProxy : Freezable
+    {
+        protected override Freezable CreateInstanceCore()
+        {
+            return new BindingProxy();
+        }
+
+        public object Data
+        {
+            get { return (object)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
+        }
+
+        public static readonly DependencyProperty DataProperty =
+            DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
+    }
+
+
 }

@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
         Title="CircuitManager" Height="450" Width="800">
+    <Window.Resources>
+        <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
+        <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -16,8 +20,9 @@
         <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock FontSize="30" FontWeight="Bold">
                 <TextBlock.Text>
-                    <MultiBinding StringFormat="Panel {0}">
+                    <MultiBinding StringFormat="Panel {0} ({1}P)">
                         <Binding Path="Name"/>
+                        <Binding Path="Pole"/>
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
@@ -113,7 +118,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -188,7 +193,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">

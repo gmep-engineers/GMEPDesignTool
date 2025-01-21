@@ -31,6 +31,7 @@ namespace GMEPDesignTool
         private int _phaseAVa;
         private int _phaseBVa;
         private int _phaseCVa;
+        private int _pole;
         public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; }
         public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; }
         public ObservableCollection<Circuit> leftCircuits { get; set; }
@@ -83,9 +84,19 @@ namespace GMEPDesignTool
             rightCircuits = new ObservableCollection<Circuit>();
             leftEquipments = new ObservableCollection<ElectricalEquipment>();
             rightEquipments = new ObservableCollection<ElectricalEquipment>();
+            SetPole();
             PopulateCircuits();
         }
 
+        public int Pole
+        {
+            get => _pole;
+            set
+            {
+                _pole = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsRecessed
         {
             get => _isRecessed;
@@ -271,6 +282,7 @@ namespace GMEPDesignTool
             {
                 _type = value;
                 OnPropertyChanged();
+                SetPole();
             }
         }
         public bool Powered
@@ -280,6 +292,23 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged();
+            }
+        }
+        public void SetPole()
+        {
+            switch(Type) {
+                case 1:
+                    Pole = 3;
+                    break;
+                case 3:
+                    Pole = 3;
+                    break;
+                case 4:
+                    Pole = 3;
+                    break;
+                default:
+                    Pole = 2;
+                    break;
             }
         }
         public void PopulateCircuits()
