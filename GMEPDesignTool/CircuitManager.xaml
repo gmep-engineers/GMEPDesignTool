@@ -63,7 +63,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="3">
+            <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="20">
                         <DataGridTemplateColumn.CellTemplate>
@@ -144,7 +144,7 @@
                     <DataGridTextColumn  Binding="{Binding Amp}" Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid HeadersVisibility="None" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="3">
+            <DataGrid HeadersVisibility="None" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                 <DataGrid.Columns>
                     <DataGridTextColumn  Binding="{Binding Amp}" Width="*"/>
                     <DataGridTemplateColumn Width="*">

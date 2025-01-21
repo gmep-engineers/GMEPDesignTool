@@ -77,9 +77,9 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
-            _phaseAVa = 14;
-            _phaseBVa = 14;
-            _phaseCVa = 14;
+            _phaseAVa = 0;
+            _phaseBVa = 0;
+            _phaseCVa = 0;
             leftCircuits = new ObservableCollection<Circuit>();
             rightCircuits = new ObservableCollection<Circuit>();
             leftEquipments = new ObservableCollection<ElectricalEquipment>();
@@ -95,6 +95,7 @@ namespace GMEPDesignTool
             {
                 _pole = value;
                 OnPropertyChanged();
+                SetCircuitVa();
             }
         }
         public bool IsRecessed
@@ -423,7 +424,7 @@ namespace GMEPDesignTool
                     {
                         
                         leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                        switch (phaseIndex % 3)
+                        switch (phaseIndex % Pole)
                         {
                             case 0:
                                 PhaseAVA += (int)equipment.Va;
@@ -449,7 +450,7 @@ namespace GMEPDesignTool
                     for (int i = 0; i < equipment.Pole; i++)
                     {
                             rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                            switch (phaseIndex % 3)
+                            switch (phaseIndex % Pole)
                             {
                                 case 0:
                                     PhaseAVA += (int)equipment.Va;
