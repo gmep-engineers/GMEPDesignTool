@@ -438,7 +438,7 @@ namespace GMEPDesignTool
         }
         public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
         {
-            ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>(equipment);
+            ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>();
             foreach (var equip in equipment)
             {
                 if (equip.ParentId == Id)
@@ -447,13 +447,15 @@ namespace GMEPDesignTool
                 }
             }
             temp = new ObservableCollection<ElectricalEquipment>(temp.OrderBy(e => e.CircuitNo));
-            foreach (var equip in equipment)
+            foreach (var equip in temp)
             {
                 if (equip.ParentId == Id)
                 {
+                    equip.PropertyChanged += Equipment_PropertyChanged;
                     if (equip.CircuitNo % 2 != 0)
                     {
                         leftEquipments.Add(equip);
+
                     }
                     else
                     {
@@ -462,6 +464,7 @@ namespace GMEPDesignTool
                 }
             }
             SetCircuitVa();
+            
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
