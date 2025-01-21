@@ -44,6 +44,12 @@ namespace GMEPDesignTool
             get => _phaseCVa;
             set => SetProperty(ref _phaseCVa, value);
         }
+        public float _kva;
+        public float Kva
+        {
+            get => _kva;
+            set => SetProperty(ref _kva, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -55,28 +61,32 @@ namespace GMEPDesignTool
             _phaseAVa = panel.PhaseAVA;
             _phaseBVa = panel.PhaseBVA;
             _phaseCVa = panel.PhaseCVA;
+            _kva = panel.Kva;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) ||e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
-            {
+          
                 if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))
                 {
                     PhaseAVa = Panel.PhaseAVA;
                     OnPropertyChanged(nameof(PhaseAVa));
                 }
-                else if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
+                if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
                 {
                     PhaseBVa = Panel.PhaseBVA;
                     OnPropertyChanged(nameof(PhaseBVa));
                 }
-                else if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
+                if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
                 {
                     PhaseCVa = Panel.PhaseCVA;
                     OnPropertyChanged(nameof(PhaseCVa));
                 }
-            }
+                if (e.PropertyName == nameof(ElectricalPanel.Kva))
+                {
+                    Kva = Panel.Kva;
+                    OnPropertyChanged(nameof(Kva));
+                }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {

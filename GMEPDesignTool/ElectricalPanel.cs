@@ -24,7 +24,7 @@ namespace GMEPDesignTool
         private int _numBreakers;
         private int _distanceFromParent;
         private int _aicRating;
-        private int _kva;
+        private float _kva;
         private int _amp;
         private int _type;
         private bool _powered;
@@ -54,7 +54,6 @@ namespace GMEPDesignTool
             int numBreakers,
             int distanceFromParent,
             int aicRating,
-            int kva,
             int amp,
             int type,
             bool powered,
@@ -73,7 +72,6 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            _kva = kva;
             _amp = amp;
             _type = type;
             _powered = powered;
@@ -246,7 +244,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Kva
+        public float Kva
         {
             get => _kva;
             set
@@ -385,6 +383,7 @@ namespace GMEPDesignTool
             PhaseAVA = 0;
             PhaseBVA = 0;
             PhaseCVA = 0;
+            Kva = 0;
             int phaseIndex = 0;
             foreach (var equipment in leftEquipments)
             {
@@ -394,7 +393,7 @@ namespace GMEPDesignTool
                     for (int i = 0; i < equipment.Pole; i++)
                     {
                         
-                         leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
+                        leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
                         switch (phaseIndex % 3)
                         {
                             case 0:
@@ -407,6 +406,7 @@ namespace GMEPDesignTool
                                 PhaseCVA += (int)equipment.Va;
                                 break;
                         }
+                        Kva += (float)equipment.Va;
                         phaseIndex++;
                     }
                 }
@@ -432,10 +432,12 @@ namespace GMEPDesignTool
                                     PhaseCVA += (int)equipment.Va;
                                     break;
                             }
-                            phaseIndex++;
+                        Kva += (float)equipment.Va;
+                        phaseIndex++;
                     }
                 }
             }
+            Kva = (float)Math.Round(Kva / 1000, 10);
         }
         public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
         {

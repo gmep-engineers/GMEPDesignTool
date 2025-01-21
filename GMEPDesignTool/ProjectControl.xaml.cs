@@ -734,7 +734,6 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0,
                 1,
                 false,
                 false
@@ -917,7 +916,7 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
                 {
-                    setKVAs();
+                    //setKVAs();
                     setAmps();
                 }
 
@@ -1107,7 +1106,7 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )
                 {
-                    setKVAs();
+                    //setKVAs();
                     setAmps();
                 }
                 if (
@@ -1316,7 +1315,7 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalLighting.Qty)
                 )
                 {
-                    setKVAs();
+                   // setKVAs();
                     setAmps();
                 }
                 if (
@@ -1485,7 +1484,7 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
                 {
-                    setKVAs();
+                    //setKVAs();
                     setAmps();
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
