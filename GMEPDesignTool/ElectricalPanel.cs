@@ -301,7 +301,7 @@ namespace GMEPDesignTool
 
             while (totalCircuits > NumBreakers)
             {
-                if (rightCircuits.Count > leftCircuits.Count)
+                if (rightCircuits.Count >= leftCircuits.Count)
                 {
                     rightCircuits.RemoveAt(rightCircuits.Count - 1);
                 }

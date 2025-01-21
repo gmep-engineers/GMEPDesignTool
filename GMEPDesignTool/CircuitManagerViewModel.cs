@@ -50,6 +50,14 @@ namespace GMEPDesignTool
             get => _kva;
             set => SetProperty(ref _kva, value);
         }
+        public string _name;
+
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -62,6 +70,7 @@ namespace GMEPDesignTool
             _phaseBVa = panel.PhaseBVA;
             _phaseCVa = panel.PhaseCVA;
             _kva = panel.Kva;
+            _name = panel.Name;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -87,6 +96,11 @@ namespace GMEPDesignTool
                     Kva = Panel.Kva;
                     OnPropertyChanged(nameof(Kva));
                 }
+                if (e.PropertyName == nameof(ElectricalPanel.Name))
+            {
+                Name = Panel.Name;
+                OnPropertyChanged(nameof(Name));
+            }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {
