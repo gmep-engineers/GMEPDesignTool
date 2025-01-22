@@ -66,6 +66,14 @@ namespace GMEPDesignTool
             get => _pole;
             set => SetProperty(ref _pole, value);
         }
+
+        private float _amp;
+        public float Amp
+        {
+            get => _amp;
+            set => SetProperty(ref _amp, value);
+        }
+
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightEquipments = panel.rightEquipments;
@@ -79,6 +87,7 @@ namespace GMEPDesignTool
             _kva = panel.Kva;
             _name = panel.Name;
             _pole = panel.Pole;
+            _amp = panel.Amp;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -110,8 +119,14 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(Name));
                 }
                 if (e.PropertyName == nameof(Pole))
-            {
-                Pole = Panel.Pole;
+                {
+                    Pole = Panel.Pole;
+                    OnPropertyChanged(nameof(Pole));
+            }
+                if (e.PropertyName == nameof(Amp))
+                {
+                    Amp = Panel.Amp;
+                    OnPropertyChanged(nameof(Amp));
             }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)

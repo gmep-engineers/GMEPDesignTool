@@ -25,7 +25,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
-        private int _amp;
+        private float _amp;
         private int _type;
         private bool _powered;
         private int _phaseAVa;
@@ -55,7 +55,7 @@ namespace GMEPDesignTool
             int numBreakers,
             int distanceFromParent,
             int aicRating,
-            int amp,
+            float amp,
             int type,
             bool powered,
             bool isRecessed
@@ -266,7 +266,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Amp
+        public float Amp
         {
             get => _amp;
             set
@@ -468,6 +468,22 @@ namespace GMEPDesignTool
                 }
             }
             Kva = (float)Math.Round(Kva / 1000, 10);
+            Amp = SetAmp();
+        }
+        public float SetAmp()
+        {
+            int largestPhase = Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
+            switch (Pole)
+            {
+                case 2:
+                    Amp = (float)Math.Round((double)largestPhase / 120, 10);
+                    break;
+                default:
+                    Amp = (float)Math.Round((double)((largestPhase * 1.732) / 208), 10);
+                    break;
+
+            }
+            return Amp;
         }
         public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
         {

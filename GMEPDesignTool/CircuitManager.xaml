@@ -54,15 +54,13 @@
                                     </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="{Binding Description}" Margin="5"/>
-                                    <TextBlock Text="{Binding EquipNo}" Margin="5"/>
-                                    <TextBlock Text="{Binding Voltage}" Margin="5"/>
-                                </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="{Binding EquipNo}" Margin="5"/>
+                            </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
-                </ListBox>
+             </ListBox>
             <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="20">
@@ -72,7 +70,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn Width="*" Header="Phase A">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -95,7 +93,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn Width="*" Header="Phase B">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -118,7 +116,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
+                    <DataGridTemplateColumn Width="*" Header="Phase C" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -141,16 +139,16 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*" />
+                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*" Header="Breaker Size"/>
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid HeadersVisibility="None" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*"/>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTextColumn  Binding="{Binding Amp}" Width="*" Header="Breaker Size"/>
+                    <DataGridTemplateColumn Width="*" Header="Phase A">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Va}">
+                                <TextBlock Text="{Binding Va}" >
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -170,7 +168,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*">
+                    <DataGridTemplateColumn Width="*" Header="Phase B">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -193,7 +191,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
+                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}" Header="Phase C">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Va}">
@@ -269,17 +267,17 @@
                 <TextBox Text="Phase B" FontWeight="Bold" Height="50" />
                 <TextBox Text="{Binding PhaseBVa}" FontWeight="Bold" Height="50"/>
             </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Vertical">
+            <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0 0 30 0" Visibility="{Binding Pole, Converter={StaticResource PoleToVisibilityConverter}}">
                 <TextBox Text="Phase C" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding PhaseCVa}" FontWeight="Bold" Height="50" />
             </StackPanel>
-            <StackPanel Grid.Column="3" Margin="30 0 0 0">
+            <StackPanel Grid.Column="3">
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
             </StackPanel>
             <StackPanel Grid.Column="4" Orientation="Vertical">
                 <TextBox Text="Total Feeder Amp" FontWeight="Bold" Height="50"/>
-                <TextBox Text="0" FontWeight="Bold" Height="50" />
+                <TextBox Text="{Binding Amp}" FontWeight="Bold" Height="50" />
             </StackPanel>
         </Grid>
     </Grid>
