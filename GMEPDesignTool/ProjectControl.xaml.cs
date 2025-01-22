@@ -26,11 +26,10 @@ using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Collections;
 
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace GMEPDesignTool
 {
@@ -45,8 +44,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
-        public ObservableDictionary<string, string> FedFromNames { get; set; }
-        public ObservableDictionary<string, string> PanelNames { get; set; }
+        public ObservableD FedFromNames { get; set; }
+        public ObservableObject PanelNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
@@ -1670,160 +1669,6 @@ namespace GMEPDesignTool
                 return Math.Round(doubleValue, 1, MidpointRounding.AwayFromZero);
             }
             return value;
-        }
-    }
-    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged
-    {
-        private const string CountString = "Count";
-        private const string IndexerName = "Item[]";
-        private const string KeysName = "Keys";
-        private const string ValuesName = "Values";
-        private IDictionary<TKey, TValue> _dictionary;
-
-        public ObservableDictionary()
-        {
-            _dictionary = new Dictionary<TKey, TValue>();
-        }
-
-        protected IDictionary<TKey, TValue> Dictionary => _dictionary;
-
-        public ICollection<TKey> Keys => _dictionary.Keys;
-
-        public ICollection<TValue> Values => _dictionary.Values;
-
-        public int Count => _dictionary.Count;
-
-        public bool IsReadOnly => _dictionary.IsReadOnly;
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public TValue this[TKey key]
-        {
-            get => _dictionary[key];
-            set => Insert(key, value, false);
-        }
-
-        public void Add(TKey key, TValue value)
-        {
-            Insert(key, value, true);
-        }
-
-        public bool ContainsKey(TKey key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
-
-        public bool Remove(TKey key)
-        {
-            if (_dictionary.TryGetValue(key, out var value) && _dictionary.Remove(key))
-            {
-                OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
-                OnPropertyChanged(CountString);
-                OnPropertyChanged(KeysName);
-                OnPropertyChanged(ValuesName);
-                return true;
-            }
-            return false;
-        }
-
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            return _dictionary.TryGetValue(key, out value);
-        }
-
-        public void Add(KeyValuePair<TKey, TValue> item)
-        {
-            Insert(item.Key, item.Value, true);
-        }
-
-        public void Clear()
-        {
-            _dictionary.Clear();
-            OnCollectionChanged(NotifyCollectionChangedAction.Reset);
-            OnPropertyChanged(CountString);
-            OnPropertyChanged(KeysName);
-            OnPropertyChanged(ValuesName);
-        }
-
-        public bool Contains(KeyValuePair<TKey, TValue> item)
-        {
-            return _dictionary.Contains(item);
-        }
-
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            _dictionary.CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item)
-        {
-            return Remove(item.Key);
-        }
-
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_dictionary).GetEnumerator();
-        }
-
-        public void AddRange(IDictionary<TKey, TValue> items)
-        {
-            foreach (var item in items)
-            {
-                Insert(item.Key, item.Value, true);
-            }
-        }
-
-        private void Insert(TKey key, TValue value, bool add)
-        {
-            if (_dictionary.TryGetValue(key, out var existingValue))
-            {
-                if (add)
-                {
-                    throw new ArgumentException("An item with the same key has already been added.");
-                }
-
-                if (!EqualityComparer<TValue>.Default.Equals(existingValue, value))
-                {
-                    _dictionary[key] = value;
-                    OnCollectionChanged(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, existingValue));
-                    OnPropertyChanged(IndexerName);
-                    OnPropertyChanged(ValuesName);
-                }
-            }
-            else
-            {
-                _dictionary[key] = value;
-                OnCollectionChanged(NotifyCollectionChangedAction.Add, new KeyValuePair<TKey, TValue>(key, value));
-                OnPropertyChanged(CountString);
-                OnPropertyChanged(KeysName);
-                OnPropertyChanged(ValuesName);
-            }
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> changedItem)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, changedItem));
-        }
-
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> newItem, KeyValuePair<TKey, TValue> oldItem)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, newItem, oldItem));
-        }
-
-        private void OnCollectionChanged(NotifyCollectionChangedAction action, IList newItems)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, newItems));
         }
     }
 
