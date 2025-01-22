@@ -24,6 +24,11 @@ using Amazon.S3.Model;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
 
 namespace GMEPDesignTool
 {
@@ -40,6 +45,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
         public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
+
 
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
@@ -63,6 +69,8 @@ namespace GMEPDesignTool
             ElectricalLightings = database.GetProjectLighting(ProjectId);
             FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
             PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
+            PanelNames.Add(new KeyValuePair<string, string>("", ""));
+            FedFromNames.Add(new KeyValuePair<string, string>("", ""));
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
@@ -795,7 +803,7 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
-            Dictionary<string, string> fedFromBackup = new Dictionary<string, string>();
+           /* Dictionary<string, string> fedFromBackup = new Dictionary<string, string>();
             foreach (var panel in ElectricalPanels)
             {
                 fedFromBackup[panel.Id] = panel.FedFromId;
@@ -816,73 +824,91 @@ namespace GMEPDesignTool
             foreach (var transformer in ElectricalTransformers)
             {
                 transformerBackup[transformer.Id] = transformer.ParentId;
-            }
-            FedFromNames.Clear();
-            PanelNames.Clear();
-            PanelNames.Add(new KeyValuePair<string, string>("", ""));
-            FedFromNames.Add(new KeyValuePair<string, string>("", ""));
+            }*/
+            //FedFromNames.Clear();
+            //PanelNames.Clear();
+            //PanelNames.Add(new KeyValuePair<string, string>("", ""));
+            //FedFromNames.Add(new KeyValuePair<string, string>("", ""));
             foreach (ElectricalService service in ElectricalServices)
             {
-                if (service.Name != "")
-                {
-                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
-                        service.Id,
-                        service.Name
-                    );
-                    FedFromNames.Add(value);
-                }
+               
+                KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                    service.Id,
+                    service.Name
+                );
+                AddToFedFromNames(value);
             }
             foreach (ElectricalPanel panel in ElectricalPanels)
             {
-                if (panel.Name != "")
-                {
-                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
-                        panel.Id,
-                        panel.Name
-                    );
-                    FedFromNames.Add(value);
-                    PanelNames.Add(value);
-                }
+                KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                    panel.Id,
+                    panel.Name
+                );
+                AddToFedFromNames(value);
+                AddToPanelNames(value);
             }
             foreach (ElectricalTransformer transformer in ElectricalTransformers)
             {
-                if (transformer.Name != "")
+
+                KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                    transformer.Id,
+                    transformer.Name
+                );
+                AddToFedFromNames(value);
+                AddToPanelNames(value);
+
+            }
+           
+           void AddToPanelNames(KeyValuePair<string, string> value)
+            {
+                if (PanelNames.Any(p => p.Key == value.Key))
                 {
-                    KeyValuePair<string, string> value = new KeyValuePair<string, string>(
-                        transformer.Id,
-                        transformer.Name
-                    );
-                    FedFromNames.Add(value);
-                    PanelNames.Add(value);
+                    var existingItem = PanelNames.First(p => p.Key == value.Key);
+                    var index = PanelNames.IndexOf(PanelNames.First(p => p.Key == value.Key));
+                    if (existingItem.Value != value.Value)
+                    {
+                        if (value.Value != "")
+                        {
+                            PanelNames[index].Value =  value.Value;
+                        }
+                        else
+                        {
+                            PanelNames.RemoveAt(index);
+                        }
+                    }
+                }
+                else
+                {
+                    if (value.Value != "")
+                    {
+                        PanelNames.Add(value);
+                    }
                 }
             }
-            //adding backup values
-            foreach (var equipment in ElectricalEquipments)
+            void AddToFedFromNames(KeyValuePair<string, string> value)
             {
-                if (panelBackup.ContainsKey(equipment.Id))
+                if (FedFromNames.Any(p => p.Key == value.Key))
                 {
-                    equipment.ParentId = panelBackup[equipment.Id];
+                    var existingItem = FedFromNames.First(p => p.Key == value.Key);
+                    var index = FedFromNames.IndexOf(FedFromNames.First(p => p.Key == value.Key));
+                    if (existingItem.Value != value.Value)
+                    {
+                        if (value.Value != "")
+                        {
+                            FedFromNames[index] = new KeyValuePair<string, string>(existingItem.Key, value.Value);
+                        }
+                        else
+                        {
+                            FedFromNames.RemoveAt(index);
+                        }
+                    }
                 }
-            }
-            foreach (var lighting in ElectricalLightings)
-            {
-                if (lightingBackup.ContainsKey(lighting.Id))
+                else
                 {
-                    lighting.ParentId = lightingBackup[lighting.Id];
-                }
-            }
-            foreach (var panel in ElectricalPanels)
-            {
-                if (fedFromBackup.ContainsKey(panel.Id))
-                {
-                    panel.FedFromId = fedFromBackup[panel.Id];
-                }
-            }
-            foreach (var transformer in ElectricalTransformers)
-            {
-                if (transformerBackup.ContainsKey(transformer.Id))
-                {
-                    transformer.ParentId = transformerBackup[transformer.Id];
+                    if (value.Value != "")
+                    {
+                        FedFromNames.Add(value);
+                    }
                 }
             }
         }
@@ -1651,4 +1677,6 @@ namespace GMEPDesignTool
             return value;
         }
     }
+
+
 }
