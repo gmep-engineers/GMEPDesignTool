@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Amazon.S3.Model;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
@@ -104,6 +105,11 @@ namespace GMEPDesignTool
             GetNames();
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
+
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.DownloadEquipment(ElectricalEquipments);
+            }
 
         }
 
@@ -728,7 +734,6 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0,
                 1,
                 false,
                 false
@@ -911,8 +916,8 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
                 {
-                    setKVAs();
-                    setAmps();
+                    //setKVAs();
+                   // setAmps();
                 }
 
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
@@ -927,7 +932,23 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
+        private void CircuitManager_Click(object sender, RoutedEventArgs e)
+        {
 
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalPanel panel
+            )
+            {
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    CircuitManager manager = new CircuitManager(panel);
+                    manager.Show();
+                });
+            }
+
+        }
         //Service Functions
         public void AddElectricalService(ElectricalService electricalService)
         {
@@ -993,7 +1014,7 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalService.Type))
                 {
-                    setAmps();
+                    //setAmps();
                 }
 
                 StartTimer();
@@ -1037,6 +1058,7 @@ namespace GMEPDesignTool
                 false,
                 0,
                 0,
+                0,
                 0
             );
             AddElectricalEquipment(electricalEquipment);
@@ -1049,6 +1071,7 @@ namespace GMEPDesignTool
                 s3.DeleteFileAsync(electricalEquipment.SpecSheetId);
             }
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
+            electricalEquipment.ParentId = "";
             ElectricalEquipments.Remove(electricalEquipment);
             StartTimer();
         }
@@ -1082,8 +1105,8 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Qty)
                 )
                 {
-                    setKVAs();
-                    setAmps();
+                    //setKVAs();
+                    //setAmps();
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -1093,7 +1116,17 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
-
+               
+                if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
+                {
+                    foreach(var panel in ElectricalPanels)
+                    {
+                        if (panel.Id == equipment.ParentId)
+                        {
+                            panel.AssignEquipment(equipment);
+                        }
+                    }
+                }
                 StartTimer();
             }
         }
@@ -1162,6 +1195,7 @@ namespace GMEPDesignTool
             }
         }
 
+
         private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             EquipmentViewSource.View.Refresh();
@@ -1184,6 +1218,8 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
+       
+        
 
 
 
@@ -1257,8 +1293,8 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalLighting.Qty)
                 )
                 {
-                    setKVAs();
-                    setAmps();
+                   // setKVAs();
+                   // setAmps();
                 }
                 if (
                     e.PropertyName == nameof(ElectricalLighting.VoltageId)
@@ -1426,8 +1462,8 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
                 {
-                    setKVAs();
-                    setAmps();
+                    //setKVAs();
+                    //setAmps();
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
                 {

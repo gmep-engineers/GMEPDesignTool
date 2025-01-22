@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,11 @@ namespace GMEPDesignTool
         private float width;
         private float depth;
         public float height;
+        public int pole;
+        public int circuitNo; 
+
+        public bool CanAcceptChildren { get; set; }
+        public ObservableCollection<ElectricalEquipment> Children { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -65,7 +71,8 @@ namespace GMEPDesignTool
             bool lockingConnector,
             float width,
             float depth,
-            float height
+            float height,
+            int circuitNo
         )
         {
             this.id = id;
@@ -94,6 +101,8 @@ namespace GMEPDesignTool
             this.width = width;
             this.depth = depth;
             this.height = height;
+            this.circuitNo = circuitNo;
+            determineEquipmentPole();
         }
 
         public string Description
@@ -208,6 +217,7 @@ namespace GMEPDesignTool
                 {
                     voltage = value;
                     OnPropertyChanged(nameof(Voltage));
+                    determineEquipmentPole();
                 }
             }
         }
@@ -247,6 +257,7 @@ namespace GMEPDesignTool
                 {
                     is3Ph = value;
                     OnPropertyChanged(nameof(Is3Ph));
+                    determineEquipmentPole();
                 }
             }
         }
@@ -426,6 +437,46 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(Height));
                 }
             }
+        }
+        public int Pole
+        {
+            get => pole;
+            set
+            {
+                if (pole != value)
+                {
+                    pole = value;
+                    OnPropertyChanged(nameof(Pole));
+                }
+            }
+        }
+        public int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+        private void determineEquipmentPole()
+        {
+            int pole = 3;
+            if (Is3Ph == false)
+            {
+                if (Voltage == 1 || voltage == 2 || Voltage == 6)
+                {
+                    pole = 1;
+                }
+                else
+                {
+                    pole = 2;
+                }
+            }
+            Pole = pole;
         }
         protected void OnPropertyChanged(string propertyName)
         {

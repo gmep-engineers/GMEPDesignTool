@@ -296,6 +296,7 @@
 
                                                         <Label VerticalAlignment="Top" Margin="650,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
                                                         <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                                        <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="750,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
                                                     </Grid>
                                                     <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -379,22 +380,6 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <DataTemplate.Resources>
-                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItemsCategory3">
-                                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                            <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
-                                                        </x:Array>
-                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItems">
-                                                            <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
-                                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                            <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                                            <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                                            <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                                            <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
-                                                            <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
-                                                            <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
-                                                        </x:Array>
-                                                    </DataTemplate.Resources>
                                                     <!-- Make Dynamic -->
                                                     <Grid x:Name="EquipmentGrid" Margin="0 0 0 0" VerticalAlignment="Top">
                                                         <Grid.RowDefinitions>
@@ -433,7 +418,16 @@
 
                                                                         <StackPanel Margin="20 0 0 0">
                                                                             <Label Content="Voltage" FontWeight="Bold"/>
-                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItems}" SelectedValue="{Binding Voltage}"/>
+                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
+                                                                                <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                                                                <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                                                <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                                                                <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                                                                <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                                                                <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                                                                <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
+                                                                                <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
+                                                                            </ComboBox>
                                                                             <Label Content="Phase"  FontWeight="Bold"/>
                                                                             <ComboBox x:Name="PhaseBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedIndex="{Binding Is3Ph}">
                                                                                 <ComboBoxItem Content="1" />
@@ -485,6 +479,7 @@
                                                                 <StackPanel Margin="20 0 0 0">
                                                                     <Label Content="Panel" FontWeight="Bold"/>
                                                                     <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                                    
                                                                     <Label Content="Distance" FontWeight="Bold"/>
                                                                     <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
                                                                 </StackPanel>
@@ -604,22 +599,6 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <DataTemplate.Resources>
-                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItemsLighting">
-                                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                            <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
-                                                        </x:Array>
-                                                        <x:Array Type="{x:Type ComboBoxItem}" x:Key="VoltageItems">
-                                                            <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
-                                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                            <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                                            <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                                            <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                                            <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
-                                                            <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
-                                                            <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
-                                                        </x:Array>
-                                                    </DataTemplate.Resources>
                                                     <!-- Make Dynamic -->
                                                     <Grid x:Name="EquipmentGrid" Margin="0 0 0 0" VerticalAlignment="Top">
                                                         <Grid.RowDefinitions>
@@ -631,7 +610,7 @@
                                                                 <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
                                                                 <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding MountingType}" SelectedValuePath="Tag">
                                                                     <ComboBoxItem Content="Recessed" Tag="1"/>
-                                                                    <ComboBoxItem Content="Surface" Tag="2" />
+                                                                    <ComboBoxItem Content="Surface" Tag="2"/>
                                                                     <ComboBoxItem Content="Pendant" Tag="3"/>
                                                                 </ComboBox>
                                                                 <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
@@ -670,7 +649,10 @@
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label Content="Voltage" FontWeight="Bold"/>
-                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" ItemsSource="{StaticResource VoltageItemsLighting}" SelectedValue="{Binding VoltageId}"/>
+                                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 20 0 0" SelectedValuePath="Tag" SelectedValue="{Binding VoltageId}">
+                                                                                <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                                                <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                                                            </ComboBox>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 0 0">
                                                                             <Label  Content="Watts" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
@@ -23,10 +24,19 @@ namespace GMEPDesignTool
         private int _numBreakers;
         private int _distanceFromParent;
         private int _aicRating;
-        private int _kva;
-        private int _amp;
+        private float _kva;
+        private float _amp;
         private int _type;
         private bool _powered;
+        private int _phaseAVa;
+        private int _phaseBVa;
+        private int _phaseCVa;
+        private int _pole;
+        public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; }
+        public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; }
+        public ObservableCollection<Circuit> leftCircuits { get; set; }
+
+        public ObservableCollection<Circuit> rightCircuits { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,8 +55,7 @@ namespace GMEPDesignTool
             int numBreakers,
             int distanceFromParent,
             int aicRating,
-            int kva,
-            int amp,
+            float amp,
             int type,
             bool powered,
             bool isRecessed
@@ -64,13 +73,31 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            _kva = kva;
             _amp = amp;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
+            _phaseAVa = 0;
+            _phaseBVa = 0;
+            _phaseCVa = 0;
+            leftCircuits = new ObservableCollection<Circuit>();
+            rightCircuits = new ObservableCollection<Circuit>();
+            leftEquipments = new ObservableCollection<ElectricalEquipment>();
+            rightEquipments = new ObservableCollection<ElectricalEquipment>();
+            SetPole();
+            PopulateCircuits();
         }
 
+        public int Pole
+        {
+            get => _pole;
+            set
+            {
+                _pole = value;
+                OnPropertyChanged();
+                SetCircuitVa();
+            }
+        }
         public bool IsRecessed
         {
             get => _isRecessed;
@@ -80,7 +107,33 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
-
+        public int PhaseAVA
+        {
+            get => _phaseAVa;
+            set
+            {
+                _phaseAVa = value;
+                OnPropertyChanged(nameof(PhaseAVA));
+            }
+        }
+        public int PhaseBVA
+        {
+            get => _phaseBVa;
+            set
+            {
+                _phaseBVa = value;
+                OnPropertyChanged(nameof(PhaseBVA));
+            }
+        }
+        public int PhaseCVA
+        {
+            get => _phaseCVa;
+            set
+            {
+                _phaseCVa = value;
+                OnPropertyChanged(nameof(PhaseCVA));
+            }
+        }
         public string Id
         {
             get => _id;
@@ -176,7 +229,10 @@ namespace GMEPDesignTool
             set
             {
                 _numBreakers = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(NumBreakers));
+                PopulateCircuits();
+                SetCircuitNumbers();
+                SetCircuitVa();
             }
         }
 
@@ -200,7 +256,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Kva
+        public float Kva
         {
             get => _kva;
             set
@@ -210,7 +266,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Amp
+        public float Amp
         {
             get => _amp;
             set
@@ -227,6 +283,7 @@ namespace GMEPDesignTool
             {
                 _type = value;
                 OnPropertyChanged();
+                SetPole();
             }
         }
         public bool Powered
@@ -238,11 +295,233 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+        public void SetPole()
+        {
+            switch(Type) {
+                case 1:
+                    Pole = 3;
+                    break;
+                case 3:
+                    Pole = 3;
+                    break;
+                case 4:
+                    Pole = 3;
+                    break;
+                default:
+                    Pole = 2;
+                    break;
+            }
+        }
+        public void PopulateCircuits()
+        {
+            int totalCircuits = leftCircuits.Count + rightCircuits.Count;
+
+            while (totalCircuits < NumBreakers)
+            {
+                if (totalCircuits % 2 == 0)
+                {
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0));
+                }
+                else
+                {
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0));
+                }
+                totalCircuits++;
+            }
+
+            while (totalCircuits > NumBreakers)
+            {
+                if (rightCircuits.Count >= leftCircuits.Count)
+                {
+                    rightCircuits.RemoveAt(rightCircuits.Count - 1);
+                }
+                else
+                {
+                    leftCircuits.RemoveAt(leftCircuits.Count - 1);
+                }
+                totalCircuits--;
+            }
+
+        }
+        private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Pole))
+            {
+                SetCircuitNumbers();
+                SetCircuitVa();
+            }
+            if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
+            {
+                if (sender is ElectricalEquipment equipment)
+                {
+                    equipment.PropertyChanged -= Equipment_PropertyChanged;
+                    if (leftEquipments.Contains(equipment))
+                    {
+                        leftEquipments.Remove(equipment);
+                    }
+                    if (rightEquipments.Contains(equipment))
+                    {
+                        rightEquipments.Remove(equipment);
+                    }
+                    SetCircuitNumbers();
+                    SetCircuitVa();
+                }
+            }
+        }
+        public void AssignEquipment(ElectricalEquipment equipment)
+        {
+
+            if (leftEquipments.Count <= rightEquipments.Count)
+            {
+                leftEquipments.Add(equipment);
+            }
+            else
+            {
+                rightEquipments.Add(equipment);
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+            equipment.PropertyChanged += Equipment_PropertyChanged;
+        }
+        public void SetCircuitNumbers()
+        {
+            int leftCircuitIndex = 0;
+            int rightCircuitIndex = 0;
+
+            foreach (var equipment in leftEquipments)
+            {
+                 equipment.CircuitNo = leftCircuitIndex * 2 + 1;
+                 leftCircuitIndex += equipment.Pole;
+            }
+
+            foreach (var equipment in rightEquipments)
+            {
+               
+                equipment.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightCircuitIndex += equipment.Pole;                    
+            }
+        }
+        public void SetCircuitVa()
+        {
+            foreach (var circuit in leftCircuits)
+            {
+                circuit.Va = 0;
+            }
+            foreach (var circuit in rightCircuits)
+            {
+                circuit.Va = 0;
+            }
+            PhaseAVA = 0;
+            PhaseBVA = 0;
+            PhaseCVA = 0;
+            Kva = 0;
+            int phaseIndex = 0;
+            foreach (var equipment in leftEquipments)
+            {
+                int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
+                if (circuitIndex != -1 && circuitIndex + equipment.Pole <= leftCircuits.Count)
+                {
+                    for (int i = 0; i < equipment.Pole; i++)
+                    {
+                        
+                        leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
+                        switch (phaseIndex % Pole)
+                        {
+                            case 0:
+                                PhaseAVA += (int)equipment.Va;
+                                break;
+                            case 1:
+                                PhaseBVA += (int)equipment.Va;
+                                break;
+                            case 2:
+                                PhaseCVA += (int)equipment.Va;
+                                break;
+                        }
+                        Kva += (float)equipment.Va;
+                        phaseIndex++;
+                    }
+                }
+            }
+            phaseIndex = 0;
+            foreach (var equipment in rightEquipments)
+            {
+                int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
+                if (circuitIndex != -1  && circuitIndex + equipment.Pole <= rightCircuits.Count)
+                {
+                    for (int i = 0; i < equipment.Pole; i++)
+                    {
+                            rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
+                            switch (phaseIndex % Pole)
+                            {
+                                case 0:
+                                    PhaseAVA += (int)equipment.Va;
+                                    break;
+                                case 1:
+                                    PhaseBVA += (int)equipment.Va;
+                                    break;
+                                case 2:
+                                    PhaseCVA += (int)equipment.Va;
+                                    break;
+                            }
+                        Kva += (float)equipment.Va;
+                        phaseIndex++;
+                    }
+                }
+            }
+            Kva = (float)Math.Round(Kva / 1000, 10);
+            Amp = SetAmp();
+        }
+        public float SetAmp()
+        {
+            int largestPhase = Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
+            switch (Pole)
+            {
+                case 2:
+                    Amp = (float)Math.Round((double)largestPhase / 120, 10);
+                    break;
+                default:
+                    Amp = (float)Math.Round((double)((largestPhase * 1.732) / 208), 10);
+                    break;
+
+            }
+            return Amp;
+        }
+        public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
+        {
+            ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>();
+            foreach (var equip in equipment)
+            {
+                if (equip.ParentId == Id)
+                {
+                    temp.Add(equip);
+                }
+            }
+            temp = new ObservableCollection<ElectricalEquipment>(temp.OrderBy(e => e.CircuitNo));
+            foreach (var equip in temp)
+            {
+                if (equip.ParentId == Id)
+                {
+                    equip.PropertyChanged += Equipment_PropertyChanged;
+                    if (equip.CircuitNo % 2 != 0)
+                    {
+                        leftEquipments.Add(equip);
+
+                    }
+                    else
+                    {
+                        rightEquipments.Add(equip);
+                    }
+                }
+            }
+            SetCircuitVa();
+            
+        }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
 
         public bool Verify()
         {
@@ -259,6 +538,55 @@ namespace GMEPDesignTool
                 return false;
             }
             return true;
+        }
+    }
+    public class Circuit : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int number;
+        public int va;
+        public int breakerSize;
+        public int index;
+
+        public Circuit(int _number, int _va, int _breakerSize)
+        {
+            number = _number;
+            va = _va;
+            breakerSize=_breakerSize;
+        }
+
+        public int BreakerSize
+        {
+            get => breakerSize;
+            set
+            {
+                breakerSize = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Va
+        {
+            get => va;
+            set
+            {
+                va = value;
+                OnPropertyChanged();
+            }
+        }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                number = value;
+                OnPropertyChanged();
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

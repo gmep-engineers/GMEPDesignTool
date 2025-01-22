@@ -420,7 +420,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no WHERE group_id = @group_id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
@@ -447,13 +447,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@width", equipment.Width);
             command.Parameters.AddWithValue("@depth", equipment.Depth);
             command.Parameters.AddWithValue("@height", equipment.Height);
+            command.Parameters.AddWithValue("@circuit_no", equipment.CircuitNo);
             command.ExecuteNonQuery();
         }
 
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, width, depth, height) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @width, @depth, @height)";
+                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, width, depth, height, circuit_no) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
             command.Parameters.AddWithValue("@group_id", equipment.Id);
@@ -482,6 +483,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@width", equipment.Width);
             command.Parameters.AddWithValue("@depth", equipment.Depth);
             command.Parameters.AddWithValue("@height", equipment.Height);
+            command.Parameters.AddWithValue("@circuit_no", equipment.CircuitNo);
             command.ExecuteNonQuery();
         }
 
@@ -645,7 +647,6 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("parent_distance"),
                         reader.GetInt32("aic_rating"),
                         0,
-                        0,
                         reader.GetInt32("voltage_id"),
                         false,
                         reader.GetBoolean("is_recessed")
@@ -701,7 +702,8 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("locking_connector"),
                         reader.GetFloat("width"),
                         reader.GetFloat("depth"),
-                        reader.GetFloat("height")
+                        reader.GetFloat("height"),
+                        reader.GetInt32("circuit_no")
                     );
                     equipmentDict[groupId] = newEquip;
                     qtyDict[groupId] = 0;
