@@ -390,14 +390,15 @@ namespace GMEPDesignTool
 
             foreach (var equipment in leftEquipments)
             {
-                 equipment.CircuitNo = leftCircuits[leftCircuitIndex].Number;
+                 equipment.CircuitNo = leftCircuitIndex * 2 + 1;
                  leftCircuitIndex += equipment.Pole;
             }
 
             foreach (var equipment in rightEquipments)
             {
-                  equipment.CircuitNo = rightCircuits[rightCircuitIndex].Number;
-                  rightCircuitIndex += equipment.Pole;
+               
+                equipment.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightCircuitIndex += equipment.Pole;                    
             }
         }
         public void SetCircuitVa()
