@@ -545,22 +545,22 @@ namespace GMEPDesignTool
 
         public int number;
         public int va;
-        public int amp;
+        public int breakerSize;
         public int index;
 
-        public Circuit(int _number, int _va, int _amp)
+        public Circuit(int _number, int _va, int _breakerSize)
         {
             number = _number;
             va = _va;
-            amp=_amp;
+            breakerSize=_breakerSize;
         }
 
-        public int Amp
+        public int BreakerSize
         {
-            get => amp;
+            get => breakerSize;
             set
             {
-                amp = value;
+                breakerSize = value;
                 OnPropertyChanged();
             }
         }
