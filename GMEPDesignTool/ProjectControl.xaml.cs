@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Collections;
 
 
 namespace GMEPDesignTool
@@ -43,10 +45,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
-        public ObservableCollection<KeyValuePair<string, string>> FedFromNames { get; set; }
-        public ObservableCollection<KeyValuePair<string, string>> PanelNames { get; set; }
-
-
+        public ObservableDictionary<string, string> FedFromNames { get; set; }
+        public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
@@ -67,10 +67,10 @@ namespace GMEPDesignTool
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             ElectricalLightings = database.GetProjectLighting(ProjectId);
-            FedFromNames = new ObservableCollection<KeyValuePair<string, string>>();
-            PanelNames = new ObservableCollection<KeyValuePair<string, string>>();
-            PanelNames.Add(new KeyValuePair<string, string>("", ""));
-            FedFromNames.Add(new KeyValuePair<string, string>("", ""));
+            FedFromNames = new ObservableDictionary<string, string>();
+            PanelNames = new ObservableDictionary<string, string>();
+            FedFromNames.Add("", "");
+            PanelNames.Add("", "");
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
@@ -849,7 +849,6 @@ namespace GMEPDesignTool
             }
             foreach (ElectricalTransformer transformer in ElectricalTransformers)
             {
-
                 KeyValuePair<string, string> value = new KeyValuePair<string, string>(
                     transformer.Id,
                     transformer.Name
@@ -861,19 +860,17 @@ namespace GMEPDesignTool
            
            void AddToPanelNames(KeyValuePair<string, string> value)
             {
-                if (PanelNames.Any(p => p.Key == value.Key))
+                if (PanelNames.ContainsKey(value.Key))
                 {
-                    var existingItem = PanelNames.First(p => p.Key == value.Key);
-                    var index = PanelNames.IndexOf(PanelNames.First(p => p.Key == value.Key));
-                    if (existingItem.Value != value.Value)
+                    if (PanelNames[value.Key] != value.Value)
                     {
                         if (value.Value != "")
                         {
-                            PanelNames[index].Value =  value.Value;
+                            PanelNames[value.Key] =  value.Value;
                         }
                         else
                         {
-                            PanelNames.RemoveAt(index);
+                            PanelNames.Remove(value.Key);
                         }
                     }
                 }
@@ -881,25 +878,23 @@ namespace GMEPDesignTool
                 {
                     if (value.Value != "")
                     {
-                        PanelNames.Add(value);
+                        PanelNames.Add(value.Key, value.Value);
                     }
                 }
             }
             void AddToFedFromNames(KeyValuePair<string, string> value)
             {
-                if (FedFromNames.Any(p => p.Key == value.Key))
+                if (FedFromNames.ContainsKey(value.Key))
                 {
-                    var existingItem = FedFromNames.First(p => p.Key == value.Key);
-                    var index = FedFromNames.IndexOf(FedFromNames.First(p => p.Key == value.Key));
-                    if (existingItem.Value != value.Value)
+                    if (FedFromNames[value.Key] != value.Value)
                     {
                         if (value.Value != "")
                         {
-                            FedFromNames[index] = new KeyValuePair<string, string>(existingItem.Key, value.Value);
+                            FedFromNames[value.Key] = value.Value;
                         }
                         else
                         {
-                            FedFromNames.RemoveAt(index);
+                            FedFromNames.Remove(value.Key);
                         }
                     }
                 }
@@ -907,7 +902,7 @@ namespace GMEPDesignTool
                 {
                     if (value.Value != "")
                     {
-                        FedFromNames.Add(value);
+                        FedFromNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -1677,6 +1672,263 @@ namespace GMEPDesignTool
             return value;
         }
     }
+    public class ObservableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged
+    {
+        private const string CountString = "Count";
+        private const string IndexerName = "Item[]";
+        private const string KeysName = "Keys";
+        private const string ValuesName = "Values";
 
+        private IDictionary<TKey, TValue> _dictionary;
+
+        protected IDictionary<TKey, TValue> Dictionary
+        {
+            get { return _dictionary; }
+        }
+
+        #region Constructors
+
+        public ObservableDictionary()
+        {
+            _dictionary = new Dictionary<TKey, TValue>();
+        }
+
+        public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
+        {
+            _dictionary = new Dictionary<TKey, TValue>(dictionary);
+        }
+
+        public ObservableDictionary(IEqualityComparer<TKey> comparer)
+        {
+            _dictionary = new Dictionary<TKey, TValue>(comparer);
+        }
+
+        public ObservableDictionary(int capacity)
+        {
+            _dictionary = new Dictionary<TKey, TValue>(capacity);
+        }
+
+        public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
+        {
+            _dictionary = new Dictionary<TKey, TValue>(dictionary, comparer);
+        }
+
+        public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer)
+        {
+            _dictionary = new Dictionary<TKey, TValue>(capacity, comparer);
+        }
+
+        #endregion Constructors
+
+        #region IDictionary<TKey,TValue> Members
+
+        public void Add(TKey key, TValue value)
+        {
+            Insert(key, value, true);
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            return Dictionary.ContainsKey(key);
+        }
+
+        public ICollection<TKey> Keys
+        {
+            get { return Dictionary.Keys; }
+        }
+
+        public bool Remove(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+
+            TValue value;
+            Dictionary.TryGetValue(key, out value);
+            var removed = Dictionary.Remove(key);
+            if (removed)
+
+                //OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
+                OnCollectionChanged();
+
+            return removed;
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
+            return Dictionary.TryGetValue(key, out value);
+        }
+
+        public ICollection<TValue> Values
+        {
+            get { return Dictionary.Values; }
+        }
+
+        public TValue this[TKey key]
+        {
+            get
+            {
+                return Dictionary[key];
+            }
+            set
+            {
+                Insert(key, value, false);
+            }
+        }
+
+        #endregion IDictionary<TKey,TValue> Members
+
+        #region ICollection<KeyValuePair<TKey,TValue>> Members
+
+        public void Add(KeyValuePair<TKey, TValue> item)
+        {
+            Insert(item.Key, item.Value, true);
+        }
+
+        public void Clear()
+        {
+            if (Dictionary.Count > 0)
+            {
+                Dictionary.Clear();
+                OnCollectionChanged();
+            }
+        }
+
+        public bool Contains(KeyValuePair<TKey, TValue> item)
+        {
+            return Dictionary.Contains(item);
+        }
+
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            Dictionary.CopyTo(array, arrayIndex);
+        }
+
+        public int Count
+        {
+            get { return Dictionary.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return Dictionary.IsReadOnly; }
+        }
+
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            return Remove(item.Key);
+        }
+
+        #endregion ICollection<KeyValuePair<TKey,TValue>> Members
+
+        #region IEnumerable<KeyValuePair<TKey,TValue>> Members
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            return Dictionary.GetEnumerator();
+        }
+
+        #endregion IEnumerable<KeyValuePair<TKey,TValue>> Members
+
+        #region IEnumerable Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Dictionary).GetEnumerator();
+        }
+
+        #endregion IEnumerable Members
+
+        #region INotifyCollectionChanged Members
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        #endregion INotifyCollectionChanged Members
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion INotifyPropertyChanged Members
+
+        public void AddRange(IDictionary<TKey, TValue> items)
+        {
+            if (items == null) throw new ArgumentNullException("items");
+
+            if (items.Count > 0)
+            {
+                if (Dictionary.Count > 0)
+                {
+                    if (items.Keys.Any((k) => Dictionary.ContainsKey(k)))
+                        throw new ArgumentException("An item with the same key has already been added.");
+                    else
+                        foreach (var item in items) Dictionary.Add(item);
+                }
+                else
+                    _dictionary = new Dictionary<TKey, TValue>(items);
+
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, items.ToArray());
+            }
+        }
+
+        private void Insert(TKey key, TValue value, bool add)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+
+            TValue item;
+            if (Dictionary.TryGetValue(key, out item))
+            {
+                if (add) throw new ArgumentException("An item with the same key has already been added.");
+                if (Equals(item, value)) return;
+                Dictionary[key] = value;
+
+                OnCollectionChanged(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, item));
+            }
+            else
+            {
+                Dictionary[key] = value;
+
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, new KeyValuePair<TKey, TValue>(key, value));
+            }
+        }
+
+        private void OnPropertyChanged()
+        {
+            OnPropertyChanged(CountString);
+            OnPropertyChanged(IndexerName);
+            OnPropertyChanged(KeysName);
+            OnPropertyChanged(ValuesName);
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnCollectionChanged()
+        {
+            OnPropertyChanged();
+            if (CollectionChanged != null) CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> changedItem)
+        {
+            OnPropertyChanged();
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, KeyValuePair<TKey, TValue> newItem, KeyValuePair<TKey, TValue> oldItem)
+        {
+            OnPropertyChanged();
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        private void OnCollectionChanged(NotifyCollectionChangedAction action, IList newItems)
+        {
+            OnPropertyChanged();
+            if (CollectionChanged != null)
+                CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+    }
 
 }
