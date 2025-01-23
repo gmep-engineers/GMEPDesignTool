@@ -220,7 +220,34 @@ namespace GMEPDesignTool
             }
         }
 
-        
+        public string ColorCode
+        {
+            get => _colorCode;
+            set
+            {
+                _colorCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string FedFromId
+        {
+            get => _fedFromId ?? "";
+            set
+            {
+                _fedFromId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProjectId
+        {
+            get => _projectId;
+            set
+            {
+                _projectId = value;
+                OnPropertyChanged();
+            }
+        }
 
         public int NumBreakers
         {
