@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalEquipment : INotifyPropertyChanged
+    public class ElectricalEquipment : ElectricalComponent
     {
         private string id;
         private string projectId;
@@ -38,7 +38,6 @@ namespace GMEPDesignTool
         public bool CanAcceptChildren { get; set; }
         public ObservableCollection<ElectricalEquipment> Children { get; private set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private string colorCode;
         private bool powered;
@@ -118,7 +117,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ColorCode
+        public new string ColorCode
         {
             get => colorCode;
             set
@@ -131,7 +130,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string Id
+        public new string Id
         {
             get => id;
             set
@@ -143,7 +142,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string ProjectId
+        public new string ProjectId
         {
             get => projectId;
             set
@@ -195,7 +194,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ParentId
+        public new string ParentId
         {
             get => parentId ?? "";
             set
@@ -438,7 +437,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Pole
+        public new int Pole
         {
             get => pole;
             set
@@ -477,10 +476,6 @@ namespace GMEPDesignTool
                 }
             }
             Pole = pole;
-        }
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public bool Verify()

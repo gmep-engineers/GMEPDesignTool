@@ -12,6 +12,10 @@ namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
     {
+        private string _id;
+        private string _projectId;
+        private string _colorCode;
+        private string _parentId;
         private int _busSize;
         private int _mainSize;
         private bool _isMlo;
@@ -56,25 +60,25 @@ namespace GMEPDesignTool
             bool isRecessed
         ) : base()
         {
-            Id = id;
-            BusSize = busSize;
-            MainSize = mainSize;
-            IsMlo = isMlo;
-            IsDistribution = isDistribution;
-            Name = name;
-            ColorCode = colorCode;
-            ParentId = parentId;
-            ProjectId = projectId;
-            NumBreakers = numBreakers;
-            DistanceFromParent = distanceFromParent;
-            AicRating = aicRating;
-            Amp = amp;
-            Type = type;
-            Powered = powered;
-            IsRecessed = isRecessed;
-            PhaseAVA = 0;
-            PhaseBVA = 0;
-            PhaseCVA = 0;
+            _id = id;
+            _busSize = busSize;
+            _mainSize = mainSize;
+            _isMlo = isMlo;
+            _isDistribution = isDistribution;
+            _name = name;
+            _colorCode = colorCode;
+            _parentId = parentId;
+            _projectId = projectId;
+            _numBreakers = numBreakers;
+            _distanceFromParent = distanceFromParent;
+            _aicRating = aicRating;
+            _amp = amp;
+            _type = type;
+            _powered = powered;
+            _isRecessed = isRecessed;
+            _phaseAVa = 0;
+            _phaseBVa = 0;
+            _phaseCVa = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -89,6 +93,46 @@ namespace GMEPDesignTool
                 SetCircuitVa();
             }
         }
+        public new string Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                OnPropertyChanged();
+                SetCircuitVa();
+            }
+        }
+        public new string ParentId
+        {
+            get => _parentId ?? "";
+            set
+            {
+                _parentId = value;
+                OnPropertyChanged();
+                SetCircuitVa();
+            }
+        }
+        public new string ColorCode
+        {
+            get => _colorCode;
+            set
+            {
+                _colorCode = value;
+                OnPropertyChanged();
+                SetCircuitVa();
+            }
+        }
+        public new string ProjectId
+        {
+            get => _projectId;
+            set
+            {
+                _projectId = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsRecessed
         {
             get => _isRecessed;
