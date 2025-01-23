@@ -181,7 +181,7 @@ namespace GMEPDesignTool
                 {
                     if (panel.Type == requiredVoltage)
                     {
-                        panel.Powered = SetPowerRecursive(panel.FedFromId, panel.Type);
+                        panel.Powered = SetPowerRecursive(panel.ParentId, panel.Type);
                         return panel.Powered;
                     }
                 }
@@ -362,7 +362,7 @@ namespace GMEPDesignTool
             // Start the recursion from services
             foreach (var panel in panels)
             {
-                panel.Value.Powered = SetPowerRecursive(panel.Value.FedFromId, panel.Value.Type);
+                panel.Value.Powered = SetPowerRecursive(panel.Value.ParentId, panel.Value.Type);
             }
             foreach (var transformer in transformers)
             {
@@ -446,7 +446,7 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                if (panel.FedFromId == id)
+                if (panel.ParentId == id)
                 {
                     panel.ColorCode = colorCode;
                     ChangeColors(panel.Id, colorCode);
@@ -480,7 +480,7 @@ namespace GMEPDesignTool
         {
             foreach (var panel in ElectricalPanels)
             {
-                float poles = getServicePoles(panel.Id, panel.FedFromId);
+                float poles = getServicePoles(panel.Id, panel.ParentId);
                 if (poles == 1)
                 {
                     panel.Amp = 0;
@@ -501,7 +501,7 @@ namespace GMEPDesignTool
             {
                 if (parent == panel.Id)
                 {
-                    poles = getServicePoles(panel.Id, panel.FedFromId);
+                    poles = getServicePoles(panel.Id, panel.ParentId);
                 }
             }
             foreach (var transformer in ElectricalTransformers)
@@ -544,7 +544,7 @@ namespace GMEPDesignTool
                 // Calculate the amp for the panel
                 foreach (var panel in ElectricalPanels)
                 {
-                    if (panel.FedFromId == id && panel.Id != panel.FedFromId && id != panel.Id)
+                    if (panel.ParentId == id && panel.Id != panel.ParentId && id != panel.Id)
                     {
                         amp += calculateChildrenAmps(panel.Id);
                     }
@@ -637,7 +637,7 @@ namespace GMEPDesignTool
             float kva = 0;
             foreach (var panel in ElectricalPanels)
             {
-                if (panel.FedFromId == Id && panel.Id != panel.FedFromId && Id != panel.Id)
+                if (panel.ParentId == Id && panel.Id != panel.ParentId && Id != panel.Id)
                 {
                     kva += calculateKVA(panel.Id);
                 }
@@ -688,9 +688,9 @@ namespace GMEPDesignTool
             stack.Add(Id);
 
             var panel = ElectricalPanels.FirstOrDefault(p => p.Id == Id);
-            if (panel != null && !string.IsNullOrEmpty(panel.FedFromId))
+            if (panel != null && !string.IsNullOrEmpty(panel.ParentId))
             {
-                if (HasCycle(panel.FedFromId, visited, stack))
+                if (HasCycle(panel.ParentId, visited, stack))
                 {
                     return true;
                 }
@@ -908,7 +908,7 @@ namespace GMEPDesignTool
             {
                 if (
                     e.PropertyName == nameof(ElectricalPanel.Type)
-                    || e.PropertyName == nameof(ElectricalPanel.FedFromId)
+                    || e.PropertyName == nameof(ElectricalPanel.ParentId)
                     || e.PropertyName == nameof(ElectricalPanel.Name)
                 )
                 {
@@ -920,8 +920,8 @@ namespace GMEPDesignTool
                             MessageBoxButton.OK,
                             MessageBoxImage.Error
                         );
-                        //Task.Run(() => panel.FedFromId = "");
-                        Dispatcher.BeginInvoke(() => panel.FedFromId = "");
+                        //Task.Run(() => panel.ParentId = "");
+                        Dispatcher.BeginInvoke(() => panel.ParentId = "");
                         return;
                     }
                     else
@@ -929,7 +929,7 @@ namespace GMEPDesignTool
                         setPower();
                     }
                 }
-                if (e.PropertyName == nameof(ElectricalPanel.FedFromId))
+                if (e.PropertyName == nameof(ElectricalPanel.ParentId))
                 {
                     //setKVAs();
                    // setAmps();
@@ -1466,7 +1466,7 @@ namespace GMEPDesignTool
                             MessageBoxButton.OK,
                             MessageBoxImage.Error
                         );
-                        //Task.Run(() => panel.FedFromId = "");
+                        //Task.Run(() => panel.ParentId = "");
                         Dispatcher.BeginInvoke(() => transformer.ParentId = "");
                         return;
                     }

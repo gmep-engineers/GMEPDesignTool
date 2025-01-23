@@ -19,7 +19,7 @@ namespace GMEPDesignTool
         private bool _isDistribution;
         private string _name;
         private string _colorCode;
-        private string _fedFromId;
+        private string _parentId;
         private string _projectId;
         private int _numBreakers;
         private int _distanceFromParent;
@@ -51,7 +51,7 @@ namespace GMEPDesignTool
             bool isDistribution,
             string name,
             string colorCode,
-            string fedFromId,
+            string parentId,
             int numBreakers,
             int distanceFromParent,
             int aicRating,
@@ -68,7 +68,7 @@ namespace GMEPDesignTool
             _isDistribution = isDistribution;
             _name = name;
             _colorCode = colorCode;
-            _fedFromId = fedFromId;
+            _parentId = parentId;
             _projectId = projectId;
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
@@ -204,12 +204,12 @@ namespace GMEPDesignTool
             }
         }
 
-        public string FedFromId
+        public string ParentId
         {
-            get => _fedFromId;
+            get => _parentId;
             set
             {
-                _fedFromId = value;
+                _parentId = value;
                 OnPropertyChanged();
             }
         }
@@ -533,7 +533,7 @@ namespace GMEPDesignTool
             {
                 return false;
             }
-            if (!Utils.IsUuid(FedFromId))
+            if (!Utils.IsUuid(ParentId))
             {
                 return false;
             }
