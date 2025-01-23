@@ -234,7 +234,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Va
+        public new float Va
         {
             get => va;
             set
@@ -449,7 +449,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int CircuitNo
+        public new int CircuitNo
         {
             get => circuitNo;
             set

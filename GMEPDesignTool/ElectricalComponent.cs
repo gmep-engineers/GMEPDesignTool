@@ -16,6 +16,8 @@ namespace GMEPDesignTool
         private string _colorCode;
         private string _parentId;
         private int _pole;
+        private int _circuitNo;
+        private float _va;
         public string Id
         {
             get => _id;
@@ -65,6 +67,25 @@ namespace GMEPDesignTool
             }
 
         }
+        public int CircuitNo
+        {
+            get => _circuitNo;
+            set
+            {
+                _circuitNo = value;
+                OnPropertyChanged();
+            }
+        }
+        public float Va
+        {
+            get => _va;
+            set
+            {
+                _va = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
