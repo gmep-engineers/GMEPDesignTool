@@ -102,7 +102,7 @@ namespace GMEPDesignTool
                 SetCircuitVa();
             }
         }
-        public new string ParentId
+        public  string ParentId
         {
             get => _parentId ?? "";
             set
@@ -112,7 +112,7 @@ namespace GMEPDesignTool
                 SetCircuitVa();
             }
         }
-        public new string ColorCode
+        public  string ColorCode
         {
             get => _colorCode;
             set
@@ -122,7 +122,7 @@ namespace GMEPDesignTool
                 SetCircuitVa();
             }
         }
-        public new string ProjectId
+        public string ProjectId
         {
             get => _projectId;
             set
@@ -220,34 +220,6 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ColorCode
-        {
-            get => _colorCode;
-            set
-            {
-                _colorCode = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string FedFromId
-        {
-            get => _fedFromId ?? "";
-            set
-            {
-                _fedFromId = value;
-                OnPropertyChanged();
-            }
-        }
-        public string ProjectId
-        {
-            get => _projectId;
-            set
-            {
-                _projectId = value;
-                OnPropertyChanged();
-            }
-        }
 
         public int NumBreakers
         {

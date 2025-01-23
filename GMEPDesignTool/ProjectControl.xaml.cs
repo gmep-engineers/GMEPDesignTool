@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Collections;
-using ObservableCollections;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -45,8 +44,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
-        public ObservableD FedFromNames { get; set; }
-        public ObservableObject PanelNames { get; set; }
+        public ObservableDictionary<string, string> FedFromNames { get; set; }
+        public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
@@ -803,32 +802,7 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
-           /* Dictionary<string, string> fedFromBackup = new Dictionary<string, string>();
-            foreach (var panel in ElectricalPanels)
-            {
-                fedFromBackup[panel.Id] = panel.FedFromId;
-            }
-
-            Dictionary<string, string> panelBackup = new Dictionary<string, string>();
-            foreach (var equipment in ElectricalEquipments)
-            {
-                panelBackup[equipment.Id] = equipment.ParentId;
-            }
-            Dictionary<string, string> lightingBackup = new Dictionary<string, string>();
-            foreach (var lighting in ElectricalLightings)
-            {
-                lightingBackup[lighting.Id] = lighting.ParentId;
-            }
-
-            Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
-            foreach (var transformer in ElectricalTransformers)
-            {
-                transformerBackup[transformer.Id] = transformer.ParentId;
-            }*/
-            //FedFromNames.Clear();
-            //PanelNames.Clear();
-            //PanelNames.Add(new KeyValuePair<string, string>("", ""));
-            //FedFromNames.Add(new KeyValuePair<string, string>("", ""));
+          
             foreach (ElectricalService service in ElectricalServices)
             {
                
@@ -864,7 +838,7 @@ namespace GMEPDesignTool
                 {
                     if (PanelNames[value.Key] != value.Value)
                     {
-                        if (value.Value != "")
+                        if (!string.IsNullOrEmpty(value.Value))
                         {
                             PanelNames[value.Key] =  value.Value;
                         }
@@ -876,7 +850,7 @@ namespace GMEPDesignTool
                 }
                 else
                 {
-                    if (value.Value != "")
+                    if (!string.IsNullOrEmpty(value.Value))
                     {
                         PanelNames.Add(value.Key, value.Value);
                     }
@@ -884,8 +858,6 @@ namespace GMEPDesignTool
             }
             void AddToFedFromNames(KeyValuePair<string, string> value)
              {
-                lock(_lock)
-                { 
                     if (FedFromNames.ContainsKey(value.Key))
                     {
                         if (FedFromNames[value.Key] != value.Value)
@@ -907,7 +879,6 @@ namespace GMEPDesignTool
                             FedFromNames.Add(value.Key, value.Value);
                         }
                     }
-                }
             }
             void CleanUpNames()
             {
