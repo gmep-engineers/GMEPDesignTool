@@ -57,8 +57,6 @@ namespace GMEPDesignTool
 
         public Database.S3 s3 = new Database.S3();
 
-        private readonly object _lock = new object();
-
         public ProjectControl(string projectNo)
         {
             InitializeComponent();
@@ -804,6 +802,32 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
+           /* Dictionary<string, string> fedFromBackup = new Dictionary<string, string>();
+            foreach (var panel in ElectricalPanels)
+            {
+                fedFromBackup[panel.Id] = panel.FedFromId;
+            }
+
+            Dictionary<string, string> panelBackup = new Dictionary<string, string>();
+            foreach (var equipment in ElectricalEquipments)
+            {
+                panelBackup[equipment.Id] = equipment.ParentId;
+            }
+            Dictionary<string, string> lightingBackup = new Dictionary<string, string>();
+            foreach (var lighting in ElectricalLightings)
+            {
+                lightingBackup[lighting.Id] = lighting.ParentId;
+            }
+
+            Dictionary<string, string> transformerBackup = new Dictionary<string, string>();
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformerBackup[transformer.Id] = transformer.ParentId;
+            }*/
+            //FedFromNames.Clear();
+            //PanelNames.Clear();
+            //PanelNames.Add(new KeyValuePair<string, string>("", ""));
+            //FedFromNames.Add(new KeyValuePair<string, string>("", ""));
             foreach (ElectricalService service in ElectricalServices)
             {
                
@@ -832,86 +856,52 @@ namespace GMEPDesignTool
                 AddToPanelNames(value);
 
             }
-            CleanUpNames();
            
            void AddToPanelNames(KeyValuePair<string, string> value)
             {
-                lock (_lock)
+                if (PanelNames.ContainsKey(value.Key))
                 {
-                    if (PanelNames.ContainsKey(value.Key))
+                    if (PanelNames[value.Key] != value.Value)
                     {
-                        if (PanelNames[value.Key] != value.Value)
+                        if (value.Value != "")
                         {
-                            if (!string.IsNullOrEmpty(value.Value))
-                            {
-                                PanelNames[value.Key] = value.Value;
-                            }
-                            else
-                            {
-                                PanelNames.Remove(value.Key);
-                            }
+                            PanelNames[value.Key] =  value.Value;
                         }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(value.Value))
+                        else
                         {
-                            PanelNames.Add(value.Key, value.Value);
+                            PanelNames.Remove(value.Key);
                         }
                     }
                 }
+                else
+                {
+                    if (value.Value != "")
+                    {
+                        PanelNames.Add(value.Key, value.Value);
+                    }
+                }
             }
-        
             void AddToFedFromNames(KeyValuePair<string, string> value)
-             {
-                lock(_lock)
-                { 
-                    if (FedFromNames.ContainsKey(value.Key))
-                    {
-                        if (FedFromNames[value.Key] != value.Value)
-                        {
-                            if (!string.IsNullOrEmpty(value.Value))
-                            {
-                                FedFromNames[value.Key] = value.Value;
-                            }
-                            else
-                            {
-                                FedFromNames.Remove(value.Key);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(value.Value))
-                        {
-                            FedFromNames.Add(value.Key, value.Value);
-                        }
-                    }
-                }
-            }
-            void CleanUpNames()
             {
-                var validIds = new HashSet<string>(
-                    ElectricalServices.Select(es => es.Id)
-                    .Concat(ElectricalTransformers.Select(et => et.Id))
-                    .Concat(ElectricalPanels.Select(ep => ep.Id))
-                );
-
-                var fedFromNamesKeys = FedFromNames.Keys.ToList();
-                foreach (var key in fedFromNamesKeys)
+                if (FedFromNames.ContainsKey(value.Key))
                 {
-                    if (!validIds.Contains(key))
+                    if (FedFromNames[value.Key] != value.Value)
                     {
-                        FedFromNames.Remove(key);
+                        if (value.Value != "")
+                        {
+                            FedFromNames[value.Key] = value.Value;
+                        }
+                        else
+                        {
+                            FedFromNames.Remove(value.Key);
+                        }
                     }
                 }
-
-                var panelNamesKeys = PanelNames.Keys.ToList();
-                foreach (var key in panelNamesKeys)
+                else
                 {
-                    if (!validIds.Contains(key))
+                    if (value.Value != "")
                     {
-                        PanelNames.Remove(key);
+                        FedFromNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -1775,7 +1765,7 @@ namespace GMEPDesignTool
         {
             value = default(TValue);
             var r = GetKvpByTheKey(key);
-            if (Equals(r, default(ObservableKeyValuePair<TKey, TValue>)))
+            if (!Equals(r, default(ObservableKeyValuePair<TKey, TValue>)))
             {
                 return false;
             }

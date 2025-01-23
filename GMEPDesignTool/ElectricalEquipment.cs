@@ -196,7 +196,7 @@ namespace GMEPDesignTool
 
         public new string ParentId
         {
-            get => parentId ?? "";
+            get => parentId;
             set
             {
                 if (parentId != value)
