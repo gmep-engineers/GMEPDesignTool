@@ -384,7 +384,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
             command.Parameters.AddWithValue("@name", panel.Name);
             command.Parameters.AddWithValue("@color_code", panel.ColorCode);
-            command.Parameters.AddWithValue("@parent_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@parent_id", panel.ParentId);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@aicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
@@ -407,7 +407,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
             command.Parameters.AddWithValue("@name", panel.Name);
             command.Parameters.AddWithValue("@color_code", panel.ColorCode);
-            command.Parameters.AddWithValue("@parent_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@parent_id", panel.ParentId);
             command.Parameters.AddWithValue("@AicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);

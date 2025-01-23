@@ -10,17 +10,13 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalPanel : INotifyPropertyChanged
+    public class ElectricalPanel : ElectricalComponent
     {
-        private string _id;
         private int _busSize;
         private int _mainSize;
         private bool _isMlo;
         private bool _isDistribution;
         private string _name;
-        private string _colorCode;
-        private string _fedFromId;
-        private string _projectId;
         private int _numBreakers;
         private int _distanceFromParent;
         private int _aicRating;
@@ -32,13 +28,12 @@ namespace GMEPDesignTool
         private int _phaseBVa;
         private int _phaseCVa;
         private int _pole;
-        public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; }
-        public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; }
-        public ObservableCollection<Circuit> leftCircuits { get; set; }
+        public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; } = new ObservableCollection<ElectricalEquipment>();
+        public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; } = new ObservableCollection<ElectricalEquipment>();
+        public ObservableCollection<Circuit> leftCircuits { get; set; } = new ObservableCollection<Circuit>();
 
-        public ObservableCollection<Circuit> rightCircuits { get; set; }
+        public ObservableCollection<Circuit> rightCircuits { get; set; } = new ObservableCollection<Circuit>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _isRecessed;
 
@@ -51,7 +46,7 @@ namespace GMEPDesignTool
             bool isDistribution,
             string name,
             string colorCode,
-            string fedFromId,
+            string parentId,
             int numBreakers,
             int distanceFromParent,
             int aicRating,
@@ -59,31 +54,27 @@ namespace GMEPDesignTool
             int type,
             bool powered,
             bool isRecessed
-        )
+        ) : base()
         {
-            _id = id;
-            _busSize = busSize;
-            _mainSize = mainSize;
-            _isMlo = isMlo;
-            _isDistribution = isDistribution;
-            _name = name;
-            _colorCode = colorCode;
-            _fedFromId = fedFromId;
-            _projectId = projectId;
-            _numBreakers = numBreakers;
-            _distanceFromParent = distanceFromParent;
-            _aicRating = aicRating;
-            _amp = amp;
-            _type = type;
-            _powered = powered;
-            _isRecessed = isRecessed;
-            _phaseAVa = 0;
-            _phaseBVa = 0;
-            _phaseCVa = 0;
-            leftCircuits = new ObservableCollection<Circuit>();
-            rightCircuits = new ObservableCollection<Circuit>();
-            leftEquipments = new ObservableCollection<ElectricalEquipment>();
-            rightEquipments = new ObservableCollection<ElectricalEquipment>();
+            Id = id;
+            BusSize = busSize;
+            MainSize = mainSize;
+            IsMlo = isMlo;
+            IsDistribution = isDistribution;
+            Name = name;
+            ColorCode = colorCode;
+            ParentId = parentId;
+            ProjectId = projectId;
+            NumBreakers = numBreakers;
+            DistanceFromParent = distanceFromParent;
+            AicRating = aicRating;
+            Amp = amp;
+            Type = type;
+            Powered = powered;
+            IsRecessed = isRecessed;
+            PhaseAVA = 0;
+            PhaseBVA = 0;
+            PhaseCVA = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -134,15 +125,7 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(PhaseCVA));
             }
         }
-        public string Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
+      
 
         public int BusSize
         {
@@ -194,34 +177,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ColorCode
-        {
-            get => _colorCode;
-            set
-            {
-                _colorCode = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string FedFromId
-        {
-            get => _fedFromId ?? "";
-            set
-            {
-                _fedFromId = value;
-                OnPropertyChanged();
-            }
-        }
-        public string ProjectId
-        {
-            get => _projectId;
-            set
-            {
-                _projectId = value;
-                OnPropertyChanged();
-            }
-        }
+      
 
         public int NumBreakers
         {
@@ -517,10 +473,6 @@ namespace GMEPDesignTool
             
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
 
         public bool Verify()
@@ -533,7 +485,7 @@ namespace GMEPDesignTool
             {
                 return false;
             }
-            if (!Utils.IsUuid(FedFromId))
+            if (!Utils.IsUuid(ParentId))
             {
                 return false;
             }
