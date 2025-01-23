@@ -79,7 +79,7 @@ namespace GMEPDesignTool
             PopulateCircuits();
         }
 
-        public int Pole
+        public new int Pole
         {
             get => _pole;
             set

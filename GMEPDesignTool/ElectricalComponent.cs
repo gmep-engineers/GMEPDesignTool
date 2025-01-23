@@ -15,6 +15,7 @@ namespace GMEPDesignTool
         private string _projectId;
         private string _colorCode;
         private string _parentId;
+        private int _pole;
         public string Id
         {
             get => _id;
@@ -52,6 +53,17 @@ namespace GMEPDesignTool
                 _parentId = value;
                 OnPropertyChanged();
             }
+        }
+
+        public int Pole
+        {
+            get => _pole;
+            set
+            {
+                _pole = value;
+                OnPropertyChanged();
+            }
+
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
