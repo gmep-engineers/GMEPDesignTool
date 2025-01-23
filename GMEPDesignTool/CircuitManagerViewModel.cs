@@ -22,8 +22,8 @@ namespace GMEPDesignTool
 
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
-        public ObservableCollection<ElectricalEquipment> LeftEquipments { get; set; }
-        public ObservableCollection<ElectricalEquipment> RightEquipments { get; set; }
+        public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
+        public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
 
 
         private int _phaseAVa;
@@ -76,8 +76,8 @@ namespace GMEPDesignTool
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
-            RightEquipments = panel.rightEquipments;
-            LeftEquipments = panel.leftEquipments;
+            RightComponents = panel.rightComponents;
+            LeftComponents = panel.leftComponents;
             Panel = panel;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
@@ -131,8 +131,8 @@ namespace GMEPDesignTool
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-            ElectricalEquipment sourceItem = dropInfo.Data as ElectricalEquipment;
-            ElectricalEquipment targetItem = dropInfo.TargetItem as ElectricalEquipment;
+            ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
+            ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
             if (sourceItem != null && targetItem != null)
             {
@@ -143,13 +143,13 @@ namespace GMEPDesignTool
 
         void IDropTarget.Drop(IDropInfo dropInfo)
         {
-            ElectricalEquipment sourceItem = dropInfo.Data as ElectricalEquipment;
-            ElectricalEquipment targetItem = dropInfo.TargetItem as ElectricalEquipment;
+            ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
+            ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
             if (sourceItem != null && targetItem != null)
             {
-                ObservableCollection<ElectricalEquipment> sourceCollection = LeftEquipments.Contains(sourceItem) ? LeftEquipments : RightEquipments;
-                ObservableCollection<ElectricalEquipment> targetCollection = LeftEquipments.Contains(targetItem) ? LeftEquipments : RightEquipments;
+                ObservableCollection<ElectricalComponent> sourceCollection = LeftComponents.Contains(sourceItem) ? LeftComponents : RightComponents;
+                ObservableCollection<ElectricalComponent> targetCollection = LeftComponents.Contains(targetItem) ? LeftComponents : RightComponents;
 
                 int sourceIndex = sourceCollection.IndexOf(sourceItem);
                 int targetIndex = targetCollection.IndexOf(targetItem);

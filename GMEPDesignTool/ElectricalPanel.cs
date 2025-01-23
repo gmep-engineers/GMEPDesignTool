@@ -32,8 +32,8 @@ namespace GMEPDesignTool
         private int _phaseBVa;
         private int _phaseCVa;
         private int _pole;
-        public ObservableCollection<ElectricalEquipment> leftEquipments { get; set; }
-        public ObservableCollection<ElectricalEquipment> rightEquipments { get; set; }
+        public ObservableCollection<ElectricalComponent> leftComponents { get; set; }
+        public ObservableCollection<ElectricalComponent> rightComponents{ get; set; }
         public ObservableCollection<Circuit> leftCircuits { get; set; }
 
         public ObservableCollection<Circuit> rightCircuits { get; set; }
@@ -82,8 +82,8 @@ namespace GMEPDesignTool
             _phaseCVa = 0;
             leftCircuits = new ObservableCollection<Circuit>();
             rightCircuits = new ObservableCollection<Circuit>();
-            leftEquipments = new ObservableCollection<ElectricalEquipment>();
-            rightEquipments = new ObservableCollection<ElectricalEquipment>();
+            leftComponents = new ObservableCollection<ElectricalComponent>();
+            rightComponents = new ObservableCollection<ElectricalComponent>();
             SetPole();
             PopulateCircuits();
         }
@@ -345,23 +345,23 @@ namespace GMEPDesignTool
         }
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Pole))
+            if (e.PropertyName == nameof(ElectricalComponent.Va) || e.PropertyName == nameof(ElectricalComponent.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
             }
-            if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
+            if (e.PropertyName == nameof(ElectricalComponent.ParentId))
             {
                 if (sender is ElectricalEquipment equipment)
                 {
                     equipment.PropertyChanged -= Equipment_PropertyChanged;
-                    if (leftEquipments.Contains(equipment))
+                    if (leftComponents.Contains(equipment))
                     {
-                        leftEquipments.Remove(equipment);
+                        leftComponents.Remove(equipment);
                     }
-                    if (rightEquipments.Contains(equipment))
+                    if (rightComponents.Contains(equipment))
                     {
-                        rightEquipments.Remove(equipment);
+                        rightComponents.Remove(equipment);
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
@@ -370,14 +370,14 @@ namespace GMEPDesignTool
         }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
-
-            if (leftEquipments.Count <= rightEquipments.Count)
+          
+            if (leftComponents.Count <= rightComponents.Count)
             {
-                leftEquipments.Add(equipment);
+                leftComponents.Add(equipment);
             }
             else
             {
-                rightEquipments.Add(equipment);
+                rightComponents.Add(equipment);
             }
             SetCircuitNumbers();
             SetCircuitVa();
@@ -388,13 +388,13 @@ namespace GMEPDesignTool
             int leftCircuitIndex = 0;
             int rightCircuitIndex = 0;
 
-            foreach (var equipment in leftEquipments)
+            foreach (var equipment in leftComponents)
             {
                  equipment.CircuitNo = leftCircuitIndex * 2 + 1;
                  leftCircuitIndex += equipment.Pole;
             }
 
-            foreach (var equipment in rightEquipments)
+            foreach (var equipment in rightComponents)
             {
                
                 equipment.CircuitNo = rightCircuitIndex * 2 + 2;
@@ -416,7 +416,7 @@ namespace GMEPDesignTool
             PhaseCVA = 0;
             Kva = 0;
             int phaseIndex = 0;
-            foreach (var equipment in leftEquipments)
+            foreach (var equipment in leftComponents)
             {
                 int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
                 if (circuitIndex != -1 && circuitIndex + equipment.Pole <= leftCircuits.Count)
@@ -443,7 +443,7 @@ namespace GMEPDesignTool
                 }
             }
             phaseIndex = 0;
-            foreach (var equipment in rightEquipments)
+            foreach (var equipment in rightComponents)
             {
                 int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
                 if (circuitIndex != -1  && circuitIndex + equipment.Pole <= rightCircuits.Count)
@@ -504,12 +504,12 @@ namespace GMEPDesignTool
                     equip.PropertyChanged += Equipment_PropertyChanged;
                     if (equip.CircuitNo % 2 != 0)
                     {
-                        leftEquipments.Add(equip);
+                        leftComponents.Add(equip);
 
                     }
                     else
                     {
-                        rightEquipments.Add(equip);
+                        rightComponents.Add(equip);
                     }
                 }
             }

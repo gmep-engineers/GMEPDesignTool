@@ -9,86 +9,114 @@ using Xceed.Wpf.Toolkit;
 
 namespace GMEPDesignTool
 {
-    internal abstract class ElectricalComponent
+    public abstract class ElectricalComponent : INotifyPropertyChanged
     {
-        public string _id;
-        public string _parentId;
-        public float _va;
-        public string _projectId;
-        public string _colorCode;
-        public int _pole;
+        public string id;
+        public string parentId;
+        public float va;
+        public string projectId;
+        public string colorCode;
+        public int circuitNo;
+        public int pole;
+        public string name;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Id
         {
-            get => _id;
+            get => id;
             set
             {
-                if (_id != value)
+                if (id != value)
                 {
-                    _id = value;
+                    id = value;
                     OnPropertyChanged(nameof(Id));
                 }
             }
         }
         public string ParentId
         {
-            get => _parentId;
+            get => parentId;
             set
             {
-                if (_parentId != value)
+                if (parentId != value)
                 {
-                    _parentId = value;
+                    parentId = value;
                     OnPropertyChanged(nameof(ParentId));
                 }
             }
         }
         public float Va
         {
-            get => _va;
+            get => va;
             set
             {
-                if (_va != value)
+                if (va != value)
                 {
-                    _va = value;
+                    va = value;
                     OnPropertyChanged(nameof(Va));
                 }
             }
         }
         public string ProjectId
         {
-            get => _projectId;
+            get => projectId;
             set
             {
-                if (_projectId != value)
+                if (projectId != value)
                 {
-                    _projectId = value;
+                    projectId = value;
                     OnPropertyChanged(nameof(ProjectId));
                 }
             }
         }
         public string ColorCode
         {
-            get => _colorCode;
+            get => colorCode;
             set
             {
-                if (_colorCode != value)
+                if (colorCode != value)
                 {
-                    _colorCode = value;
+                    colorCode = value;
                     OnPropertyChanged(nameof(ColorCode));
                 }
             }
         }
-
-        public int Pole
+        public int CircuitNo
         {
-            get => _pole;
+            get => circuitNo;
             set
             {
-                if (_pole != value)
+                if (circuitNo != value)
                 {
-                    _pole = value;
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+       
+        public int Pole
+        {
+            get => pole;
+            set
+            {
+                if (pole != value)
+                {
+                    pole = value;
+                    OnPropertyChanged(nameof(Pole));
+                }
+            }
+        }
+        public string Name
+        {
+            get => name;
+            set
+            {
+                if (name != value)
+                {
+                    name = value;
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }

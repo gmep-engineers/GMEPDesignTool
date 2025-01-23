@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalEquipment : INotifyPropertyChanged
+    public class ElectricalEquipment : ElectricalComponent
     {
-        private string id;
-        private string projectId;
         private string owner;
         private string equipNo;
         private int qty;
-        private string parentId;
         private int voltage;
         private float fla;
-        private float va;
         private bool is3Ph;
         private string specSheetId;
         private int aicRating;
@@ -32,15 +28,6 @@ namespace GMEPDesignTool
         private float width;
         private float depth;
         public float height;
-        public int pole;
-        public int circuitNo; 
-
-        public bool CanAcceptChildren { get; set; }
-        public ObservableCollection<ElectricalEquipment> Children { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private string colorCode;
         private bool powered;
         private bool hasPlug;
         private bool lockingConnector;
@@ -77,6 +64,7 @@ namespace GMEPDesignTool
         {
             this.id = id;
             this.projectId = projectId;
+            this.name = equipNo;
             this.owner = owner;
             this.equipNo = equipNo;
             this.qty = qty;
@@ -114,44 +102,6 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
-                }
-            }
-        }
-
-        public string ColorCode
-        {
-            get => colorCode;
-            set
-            {
-                if (colorCode != value)
-                {
-                    colorCode = value;
-                    OnPropertyChanged(nameof(ColorCode));
-                }
-            }
-        }
-
-        public string Id
-        {
-            get => id;
-            set
-            {
-                if (id != value)
-                {
-                    id = value;
-                    OnPropertyChanged(nameof(Id));
-                }
-            }
-        }
-        public string ProjectId
-        {
-            get => projectId;
-            set
-            {
-                if (projectId != value)
-                {
-                    projectId = value;
-                    OnPropertyChanged(nameof(ProjectId));
                 }
             }
         }
@@ -195,18 +145,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ParentId
-        {
-            get => parentId;
-            set
-            {
-                if (parentId != value)
-                {
-                    parentId = value;
-                    OnPropertyChanged(nameof(ParentId));
-                }
-            }
-        }
+       
 
         public int Voltage
         {
@@ -235,18 +174,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Va
-        {
-            get => va;
-            set
-            {
-                if (va != value)
-                {
-                    va = value;
-                    OnPropertyChanged(nameof(Va));
-                }
-            }
-        }
+     
 
         public bool Is3Ph
         {
@@ -438,36 +366,14 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Pole
-        {
-            get => pole;
-            set
-            {
-                if (pole != value)
-                {
-                    pole = value;
-                    OnPropertyChanged(nameof(Pole));
-                }
-            }
-        }
-        public int CircuitNo
-        {
-            get => circuitNo;
-            set
-            {
-                if (circuitNo != value)
-                {
-                    circuitNo = value;
-                    OnPropertyChanged(nameof(CircuitNo));
-                }
-            }
-        }
+       
+       
         private void determineEquipmentPole()
         {
             int pole = 3;
             if (Is3Ph == false)
             {
-                if (Voltage == 1 || voltage == 2 || Voltage == 6)
+                if (Voltage == 1 || Voltage == 2 || Voltage == 6)
                 {
                     pole = 1;
                 }
@@ -476,12 +382,9 @@ namespace GMEPDesignTool
                     pole = 2;
                 }
             }
-            Pole = pole;
+            this.Pole = pole;
         }
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
 
         public bool Verify()
         {

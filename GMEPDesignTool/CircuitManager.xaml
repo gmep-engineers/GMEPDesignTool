@@ -36,7 +36,7 @@
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox Grid.Column="0" Margin="20 0 0 0"  ItemsSource="{Binding LeftEquipments}" 
+                    <ListBox Grid.Column="0" Margin="20 0 0 0"  ItemsSource="{Binding LeftComponents}" 
                  dd:DragDrop.IsDragSource="True"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
@@ -225,7 +225,7 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <ListBox Grid.Column="3" Margin="20 0 20 0"  ItemsSource="{Binding RightEquipments}" 
+                    <ListBox Grid.Column="3" Margin="20 0 20 0"  ItemsSource="{Binding RightComponents}" 
        dd:DragDrop.IsDragSource="True"
        dd:DragDrop.IsDropTarget="True"
        dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
@@ -246,7 +246,7 @@
                                         </Style>
                                     </Border.Style>
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding EquipNo}" Margin="5"/>
+                                        <TextBlock Text="{Binding Name}" Margin="5"/>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
