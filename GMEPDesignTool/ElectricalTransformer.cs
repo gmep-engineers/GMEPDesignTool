@@ -77,7 +77,7 @@ namespace GMEPDesignTool
 
         public string ParentId
         {
-            get => _parentId;
+            get => _parentId ?? "";
             set
             {
                 _parentId = value;

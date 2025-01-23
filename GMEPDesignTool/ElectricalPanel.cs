@@ -206,7 +206,7 @@ namespace GMEPDesignTool
 
         public string FedFromId
         {
-            get => _fedFromId;
+            get => _fedFromId ?? "";
             set
             {
                 _fedFromId = value;
