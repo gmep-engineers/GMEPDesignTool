@@ -666,8 +666,11 @@
                                                                                 <ComboBoxItem Content="Switch" Tag="3"/>
                                                                             </ComboBox>
                                                                         </Grid>
-                                                                        <Grid Margin="20 25 10 0">
+                                                                        <Grid Margin="20 25 0 0">
                                                                             <CheckBox Content="EM" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
+                                                                        </Grid>
+                                                                        <Grid Margin="20 25 10 0">
+                                                                            <CheckBox Content="Photocell" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding HasPhotoCell}"/>
                                                                         </Grid>
                                                                     </StackPanel>
                                                                 </Grid>
