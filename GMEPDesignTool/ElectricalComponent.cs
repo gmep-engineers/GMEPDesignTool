@@ -96,7 +96,7 @@ namespace GMEPDesignTool
             }
         }
        
-        public int Pole
+        public virtual int Pole
         {
             get => pole;
             set
