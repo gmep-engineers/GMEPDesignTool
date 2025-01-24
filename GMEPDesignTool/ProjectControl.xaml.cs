@@ -108,7 +108,7 @@ namespace GMEPDesignTool
 
             foreach (var panel in ElectricalPanels)
             {
-                panel.DownloadEquipment(ElectricalEquipments);
+                panel.DownloadComponents(ElectricalEquipments, ElectricalPanels);
             }
 
         }

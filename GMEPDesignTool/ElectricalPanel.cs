@@ -322,6 +322,31 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Pole))
+            {
+                SetCircuitNumbers();
+                SetCircuitVa();
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.ParentId))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    panel.PropertyChanged -= Panel_PropertyChanged;
+                    if (leftComponents.Contains(panel))
+                    {
+                        leftComponents.Remove(panel);
+                    }
+                    if (rightComponents.Contains(panel))
+                    {
+                        rightComponents.Remove(panel);
+                    }
+                    SetCircuitNumbers();
+                    SetCircuitVa();
+                }
+            }
+        }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
           
@@ -339,7 +364,6 @@ namespace GMEPDesignTool
         }
         public void AssignPanel(ElectricalPanel panel)
         {
-
             if (leftComponents.Count <= rightComponents.Count)
             {
                 leftComponents.Add(panel);
@@ -350,7 +374,7 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
-            //equipment.PropertyChanged += Equipment_PropertyChanged;
+           panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void SetCircuitNumbers()
         {
@@ -463,30 +487,38 @@ namespace GMEPDesignTool
             }
             return Amp;
         }
-        public void DownloadEquipment(ObservableCollection<ElectricalEquipment> equipment)
+        public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels)
         {
-            ObservableCollection<ElectricalEquipment> temp = new ObservableCollection<ElectricalEquipment>();
+            ObservableCollection<ElectricalComponent> temp = new ObservableCollection<ElectricalComponent>();
             foreach (var equip in equipment)
             {
                 if (equip.ParentId == Id)
                 {
                     temp.Add(equip);
+                    equip.PropertyChanged += Equipment_PropertyChanged;
                 }
             }
-            temp = new ObservableCollection<ElectricalEquipment>(temp.OrderBy(e => e.CircuitNo));
-            foreach (var equip in temp)
+            foreach (var panel in panels)
             {
-                if (equip.ParentId == Id)
+                if (panel.ParentId == Id)
                 {
-                    equip.PropertyChanged += Equipment_PropertyChanged;
-                    if (equip.CircuitNo % 2 != 0)
+                    temp.Add(panel);
+                    panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            temp = new ObservableCollection<ElectricalComponent>(temp.OrderBy(e => e.CircuitNo));
+            foreach (var component in temp)
+            {
+                if (component.ParentId == Id)
+                {
+                    if (component.CircuitNo % 2 != 0)
                     {
-                        leftComponents.Add(equip);
+                        leftComponents.Add(component);
 
                     }
                     else
                     {
-                        rightComponents.Add(equip);
+                        rightComponents.Add(component);
                     }
                 }
             }
@@ -494,7 +526,10 @@ namespace GMEPDesignTool
             
         }
 
-
+        private void Equip_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
         public bool Verify()
         {
