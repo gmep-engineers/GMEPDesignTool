@@ -341,7 +341,7 @@
                                                 <ComboBoxItem Content="Kitchen" Tag="4" />
                                             </ComboBox>
                                             <Label Content="Panel" Margin="150 3 0 0"/>
-                                            <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
+                                            <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelTransformerNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
                                             <Label Content="Voltage" Margin="280 3 0 0"/>
                                             <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Tag" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
                                                 <ComboBoxItem Content="" Background="White" Tag="" />
@@ -479,7 +479,7 @@
 
                                                                 <StackPanel Margin="20 0 0 0">
                                                                     <Label Content="Panel" FontWeight="Bold"/>
-                                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelTransformerNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                                     
                                                                     <Label Content="Distance" FontWeight="Bold"/>
                                                                     <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>

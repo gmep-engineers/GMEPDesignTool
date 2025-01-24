@@ -40,7 +40,6 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableDictionary<string, string> ParentNames { get; set; }
         public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
-        public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
@@ -63,10 +62,8 @@ namespace GMEPDesignTool
             ElectricalLightings = database.GetProjectLighting(ProjectId);
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
-            PanelNames = new ObservableDictionary<string, string>();
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
-            PanelNames.Add("", "");
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
@@ -817,7 +814,6 @@ namespace GMEPDesignTool
                     panel.Name
                 );
                 AddToParentNames(value);
-                AddToPanelNames(value);
                 AddToPanelTransformerNames(value);
             }
             foreach (ElectricalTransformer transformer in ElectricalTransformers)
@@ -856,30 +852,7 @@ namespace GMEPDesignTool
                     }
                 }
             }
-            void AddToPanelNames(KeyValuePair<string, string> value)
-            {
-                if (PanelNames.ContainsKey(value.Key))
-                {
-                    if (PanelNames[value.Key] != value.Value)
-                    {
-                        if (!string.IsNullOrEmpty(value.Value))
-                        {
-                            PanelNames[value.Key] =  value.Value;
-                        }
-                        else
-                        {
-                            PanelNames.Remove(value.Key);
-                        }
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(value.Value))
-                    {
-                        PanelNames.Add(value.Key, value.Value);
-                    }
-                }
-            }
+           
             void AddToParentNames(KeyValuePair<string, string> value)
             {
                 if (ParentNames.ContainsKey(value.Key))
