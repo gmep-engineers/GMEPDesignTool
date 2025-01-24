@@ -492,7 +492,7 @@ namespace GMEPDesignTool.Database
         private void UpdateLighting(ElectricalLighting lighting)
         {
             string query =
-                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty WHERE id = @id";
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty, has_photocell = @hasPhotoCell, location_id = @locationId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
@@ -512,6 +512,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
+            command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
+            command.Parameters.AddWithValue("@locationId", lighting.LocationId);
 
             command.ExecuteNonQuery();
         }
@@ -519,7 +521,7 @@ namespace GMEPDesignTool.Database
         private void InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty)";
+                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty, has_photocell, location_id) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty, @hasPhotoCell, @locationId)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -540,6 +542,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
+            command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
+            command.Parameters.AddWithValue("@locationId", lighting.LocationId);
             command.ExecuteNonQuery();
         }
 
@@ -790,7 +794,9 @@ namespace GMEPDesignTool.Database
                     reader.GetString("description"),
                     reader.GetInt32("driver_type_id"),
                     reader.GetBoolean("spec_sheet_from_client"),
-                    reader.GetString("spec_sheet_id")
+                    reader.GetString("spec_sheet_id"),
+                    reader.GetBoolean("has_photocell"),
+                    reader.GetString("location_id")
                 ));
             }
 
