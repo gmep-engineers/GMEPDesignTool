@@ -38,9 +38,9 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
-        public ObservableDictionary<string, string> FedFromNames { get; set; }
+        public ObservableDictionary<string, string> ParentNames { get; set; }
+        public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
         public ObservableDictionary<string, string> PanelNames { get; set; }
-
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public string ProjectId { get; set; }
@@ -61,9 +61,11 @@ namespace GMEPDesignTool
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             ElectricalLightings = database.GetProjectLighting(ProjectId);
-            FedFromNames = new ObservableDictionary<string, string>();
+            ParentNames = new ObservableDictionary<string, string>();
+            PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
-            FedFromNames.Add("", "");
+            ParentNames.Add("", "");
+            PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
@@ -806,7 +808,7 @@ namespace GMEPDesignTool
                     service.Id,
                     service.Name
                 );
-                AddToFedFromNames(value);
+                AddToParentNames(value);
             }
             foreach (ElectricalPanel panel in ElectricalPanels)
             {
@@ -814,8 +816,9 @@ namespace GMEPDesignTool
                     panel.Id,
                     panel.Name
                 );
-                AddToFedFromNames(value);
+                AddToParentNames(value);
                 AddToPanelNames(value);
+                AddToPanelTransformerNames(value);
             }
             foreach (ElectricalTransformer transformer in ElectricalTransformers)
             {
@@ -823,13 +826,36 @@ namespace GMEPDesignTool
                     transformer.Id,
                     transformer.Name
                 );
-                AddToFedFromNames(value);
-                AddToPanelNames(value);
-
+                AddToParentNames(value);
+                AddToPanelTransformerNames(value);
             }
             CleanUpNames();
          
 
+            void AddToPanelTransformerNames(KeyValuePair<string, string> value)
+            {
+                if (PanelTransformerNames.ContainsKey(value.Key))
+                {
+                    if (PanelTransformerNames[value.Key] != value.Value)
+                    {
+                        if (!string.IsNullOrEmpty(value.Value))
+                        {
+                            PanelTransformerNames[value.Key] =  value.Value;
+                        }
+                        else
+                        {
+                            PanelTransformerNames.Remove(value.Key);
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value.Value))
+                    {
+                        PanelTransformerNames.Add(value.Key, value.Value);
+                    }
+                }
+            }
             void AddToPanelNames(KeyValuePair<string, string> value)
             {
                 if (PanelNames.ContainsKey(value.Key))
@@ -854,19 +880,19 @@ namespace GMEPDesignTool
                     }
                 }
             }
-            void AddToFedFromNames(KeyValuePair<string, string> value)
+            void AddToParentNames(KeyValuePair<string, string> value)
             {
-                if (FedFromNames.ContainsKey(value.Key))
+                if (ParentNames.ContainsKey(value.Key))
                 {
-                    if (FedFromNames[value.Key] != value.Value)
+                    if (ParentNames[value.Key] != value.Value)
                     {
                         if (!string.IsNullOrEmpty(value.Value))
                         {
-                            FedFromNames[value.Key] = value.Value;
+                            ParentNames[value.Key] = value.Value;
                         }
                         else
                         {
-                            FedFromNames.Remove(value.Key);
+                            ParentNames.Remove(value.Key);
                         }
                     }
                 }
@@ -874,7 +900,7 @@ namespace GMEPDesignTool
                 {
                     if (!string.IsNullOrEmpty(value.Value))
                     {
-                        FedFromNames.Add(value.Key, value.Value);
+                        ParentNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -887,21 +913,21 @@ namespace GMEPDesignTool
                     .Concat(new[] { "" }) // Add empty string to validIds
                 );
 
-                var fedFromNamesKeys = FedFromNames.Keys.ToList();
-                foreach (var key in fedFromNamesKeys)
+                var ParentNamesKeys = ParentNames.Keys.ToList();
+                foreach (var key in ParentNamesKeys)
                 {
                     if (!validIds.Contains(key))
                     {
-                        FedFromNames.Remove(key);
+                        ParentNames.Remove(key);
                     }
                 }
 
-                var panelNamesKeys = PanelNames.Keys.ToList();
-                foreach (var key in panelNamesKeys)
+                var PanelTransformerNamesKeys = PanelTransformerNames.Keys.ToList();
+                foreach (var key in PanelTransformerNamesKeys)
                 {
                     if (!validIds.Contains(key))
                     {
-                        PanelNames.Remove(key);
+                        PanelTransformerNames.Remove(key);
                     }
                 }
             }

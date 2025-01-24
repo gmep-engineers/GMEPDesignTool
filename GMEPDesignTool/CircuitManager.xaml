@@ -57,9 +57,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding Name}" Margin="5"/>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -246,9 +244,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding Name}" Margin="5"/>
-                                    </StackPanel>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
