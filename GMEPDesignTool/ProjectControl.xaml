@@ -337,8 +337,8 @@
                                                 <ComboBoxItem Content="" Tag="" />
                                                 <ComboBoxItem Content="General" Tag="1" />
                                                 <ComboBoxItem Content="Mechanical" Tag="2" />
-                                                <ComboBoxItem Content="Lighting" Tag="3" />
-                                                <ComboBoxItem Content="Plumbing" Tag="4" />
+                                                <ComboBoxItem Content="Plumbing" Tag="3" />
+                                                <ComboBoxItem Content="Kitchen" Tag="4" />
                                             </ComboBox>
                                             <Label Content="Panel" Margin="150 3 0 0"/>
                                             <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
@@ -394,6 +394,7 @@
                                                                     <ComboBoxItem Content="General" Tag="1"/>
                                                                     <ComboBoxItem Content="Mechanical" Tag="2" />
                                                                     <ComboBoxItem Content="Plumbing"  Tag="3"/>
+                                                                    <ComboBoxItem Content="Kitchen"  Tag="4"/>
                                                                 </ComboBox>
                                                                
                                                                 <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
