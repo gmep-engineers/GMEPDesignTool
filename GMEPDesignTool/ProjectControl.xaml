@@ -671,7 +671,9 @@
                                                                             <CheckBox Content="EM" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
                                                                             <CheckBox Content="Photocell" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 25 0 0" IsChecked="{Binding HasPhotoCell}"/>
                                                                         </Grid>
-                                                                        <Button Content="Location" Height="20" Width="90" FontWeight="Bold" Margin="20 0 20 0"/>
+                                                                        <Grid Margin="20 0 20 0">
+                                                                            <Button Content="Location" Height="20" Width="90" FontWeight="Bold"/>
+                                                                        </Grid>
 
                                                                     </StackPanel>
                                                                 </Grid>
