@@ -15,6 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="600"/>
+            <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -27,8 +28,8 @@
                 </TextBlock.Text>
             </TextBlock>
         </Grid>
-        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="2" Margin="20 0 20 0">
-            <ScrollViewer >
+        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="2" Margin="20 0 20 30">
+            <ScrollViewer>
                 <Grid Margin=" 0 20 0 20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
@@ -255,7 +256,8 @@
                 </Grid>
             </ScrollViewer>
         </Border>
-        <Grid Grid.Row="2" Margin="300 100 300 100">
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="2"/>
+        <Grid Grid.Row="3"  MinWidth="650" Margin=" 0 20 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -263,7 +265,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Vertical" Height="2000" >
+            <StackPanel Grid.Column="0" Orientation="Vertical" Height="2000" Margin="20 0 0 0" >
                 <TextBox Text="Phase A" Height="50"  FontWeight="Bold" />
                 <TextBox Text="{Binding PhaseAVa}" Height="50" FontWeight="Bold" />
             </StackPanel>
@@ -279,7 +281,7 @@
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
             </StackPanel>
-            <StackPanel Grid.Column="4" Orientation="Vertical">
+            <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0 0 20 0">
                 <TextBox Text="Total Feeder Amp" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding Amp}" FontWeight="Bold" Height="50" />
             </StackPanel>
