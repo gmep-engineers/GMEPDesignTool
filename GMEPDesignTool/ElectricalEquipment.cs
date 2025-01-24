@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalEquipment : INotifyPropertyChanged
+    public class ElectricalEquipment : ElectricalComponent
     {
-        private string id;
-        private string projectId;
         private string owner;
         private string equipNo;
         private int qty;
-        private string parentId;
         private int voltage;
         private float fla;
-        private float va;
         private bool is3Ph;
         private string specSheetId;
         private int aicRating;
@@ -32,18 +28,10 @@ namespace GMEPDesignTool
         private float width;
         private float depth;
         public float height;
-        public int pole;
-        public int circuitNo; 
-
-        public bool CanAcceptChildren { get; set; }
-        public ObservableCollection<ElectricalEquipment> Children { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private string colorCode;
         private bool powered;
         private bool hasPlug;
         private bool lockingConnector;
+        private float va;
 
         public ElectricalEquipment(
             string id,
@@ -83,6 +71,9 @@ namespace GMEPDesignTool
             this.parentId = parentId;
             this.voltage = voltage;
             this.fla = fla;
+            this.phaseAVa = va;
+            this.phaseBVa = va;
+            this.phaseCVa = va;
             this.va = va;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
@@ -117,41 +108,14 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-        public string ColorCode
+        public override string Name
         {
-            get => colorCode;
+            get => equipNo;
             set
             {
-                if (colorCode != value)
+                if (equipNo != value)
                 {
-                    colorCode = value;
-                    OnPropertyChanged(nameof(ColorCode));
-                }
-            }
-        }
-
-        public string Id
-        {
-            get => id;
-            set
-            {
-                if (id != value)
-                {
-                    id = value;
-                    OnPropertyChanged(nameof(Id));
-                }
-            }
-        }
-        public string ProjectId
-        {
-            get => projectId;
-            set
-            {
-                if (projectId != value)
-                {
-                    projectId = value;
-                    OnPropertyChanged(nameof(ProjectId));
+                    equipNo = value;
                 }
             }
         }
@@ -178,6 +142,7 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -195,18 +160,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ParentId
-        {
-            get => parentId;
-            set
-            {
-                if (parentId != value)
-                {
-                    parentId = value;
-                    OnPropertyChanged(nameof(ParentId));
-                }
-            }
-        }
+       
 
         public int Voltage
         {
@@ -235,18 +189,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Va
-        {
-            get => va;
-            set
-            {
-                if (va != value)
-                {
-                    va = value;
-                    OnPropertyChanged(nameof(Va));
-                }
-            }
-        }
+     
 
         public bool Is3Ph
         {
@@ -438,36 +381,61 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Pole
+        public float Va
         {
-            get => pole;
+            get => va;
             set
             {
-                if (pole != value)
+                if (va != value)
                 {
-                    pole = value;
-                    OnPropertyChanged(nameof(Pole));
+                    va = value;
+                    OnPropertyChanged(nameof(Va));
+                    OnPropertyChanged(nameof(PhaseAVA));
+                    OnPropertyChanged(nameof(PhaseBVA));
+                    OnPropertyChanged(nameof(PhaseCVA));
                 }
             }
         }
-        public int CircuitNo
+        public override float PhaseAVA
         {
-            get => circuitNo;
+            get => va;
             set
             {
-                if (circuitNo != value)
+                if (va != value)
                 {
-                    circuitNo = value;
-                    OnPropertyChanged(nameof(CircuitNo));
+                    va = value;
                 }
             }
         }
+        public override float PhaseBVA
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                }
+            }
+        }
+        public override float PhaseCVA
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                }
+            }
+        }
+
         private void determineEquipmentPole()
         {
             int pole = 3;
             if (Is3Ph == false)
             {
-                if (Voltage == 1 || voltage == 2 || Voltage == 6)
+                if (Voltage == 1 || Voltage == 2 || Voltage == 6)
                 {
                     pole = 1;
                 }
@@ -476,12 +444,9 @@ namespace GMEPDesignTool
                     pole = 2;
                 }
             }
-            Pole = pole;
+            this.Pole = pole;
         }
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
 
         public bool Verify()
         {

@@ -29,7 +29,9 @@ namespace GMEPDesignTool
         private string description;
         private int driverTypeId;
         private bool specSheetFromClient;
-        private string specSheetId; 
+        private string specSheetId;
+        private bool hasPhotoCell;
+        private string locationId;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -53,7 +55,9 @@ namespace GMEPDesignTool
             string description,
             int driverTypeId,
             bool specSheetFromClient, 
-            string specSheetId 
+            string specSheetId,
+            bool hasPhotoCell,
+            string locationId
         )
         {
             this.id = id;
@@ -75,7 +79,9 @@ namespace GMEPDesignTool
             this.description = description;
             this.driverTypeId = driverTypeId;
             this.specSheetFromClient = specSheetFromClient; 
-            this.specSheetId = specSheetId; 
+            this.specSheetId = specSheetId;
+            this.hasPhotoCell = hasPhotoCell;
+            this.locationId = locationId;
         }
 
         public string Id
@@ -325,7 +331,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string SpecSheetId // Renamed property
+        public string SpecSheetId 
         {
             get => specSheetId;
             set
@@ -334,6 +340,30 @@ namespace GMEPDesignTool
                 {
                     specSheetId = value;
                     OnPropertyChanged(nameof(SpecSheetId));
+                }
+            }
+        }
+        public bool HasPhotoCell 
+        {
+            get => hasPhotoCell;
+            set
+            {
+                if (hasPhotoCell != value)
+                {
+                    hasPhotoCell = value;
+                    OnPropertyChanged(nameof(HasPhotoCell));
+                }
+            }
+        }
+        public string LocationId
+        {
+            get => locationId;
+            set
+            {
+                if (locationId != value)
+                {
+                    locationId = value;
+                    OnPropertyChanged(nameof(LocationId));
                 }
             }
         }

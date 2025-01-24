@@ -377,14 +377,14 @@ namespace GMEPDesignTool.Database
         private void UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
             command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
             command.Parameters.AddWithValue("@name", panel.Name);
             command.Parameters.AddWithValue("@color_code", panel.ColorCode);
-            command.Parameters.AddWithValue("@parent_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@parent_id", panel.ParentId);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@aicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
@@ -392,13 +392,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@type", panel.Type);
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
             command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
+            command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.ExecuteNonQuery();
         }
 
         private void InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo)";
+                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -407,13 +408,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
             command.Parameters.AddWithValue("@name", panel.Name);
             command.Parameters.AddWithValue("@color_code", panel.ColorCode);
-            command.Parameters.AddWithValue("@parent_id", panel.FedFromId);
+            command.Parameters.AddWithValue("@parent_id", panel.ParentId);
             command.Parameters.AddWithValue("@AicRating", panel.AicRating);
             command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
             command.Parameters.AddWithValue("@type", panel.Type);
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
             command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
+            command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.ExecuteNonQuery();
         }
 
@@ -490,7 +492,7 @@ namespace GMEPDesignTool.Database
         private void UpdateLighting(ElectricalLighting lighting)
         {
             string query =
-                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty WHERE id = @id";
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty, has_photocell = @hasPhotoCell, location_id = @locationId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
@@ -510,6 +512,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
+            command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
+            command.Parameters.AddWithValue("@locationId", lighting.LocationId);
 
             command.ExecuteNonQuery();
         }
@@ -517,7 +521,7 @@ namespace GMEPDesignTool.Database
         private void InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty)";
+                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty, has_photocell, location_id) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty, @hasPhotoCell, @locationId)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -538,6 +542,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@specFromClient", lighting.SpecSheetFromClient);
             command.Parameters.AddWithValue("@specSheetId", lighting.SpecSheetId);
             command.Parameters.AddWithValue("@qty", lighting.Qty);
+            command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
+            command.Parameters.AddWithValue("@locationId", lighting.LocationId);
             command.ExecuteNonQuery();
         }
 
@@ -649,7 +655,8 @@ namespace GMEPDesignTool.Database
                         0,
                         reader.GetInt32("voltage_id"),
                         false,
-                        reader.GetBoolean("is_recessed")
+                        reader.GetBoolean("is_recessed"),
+                        reader.GetInt32("circuit_no")
                     )
                 );
             }
@@ -787,7 +794,9 @@ namespace GMEPDesignTool.Database
                     reader.GetString("description"),
                     reader.GetInt32("driver_type_id"),
                     reader.GetBoolean("spec_sheet_from_client"),
-                    reader.GetString("spec_sheet_id")
+                    reader.GetString("spec_sheet_id"),
+                    reader.GetBoolean("has_photocell"),
+                    reader.GetString("location_id")
                 ));
             }
 
