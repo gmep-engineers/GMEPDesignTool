@@ -725,7 +725,7 @@ namespace GMEPDesignTool
                 ProjectId,
                 1,
                 1,
-                false,
+                true,
                 false,
                 "",
                 "White",
