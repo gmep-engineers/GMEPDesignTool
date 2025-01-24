@@ -433,7 +433,7 @@ namespace GMEPDesignTool
                                 PhaseCVA += (int)component.PhaseCVA;
                                 Kva += (float)component.PhaseCVA;
                                 break;
-                        }                      
+                        }
                         phaseIndex++;
                     }
                 }
@@ -468,13 +468,12 @@ namespace GMEPDesignTool
                     }
                 }
             }
-            //Va = Kva;
-            Kva = (float)Math.Round(Kva / 1000, 10);
-            Amp = SetAmp();
+            Kva = (float)Math.Ceiling(Kva / 1000);
+            Amp = (float)Math.Ceiling(SetAmp());
         }
         public float SetAmp()
         {
-            int largestPhase = (int)Math.Round(Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA)), 1);
+            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Pole)
             {
                 case 2:
