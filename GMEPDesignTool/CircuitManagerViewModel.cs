@@ -26,22 +26,22 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
 
 
-        private int _phaseAVa;
-        public int PhaseAVa
+        private float _phaseAVa;
+        public float PhaseAVa
         {
             get => _phaseAVa;
             set => SetProperty(ref _phaseAVa, value);
         }
 
-        private int _phaseBVa;
-        public int PhaseBVa
+        private float _phaseBVa;
+        public float PhaseBVa
         {
             get => _phaseBVa;
             set => SetProperty(ref _phaseBVa, value);
         }
 
-        private int _phaseCVa;
-        public int PhaseCVa
+        private float _phaseCVa;
+        public float PhaseCVa
         {
             get => _phaseCVa;
             set => SetProperty(ref _phaseCVa, value);

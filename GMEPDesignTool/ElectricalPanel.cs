@@ -23,9 +23,9 @@ namespace GMEPDesignTool
         private float _amp;
         private int _type;
         private bool _powered;
-        private int _phaseAVa;
-        private int _phaseBVa;
-        private int _phaseCVa;
+        //private int _phaseAVa;
+       // private int _phaseBVa;
+        //private int _phaseCVa;
         
         public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
         public ObservableCollection<ElectricalComponent> rightComponents{ get; set; } = new ObservableCollection<ElectricalComponent>();
@@ -73,9 +73,9 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
-            _phaseAVa = 0;
-            _phaseBVa = 0;
-            _phaseCVa = 0;  
+            phaseAVa = 0;
+            phaseBVa = 0;
+            phaseCVa = 0;  
             SetPole();
             PopulateCircuits();
         }
@@ -100,30 +100,30 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(IsRecessed));
             }
         }
-        public int PhaseAVA
+        public override float PhaseAVA
         {
-            get => _phaseAVa;
+            get => phaseAVa;
             set
             {
-                _phaseAVa = value;
+                phaseAVa = value;
                 OnPropertyChanged(nameof(PhaseAVA));
             }
         }
-        public int PhaseBVA
+        public override float PhaseBVA
         {
-            get => _phaseBVa;
+            get => phaseBVa;
             set
             {
-                _phaseBVa = value;
+                phaseBVa = value;
                 OnPropertyChanged(nameof(PhaseBVA));
             }
         }
-        public int PhaseCVA
+        public override float PhaseCVA
         {
-            get => _phaseCVa;
+            get => phaseCVa;
             set
             {
-                _phaseCVa = value;
+                phaseCVa = value;
                 OnPropertyChanged(nameof(PhaseCVA));
             }
         }
@@ -299,12 +299,12 @@ namespace GMEPDesignTool
         }
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalComponent.Va) || e.PropertyName == nameof(ElectricalComponent.Pole))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
             }
-            if (e.PropertyName == nameof(ElectricalComponent.ParentId))
+            if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
             {
                 if (sender is ElectricalEquipment equipment)
                 {
@@ -385,65 +385,72 @@ namespace GMEPDesignTool
             PhaseCVA = 0;
             Kva = 0;
             int phaseIndex = 0;
-            foreach (var equipment in leftComponents)
+            foreach (var component in leftComponents)
             {
-                int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
-                if (circuitIndex != -1 && circuitIndex + equipment.Pole <= leftCircuits.Count)
+                int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo));
+                if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
                 {
-                    for (int i = 0; i < equipment.Pole; i++)
+                    for (int i = 0; i < component.Pole; i++)
                     {
-                        
-                        leftCircuits[circuitIndex + i].Va = (int)equipment.Va;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                PhaseAVA += (int)equipment.Va;
+                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
+                                PhaseAVA += (int)component.PhaseAVA;
+                                Kva += (float)component.PhaseAVA;
                                 break;
                             case 1:
-                                PhaseBVA += (int)equipment.Va;
+                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
+                                PhaseBVA += (int)component.PhaseBVA;
+                                Kva += (float)component.PhaseBVA;
                                 break;
                             case 2:
-                                PhaseCVA += (int)equipment.Va;
+                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
+                                PhaseCVA += (int)component.PhaseCVA;
+                                Kva += (float)component.PhaseCVA;
                                 break;
-                        }
-                        Kva += (float)equipment.Va;
+                        }                      
                         phaseIndex++;
                     }
                 }
             }
             phaseIndex = 0;
-            foreach (var equipment in rightComponents)
+            foreach (var component in rightComponents)
             {
-                int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo));
-                if (circuitIndex != -1  && circuitIndex + equipment.Pole <= rightCircuits.Count)
+                int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo));
+                if (circuitIndex != -1  && circuitIndex + component.Pole <= rightCircuits.Count)
                 {
-                    for (int i = 0; i < equipment.Pole; i++)
+                    for (int i = 0; i < component.Pole; i++)
                     {
-                            rightCircuits[circuitIndex + i].Va = (int)equipment.Va;
-                            switch (phaseIndex % Pole)
-                            {
-                                case 0:
-                                    PhaseAVA += (int)equipment.Va;
-                                    break;
-                                case 1:
-                                    PhaseBVA += (int)equipment.Va;
-                                    break;
-                                case 2:
-                                    PhaseCVA += (int)equipment.Va;
-                                    break;
-                            }
-                        Kva += (float)equipment.Va;
+                        switch (phaseIndex % Pole)
+                        {
+                            case 0:
+                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
+                                PhaseAVA += (int)component.PhaseAVA;
+                                Kva += (float)component.PhaseAVA;
+                                break;
+                            case 1:
+                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
+                                PhaseBVA += (int)component.PhaseBVA;
+                                Kva += (float)component.PhaseBVA;
+                                break;
+                            case 2:
+                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
+                                PhaseCVA += (int)component.PhaseCVA;
+                                Kva += (float)component.PhaseCVA;
+                                break;
+                        }
                         phaseIndex++;
                     }
                 }
             }
-            Va = Kva;
+            //Va = Kva;
             Kva = (float)Math.Round(Kva / 1000, 10);
             Amp = SetAmp();
         }
         public float SetAmp()
         {
-            int largestPhase = Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
+            int largestPhase = (int)Math.Round(Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA)), 1);
             switch (Pole)
             {
                 case 2:

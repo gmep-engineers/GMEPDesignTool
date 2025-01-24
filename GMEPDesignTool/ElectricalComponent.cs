@@ -13,7 +13,9 @@ namespace GMEPDesignTool
     {
         public string id;
         public string parentId;
-        public float va;
+        public float phaseAVa;
+        public float phaseBVa;
+        public float phaseCVa;
         public string projectId;
         public string colorCode;
         public int circuitNo;
@@ -47,15 +49,39 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public virtual float Va
+        public virtual float PhaseAVA
         {
-            get => va;
+            get => phaseAVa;
             set
             {
-                if (va != value)
+                if (phaseAVa != value)
                 {
-                    va = value;
-                    OnPropertyChanged(nameof(Va));
+                    phaseAVa = value;
+                    OnPropertyChanged(nameof(PhaseAVA));
+                }
+            }
+        }
+        public virtual float PhaseBVA
+        {
+            get => phaseBVa;
+            set
+            {
+                if (phaseBVa != value)
+                {
+                    phaseBVa = value;
+                    OnPropertyChanged(nameof(PhaseBVA));
+                }
+            }
+        }
+        public virtual float PhaseCVA
+        {
+            get => phaseCVa;
+            set
+            {
+                if (phaseCVa != value)
+                {
+                    phaseCVa = value;
+                    OnPropertyChanged(nameof(PhaseCVA));
                 }
             }
         }

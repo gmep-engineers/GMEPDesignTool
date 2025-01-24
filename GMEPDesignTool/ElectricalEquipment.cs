@@ -31,6 +31,7 @@ namespace GMEPDesignTool
         private bool powered;
         private bool hasPlug;
         private bool lockingConnector;
+        private float va;
 
         public ElectricalEquipment(
             string id,
@@ -70,6 +71,9 @@ namespace GMEPDesignTool
             this.parentId = parentId;
             this.voltage = voltage;
             this.fla = fla;
+            this.phaseAVa = va;
+            this.phaseBVa = va;
+            this.phaseCVa = va;
             this.va = va;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
@@ -377,8 +381,55 @@ namespace GMEPDesignTool
                 }
             }
         }
-       
-       
+        public float Va
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                    OnPropertyChanged(nameof(Va));
+                    OnPropertyChanged(nameof(PhaseAVA));
+                    OnPropertyChanged(nameof(PhaseBVA));
+                    OnPropertyChanged(nameof(PhaseCVA));
+                }
+            }
+        }
+        public override float PhaseAVA
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                }
+            }
+        }
+        public override float PhaseBVA
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                }
+            }
+        }
+        public override float PhaseCVA
+        {
+            get => va;
+            set
+            {
+                if (va != value)
+                {
+                    va = value;
+                }
+            }
+        }
+
         private void determineEquipmentPole()
         {
             int pole = 3;
