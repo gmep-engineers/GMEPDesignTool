@@ -57,7 +57,7 @@
                                         </Style>
                                     </Border.Style>
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding EquipNo}" Margin="5"/>
+                                        <TextBlock Text="{Binding Name}" Margin="5"/>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>

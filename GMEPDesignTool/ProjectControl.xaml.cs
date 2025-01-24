@@ -825,6 +825,7 @@ namespace GMEPDesignTool
                 AddToPanelNames(value);
 
             }
+            CleanUpNames();
 
             void AddToPanelNames(KeyValuePair<string, string> value)
             {
@@ -944,6 +945,16 @@ namespace GMEPDesignTool
                 if (e.PropertyName == nameof(ElectricalPanel.ColorCode))
                 {
                     ChangeColors(panel.Id, panel.ColorCode);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.ParentId))
+                {
+                    foreach (var panel2 in ElectricalPanels)
+                    {
+                        if (panel2.Id == panel.ParentId)
+                        {
+                            panel2.AssignPanel(panel);
+                        }
+                    }
                 }
                 StartTimer();
             }

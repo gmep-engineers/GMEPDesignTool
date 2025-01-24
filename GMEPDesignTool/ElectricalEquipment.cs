@@ -64,7 +64,6 @@ namespace GMEPDesignTool
         {
             this.id = id;
             this.projectId = projectId;
-            this.name = equipNo;
             this.owner = owner;
             this.equipNo = equipNo;
             this.qty = qty;
@@ -102,6 +101,18 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+        public override string Name
+        {
+            get => equipNo;
+            set
+            {
+                if (equipNo != value)
+                {
+                    equipNo = value;
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }

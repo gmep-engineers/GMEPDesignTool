@@ -23,7 +23,7 @@ namespace GMEPDesignTool
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Id
+        public virtual string Id
         {
             get => id;
             set
@@ -35,7 +35,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string ParentId
+        public virtual string ParentId
         {
             get => parentId;
             set
@@ -47,7 +47,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public float Va
+        public virtual float Va
         {
             get => va;
             set
@@ -59,7 +59,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string ProjectId
+        public virtual string ProjectId
         {
             get => projectId;
             set
@@ -71,7 +71,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string ColorCode
+        public virtual string ColorCode
         {
             get => colorCode;
             set
@@ -83,7 +83,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int CircuitNo
+        public virtual int CircuitNo
         {
             get => circuitNo;
             set
@@ -108,7 +108,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string Name
+        public virtual string Name
         {
             get => name;
             set

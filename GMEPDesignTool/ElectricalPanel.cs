@@ -66,7 +66,6 @@ namespace GMEPDesignTool
             this.parentId = parentId;
             this.projectId = projectId;
             this.circuitNo = circuitNo;
-            this.va = _kva;
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
@@ -128,13 +127,13 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(PhaseCVA));
             }
         }
-       /* public string Id
+       /*public override float Va
         {
-            get => _id;
+            get => _kva;
             set
             {
-                _id = value;
-                OnPropertyChanged();
+                _kva = value;
+                OnPropertyChanged(nameof(Va));
             }
         }*/
 
@@ -338,6 +337,21 @@ namespace GMEPDesignTool
             SetCircuitVa();
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
+        public void AssignPanel(ElectricalPanel panel)
+        {
+
+            if (leftComponents.Count <= rightComponents.Count)
+            {
+                leftComponents.Add(panel);
+            }
+            else
+            {
+                rightComponents.Add(panel);
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+            //equipment.PropertyChanged += Equipment_PropertyChanged;
+        }
         public void SetCircuitNumbers()
         {
             int leftCircuitIndex = 0;
@@ -423,6 +437,7 @@ namespace GMEPDesignTool
                     }
                 }
             }
+            Va = Kva;
             Kva = (float)Math.Round(Kva / 1000, 10);
             Amp = SetAmp();
         }
