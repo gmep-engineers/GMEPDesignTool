@@ -63,6 +63,8 @@ namespace GMEPDesignTool
             ElectricalLightings = database.GetProjectLighting(ProjectId);
             FedFromNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            FedFromNames.Add("", "");
+            PanelNames.Add("", "");
             Owners = database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
@@ -826,6 +828,7 @@ namespace GMEPDesignTool
 
             }
             CleanUpNames();
+         
 
             void AddToPanelNames(KeyValuePair<string, string> value)
             {
@@ -881,6 +884,7 @@ namespace GMEPDesignTool
                     ElectricalServices.Select(es => es.Id)
                     .Concat(ElectricalTransformers.Select(et => et.Id))
                     .Concat(ElectricalPanels.Select(ep => ep.Id))
+                    .Concat(new[] { "" }) // Add empty string to validIds
                 );
 
                 var fedFromNamesKeys = FedFromNames.Keys.ToList();
