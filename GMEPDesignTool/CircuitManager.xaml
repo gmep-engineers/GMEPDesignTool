@@ -42,7 +42,7 @@
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="LightSlateGray">
+                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Height" Value="160"/>
@@ -231,7 +231,7 @@
        dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="LightSlateGray">
+                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Height" Value="160"/>
