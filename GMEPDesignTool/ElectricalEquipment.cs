@@ -112,7 +112,6 @@ namespace GMEPDesignTool
                 if (equipNo != value)
                 {
                     equipNo = value;
-                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -139,6 +138,7 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
