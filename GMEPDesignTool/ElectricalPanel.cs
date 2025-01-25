@@ -416,22 +416,34 @@ namespace GMEPDesignTool
                 {
                     for (int i = 0; i < component.Pole; i++)
                     {
+                        var addedValue = 0;
+                        switch(i)
+                        {
+                            case 0:
+                                addedValue = (int)component.PhaseAVA;
+                                break;
+                            case 1:
+                                addedValue = (int)component.PhaseBVA;
+                                break;
+                            case 2:
+                                addedValue = (int)component.PhaseCVA;
+                                break;
+                        }
+                        leftCircuits[circuitIndex + i].Va = addedValue;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
-                                PhaseAVA += (int)component.PhaseAVA;
-                                Kva += (float)component.PhaseAVA;
+                                
+                                PhaseAVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 1:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
-                                PhaseBVA += (int)component.PhaseBVA;
-                                Kva += (float)component.PhaseBVA;
+                                PhaseBVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 2:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
-                                PhaseCVA += (int)component.PhaseCVA;
-                                Kva += (float)component.PhaseCVA;
+                                PhaseCVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                         }
                         phaseIndex++;
@@ -446,22 +458,33 @@ namespace GMEPDesignTool
                 {
                     for (int i = 0; i < component.Pole; i++)
                     {
+                        var addedValue = 0;
+                        switch (i)
+                        {
+                            case 0:
+                                addedValue = (int)component.PhaseAVA;
+                                break;
+                            case 1:
+                                addedValue = (int)component.PhaseBVA;
+                                break;
+                            case 2:
+                                addedValue = (int)component.PhaseCVA;
+                                break;
+                        }
+                        rightCircuits[circuitIndex + i].Va = addedValue;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
-                                PhaseAVA += (int)component.PhaseAVA;
-                                Kva += (float)component.PhaseAVA;
+                                PhaseAVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 1:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
-                                PhaseBVA += (int)component.PhaseBVA;
-                                Kva += (float)component.PhaseBVA;
+                                PhaseBVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 2:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
-                                PhaseCVA += (int)component.PhaseCVA;
-                                Kva += (float)component.PhaseCVA;
+                                PhaseCVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                         }
                         phaseIndex++;
