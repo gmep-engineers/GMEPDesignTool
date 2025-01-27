@@ -19,8 +19,10 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class LightingLocations : Window
     {
+        public Database.Database database = new Database.Database();
         public LightingLocations()
         {
+
             InitializeComponent();
         }
     }

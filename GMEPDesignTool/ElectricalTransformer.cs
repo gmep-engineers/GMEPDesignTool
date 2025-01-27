@@ -9,18 +9,13 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalTransformer : INotifyPropertyChanged
+    public class ElectricalTransformer : ElectricalComponent
     {
-        private string _id;
-        private string _projectId;
-        private string _colorCode;
-        private string _parentId;
         private int _distanceFromParent;
         private int _voltage;
-        private string _name;
         private int _kva;
         private bool _powered;
-        public event PropertyChangedEventHandler PropertyChanged;
+
 
         public ElectricalTransformer(
             string id,
@@ -31,59 +26,25 @@ namespace GMEPDesignTool
             int voltage,
             string name,
             int kva,
-            bool powered
+            bool powered,
+            int circuitNo
         )
         {
-            _id = id;
-            _projectId = projectId;
-            _colorCode = colorCode;
-            _parentId = parentId;
+            this.id = id;
+            this.projectId = projectId;
+            this.colorCode = colorCode;
+            this.parentId = parentId;
+            this.phaseAVa = 0;
+            this.phaseBVa = 0;
+            this.phaseCVa = 0;
+            this.name = name;
             _distanceFromParent = distanceFromParent;
             _voltage = voltage;
-            _name = name;
             _kva = kva;
             _powered = powered;
+            SetPole();
         }
 
-        public string Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ProjectId
-        {
-            get => _projectId;
-            set
-            {
-                _projectId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ColorCode
-        {
-            get => _colorCode;
-            set
-            {
-                _colorCode = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ParentId
-        {
-            get => _parentId;
-            set
-            {
-                _parentId = value;
-                OnPropertyChanged();
-            }
-        }
 
         public int DistanceFromParent
         {
@@ -91,7 +52,7 @@ namespace GMEPDesignTool
             set
             {
                 _distanceFromParent = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(DistanceFromParent));
             }
         }
 
@@ -101,17 +62,7 @@ namespace GMEPDesignTool
             set
             {
                 _voltage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Voltage));
             }
         }
 
@@ -121,7 +72,7 @@ namespace GMEPDesignTool
             set
             {
                 _kva = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Kva));
             }
         }
 
@@ -131,13 +82,26 @@ namespace GMEPDesignTool
             set
             {
                 _powered = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Powered));
             }
         }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void SetPole()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            switch (Voltage)
+            {
+                case 1:
+                    Pole = 3;
+                    break;
+                case 3:
+                    Pole = 3;
+                    break;
+                case 4:
+                    Pole = 3;
+                    break;
+                default:
+                    Pole = 2;
+                    break;
+            }
         }
 
         public bool Verify()
