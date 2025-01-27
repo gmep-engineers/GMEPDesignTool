@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         private bool hasPlug;
         private bool lockingConnector;
         private float va;
+        private bool isHiddenOnPlan;
 
         public ElectricalEquipment(
             string id,
@@ -60,7 +61,8 @@ namespace GMEPDesignTool
             float width,
             float depth,
             float height,
-            int circuitNo
+            int circuitNo,
+            bool isHiddenOnPlan
         )
         {
             this.id = id;
@@ -93,6 +95,7 @@ namespace GMEPDesignTool
             this.depth = depth;
             this.height = height;
             this.circuitNo = circuitNo;
+            this.isHiddenOnPlan = isHiddenOnPlan;
             determineEquipmentPole();
         }
 
@@ -160,8 +163,6 @@ namespace GMEPDesignTool
             }
         }
 
-       
-
         public int Voltage
         {
             get => voltage;
@@ -188,8 +189,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-     
 
         public bool Is3Ph
         {
@@ -381,6 +380,18 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public bool IsHiddenOnPlan
+        {
+            get => isHiddenOnPlan;
+            set
+            {
+                if (isHiddenOnPlan != value)
+                {
+                    isHiddenOnPlan = value;
+                    OnPropertyChanged(nameof(IsHiddenOnPlan));
+                }
+            }
+        }
         public float Va
         {
             get => va;
@@ -446,7 +457,6 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
-
 
         public bool Verify()
         {

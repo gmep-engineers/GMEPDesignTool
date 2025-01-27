@@ -1084,7 +1084,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0
+                0,
+                false
             );
             AddElectricalEquipment(electricalEquipment);
         }
