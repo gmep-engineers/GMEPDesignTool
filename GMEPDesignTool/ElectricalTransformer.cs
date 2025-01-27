@@ -20,6 +20,7 @@ namespace GMEPDesignTool
         private string _name;
         private int _kva;
         private bool _powered;
+        private bool _isHiddenOnPlan;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalTransformer(
@@ -31,7 +32,8 @@ namespace GMEPDesignTool
             int voltage,
             string name,
             int kva,
-            bool powered
+            bool powered,
+            bool isHiddenOnPlan
         )
         {
             _id = id;
@@ -43,6 +45,7 @@ namespace GMEPDesignTool
             _name = name;
             _kva = kva;
             _powered = powered;
+            _isHiddenOnPlan = isHiddenOnPlan;
         }
 
         public string Id
@@ -131,6 +134,15 @@ namespace GMEPDesignTool
             set
             {
                 _powered = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool IsHiddenOnPlan
+        {
+            get => _isHiddenOnPlan;
+            set
+            {
+                _isHiddenOnPlan = value;
                 OnPropertyChanged();
             }
         }
