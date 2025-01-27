@@ -472,7 +472,6 @@ namespace GMEPDesignTool
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
                                 break;

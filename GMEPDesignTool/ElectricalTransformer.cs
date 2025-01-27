@@ -92,17 +92,14 @@ namespace GMEPDesignTool
         {
             switch (Voltage)
             {
-                case 1:
-                    Pole = 3;
+                case 7:
+                    Pole = 2;
                     break;
-                case 3:
-                    Pole = 3;
-                    break;
-                case 4:
-                    Pole = 3;
+                case 8:
+                    Pole = 2;
                     break;
                 default:
-                    Pole = 2;
+                    Pole = 3;
                     break;
             }
         }
