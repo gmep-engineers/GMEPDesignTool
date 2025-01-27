@@ -1,22 +1,22 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
-using MySql.Data.MySqlClient;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using System.Diagnostics;
 using BCrypt.Net;
+using MySql.Data.MySqlClient;
 
 namespace GMEPDesignTool.Database
 {
@@ -46,10 +46,11 @@ namespace GMEPDesignTool.Database
                 Connection.Close();
             }
         }
+
         public bool LoginUser(string userName, string password)
         {
-            
-                string query = @"
+            string query =
+                @"
             SELECT e.passhash
             FROM employees e 
             WHERE e.username = @username";
@@ -64,14 +65,11 @@ namespace GMEPDesignTool.Database
             {
                 hashedPassword = reader.GetString("passhash");
                 result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-
             }
             CloseConnection();
             return result;
-            
-
-
         }
+
         public string GetProjectId(string projectNo)
         {
             string query = "SELECT id FROM projects WHERE gmep_project_no = @projectNo";
@@ -315,8 +313,6 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_lighting", existingLightingIds);
         }
 
-       
-
         private HashSet<string> GetExistingIds(
             string tableName,
             string columnName,
@@ -377,7 +373,7 @@ namespace GMEPDesignTool.Database
         private void UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -393,13 +389,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
             command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
+            command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.ExecuteNonQuery();
         }
 
         private void InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no)";
+                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no, is_hidden_on_plan) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no, @is_hidden_on_plan)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -416,6 +413,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
             command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
+            command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.ExecuteNonQuery();
         }
 
@@ -656,7 +654,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("voltage_id"),
                         false,
                         reader.GetBoolean("is_recessed"),
-                        reader.GetInt32("circuit_no")
+                        reader.GetInt32("circuit_no"),
+                        reader.GetBoolean("is_hidden_on_plan")
                     )
                 );
             }
@@ -774,30 +773,32 @@ namespace GMEPDesignTool.Database
 
             while (reader.Read())
             {
-                lightings.Add(new ElectricalLighting(
-                    reader.GetString("id"),
-                    reader.GetString("project_id"),
-                    reader.GetString("parent_id"),
-                    reader.GetString("manufacturer"),
-                    reader.GetString("model_no"),
-                    reader.GetInt32("qty"),
-                    reader.GetBoolean("occupancy"),
-                    reader.GetInt32("wattage"),
-                    reader.GetBoolean("em_capable"),
-                    reader.GetInt32("mounting_type_id"),
-                    reader.GetString("tag"),
-                    reader.GetString("notes"),
-                    reader.GetInt32("voltage_id"),
-                    reader.GetInt32("symbol_id"),
-                    reader.GetString("color_code"),
-                    false,
-                    reader.GetString("description"),
-                    reader.GetInt32("driver_type_id"),
-                    reader.GetBoolean("spec_sheet_from_client"),
-                    reader.GetString("spec_sheet_id"),
-                    reader.GetBoolean("has_photocell"),
-                    reader.GetString("location_id")
-                ));
+                lightings.Add(
+                    new ElectricalLighting(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("parent_id"),
+                        reader.GetString("manufacturer"),
+                        reader.GetString("model_no"),
+                        reader.GetInt32("qty"),
+                        reader.GetBoolean("occupancy"),
+                        reader.GetInt32("wattage"),
+                        reader.GetBoolean("em_capable"),
+                        reader.GetInt32("mounting_type_id"),
+                        reader.GetString("tag"),
+                        reader.GetString("notes"),
+                        reader.GetInt32("voltage_id"),
+                        reader.GetInt32("symbol_id"),
+                        reader.GetString("color_code"),
+                        false,
+                        reader.GetString("description"),
+                        reader.GetInt32("driver_type_id"),
+                        reader.GetBoolean("spec_sheet_from_client"),
+                        reader.GetString("spec_sheet_id"),
+                        reader.GetBoolean("has_photocell"),
+                        reader.GetString("location_id")
+                    )
+                );
             }
 
             reader.Close();
@@ -835,6 +836,7 @@ namespace GMEPDesignTool.Database
             return transformers;
         }
     }
+
     public class S3
     {
         private readonly IAmazonS3 _s3Client;
@@ -843,7 +845,11 @@ namespace GMEPDesignTool.Database
         public S3()
         {
             _bucketName = Properties.Settings.Default.bucket_name;
-            _s3Client = new AmazonS3Client(Properties.Settings.Default.aws_access_key_id, Properties.Settings.Default.aws_secret_access_key, RegionEndpoint.USEast1);
+            _s3Client = new AmazonS3Client(
+                Properties.Settings.Default.aws_access_key_id,
+                Properties.Settings.Default.aws_secret_access_key,
+                RegionEndpoint.USEast1
+            );
         }
 
         public async Task UploadFileAsync(string keyName, string filePath)
@@ -855,7 +861,7 @@ namespace GMEPDesignTool.Database
                     BucketName = _bucketName,
                     Key = keyName,
                     FilePath = filePath,
-                    ContentType = "application/pdf"
+                    ContentType = "application/pdf",
                 };
 
                 PutObjectResponse response = await _s3Client.PutObjectAsync(putRequest);
@@ -863,11 +869,17 @@ namespace GMEPDesignTool.Database
             }
             catch (AmazonS3Exception e)
             {
-                Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
+                Console.WriteLine(
+                    "Error encountered on server. Message:'{0}' when writing an object",
+                    e.Message
+                );
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
+                Console.WriteLine(
+                    "Unknown encountered on server. Message:'{0}' when writing an object",
+                    e.Message
+                );
             }
         }
 
@@ -875,33 +887,39 @@ namespace GMEPDesignTool.Database
         {
             try
             {
-                var getRequest = new GetObjectRequest
-                {
-                    BucketName = _bucketName,
-                    Key = keyName
-                };
+                var getRequest = new GetObjectRequest { BucketName = _bucketName, Key = keyName };
 
                 using (GetObjectResponse response = await _s3Client.GetObjectAsync(getRequest))
                 using (Stream responseStream = response.ResponseStream)
-                using (FileStream fileStream = new FileStream(downloadFilePath, FileMode.Create, FileAccess.Write))
+                using (
+                    FileStream fileStream = new FileStream(
+                        downloadFilePath,
+                        FileMode.Create,
+                        FileAccess.Write
+                    )
+                )
                 {
                     await responseStream.CopyToAsync(fileStream);
                     Console.WriteLine("File downloaded successfully.");
                 }
 
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = downloadFilePath,
-                    UseShellExecute = true
-                });
+                Process.Start(
+                    new ProcessStartInfo { FileName = downloadFilePath, UseShellExecute = true }
+                );
             }
             catch (AmazonS3Exception e)
             {
-                Console.WriteLine("Error encountered on server. Message:'{0}' when reading an object.", e.Message);
+                Console.WriteLine(
+                    "Error encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unknown encountered on server. Message:'{0}' when reading an object.", e.Message);
+                Console.WriteLine(
+                    "Unknown encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
             }
         }
 
@@ -912,7 +930,7 @@ namespace GMEPDesignTool.Database
                 var deleteRequest = new DeleteObjectRequest
                 {
                     BucketName = _bucketName,
-                    Key = keyName
+                    Key = keyName,
                 };
 
                 DeleteObjectResponse response = await _s3Client.DeleteObjectAsync(deleteRequest);
@@ -920,13 +938,18 @@ namespace GMEPDesignTool.Database
             }
             catch (AmazonS3Exception e)
             {
-                Console.WriteLine("Error encountered on server. Message:'{0}' when deleting an object", e.Message);
+                Console.WriteLine(
+                    "Error encountered on server. Message:'{0}' when deleting an object",
+                    e.Message
+                );
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unknown encountered on server. Message:'{0}' when deleting an object", e.Message);
+                Console.WriteLine(
+                    "Unknown encountered on server. Message:'{0}' when deleting an object",
+                    e.Message
+                );
             }
         }
     }
-
 }

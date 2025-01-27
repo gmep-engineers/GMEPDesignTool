@@ -297,6 +297,7 @@
                                                         <Label VerticalAlignment="Top" Margin="650,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
                                                         <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
                                                         <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="750,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
+                                                        <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="850,50,150,0" HorizontalAlignment="Left" Width="150" />
                                                     </Grid>
                                                     <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
