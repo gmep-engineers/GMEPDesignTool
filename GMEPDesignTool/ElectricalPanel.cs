@@ -20,7 +20,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
-        private float _amp;
+       // private float _amp;
         private int _type;
         private bool _powered;
         //private int _phaseAVa;
@@ -69,7 +69,7 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            _amp = amp;
+            this.amp = amp;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
@@ -222,10 +222,10 @@ namespace GMEPDesignTool
 
         public float Amp
         {
-            get => _amp;
+            get => amp;
             set
             {
-                _amp = value;
+                amp = value;
                 OnPropertyChanged(nameof(Amp));
             }
         }
@@ -484,6 +484,7 @@ namespace GMEPDesignTool
                                 Kva += (float)addedValue;
                                 break;
                         }
+                        leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         phaseIndex++;
                     }
                 }
@@ -531,6 +532,65 @@ namespace GMEPDesignTool
             }
             Kva = (float)Math.Ceiling(Kva / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
+        }
+
+        public int DetermineBreakerSize(ElectricalComponent component)
+        {
+            var breakerSize = component.Amp * 1.25;
+            switch (breakerSize)
+            {
+                case var _ when breakerSize <= 25:
+                    return 25;
+                case var _ when breakerSize <= 30:
+                    return 30;
+                case var _ when breakerSize <= 35:
+                    return 35;
+                case var _ when breakerSize <= 40:
+                    return 40;
+                case var _ when breakerSize <= 45:
+                    return 45;
+                case var _ when breakerSize <= 50:
+                    return 50;
+                case var _ when breakerSize <= 60:
+                    return 60;
+                case var _ when breakerSize <= 70:
+                    return 70;
+                case var _ when breakerSize <= 80:
+                    return 80;
+                case var _ when breakerSize <= 90:
+                    return 90;
+                case var _ when breakerSize <= 100:
+                    return 100;
+                case var _ when breakerSize <= 110:
+                    return 110;
+                case var _ when breakerSize <= 125:
+                    return 125;
+                case var _ when breakerSize <= 150:
+                    return 150;
+                case var _ when breakerSize <= 175:
+                    return 175;
+                case var _ when breakerSize <= 200:
+                    return 200;
+                case var _ when breakerSize <= 225:
+                    return 225;
+                case var _ when breakerSize <= 250:
+                    return 250;
+                case var _ when breakerSize <= 300:
+                    return 300;
+                case var _ when breakerSize <= 350:
+                    return 350;
+                case var _ when breakerSize <= 400:
+                    return 400;
+                case var _ when breakerSize <= 450:
+                    return 450;
+                case var _ when breakerSize <= 500:
+                    return 500;
+                case var _ when breakerSize <= 600:
+                    return 600;
+                default:
+                    return 1000;
+            }
+
         }
         public float SetAmp()
         {
