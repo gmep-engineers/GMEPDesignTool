@@ -71,7 +71,6 @@ namespace GMEPDesignTool
             this.parentId = parentId;
             this.voltage = voltage;
             this.fla = fla;
-            this.amp = fla;
             this.phaseAVa = va;
             this.phaseBVa = va;
             this.phaseCVa = va;
@@ -186,21 +185,10 @@ namespace GMEPDesignTool
                 {
                     fla = value;
                     OnPropertyChanged(nameof(Fla));
-                    OnPropertyChanged(nameof(Amp));
                 }
             }
         }
-        public override float Amp
-        {
-            get => fla;
-            set
-            {
-                if (fla != value)
-                {
-                    fla = value;
-                }
-            }
-        }
+    
 
 
 

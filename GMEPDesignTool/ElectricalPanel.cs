@@ -20,7 +20,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
-       // private float _amp;
+        private float _amp;
         private int _type;
         private bool _powered;
         //private int _phaseAVa;
@@ -69,7 +69,7 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            this.amp = amp;
+            _amp = amp;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
@@ -222,10 +222,10 @@ namespace GMEPDesignTool
 
         public float Amp
         {
-            get => amp;
+            get => _amp;
             set
             {
-                amp = value;
+                _amp = value;
                 OnPropertyChanged(nameof(Amp));
             }
         }
@@ -456,19 +456,24 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
+                        var breakerSize = 0;
                         switch(i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseAVA);
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseBVA);
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseCVA);
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
+                        leftCircuits[circuitIndex + i].BreakerSize = breakerSize;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -484,7 +489,7 @@ namespace GMEPDesignTool
                                 Kva += (float)addedValue;
                                 break;
                         }
-                        leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                        //leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         phaseIndex++;
                     }
                 }
@@ -498,19 +503,24 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
+                        var breakerSize = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseAVA);
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseBVA);
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                breakerSize = DetermineBreakerSize(component.PhaseCVA);
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
+                        rightCircuits[circuitIndex + i].BreakerSize = breakerSize;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -534,9 +544,18 @@ namespace GMEPDesignTool
             Amp = (float)Math.Ceiling(SetAmp());
         }
 
-        public int DetermineBreakerSize(ElectricalComponent component)
+        public int DetermineBreakerSize(float phaseVa)
         {
-            var breakerSize = component.Amp * 1.25;
+            var breakerSize = phaseVa * 1.25;
+            switch (Pole)
+            {
+                case 2:
+                    breakerSize = breakerSize / 120;
+                    break;
+                case 3:
+                    breakerSize = (breakerSize * 1.732) / 208;
+                    break;
+            }
             switch (breakerSize)
             {
                 case var _ when breakerSize <= 25:
