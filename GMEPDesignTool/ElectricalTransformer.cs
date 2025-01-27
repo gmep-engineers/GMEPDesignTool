@@ -40,6 +40,7 @@ namespace GMEPDesignTool
             this.phaseBVa = 0;
             this.phaseCVa = 0;
             this.name = name;
+            this.circuitNo = circuitNo;
             _distanceFromParent = distanceFromParent;
             _voltage = voltage;
             _kva = kva;
