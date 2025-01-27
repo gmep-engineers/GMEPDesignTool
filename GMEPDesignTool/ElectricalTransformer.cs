@@ -66,6 +66,7 @@ namespace GMEPDesignTool
             {
                 _voltage = value;
                 OnPropertyChanged(nameof(Voltage));
+                SetPole();
             }
         }
 

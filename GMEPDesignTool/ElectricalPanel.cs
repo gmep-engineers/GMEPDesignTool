@@ -274,11 +274,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 25));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 25));
                 }
                 totalCircuits++;
             }
@@ -438,6 +438,7 @@ namespace GMEPDesignTool
             foreach (var circuit in leftCircuits)
             {
                 circuit.Va = 0;
+                circuit.BreakerSize = 25;
             }
             foreach (var circuit in rightCircuits)
             {
