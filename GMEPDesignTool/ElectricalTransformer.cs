@@ -16,6 +16,8 @@ namespace GMEPDesignTool
         private int _kva;
         private bool _powered;
 
+        public ElectricalPanel ChildPanel { get; set; }
+
 
         public ElectricalTransformer(
             string id,
@@ -103,7 +105,53 @@ namespace GMEPDesignTool
                     break;
             }
         }
+        public void AddChildPanel(ElectricalPanel panel)
+        {
+            if (ChildPanel != null)
+            {
+                ChildPanel.ParentId = "";
+            }
+            ChildPanel = panel;
+            ChildPanel.PropertyChanged +=Panel_PropertyChanged;
+            phaseAVa = panel.PhaseAVA;
+            phaseBVa = panel.PhaseBVA;
+            phaseCVa = panel.PhaseCVA;
+        }
 
+
+
+        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.ParentId))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    panel.PropertyChanged -= Panel_PropertyChanged;
+                    ChildPanel = null;
+                }
+            }
+            if (e.PropertyName != nameof(ElectricalPanel.PhaseAVA))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    phaseAVa = panel.PhaseAVA;
+                }
+            }
+            if (e.PropertyName != nameof(ElectricalPanel.PhaseBVA))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    phaseBVa = panel.PhaseBVA;
+                }
+            }
+            if (e.PropertyName != nameof(ElectricalPanel.PhaseCVA))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    phaseCVa = panel.PhaseCVA;
+                }
+            }
+        }
         public bool Verify()
         {
             if (!Utils.IsUuid(Id))

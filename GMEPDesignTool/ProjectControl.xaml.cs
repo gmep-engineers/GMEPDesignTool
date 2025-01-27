@@ -111,9 +111,22 @@ namespace GMEPDesignTool
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
+            Dictionary<string, ElectricalPanel> panelParentIds = new Dictionary<string, ElectricalPanel>();
+
             foreach (var panel in ElectricalPanels)
             {
                 panel.DownloadComponents(ElectricalEquipments, ElectricalPanels);
+                if (!string.IsNullOrEmpty(panel.ParentId))
+                {
+                    panelParentIds.Add(panel.ParentId, panel);
+                }
+            }
+            foreach(var transformer in ElectricalTransformers)
+            {
+                if (panelParentIds.ContainsKey(transformer.Id))
+                {
+                    transformer.AddChildPanel(panelParentIds[transformer.Id]);
+                }
             }
 
         }
@@ -974,7 +987,12 @@ namespace GMEPDesignTool
                 if (e.PropertyName == nameof(ElectricalPanel.ParentId))
                 {
                     //setKVAs();
-                   // setAmps();
+                    // setAmps();
+                    var transformer = ElectricalTransformers.FirstOrDefault(transformer => transformer.Id == panel.ParentId);
+                    if (transformer != null)
+                    {
+                        transformer.AddChildPanel(panel);
+                    }
                 }
 
                 if (e.PropertyName == nameof(ElectricalPanel.Name))
