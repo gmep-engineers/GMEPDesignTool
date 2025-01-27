@@ -548,7 +548,7 @@ namespace GMEPDesignTool.Database
         private void UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name WHERE id = @id";
+                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, is_hidden_on_plan = @is_hidden_on_plan WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@id", transformer.Id);
@@ -558,13 +558,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@kva", transformer.Kva);
             command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
             command.Parameters.AddWithValue("@name", transformer.Name);
+            command.Parameters.AddWithValue("@is_hidden_on_plan", transformer.IsHiddenOnPlan);
             command.ExecuteNonQuery();
         }
 
         private void InsertTransformer(string projectId, ElectricalTransformer transformer)
         {
             string query =
-                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name)";
+                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, is_hidden_on_plan) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @isHiddenOnPlan)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", transformer.Id);
             command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
@@ -574,6 +575,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@kva", transformer.Kva);
             command.Parameters.AddWithValue("@name", transformer.Name);
             command.Parameters.AddWithValue("@voltage", transformer.Voltage);
+            command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
             command.ExecuteNonQuery();
         }
 
@@ -827,7 +829,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("voltage_id"),
                         reader.GetString("name"),
                         reader.GetInt32("kva_id"),
-                        false
+                        false,
+                        reader.GetBoolean("is_hidden_on_plan")
                     )
                 );
             }
