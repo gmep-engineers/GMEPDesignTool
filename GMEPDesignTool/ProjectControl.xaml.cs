@@ -115,7 +115,7 @@ namespace GMEPDesignTool
 
             foreach (var panel in ElectricalPanels)
             {
-                panel.DownloadComponents(ElectricalEquipments, ElectricalPanels);
+                panel.DownloadComponents(ElectricalEquipments, ElectricalPanels, ElectricalTransformers);
                 if (!string.IsNullOrEmpty(panel.ParentId))
                 {
                     panelParentIds.Add(panel.ParentId, panel);
@@ -1502,6 +1502,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
             electricalTransformer.PropertyChanged -= ElectricalService_PropertyChanged;
+            electricalTransformer.ParentId = "";
             ElectricalTransformers.Remove(electricalTransformer);
             GetNames();
             StartTimer();
@@ -1550,8 +1551,13 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
                 {
-                    //setKVAs();
-                    //setAmps();
+                    foreach (var panel in ElectricalPanels)
+                    {
+                        if (panel.Id == transformer.ParentId)
+                        {
+                            panel.AssignTransformer(transformer);
+                        }
+                    }
                 }
                 if (e.PropertyName == nameof(ElectricalTransformer.ColorCode))
                 {

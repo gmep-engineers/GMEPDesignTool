@@ -347,6 +347,31 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Pole))
+            {
+                SetCircuitNumbers();
+                SetCircuitVa();
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    transformer.PropertyChanged -= Transformer_PropertyChanged;
+                    if (leftComponents.Contains(transformer))
+                    {
+                        leftComponents.Remove(transformer);
+                    }
+                    if (rightComponents.Contains(transformer))
+                    {
+                        rightComponents.Remove(transformer);
+                    }
+                    SetCircuitNumbers();
+                    SetCircuitVa();
+                }
+            }
+        }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
           
@@ -375,6 +400,20 @@ namespace GMEPDesignTool
             SetCircuitNumbers();
             SetCircuitVa();
            panel.PropertyChanged += Panel_PropertyChanged;
+        }
+        public void AssignTransformer(ElectricalTransformer transformer)
+        {
+            if (leftComponents.Count <= rightComponents.Count)
+            {
+                leftComponents.Add(transformer);
+            }
+            else
+            {
+                rightComponents.Add(transformer);
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+            transformer.PropertyChanged += Transformer_PropertyChanged;
         }
         public void SetCircuitNumbers()
         {
@@ -509,7 +548,7 @@ namespace GMEPDesignTool
             }
             return Amp;
         }
-        public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels)
+        public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
         {
             ObservableCollection<ElectricalComponent> temp = new ObservableCollection<ElectricalComponent>();
             foreach (var equip in equipment)
@@ -526,6 +565,14 @@ namespace GMEPDesignTool
                 {
                     temp.Add(panel);
                     panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (transformer.ParentId == Id)
+                {
+                    temp.Add(transformer);
+                    transformer.PropertyChanged += Transformer_PropertyChanged;
                 }
             }
             temp = new ObservableCollection<ElectricalComponent>(temp.OrderBy(e => e.CircuitNo));
@@ -548,10 +595,7 @@ namespace GMEPDesignTool
             
         }
 
-        private void Equip_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public bool Verify()
         {

@@ -113,9 +113,9 @@ namespace GMEPDesignTool
             }
             ChildPanel = panel;
             ChildPanel.PropertyChanged +=Panel_PropertyChanged;
-            phaseAVa = panel.PhaseAVA;
-            phaseBVa = panel.PhaseBVA;
-            phaseCVa = panel.PhaseCVA;
+            PhaseAVA = panel.PhaseAVA;
+            PhaseBVA = panel.PhaseBVA;
+            PhaseCVA = panel.PhaseCVA;
         }
 
 
@@ -134,21 +134,21 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalPanel panel)
                 {
-                    phaseAVa = panel.PhaseAVA;
+                    PhaseAVA = panel.PhaseAVA;
                 }
             }
             if (e.PropertyName != nameof(ElectricalPanel.PhaseBVA))
             {
                 if (sender is ElectricalPanel panel)
                 {
-                    phaseBVa = panel.PhaseBVA;
+                    PhaseBVA = panel.PhaseBVA;
                 }
             }
             if (e.PropertyName != nameof(ElectricalPanel.PhaseCVA))
             {
                 if (sender is ElectricalPanel panel)
                 {
-                    phaseCVa = panel.PhaseCVA;
+                    PhaseCVA = panel.PhaseCVA;
                 }
             }
         }
