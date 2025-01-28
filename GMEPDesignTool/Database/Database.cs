@@ -145,7 +145,8 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalPanel> panels,
             ObservableCollection<ElectricalEquipment> equipments,
             ObservableCollection<ElectricalTransformer> transformers,
-            ObservableCollection<ElectricalLighting> lightings
+            ObservableCollection<ElectricalLighting> lightings,
+            ObservableCollection<Location> locations
         )
         {
             OpenConnection();
@@ -155,6 +156,7 @@ namespace GMEPDesignTool.Database
             UpdateEquipments(projectId, equipments);
             UpdateTransformers(projectId, transformers);
             UpdateLightings(projectId, lightings);
+            UpdateLightingLocations(projectId, locations);
 
             CloseConnection();
         }
@@ -315,7 +317,25 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_lighting", existingLightingIds);
         }
 
-       
+        private void UpdateLightingLocations(string projectId, ObservableCollection<Location> locations)
+        {
+            var existingLocationIds = GetExistingIds("electrical_lighting_locations", "project_id", projectId);
+
+            foreach (var location in locations)
+            {
+                if (existingLocationIds.Contains(location.Id))
+                {
+                    UpdateLocation(location);
+                    existingLocationIds.Remove(location.Id);
+                }
+                else
+                {
+                    InsertLocation(projectId, location);
+                }
+            }
+
+            DeleteRemovedItems("electrical_lighting_locations", existingLocationIds);
+        }
 
         private HashSet<string> GetExistingIds(
             string tableName,
@@ -580,6 +600,29 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuitNo", transformer.CircuitNo);
             command.ExecuteNonQuery();
         }
+        private void UpdateLocation(Location location)
+        {
+            string query =
+                "UPDATE electrical_lighting_locations SET location = @locationDescription, outdoor = @isOutside WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
+            command.Parameters.AddWithValue("@isOutside", location.IsOutside);
+
+            command.ExecuteNonQuery();
+        }
+
+        private void InsertLocation(string projectId, Location location)
+        {
+            string query =
+                "INSERT INTO electrical_lighting_locations (id, project_id, location, outdoor) VALUES (@id, @projectId, @locationDescription, @isOutside)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", location.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
+            command.Parameters.AddWithValue("@isOutside", location.IsOutside);
+
+            command.ExecuteNonQuery();
+        }
 
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
@@ -837,6 +880,28 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return transformers;
         }
+        public ObservableCollection<Location> GetLightingLocations(string projectId)
+        {
+            ObservableCollection<Location> locations =
+                new ObservableCollection<Location>();
+            string query = "SELECT * FROM electrical_lighting_locations WHERE project_id = @projectId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var location = new Location();
+                location.Id = reader.GetString("id");
+                location.isOutside = reader.GetBoolean("outdoor");
+                location.LocationDescription = reader.GetString("location");
+                locations.Add(location);
+            }
+            reader.Close();
+            CloseConnection();
+            return locations;
+        }
+       
     }
     public class S3
     {

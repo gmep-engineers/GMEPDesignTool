@@ -11,10 +11,10 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <DataGrid Grid.Row="0">
+        <DataGrid Grid.Row="0" ItemsSource="{Binding Locations}" AutoGenerateColumns="False" CanUserAddRows="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Locations"/>
-                <DataGridCheckBoxColumn Header="Outside"/>
+                <DataGridTextColumn Width="5*" Header="Location" Binding="{Binding LocationDescription}"/>
+                <DataGridCheckBoxColumn Width="*" Header="Outside" Binding="{Binding IsOutside}"/>
             </DataGrid.Columns>
         </DataGrid>
        

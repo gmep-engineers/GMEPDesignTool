@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -40,13 +41,12 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableDictionary<string, string> ParentNames { get; set; }
         public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
-
         public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
+        public ObservableCollection<Location> LightingLocations { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
-
         public CollectionViewSource LightingViewSource { get; set; }
 
         public Database.Database database = new Database.Database();
@@ -62,6 +62,8 @@ namespace GMEPDesignTool
             ElectricalEquipments = database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = database.GetProjectTransformers(ProjectId);
             ElectricalLightings = database.GetProjectLighting(ProjectId);
+            LightingLocations = new ObservableCollection<Location>();
+            LightingLocations = database.GetLightingLocations(ProjectId);
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
@@ -99,6 +101,8 @@ namespace GMEPDesignTool
             {
                 lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             }
+            LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
+
 
             this.DataContext = this;
 
@@ -131,6 +135,11 @@ namespace GMEPDesignTool
 
         }
 
+        private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void Timer_Tick(object sender, EventArgs e)
         {
             database.UpdateProject(
@@ -139,7 +148,8 @@ namespace GMEPDesignTool
                 ElectricalPanels,
                 ElectricalEquipments,
                 ElectricalTransformers,
-                ElectricalLightings
+                ElectricalLightings,
+                LightingLocations
             );
             SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
@@ -1469,11 +1479,33 @@ namespace GMEPDesignTool
             LightingPanelFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
+        public void OpenLocations_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                /*foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Calculator calculator1)
+                    {
+                        if (calculator1.ProjectId == ProjectId)
+                        {
+                            calculator1.Activate();
+                            return;
+                        }
+                    }
+                }*/
+                LightingLocations locations = new LightingLocations(LightingLocations);
 
-   
+                locations.Show();
+            });
+        }
+        private void LightingLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            StartTimer();
+        }
 
-        //Transformer Functions
-        public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
+            //Transformer Functions
+            public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
             electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
