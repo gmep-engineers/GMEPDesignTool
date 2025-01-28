@@ -21,6 +21,7 @@ namespace GMEPDesignTool
         public int circuitNo;
         public int pole;
         public string name;
+        public float amp;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -147,7 +148,20 @@ namespace GMEPDesignTool
             }
         }
 
- 
+        public virtual float Amp
+        {
+            get => amp;
+            set
+            {
+                if (amp != value)
+                {
+                    amp = value;
+                    OnPropertyChanged(nameof(Amp));
+                }
+            }
+        }
+
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

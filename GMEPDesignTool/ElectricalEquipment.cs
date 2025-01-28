@@ -75,6 +75,7 @@ namespace GMEPDesignTool
             this.phaseBVa = va;
             this.phaseCVa = va;
             this.va = va;
+            this.amp = fla;
             this.is3Ph = is3Ph;
             this.specSheetId = specSheetId;
             this.aicRating = aicRating;
@@ -185,10 +186,22 @@ namespace GMEPDesignTool
                 {
                     fla = value;
                     OnPropertyChanged(nameof(Fla));
+                    OnPropertyChanged(nameof(Amp));
                 }
             }
         }
-    
+        public override float Amp
+        {
+            get => fla;
+            set
+            {
+                if (fla != value)
+                {
+                    fla = value;
+                }
+            }
+        }
+
 
 
 

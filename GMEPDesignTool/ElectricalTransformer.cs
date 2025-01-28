@@ -39,6 +39,7 @@ namespace GMEPDesignTool
             this.phaseAVa = 0;
             this.phaseBVa = 0;
             this.phaseCVa = 0;
+            this.amp = 0;
             this.name = name;
             this.circuitNo = circuitNo;
             _distanceFromParent = distanceFromParent;
@@ -115,6 +116,7 @@ namespace GMEPDesignTool
             PhaseAVA = panel.PhaseAVA;
             PhaseBVA = panel.PhaseBVA;
             PhaseCVA = panel.PhaseCVA;
+            Amp = panel.Amp;
         }
 
 
@@ -148,6 +150,13 @@ namespace GMEPDesignTool
                 if (sender is ElectricalPanel panel)
                 {
                     PhaseCVA = panel.PhaseCVA;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Amp))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    Amp = panel.Amp;
                 }
             }
           

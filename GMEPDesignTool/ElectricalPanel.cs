@@ -20,7 +20,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
-        private float _amp;
+       // private float _amp;
         private int _type;
         private bool _powered;
         //private int _phaseAVa;
@@ -69,7 +69,7 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            _amp = amp;
+            this.amp = amp;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
@@ -220,7 +220,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Amp
+        /*public float Amp
         {
             get => _amp;
             set
@@ -228,7 +228,7 @@ namespace GMEPDesignTool
                 _amp = value;
                 OnPropertyChanged(nameof(Amp));
             }
-        }
+        }*/
 
         public int Type
         {
@@ -274,11 +274,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 25));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 25));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0));
                 }
                 totalCircuits++;
             }
@@ -438,11 +438,12 @@ namespace GMEPDesignTool
             foreach (var circuit in leftCircuits)
             {
                 circuit.Va = 0;
-                circuit.BreakerSize = 25;
+                circuit.BreakerSize = 0;
             }
             foreach (var circuit in rightCircuits)
             {
                 circuit.Va = 0;
+                circuit.BreakerSize = 0;
             }
             PhaseAVA = 0;
             PhaseBVA = 0;
@@ -457,24 +458,28 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
-                        var breakerSize = 0;
                         switch(i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseAVA);
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseBVA);
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseCVA);
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
-                        leftCircuits[circuitIndex + i].BreakerSize = breakerSize;
+                        if (i == component.Pole - 1)
+                        {
+                            leftCircuits[circuitIndex + i].BreakerSize = i + 1;
+                        }
+                        if (i == 0)
+                        {
+                            leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                        }
+                       
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -490,7 +495,6 @@ namespace GMEPDesignTool
                                 Kva += (float)addedValue;
                                 break;
                         }
-                        //leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         phaseIndex++;
                     }
                 }
@@ -504,24 +508,30 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
-                        var breakerSize = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseAVA);
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseBVA);
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
-                                breakerSize = DetermineBreakerSize(component.PhaseCVA);
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
-                        rightCircuits[circuitIndex + i].BreakerSize = breakerSize;
+
+                        if (i == component.Pole - 1)
+                        {
+                            rightCircuits[circuitIndex + i].BreakerSize = i + 1;
+                        }
+                        if (i == 0)
+                        {
+                            rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                        }
+                       
+                        
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -545,67 +555,59 @@ namespace GMEPDesignTool
             Amp = (float)Math.Ceiling(SetAmp());
         }
 
-        public int DetermineBreakerSize(float phaseVa)
+        public int DetermineBreakerSize(ElectricalComponent component)
         {
-            var breakerSize = phaseVa * 1.25;
-            switch (Pole)
-            {
-                case 2:
-                    breakerSize = breakerSize / 120;
-                    break;
-                case 3:
-                    breakerSize = (breakerSize * 1.732) / 208;
-                    break;
-            }
+            var breakerSize = component.Amp * 1.25;
+          
             switch (breakerSize)
             {
                 case var _ when breakerSize <= 25:
                     return 25;
-                case var _ when breakerSize <= 30:
+                case var _ when breakerSize <= 30 && breakerSize > 25:
                     return 30;
-                case var _ when breakerSize <= 35:
+                case var _ when breakerSize <= 35 && breakerSize > 30:
                     return 35;
-                case var _ when breakerSize <= 40:
+                case var _ when breakerSize <= 40 && breakerSize > 35:
                     return 40;
-                case var _ when breakerSize <= 45:
+                case var _ when breakerSize <= 45 && breakerSize > 40:
                     return 45;
-                case var _ when breakerSize <= 50:
+                case var _ when breakerSize <= 50 && breakerSize > 45:
                     return 50;
-                case var _ when breakerSize <= 60:
+                case var _ when breakerSize <= 60 && breakerSize > 50:
                     return 60;
-                case var _ when breakerSize <= 70:
+                case var _ when breakerSize <= 70 && breakerSize > 60:
                     return 70;
-                case var _ when breakerSize <= 80:
+                case var _ when breakerSize <= 80 && breakerSize > 70:
                     return 80;
-                case var _ when breakerSize <= 90:
+                case var _ when breakerSize <= 90 && breakerSize > 80:
                     return 90;
-                case var _ when breakerSize <= 100:
+                case var _ when breakerSize <= 100 && breakerSize > 90:
                     return 100;
-                case var _ when breakerSize <= 110:
+                case var _ when breakerSize <= 110 && breakerSize > 100:
                     return 110;
-                case var _ when breakerSize <= 125:
+                case var _ when breakerSize <= 125 && breakerSize > 110:
                     return 125;
-                case var _ when breakerSize <= 150:
+                case var _ when breakerSize <= 150 && breakerSize > 125:
                     return 150;
-                case var _ when breakerSize <= 175:
+                case var _ when breakerSize <= 175 && breakerSize > 150:
                     return 175;
-                case var _ when breakerSize <= 200:
+                case var _ when breakerSize <= 200 && breakerSize > 175:
                     return 200;
-                case var _ when breakerSize <= 225:
+                case var _ when breakerSize <= 225 && breakerSize > 200:
                     return 225;
-                case var _ when breakerSize <= 250:
+                case var _ when breakerSize <= 250 && breakerSize > 225:
                     return 250;
-                case var _ when breakerSize <= 300:
+                case var _ when breakerSize <= 300 && breakerSize > 250:
                     return 300;
-                case var _ when breakerSize <= 350:
+                case var _ when breakerSize <= 350 && breakerSize > 300:
                     return 350;
-                case var _ when breakerSize <= 400:
+                case var _ when breakerSize <= 400 && breakerSize > 350:
                     return 400;
-                case var _ when breakerSize <= 450:
+                case var _ when breakerSize <= 450 && breakerSize > 400:
                     return 450;
-                case var _ when breakerSize <= 500:
+                case var _ when breakerSize <= 500 && breakerSize > 450:
                     return 500;
-                case var _ when breakerSize <= 600:
+                case var _ when breakerSize <= 600 && breakerSize > 500:
                     return 600;
                 default:
                     return 1000;
