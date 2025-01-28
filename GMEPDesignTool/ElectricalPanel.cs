@@ -23,16 +23,21 @@ namespace GMEPDesignTool
        // private float _amp;
         private int _type;
         private bool _powered;
+        private bool _isHiddenOnPlan;
+
         //private int _phaseAVa;
-       // private int _phaseBVa;
+        // private int _phaseBVa;
         //private int _phaseCVa;
-        
-        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<ElectricalComponent> rightComponents{ get; set; } = new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<Circuit> leftCircuits { get; set; } = new ObservableCollection<Circuit>();
 
-        public ObservableCollection<Circuit> rightCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
+            new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } =
+            new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<Circuit> leftCircuits { get; set; } =
+            new ObservableCollection<Circuit>();
 
+        public ObservableCollection<Circuit> rightCircuits { get; set; } =
+            new ObservableCollection<Circuit>();
 
         private bool _isRecessed;
 
@@ -53,13 +58,16 @@ namespace GMEPDesignTool
             int type,
             bool powered,
             bool isRecessed,
-            int circuitNo
-        ) : base()
+            int circuitNo,
+            bool isHiddenOnPlan
+        )
+            : base()
         {
             this.id = id;
             _busSize = busSize;
             _mainSize = mainSize;
             _isMlo = isMlo;
+            _isHiddenOnPlan = isHiddenOnPlan;
             _isDistribution = isDistribution;
             this.name = name;
             this.colorCode = colorCode;
@@ -75,7 +83,7 @@ namespace GMEPDesignTool
             _isRecessed = isRecessed;
             phaseAVa = 0;
             phaseBVa = 0;
-            phaseCVa = 0;  
+            phaseCVa = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -90,7 +98,7 @@ namespace GMEPDesignTool
                 SetCircuitVa();
             }
         }
-  
+
         public bool IsRecessed
         {
             get => _isRecessed;
@@ -127,15 +135,16 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(PhaseCVA));
             }
         }
-       /*public override float Va
-        {
-            get => _kva;
-            set
-            {
-                _kva = value;
-                OnPropertyChanged(nameof(Va));
-            }
-        }*/
+
+        /*public override float Va
+         {
+             get => _kva;
+             set
+             {
+                 _kva = value;
+                 OnPropertyChanged(nameof(Va));
+             }
+         }*/
 
         public int BusSize
         {
@@ -166,7 +175,15 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(IsMlo));
             }
         }
-
+        public bool IsHiddenOnPlan
+        {
+            get => _isHiddenOnPlan;
+            set
+            {
+                _isHiddenOnPlan = value;
+                OnPropertyChanged(nameof(IsHiddenOnPlan));
+            }
+        }
         public bool IsDistribution
         {
             get => _isDistribution;
@@ -249,9 +266,11 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(Powered));
             }
         }
+
         public void SetPole()
         {
-            switch(Type) {
+            switch (Type)
+            {
                 case 1:
                     Pole = 3;
                     break;
@@ -266,6 +285,7 @@ namespace GMEPDesignTool
                     break;
             }
         }
+
         public void PopulateCircuits()
         {
             int totalCircuits = leftCircuits.Count + rightCircuits.Count;
@@ -295,8 +315,8 @@ namespace GMEPDesignTool
                 }
                 totalCircuits--;
             }
-
         }
+
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole))
@@ -322,8 +342,10 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+
             if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole))
             {
                 SetCircuitNumbers();
@@ -374,7 +396,6 @@ namespace GMEPDesignTool
         }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
-          
             if (leftComponents.Count <= rightComponents.Count)
             {
                 leftComponents.Add(equipment);
@@ -387,6 +408,7 @@ namespace GMEPDesignTool
             SetCircuitVa();
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
+
         public void AssignPanel(ElectricalPanel panel)
         {
             if (leftComponents.Count <= rightComponents.Count)
@@ -399,7 +421,7 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
-           panel.PropertyChanged += Panel_PropertyChanged;
+            panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void AssignTransformer(ElectricalTransformer transformer)
         {
@@ -415,6 +437,7 @@ namespace GMEPDesignTool
             SetCircuitVa();
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
+
         public void SetCircuitNumbers()
         {
             int leftCircuitIndex = 0;
@@ -422,17 +445,17 @@ namespace GMEPDesignTool
 
             foreach (var equipment in leftComponents)
             {
-                 equipment.CircuitNo = leftCircuitIndex * 2 + 1;
-                 leftCircuitIndex += equipment.Pole;
+                equipment.CircuitNo = leftCircuitIndex * 2 + 1;
+                leftCircuitIndex += equipment.Pole;
             }
 
             foreach (var equipment in rightComponents)
             {
-               
                 equipment.CircuitNo = rightCircuitIndex * 2 + 2;
-                rightCircuitIndex += equipment.Pole;                    
+                rightCircuitIndex += equipment.Pole;
             }
         }
+
         public void SetCircuitVa()
         {
             foreach (var circuit in leftCircuits)
@@ -452,7 +475,9 @@ namespace GMEPDesignTool
             int phaseIndex = 0;
             foreach (var component in leftComponents)
             {
-                int circuitIndex = leftCircuits.IndexOf(leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo));
+                int circuitIndex = leftCircuits.IndexOf(
+                    leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+                );
                 if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
                 {
                     for (int i = 0; i < component.Pole; i++)
@@ -502,8 +527,10 @@ namespace GMEPDesignTool
             phaseIndex = 0;
             foreach (var component in rightComponents)
             {
-                int circuitIndex = rightCircuits.IndexOf(rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo));
-                if (circuitIndex != -1  && circuitIndex + component.Pole <= rightCircuits.Count)
+                int circuitIndex = rightCircuits.IndexOf(
+                    rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+                );
+                if (circuitIndex != -1 && circuitIndex + component.Pole <= rightCircuits.Count)
                 {
                     for (int i = 0; i < component.Pole; i++)
                     {
@@ -625,13 +652,13 @@ namespace GMEPDesignTool
                 default:
                     Amp = (float)Math.Round((double)((largestPhase * 1.732) / 208), 10);
                     break;
-
             }
             return Amp;
         }
         public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
         {
-            ObservableCollection<ElectricalComponent> temp = new ObservableCollection<ElectricalComponent>();
+            ObservableCollection<ElectricalComponent> temp =
+                new ObservableCollection<ElectricalComponent>();
             foreach (var equip in equipment)
             {
                 if (equip.ParentId == Id)
@@ -664,7 +691,6 @@ namespace GMEPDesignTool
                     if (component.CircuitNo % 2 != 0)
                     {
                         leftComponents.Add(component);
-
                     }
                     else
                     {
@@ -673,7 +699,6 @@ namespace GMEPDesignTool
                 }
             }
             SetCircuitVa();
-            
         }
 
      
@@ -695,6 +720,7 @@ namespace GMEPDesignTool
             return true;
         }
     }
+
     public class Circuit : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -708,7 +734,7 @@ namespace GMEPDesignTool
         {
             number = _number;
             va = _va;
-            breakerSize=_breakerSize;
+            breakerSize = _breakerSize;
         }
 
         public int BreakerSize

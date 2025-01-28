@@ -79,7 +79,9 @@ namespace GMEPDesignTool
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
             symbolsPath = System.IO.Path.GetFullPath(symbolsPath);
-            ImagePaths = new ObservableCollection<string>(Directory.GetFiles(symbolsPath, "*.png").Select(System.IO.Path.GetFullPath));
+            ImagePaths = new ObservableCollection<string>(
+                Directory.GetFiles(symbolsPath, "*.png").Select(System.IO.Path.GetFullPath)
+            );
 
             foreach (var service in ElectricalServices)
             {
@@ -136,7 +138,6 @@ namespace GMEPDesignTool
                     transformer.AddChildPanel(panelParentIds[transformer.Id]);
                 }
             }
-
         }
 
         private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
@@ -769,7 +770,8 @@ namespace GMEPDesignTool
                 1,
                 false,
                 false,
-                0
+                0,
+                false
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -828,10 +830,8 @@ namespace GMEPDesignTool
 
         public void GetNames()
         {
-
             foreach (ElectricalService service in ElectricalServices)
             {
-
                 KeyValuePair<string, string> value = new KeyValuePair<string, string>(
                     service.Id,
                     service.Name
@@ -858,7 +858,6 @@ namespace GMEPDesignTool
                 AddToPanelTransformerNames(value);
             }
             CleanUpNames();
-         
 
             void AddToPanelTransformerNames(KeyValuePair<string, string> value)
             {
@@ -868,7 +867,7 @@ namespace GMEPDesignTool
                     {
                         if (!string.IsNullOrEmpty(value.Value))
                         {
-                            PanelTransformerNames[value.Key] =  value.Value;
+                            PanelTransformerNames[value.Key] = value.Value;
                         }
                         else
                         {
@@ -884,7 +883,7 @@ namespace GMEPDesignTool
                     }
                 }
             }
-           
+
             void AddToParentNames(KeyValuePair<string, string> value)
             {
                 if (ParentNames.ContainsKey(value.Key))
@@ -936,10 +935,11 @@ namespace GMEPDesignTool
             void CleanUpNames()
             {
                 var validIds = new HashSet<string>(
-                    ElectricalServices.Select(es => es.Id)
-                    .Concat(ElectricalTransformers.Select(et => et.Id))
-                    .Concat(ElectricalPanels.Select(ep => ep.Id))
-                    .Concat(new[] { "" }) // Add empty string to validIds
+                    ElectricalServices
+                        .Select(es => es.Id)
+                        .Concat(ElectricalTransformers.Select(et => et.Id))
+                        .Concat(ElectricalPanels.Select(ep => ep.Id))
+                        .Concat(new[] { "" }) // Add empty string to validIds
                 );
 
                 var ParentNamesKeys = ParentNames.Keys.ToList();
@@ -969,7 +969,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
 
         private void ElectricalPanel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -1002,6 +1001,7 @@ namespace GMEPDesignTool
                 {
                     //setKVAs();
                     // setAmps();
+
                     var transformer = ElectricalTransformers.FirstOrDefault(transformer => transformer.Id == panel.ParentId);
                     if (transformer != null)
                     {
@@ -1031,23 +1031,19 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
+
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
-
-            if (
-                sender is Button button
-                && button.CommandParameter is ElectricalPanel panel
-            )
+            if (sender is Button button && button.CommandParameter is ElectricalPanel panel)
             {
-
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
             }
-
         }
+
         //Service Functions
         public void AddElectricalService(ElectricalService electricalService)
         {
@@ -1158,7 +1154,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                0
+                0,
+                false
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -1195,7 +1192,12 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
                 {
-                    equipment.Va = (float)Math.Round(idToVoltage(equipment.Voltage) * equipment.Fla, 0, MidpointRounding.AwayFromZero);
+                    equipment.Va = (float)
+                        Math.Round(
+                            idToVoltage(equipment.Voltage) * equipment.Fla,
+                            0,
+                            MidpointRounding.AwayFromZero
+                        );
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -1215,10 +1217,10 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
-               
+
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {
-                    foreach(var panel in ElectricalPanels)
+                    foreach (var panel in ElectricalPanels)
                     {
                         if (panel.Id == equipment.ParentId)
                         {
@@ -1294,7 +1296,6 @@ namespace GMEPDesignTool
             }
         }
 
-
         private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             EquipmentViewSource.View.Refresh();
@@ -1317,10 +1318,6 @@ namespace GMEPDesignTool
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
         ) { }
-       
-        
-
-
 
         //Lighting Functions
 
@@ -1394,8 +1391,8 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalLighting.Qty)
                 )
                 {
-                   // setKVAs();
-                   // setAmps();
+                    // setKVAs();
+                    // setAmps();
                 }
                 if (
                     e.PropertyName == nameof(ElectricalLighting.VoltageId)
@@ -1533,8 +1530,9 @@ namespace GMEPDesignTool
             StartTimer();
         }
 
-            //Transformer Functions
-            public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
+
+        //Transformer Functions
+        public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
             electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
@@ -1555,7 +1553,8 @@ namespace GMEPDesignTool
                 "",
                 1,
                 false,
-                0
+                0,
+                false
             );
             AddElectricalTransformer(electricalTransformer);
         }
@@ -1677,6 +1676,7 @@ namespace GMEPDesignTool
                 }
             });
         }
+
         public void UploadSpec(object sender, EventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
@@ -1685,7 +1685,10 @@ namespace GMEPDesignTool
             {
                 string filePath = openFileDialog.FileName;
 
-                if (sender is Button button && button.CommandParameter is ElectricalLighting lighting)
+                if (
+                    sender is Button button
+                    && button.CommandParameter is ElectricalLighting lighting
+                )
                 {
                     if (lighting.SpecSheetId.Length != 0)
                     {
@@ -1695,7 +1698,10 @@ namespace GMEPDesignTool
                     s3.UploadFileAsync(keyName, filePath);
                     lighting.SpecSheetId = keyName;
                 }
-                else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+                else if (
+                    sender is Button button2
+                    && button2.CommandParameter is ElectricalEquipment equipment
+                )
                 {
                     if (equipment.SpecSheetId.Length != 0)
                     {
@@ -1707,7 +1713,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-        
 
         public void ViewSpec(object sender, EventArgs e)
         {
@@ -1731,7 +1736,10 @@ namespace GMEPDesignTool
                     );
                 }
             }
-            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            else if (
+                sender is Button button2
+                && button2.CommandParameter is ElectricalEquipment equipment
+            )
             {
                 if (equipment.SpecSheetId != null && equipment.SpecSheetId.Length > 0)
                 {
@@ -1760,7 +1768,10 @@ namespace GMEPDesignTool
                 s3.DeleteFileAsync(lighting.SpecSheetId);
                 lighting.SpecSheetId = "";
             }
-            else if (sender is Button button2 && button2.CommandParameter is ElectricalEquipment equipment)
+            else if (
+                sender is Button button2
+                && button2.CommandParameter is ElectricalEquipment equipment
+            )
             {
                 s3.DeleteFileAsync(equipment.SpecSheetId);
                 equipment.SpecSheetId = "";
@@ -1785,10 +1796,15 @@ namespace GMEPDesignTool
             return new ValidationResult(false, $"Value should be at least {Minimum}.");
         }
     }
-   
+
     public class RoundToNearestDecimalConverter : IValueConverter
     {
-        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        public object Convert(
+            object value,
+            System.Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             if (value is double doubleValue)
             {
@@ -1797,7 +1813,12 @@ namespace GMEPDesignTool
             return value;
         }
 
-        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            System.Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             if (double.TryParse(value.ToString(), out double doubleValue))
             {
@@ -1843,16 +1864,18 @@ namespace GMEPDesignTool
         public void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(name));
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(name));
         }
 
         #endregion
     }
 
     [Serializable]
-    public class ObservableDictionary<TKey, TValue> : ObservableCollection<ObservableKeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
+    public class ObservableDictionary<TKey, TValue>
+        : ObservableCollection<ObservableKeyValuePair<TKey, TValue>>,
+            IDictionary<TKey, TValue>
     {
-
         #region IDictionary<TKey,TValue> Members
 
         public void Add(TKey key, TValue value)
@@ -1992,12 +2015,14 @@ namespace GMEPDesignTool
 
         public new IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return (from i in ThisAsCollection() select new KeyValuePair<TKey, TValue>(i.Key, i.Value)).ToList().GetEnumerator();
+            return (
+                from i in ThisAsCollection()
+                select new KeyValuePair<TKey, TValue>(i.Key, i.Value)
+            )
+                .ToList()
+                .GetEnumerator();
         }
 
         #endregion
     }
-
-
-
 }

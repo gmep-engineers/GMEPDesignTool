@@ -18,9 +18,9 @@ namespace GMEPDesignTool
         private int _voltage;
         private int _kva;
         private bool _powered;
-
         public ElectricalPanel ChildPanel { get; set; }
-
+        private bool _isHiddenOnPlan;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalTransformer(
             string id,
@@ -33,6 +33,7 @@ namespace GMEPDesignTool
             int kva,
             bool powered,
             int circuitNo
+            bool isHiddenOnPlan
         )
         {
             this.id = id;
@@ -50,6 +51,7 @@ namespace GMEPDesignTool
             _kva = kva;
             _powered = powered;
             SetPole();
+            _isHiddenOnPlan = isHiddenOnPlan;
         }
 
 
@@ -200,6 +202,16 @@ namespace GMEPDesignTool
                 default:
                     return 1;
             }
+        }
+        public bool IsHiddenOnPlan
+        {
+            get => _isHiddenOnPlan;
+            set
+            {
+                _isHiddenOnPlan = value;
+                OnPropertyChanged();
+            }
+        }
 
         }
         public bool Verify()
