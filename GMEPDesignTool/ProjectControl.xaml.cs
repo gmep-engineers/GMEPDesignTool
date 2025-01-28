@@ -1502,7 +1502,7 @@ namespace GMEPDesignTool
                  sender is Button button
                  && button.CommandParameter is ElectricalLighting lighting)
                 {
-                    LightingLocations locations = new LightingLocations(LightingLocations, lighting);
+                    LightingLocations locations = new LightingLocations(LightingLocations);
                     locations.Show();
                 }
 

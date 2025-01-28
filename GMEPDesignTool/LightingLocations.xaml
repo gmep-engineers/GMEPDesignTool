@@ -6,26 +6,23 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="LightingLocations" Height="450" Width="800">
-    <Window.Resources>
-        <local:IdToLocationDescriptionConverter x:Key="IdToLocationDescriptionConverter" />
-    </Window.Resources>
     <Grid Background="SlateGray">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="6*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <DataGrid Name="LocationGrid" Grid.Row="0" ItemsSource="{Binding Locations}" AutoGenerateColumns="False" CanUserAddRows="True" SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+        <DataGrid Name="LocationGrid" Grid.Row="0" ItemsSource="{Binding Locations}" AutoGenerateColumns="False" CanUserAddRows="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="5*" Header="Location" Binding="{Binding LocationDescription}"/>
+                <DataGridTemplateColumn Width="5*" Header="Location">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LocationDescription}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding LocationDescription}" MaxLength="30" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
                 <DataGridCheckBoxColumn Width="*" Header="Outside" Binding="{Binding IsOutside}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid Grid.Row="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBox Grid.Row="1" Text="{Binding Lighting.Id, Converter={StaticResource IdToLocationDescriptionConverter}, Mode=TwoWay}" Width="200" Height="30" IsReadOnly="True" />
-                <Button Grid.Row="0" Width="100" Height="30" Content="Assign" FontWeight="Bold" Click="Assign_Click"/>
-            </StackPanel>
-        </Grid>
-       
     </Grid>
 </Window>
