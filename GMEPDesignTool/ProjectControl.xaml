@@ -672,7 +672,7 @@
                                                                             <CheckBox Content="Photocell" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 25 0 0" IsChecked="{Binding HasPhotoCell}"/>
                                                                         </Grid>
                                                                         <Grid Margin="20 0 20 0">
-                                                                            <Button Content="Location" Height="20" Width="90" FontWeight="Bold" Click="OpenLocations_Click"/>
+                                                                            <Button Content="Location" Height="20" Width="90" FontWeight="Bold" Click="OpenLocations_Click" CommandParameter="{Binding}"/>
                                                                         </Grid>
 
                                                                     </StackPanel>

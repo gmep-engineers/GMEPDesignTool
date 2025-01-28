@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,11 +25,57 @@ namespace GMEPDesignTool
     {
         public Database.Database database = new Database.Database();
         public ObservableCollection<Location> Locations { get; set; } = new ObservableCollection<Location>();
-        public LightingLocations(ObservableCollection<Location> locations)
+        public ElectricalLighting Lighting { get; set; }
+
+        private Location selectedLocation;
+
+        public Location SelectedLocation
+        {
+            get => selectedLocation;
+            set
+            {
+                selectedLocation = value;
+                //OnPropertyChanged();
+            }
+        }
+        public LightingLocations(ObservableCollection<Location> locations, ElectricalLighting lighting)
         {
             Locations = locations;
+            Lighting = lighting;
             InitializeComponent();
             DataContext = this;
+
+            var converter = (IdToLocationDescriptionConverter)Resources["IdToLocationDescriptionConverter"];
+            converter.Locations = Locations;
+        }
+
+        private void Assign_Click(object sender, RoutedEventArgs e)
+        {
+            Lighting.LocationId = SelectedLocation.Id;
+        }
+    }
+    public class IdToLocationDescriptionConverter : IValueConverter
+    {
+        public ObservableCollection<Location> Locations { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string id && Locations != null)
+            {
+                var location = Locations.FirstOrDefault(l => l.Id == id);
+                return location?.LocationDescription ?? string.Empty;
+            }
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string description && Locations != null)
+            {
+                var location = Locations.FirstOrDefault(l => l.LocationDescription == description);
+                return location?.Id ?? string.Empty;
+            }
+            return string.Empty;
         }
     }
     public class Location : INotifyPropertyChanged

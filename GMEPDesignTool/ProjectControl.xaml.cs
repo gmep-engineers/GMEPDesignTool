@@ -102,6 +102,10 @@ namespace GMEPDesignTool
                 lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             }
             LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
+            foreach(var location in LightingLocations)
+            {
+                location.PropertyChanged += LightingLocations_PropertyChanged;
+            }
 
 
             this.DataContext = this;
@@ -1494,12 +1498,37 @@ namespace GMEPDesignTool
                         }
                     }
                 }*/
-                LightingLocations locations = new LightingLocations(LightingLocations);
+                if (
+                 sender is Button button
+                 && button.CommandParameter is ElectricalLighting lighting)
+                {
+                    LightingLocations locations = new LightingLocations(LightingLocations, lighting);
+                    locations.Show();
+                }
 
-                locations.Show();
+                
             });
         }
         private void LightingLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Location newItem in e.NewItems)
+                {
+                    // Handle the new item added to the collection
+                    newItem.PropertyChanged += LightingLocations_PropertyChanged;
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Location removedItem in e.OldItems)
+                {
+                    // Handle the new item added to the collection
+                    removedItem.PropertyChanged -= LightingLocations_PropertyChanged;
+                }
+            }
+        }
+        private void LightingLocations_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             StartTimer();
         }

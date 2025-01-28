@@ -605,6 +605,7 @@ namespace GMEPDesignTool.Database
             string query =
                 "UPDATE electrical_lighting_locations SET location = @locationDescription, outdoor = @isOutside WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", location.Id);
             command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
 
