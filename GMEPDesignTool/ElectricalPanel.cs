@@ -299,7 +299,7 @@ namespace GMEPDesignTool
         }
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Pole))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -324,7 +324,7 @@ namespace GMEPDesignTool
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Pole))
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -349,7 +349,7 @@ namespace GMEPDesignTool
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Pole))
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
