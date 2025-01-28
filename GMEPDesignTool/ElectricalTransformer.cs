@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Amazon.S3.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GMEPDesignTool
 {
@@ -117,6 +120,7 @@ namespace GMEPDesignTool
             PhaseBVA = panel.PhaseBVA;
             PhaseCVA = panel.PhaseCVA;
             Amp = panel.Amp;
+            Kva = SetKva();
         }
 
 
@@ -159,7 +163,44 @@ namespace GMEPDesignTool
                     Amp = panel.Amp;
                 }
             }
-          
+            Kva = SetKva();
+        }
+        public int SetKva()
+        {
+            var kva = (float)Math.Ceiling((PhaseAVA + PhaseBVA + PhaseCVA) / 1000);
+
+            switch (kva)
+            {
+                case var _ when kva <= 45:
+                    return 1;
+                case var _ when kva <= 75:
+                    return 2;
+                case var _ when kva <= 112.5:
+                    return 3;
+                case var _ when kva <= 150:
+                    return 4;
+                case var _ when kva <= 225:
+                    return 5;
+                case var _ when kva <= 300:
+                    return 6;
+                case var _ when kva <= 500:
+                    return 7;
+                case var _ when kva <= 750:
+                    return 8;
+                case var _ when kva <= 1000:
+                    return 9;
+                case var _ when kva <= 1500:
+                    return 10;
+                case var _ when kva <= 2000:
+                    return 11;
+                case var _ when kva <= 2500:
+                    return 12;
+                case var _ when kva > 2500:
+                    return 13;
+                default:
+                    return 1;
+            }
+
         }
         public bool Verify()
         {
