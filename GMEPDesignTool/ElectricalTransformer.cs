@@ -32,7 +32,7 @@ namespace GMEPDesignTool
             string name,
             int kva,
             bool powered,
-            int circuitNo
+            int circuitNo,
             bool isHiddenOnPlan
         )
         {
@@ -209,11 +209,11 @@ namespace GMEPDesignTool
             set
             {
                 _isHiddenOnPlan = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsHiddenOnPlan));
             }
         }
 
-        }
+        
         public bool Verify()
         {
             if (!Utils.IsUuid(Id))

@@ -779,6 +779,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
+            electricalPanel.ParentId = "";
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
             StartTimer();
@@ -1561,7 +1562,7 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
         {
-            electricalTransformer.PropertyChanged -= ElectricalService_PropertyChanged;
+            electricalTransformer.PropertyChanged -= ElectricalTransformer_PropertyChanged;
             electricalTransformer.ParentId = "";
             ElectricalTransformers.Remove(electricalTransformer);
             GetNames();

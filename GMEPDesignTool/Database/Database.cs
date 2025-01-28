@@ -602,6 +602,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@name", transformer.Name);
             command.Parameters.AddWithValue("@voltage", transformer.Voltage);
             command.Parameters.AddWithValue("@circuitNo", transformer.CircuitNo);
+            command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
             command.ExecuteNonQuery();
         }
         private void UpdateLocation(Location location)
@@ -625,7 +626,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
-            command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
+           
             command.ExecuteNonQuery();
         }
 
@@ -882,7 +883,7 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("kva_id"),
                         false,
                        reader.GetInt32("circuit_no"),
-                        reader.GetBoolean("is_hidden_on_plan")
+                       reader.GetBoolean("is_hidden_on_plan")
                     )
                 );
             }
