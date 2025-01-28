@@ -343,7 +343,7 @@
                                                 <ComboBoxItem Content="Kitchen" Tag="4" />
                                             </ComboBox>
                                             <Label Content="Panel" Margin="150 3 0 0"/>
-                                            <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelTransformerNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
+                                            <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value"/>
                                             <Label Content="Voltage" Margin="280 3 0 0"/>
                                             <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Tag" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
                                                 <ComboBoxItem Content="" Background="White" Tag="" />
@@ -483,7 +483,7 @@
 
                                                                 <StackPanel Margin="20 0 0 0">
                                                                     <Label Content="Panel" FontWeight="Bold"/>
-                                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelTransformerNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                                     
                                                                     <Label Content="Distance" FontWeight="Bold"/>
                                                                     <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
@@ -671,12 +671,12 @@
                                                                                 <ComboBoxItem Content="Switch" Tag="3"/>
                                                                             </ComboBox>
                                                                         </Grid>
-                                                                        <Grid Margin="20 25 0 0">
+                                                                        <Grid Margin="20 10 10 0">
                                                                             <CheckBox Content="EM" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding EmCapable}"/>
+                                                                            <CheckBox Content="Photocell" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 25 0 0" IsChecked="{Binding HasPhotoCell}"/>
                                                                         </Grid>
-                                                                        <Grid Margin="20 25 10 0">
-                                                                            <CheckBox Content="Photocell" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 5 0 0" IsChecked="{Binding HasPhotoCell}"/>
-                                                                        </Grid>
+                                                                        
+
                                                                     </StackPanel>
                                                                 </Grid>
                                                                 <Grid Margin="20 0 0 0">
@@ -746,13 +746,32 @@
 
                                                             </StackPanel>
                                                         </StackPanel>
-                                                        <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description/Notes" FontWeight="Bold">
+                                                        <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description/Notes/Location" FontWeight="Bold">
                                                             <TabControl>
                                                                 <TabItem Header="Description">
                                                                     <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="100" TextWrapping="Wrap" AcceptsReturn="True"/>
                                                                 </TabItem>
                                                                 <TabItem Header="Notes">
                                                                     <TextBox Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Notes}" MaxLength="127" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                                </TabItem>
+                                                                <TabItem Header="Location">
+                                                                    <Grid Margin="20 0 20 0">
+                                                                        <Button Content="Locations" VerticalAlignment="Top" Height="20" Width="90" Margin="0 10 0 0" FontWeight="Bold" Click="OpenLocations_Click" CommandParameter="{Binding}"/>
+                                                                        <StackPanel Orientation="Horizontal" Margin="0 40 0 0">
+                                                                            <ComboBox Height="50" Width="400" Margin="2 2 2 5" ItemsSource="{Binding DataContext.LightingLocations, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValue="{Binding LocationId}" SelectedValuePath="Id">
+                                                                                <ComboBox.ItemTemplate>
+                                                                                    <DataTemplate>
+                                                                                        <StackPanel Orientation="Horizontal">
+                                                                                            <TextBlock Text="Location: "/>
+                                                                                            <TextBlock Text="{Binding LocationDescription}" Margin="5,0" HorizontalAlignment="Center"/>
+                                                                                            <TextBlock Text="/  Is Outside: "/>
+                                                                                            <CheckBox IsChecked="{Binding IsOutside}" Margin="5,0" HorizontalAlignment="Center" IsEnabled="False"/>
+                                                                                        </StackPanel>
+                                                                                    </DataTemplate>
+                                                                                </ComboBox.ItemTemplate>
+                                                                            </ComboBox>
+                                                                        </StackPanel>
+                                                                    </Grid>
                                                                 </TabItem>
                                                             </TabControl>
                                                         </Expander>
