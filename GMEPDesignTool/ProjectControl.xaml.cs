@@ -1258,12 +1258,12 @@ namespace GMEPDesignTool
                     isAccepted = false;
                 }
 
-                if (PanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                if (PanelFilter.SelectedValue is string selectedPanel)
                 {
-                    string panelKey = selectedPanel.Key;
+      
                     if (
-                        !string.IsNullOrEmpty(panelKey)
-                        && (equipment.ParentId == null || equipment.ParentId != panelKey)
+                        !string.IsNullOrEmpty(selectedPanel)
+                        && (equipment.ParentId == null || equipment.ParentId != selectedPanel)
                     )
                     {
                         isAccepted = false;
