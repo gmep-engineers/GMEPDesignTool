@@ -26,6 +26,7 @@ using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
+
 namespace GMEPDesignTool
 {
     /// <summary>
@@ -1035,7 +1036,7 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
-
+    
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.CommandParameter is ElectricalPanel panel)
@@ -1159,7 +1160,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                false
+                false,
+                1
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -1256,12 +1258,12 @@ namespace GMEPDesignTool
                     isAccepted = false;
                 }
 
-                if (PanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                if (PanelFilter.SelectedValue is string selectedPanel)
                 {
-                    string panelKey = selectedPanel.Key;
+      
                     if (
-                        !string.IsNullOrEmpty(panelKey)
-                        && (equipment.ParentId == null || equipment.ParentId != panelKey)
+                        !string.IsNullOrEmpty(selectedPanel)
+                        && (equipment.ParentId == null || equipment.ParentId != selectedPanel)
                     )
                     {
                         isAccepted = false;
@@ -1430,7 +1432,7 @@ namespace GMEPDesignTool
                     isAccepted = false;
                 }
 
-                if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                /*if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
                 {
                     string panelKey = selectedPanel.Key;
                     if (
@@ -1441,6 +1443,17 @@ namespace GMEPDesignTool
                         isAccepted = false;
                     }
                 }
+                if (LightingLocationFilter.SelectedValue is string selectedVoltageString)
+                {
+                    string locationKey = selectedLocation.Key;
+                    if (
+                        !string.IsNullOrEmpty(locationKey)
+                        && (lighting.LocationId== null || lighting.LocationId != locationKey)
+                    )
+                    {
+                        isAccepted = false;
+                    }
+                }*/
                 if (
                     LightingVoltageFilter.SelectedValue is string selectedVoltageString
                     && int.TryParse(selectedVoltageString, out int selectedVoltage)
@@ -1448,6 +1461,15 @@ namespace GMEPDesignTool
                 {
                     Trace.Write(selectedVoltageString);
                     if (lighting.VoltageId != selectedVoltage)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    LightingLocationFilter.SelectedValue is string selectedLocationString
+                )
+                {
+                    if (lighting.LocationId != selectedLocationString)
                     {
                         isAccepted = false;
                     }
@@ -1481,7 +1503,8 @@ namespace GMEPDesignTool
         {
             MountingFilter.SelectedIndex = 0;
             LightingVoltageFilter.SelectedValue = "";
-            LightingPanelFilter.SelectedValue = "";
+            //LightingPanelFilter.SelectedValue = "";
+            LightingLocationFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
         public void OpenLocations_Click(object sender, RoutedEventArgs e)
