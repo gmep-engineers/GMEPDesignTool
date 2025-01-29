@@ -20,7 +20,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
-        private float _amp;
+       // private float _amp;
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
@@ -77,7 +77,7 @@ namespace GMEPDesignTool
             _numBreakers = numBreakers;
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
-            _amp = amp;
+            this.amp = amp;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
@@ -237,7 +237,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public float Amp
+        /*public float Amp
         {
             get => _amp;
             set
@@ -245,7 +245,7 @@ namespace GMEPDesignTool
                 _amp = value;
                 OnPropertyChanged(nameof(Amp));
             }
-        }
+        }*/
 
         public int Type
         {
@@ -319,10 +319,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (
-                e.PropertyName == nameof(ElectricalEquipment.Va)
-                || e.PropertyName == nameof(ElectricalEquipment.Pole)
-            )
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -348,12 +345,8 @@ namespace GMEPDesignTool
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (
-                e.PropertyName == nameof(ElectricalPanel.PhaseAVA)
-                || e.PropertyName == nameof(ElectricalPanel.PhaseBVA)
-                || e.PropertyName == nameof(ElectricalPanel.PhaseCVA)
-                || e.PropertyName == nameof(ElectricalPanel.Pole)
-            )
+
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -376,7 +369,31 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole))
+            {
+                SetCircuitNumbers();
+                SetCircuitVa();
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    transformer.PropertyChanged -= Transformer_PropertyChanged;
+                    if (leftComponents.Contains(transformer))
+                    {
+                        leftComponents.Remove(transformer);
+                    }
+                    if (rightComponents.Contains(transformer))
+                    {
+                        rightComponents.Remove(transformer);
+                    }
+                    SetCircuitNumbers();
+                    SetCircuitVa();
+                }
+            }
+        }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
             if (leftComponents.Count <= rightComponents.Count)
@@ -406,6 +423,20 @@ namespace GMEPDesignTool
             SetCircuitVa();
             panel.PropertyChanged += Panel_PropertyChanged;
         }
+        public void AssignTransformer(ElectricalTransformer transformer)
+        {
+            if (leftComponents.Count <= rightComponents.Count)
+            {
+                leftComponents.Add(transformer);
+            }
+            else
+            {
+                rightComponents.Add(transformer);
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+            transformer.PropertyChanged += Transformer_PropertyChanged;
+        }
 
         public void SetCircuitNumbers()
         {
@@ -430,10 +461,12 @@ namespace GMEPDesignTool
             foreach (var circuit in leftCircuits)
             {
                 circuit.Va = 0;
+                circuit.BreakerSize = 0;
             }
             foreach (var circuit in rightCircuits)
             {
                 circuit.Va = 0;
+                circuit.BreakerSize = 0;
             }
             PhaseAVA = 0;
             PhaseBVA = 0;
@@ -449,22 +482,42 @@ namespace GMEPDesignTool
                 {
                     for (int i = 0; i < component.Pole; i++)
                     {
+                        var addedValue = 0;
+                        switch(i)
+                        {
+                            case 0:
+                                addedValue = (int)component.PhaseAVA;
+                                break;
+                            case 1:
+                                addedValue = (int)component.PhaseBVA;
+                                break;
+                            case 2:
+                                addedValue = (int)component.PhaseCVA;
+                                break;
+                        }
+                        leftCircuits[circuitIndex + i].Va = addedValue;
+                        if (i == component.Pole - 1)
+                        {
+                            leftCircuits[circuitIndex + i].BreakerSize = i + 1;
+                        }
+                        if (i == 0)
+                        {
+                            leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                        }
+                       
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
-                                PhaseAVA += (int)component.PhaseAVA;
-                                Kva += (float)component.PhaseAVA;
+                                PhaseAVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 1:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
-                                PhaseBVA += (int)component.PhaseBVA;
-                                Kva += (float)component.PhaseBVA;
+                                PhaseBVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 2:
-                                leftCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
-                                PhaseCVA += (int)component.PhaseCVA;
-                                Kva += (float)component.PhaseCVA;
+                                PhaseCVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                         }
                         phaseIndex++;
@@ -481,22 +534,44 @@ namespace GMEPDesignTool
                 {
                     for (int i = 0; i < component.Pole; i++)
                     {
+                        var addedValue = 0;
+                        switch (i)
+                        {
+                            case 0:
+                                addedValue = (int)component.PhaseAVA;
+                                break;
+                            case 1:
+                                addedValue = (int)component.PhaseBVA;
+                                break;
+                            case 2:
+                                addedValue = (int)component.PhaseCVA;
+                                break;
+                        }
+                        rightCircuits[circuitIndex + i].Va = addedValue;
+
+                        if (i == component.Pole - 1)
+                        {
+                            rightCircuits[circuitIndex + i].BreakerSize = i + 1;
+                        }
+                        if (i == 0)
+                        {
+                            rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                        }
+                       
+                        
                         switch (phaseIndex % Pole)
                         {
                             case 0:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseAVA;
-                                PhaseAVA += (int)component.PhaseAVA;
-                                Kva += (float)component.PhaseAVA;
+                                PhaseAVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 1:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseBVA;
-                                PhaseBVA += (int)component.PhaseBVA;
-                                Kva += (float)component.PhaseBVA;
+                                PhaseBVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                             case 2:
-                                rightCircuits[circuitIndex + i].Va = (int)component.PhaseCVA;
-                                PhaseCVA += (int)component.PhaseCVA;
-                                Kva += (float)component.PhaseCVA;
+                                PhaseCVA += addedValue;
+                                Kva += (float)addedValue;
                                 break;
                         }
                         phaseIndex++;
@@ -507,6 +582,65 @@ namespace GMEPDesignTool
             Amp = (float)Math.Ceiling(SetAmp());
         }
 
+        public int DetermineBreakerSize(ElectricalComponent component)
+        {
+            var breakerSize = component.Amp * 1.25;
+          
+            switch (breakerSize)
+            {
+                case var _ when breakerSize <= 25:
+                    return 25;
+                case var _ when breakerSize <= 30 && breakerSize > 25:
+                    return 30;
+                case var _ when breakerSize <= 35 && breakerSize > 30:
+                    return 35;
+                case var _ when breakerSize <= 40 && breakerSize > 35:
+                    return 40;
+                case var _ when breakerSize <= 45 && breakerSize > 40:
+                    return 45;
+                case var _ when breakerSize <= 50 && breakerSize > 45:
+                    return 50;
+                case var _ when breakerSize <= 60 && breakerSize > 50:
+                    return 60;
+                case var _ when breakerSize <= 70 && breakerSize > 60:
+                    return 70;
+                case var _ when breakerSize <= 80 && breakerSize > 70:
+                    return 80;
+                case var _ when breakerSize <= 90 && breakerSize > 80:
+                    return 90;
+                case var _ when breakerSize <= 100 && breakerSize > 90:
+                    return 100;
+                case var _ when breakerSize <= 110 && breakerSize > 100:
+                    return 110;
+                case var _ when breakerSize <= 125 && breakerSize > 110:
+                    return 125;
+                case var _ when breakerSize <= 150 && breakerSize > 125:
+                    return 150;
+                case var _ when breakerSize <= 175 && breakerSize > 150:
+                    return 175;
+                case var _ when breakerSize <= 200 && breakerSize > 175:
+                    return 200;
+                case var _ when breakerSize <= 225 && breakerSize > 200:
+                    return 225;
+                case var _ when breakerSize <= 250 && breakerSize > 225:
+                    return 250;
+                case var _ when breakerSize <= 300 && breakerSize > 250:
+                    return 300;
+                case var _ when breakerSize <= 350 && breakerSize > 300:
+                    return 350;
+                case var _ when breakerSize <= 400 && breakerSize > 350:
+                    return 400;
+                case var _ when breakerSize <= 450 && breakerSize > 400:
+                    return 450;
+                case var _ when breakerSize <= 500 && breakerSize > 450:
+                    return 500;
+                case var _ when breakerSize <= 600 && breakerSize > 500:
+                    return 600;
+                default:
+                    return 1000;
+            }
+
+        }
         public float SetAmp()
         {
             int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
@@ -521,11 +655,7 @@ namespace GMEPDesignTool
             }
             return Amp;
         }
-
-        public void DownloadComponents(
-            ObservableCollection<ElectricalEquipment> equipment,
-            ObservableCollection<ElectricalPanel> panels
-        )
+        public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
         {
             ObservableCollection<ElectricalComponent> temp =
                 new ObservableCollection<ElectricalComponent>();
@@ -543,6 +673,14 @@ namespace GMEPDesignTool
                 {
                     temp.Add(panel);
                     panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (transformer.ParentId == Id)
+                {
+                    temp.Add(transformer);
+                    transformer.PropertyChanged += Transformer_PropertyChanged;
                 }
             }
             temp = new ObservableCollection<ElectricalComponent>(temp.OrderBy(e => e.CircuitNo));
@@ -563,10 +701,7 @@ namespace GMEPDesignTool
             SetCircuitVa();
         }
 
-        private void Equip_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public bool Verify()
         {

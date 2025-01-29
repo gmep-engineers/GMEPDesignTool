@@ -13,10 +13,10 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="600"/>
-            <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock FontSize="30" FontWeight="Bold">
@@ -140,12 +140,44 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn  Binding="{Binding BreakerSize}" Width=".5*" Header="Breaker Size"/>
+                            <DataGridTemplateColumn Width=".5*" Header="Breaker Size">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding BreakerSize}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding BreakerSize}" Value="0">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                               </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <DataGrid HeadersVisibility="None" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn  Binding="{Binding BreakerSize}" Width=".5*" Header="Breaker Size"/>
+                            <DataGridTemplateColumn Width=".5*" Header="Breaker Size">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding BreakerSize}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding BreakerSize}" Value="0">
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTemplateColumn Width="*" Header="Phase A">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

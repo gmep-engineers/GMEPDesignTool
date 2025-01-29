@@ -129,7 +129,7 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>
-                       <!-- <TabItem Header="Transformers">
+                        <TabItem Header="Transformers">
                             <DataGrid IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding ElectricalTransformers}">
                                 <DataGrid.RowStyle>
                                     <Style TargetType="DataGridRow">
@@ -194,7 +194,7 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </TabItem>-->
+                        </TabItem>
                     </TabControl>
                 </GroupBox>
                 <Border BorderBrush="SlateGray" Height="40" VerticalAlignment="Bottom" BorderThickness="2"  Background="LightGray" >
