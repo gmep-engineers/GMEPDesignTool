@@ -1432,7 +1432,7 @@ namespace GMEPDesignTool
                     isAccepted = false;
                 }
 
-                if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
+                /*if (LightingPanelFilter.SelectedItem is KeyValuePair<string, string> selectedPanel)
                 {
                     string panelKey = selectedPanel.Key;
                     if (
@@ -1443,6 +1443,17 @@ namespace GMEPDesignTool
                         isAccepted = false;
                     }
                 }
+                if (LightingLocationFilter.SelectedValue is string selectedVoltageString)
+                {
+                    string locationKey = selectedLocation.Key;
+                    if (
+                        !string.IsNullOrEmpty(locationKey)
+                        && (lighting.LocationId== null || lighting.LocationId != locationKey)
+                    )
+                    {
+                        isAccepted = false;
+                    }
+                }*/
                 if (
                     LightingVoltageFilter.SelectedValue is string selectedVoltageString
                     && int.TryParse(selectedVoltageString, out int selectedVoltage)
@@ -1450,6 +1461,15 @@ namespace GMEPDesignTool
                 {
                     Trace.Write(selectedVoltageString);
                     if (lighting.VoltageId != selectedVoltage)
+                    {
+                        isAccepted = false;
+                    }
+                }
+                if (
+                    LightingLocationFilter.SelectedValue is string selectedLocationString
+                )
+                {
+                    if (lighting.LocationId != selectedLocationString)
                     {
                         isAccepted = false;
                     }
@@ -1483,7 +1503,8 @@ namespace GMEPDesignTool
         {
             MountingFilter.SelectedIndex = 0;
             LightingVoltageFilter.SelectedValue = "";
-            LightingPanelFilter.SelectedValue = "";
+            //LightingPanelFilter.SelectedValue = "";
+            LightingLocationFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
         public void OpenLocations_Click(object sender, RoutedEventArgs e)

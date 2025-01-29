@@ -585,8 +585,21 @@
                                                     <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
                                                     <ComboBoxItem Content="277" Background="Thistle" Tag="6"/>
                                                 </ComboBox>
-                                                <Label Content="Panel" Margin="10 3 0 0"/>
-                                                <ComboBox x:Name="LightingPanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" SelectionChanged="LightingFilter_SelectionChanged"  ItemsSource="{Binding PanelTransformerNames}"  DisplayMemberPath="Value"/>
+                                                <!--<Label Content="Panel" Margin="10 3 0 0"/>
+                                                <ComboBox x:Name="LightingPanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" SelectionChanged="LightingFilter_SelectionChanged"  ItemsSource="{Binding PanelTransformerNames}"  DisplayMemberPath="Value"/>-->
+                                                <Label Content="Location" Margin="10 3 0 0"/>
+                                                <ComboBox x:Name="LightingLocationFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 7 0 0" SelectionChanged="LightingFilter_SelectionChanged" SelectedValuePath="Id"  ItemsSource="{Binding LightingLocations}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Location: "/>
+                                                                <TextBlock Text="{Binding LocationDescription}" Margin="5,0" HorizontalAlignment="Center"/>
+                                                                <TextBlock Text="/  Is Outside: "/>
+                                                                <CheckBox IsChecked="{Binding IsOutside}" Margin="5,0" HorizontalAlignment="Center" IsEnabled="False"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
                                                 <Label Content="Model #" Margin="10 3 0 0"/>
                                                 <TextBox x:Name="ModelNumberFilter" Height="20" VerticalAlignment="Top" TextChanged="LightingFilter_TextChanged"  HorizontalAlignment="Left" Margin="0 7 0 0" Width="69"></TextBox>
                                                 <Label Margin="10 3 0 0">
