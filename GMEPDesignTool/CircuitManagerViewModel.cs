@@ -134,7 +134,7 @@ namespace GMEPDesignTool
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
-            if (sourceItem != null && targetItem != null)
+            if (sourceItem != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
@@ -146,15 +146,26 @@ namespace GMEPDesignTool
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
-            if (sourceItem != null && targetItem != null)
+            if (sourceItem != null)
             {
                 ObservableCollection<ElectricalComponent> sourceCollection = LeftComponents.Contains(sourceItem) ? LeftComponents : RightComponents;
                 ObservableCollection<ElectricalComponent> targetCollection = LeftComponents.Contains(targetItem) ? LeftComponents : RightComponents;
 
-                int sourceIndex = sourceCollection.IndexOf(sourceItem);
-                int targetIndex = targetCollection.IndexOf(targetItem);
+                if (targetItem == null){
+                    if (LeftComponents.Count == 0)
+                    {
+                        targetCollection = LeftComponents;
+                    }
+                    else if (RightComponents.Count == 0)
+                    {
+                        targetCollection = RightComponents;
+                    }
+                }
 
-                if (sourceIndex != -1 && targetIndex != -1)
+                int sourceIndex = sourceCollection.IndexOf(sourceItem);
+                int targetIndex = targetItem != null ? targetCollection.IndexOf(targetItem) : targetCollection.Count;
+
+                if (sourceIndex != -1)
                 {
                     sourceCollection.RemoveAt(sourceIndex);
                     targetCollection.Insert(targetIndex, sourceItem);
