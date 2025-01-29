@@ -470,17 +470,7 @@
                                                                         </StackPanel>
                                                                     </StackPanel>
                                                                 </Grid>
-                                                                <StackPanel Orientation="Vertical" Margin="20 0 0 0">
-                                                                    <Label Content="Qty." FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" MaxLength="1">
-                                                                        <TextBox.Text>
-                                                                            <Binding Path="Qty" UpdateSourceTrigger="PropertyChanged">
-                                                                                <Binding.ValidationRules>
-                                                                                    <local:MinimumValueValidationRule Minimum="1"/>
-                                                                                </Binding.ValidationRules>
-                                                                            </Binding>
-                                                                        </TextBox.Text>
-                                                                    </TextBox>
+                                                                <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
                                                                     <Label Content="AIC Rating" FontWeight="Bold"/>
                                                                     <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" MaxLength="10"></TextBox>
                                                                 </StackPanel>
