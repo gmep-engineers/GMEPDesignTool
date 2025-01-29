@@ -121,21 +121,24 @@ namespace GMEPDesignTool
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
-            Dictionary<string, ElectricalPanel> panelParentIds = new Dictionary<string, ElectricalPanel>();
+            List<Tuple<string, ElectricalPanel>> panelParentIds = new List<Tuple<string, ElectricalPanel>>();
 
             foreach (var panel in ElectricalPanels)
             {
                 panel.DownloadComponents(ElectricalEquipments, ElectricalPanels, ElectricalTransformers);
                 if (!string.IsNullOrEmpty(panel.ParentId))
                 {
-                    panelParentIds.Add(panel.ParentId, panel);
+                    panelParentIds.Add(new Tuple<string, ElectricalPanel>(panel.ParentId, panel));
                 }
             }
             foreach(var transformer in ElectricalTransformers)
             {
-                if (panelParentIds.ContainsKey(transformer.Id))
+                foreach (var panelParentId in panelParentIds)
                 {
-                    transformer.AddChildPanel(panelParentIds[transformer.Id]);
+                    if (panelParentId.Item1 == transformer.Id)
+                    {
+                        transformer.AddChildPanel(panelParentId.Item2);
+                    }
                 }
             }
         }
