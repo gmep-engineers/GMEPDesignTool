@@ -1633,6 +1633,7 @@ namespace GMEPDesignTool
             }
         }
 
+
         private void Calculate_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>

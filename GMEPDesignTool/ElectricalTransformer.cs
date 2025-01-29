@@ -20,7 +20,6 @@ namespace GMEPDesignTool
         private bool _powered;
         public ElectricalPanel ChildPanel { get; set; }
         private bool _isHiddenOnPlan;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalTransformer(
             string id,
