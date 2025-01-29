@@ -26,6 +26,7 @@ using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
+
 namespace GMEPDesignTool
 {
     /// <summary>
@@ -1035,7 +1036,7 @@ namespace GMEPDesignTool
                 StartTimer();
             }
         }
-
+    
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.CommandParameter is ElectricalPanel panel)
@@ -1159,7 +1160,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 0,
-                false
+                false,
+                1
             );
             AddElectricalEquipment(electricalEquipment);
         }

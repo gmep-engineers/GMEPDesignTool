@@ -33,6 +33,7 @@ namespace GMEPDesignTool
         private bool lockingConnector;
         private float va;
         private bool isHiddenOnPlan;
+        private int loadType;
 
         public ElectricalEquipment(
             string id,
@@ -62,7 +63,8 @@ namespace GMEPDesignTool
             float depth,
             float height,
             int circuitNo,
-            bool isHiddenOnPlan
+            bool isHiddenOnPlan,
+            int loadType
         )
         {
             this.id = id;
@@ -97,6 +99,7 @@ namespace GMEPDesignTool
             this.height = height;
             this.circuitNo = circuitNo;
             this.isHiddenOnPlan = isHiddenOnPlan;
+            this.loadType = loadType;
             determineEquipmentPole();
         }
 
@@ -451,6 +454,18 @@ namespace GMEPDesignTool
                 if (va != value)
                 {
                     va = value;
+                }
+            }
+        }
+        public int LoadType
+        {
+            get => loadType;
+            set
+            {
+                if (loadType != value)
+                {
+                    loadType = value;
+                    OnPropertyChanged(nameof(LoadType));
                 }
             }
         }

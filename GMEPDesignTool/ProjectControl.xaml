@@ -398,7 +398,12 @@
                                                                     <ComboBoxItem Content="Plumbing"  Tag="3"/>
                                                                     <ComboBoxItem Content="Kitchen"  Tag="4"/>
                                                                 </ComboBox>
-                                                               
+                                                                <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding LoadType}" SelectedValuePath="Tag">
+                                                                    <ComboBoxItem Content="Standard" Tag="1"/>
+                                                                    <ComboBoxItem Content="LML" Tag="2" />
+                                                                    <ComboBoxItem Content="LCL"  Tag="3"/>
+                                                                </ComboBox>
+
                                                                 <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                                     <Image.ToolTip>
                                                                         <ToolTip>
