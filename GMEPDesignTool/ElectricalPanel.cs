@@ -255,6 +255,7 @@ namespace GMEPDesignTool
                 _type = value;
                 OnPropertyChanged(nameof(Type));
                 SetPole();
+                SetCircuitVa();
             }
         }
         public bool Powered
@@ -643,14 +644,35 @@ namespace GMEPDesignTool
         }
         public float SetAmp()
         {
+            int lineNullVolt = 0;
+            int lineLineVolt = 0;
+            switch (Type)
+            {
+                case 1:
+                    lineNullVolt = 120;
+                    lineLineVolt = 208;
+                    break;
+                case 2:
+                    lineNullVolt = 120;
+                    lineLineVolt = 240;
+                    break;
+                case 3:
+                    lineNullVolt = 277;
+                    lineLineVolt = 480;
+                    break;
+                case 4:
+                    lineNullVolt = 120;
+                    lineLineVolt = 240;
+                    break;
+            }
             int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Pole)
             {
                 case 2:
-                    Amp = (float)Math.Round((double)largestPhase / 120, 10);
+                    Amp = (float)Math.Round((double)largestPhase / lineNullVolt, 10);
                     break;
                 default:
-                    Amp = (float)Math.Round((double)((largestPhase * 1.732) / 208), 10);
+                    Amp = (float)Math.Round((double)(largestPhase / (1.732 * lineLineVolt)), 10);
                     break;
             }
             return Amp;
