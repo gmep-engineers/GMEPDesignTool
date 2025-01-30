@@ -49,6 +49,7 @@ namespace GMEPDesignTool
             _voltage = voltage;
             _kva = kva;
             _powered = powered;
+            Lcl = lcl;
             SetPole();
             _isHiddenOnPlan = isHiddenOnPlan;
         }
@@ -122,6 +123,7 @@ namespace GMEPDesignTool
             PhaseCVA = panel.PhaseCVA;
             Amp = panel.Amp;
             Kva = SetKva();
+            Lcl = panel.Lcl;
         }
 
 
@@ -134,6 +136,13 @@ namespace GMEPDesignTool
                 {
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     ChildPanel = null;
+                    PhaseAVA = 0;
+                    PhaseBVA = 0;
+                    PhaseCVA = 0;
+                    Amp= 0;
+                    Kva = 0;
+                    Lcl = 0;
+
                 }
             }
             if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))

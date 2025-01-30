@@ -508,10 +508,13 @@ namespace GMEPDesignTool
         {
             switch (LoadType)
             {
-                case 2:
+                case 3:
                     IsLcl = true;
                     break;
-                case 3:
+                case 2:
+                    IsLcl = false;
+                    break;
+                case 1:
                     IsLcl = false;
                     break;
             }

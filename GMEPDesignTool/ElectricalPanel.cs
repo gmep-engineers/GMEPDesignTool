@@ -487,7 +487,6 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
-            CalculateLcl();
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
 
@@ -503,7 +502,6 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
-            CalculateLcl();
             panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void AssignTransformer(ElectricalTransformer transformer)
@@ -518,7 +516,6 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
-            CalculateLcl();
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
 
@@ -664,6 +661,7 @@ namespace GMEPDesignTool
             }
             Kva = (float)Math.Ceiling(Kva / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
+            CalculateLcl();
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
@@ -804,7 +802,6 @@ namespace GMEPDesignTool
                 }
             }
             SetCircuitVa();
-            CalculateLcl();
         }
 
      

@@ -184,7 +184,6 @@ namespace GMEPDesignTool
                     targetCollection.Insert(targetIndex, sourceItem);
                     Panel.SetCircuitNumbers();
                     Panel.SetCircuitVa();
-                    Panel.CalculateLcl();
 
                 }
             }
