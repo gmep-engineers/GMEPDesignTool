@@ -35,6 +35,7 @@ namespace GMEPDesignTool
         private bool isHiddenOnPlan;
         private int loadType;
         private bool isLcl;
+        private bool isLml;
 
         public ElectricalEquipment(
             string id,
@@ -102,7 +103,9 @@ namespace GMEPDesignTool
             this.isHiddenOnPlan = isHiddenOnPlan;
             this.loadType = loadType;
             this.lcl = 0;
+            this.Lml = 0;
             this.isLcl = false;
+            this.isLml = false;
             DetermineLoadTypes();
             determineEquipmentPole();
         }
@@ -487,6 +490,18 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public bool IsLml
+        {
+            get => isLml;
+            set
+            {
+                if (isLml != value)
+                {
+                    isLml = value;
+                    OnPropertyChanged(nameof(IsLml));
+                }
+            }
+        }
 
         private void determineEquipmentPole()
         {
@@ -510,12 +525,15 @@ namespace GMEPDesignTool
             {
                 case 3:
                     IsLcl = true;
+                    IsLml = false;
                     break;
                 case 2:
                     IsLcl = false;
+                    IsLml = true;
                     break;
                 case 1:
                     IsLcl = false;
+                    IsLml = false;
                     break;
             }
         }

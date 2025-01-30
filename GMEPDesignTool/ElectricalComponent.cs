@@ -23,6 +23,7 @@ namespace GMEPDesignTool
         public string name;
         public float amp;
         public float lcl;
+        public float lml;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -34,6 +35,15 @@ namespace GMEPDesignTool
             {
                 lcl = value;
                 OnPropertyChanged(nameof(Lcl));
+            }
+        }
+        public virtual float Lml
+        {
+            get => lml;
+            set
+            {
+                lml = value;
+                OnPropertyChanged(nameof(Lml));
             }
         }
 

@@ -50,6 +50,7 @@ namespace GMEPDesignTool
             _kva = kva;
             _powered = powered;
             Lcl = lcl;
+            Lml = lml;
             SetPole();
             _isHiddenOnPlan = isHiddenOnPlan;
         }
@@ -124,6 +125,7 @@ namespace GMEPDesignTool
             Amp = panel.Amp;
             Kva = SetKva();
             Lcl = panel.Lcl;
+            Lml = panel.Lml;
         }
 
 
@@ -142,6 +144,7 @@ namespace GMEPDesignTool
                     Amp= 0;
                     Kva = 0;
                     Lcl = 0;
+                    Lml = 0;
 
                 }
             }
@@ -178,6 +181,13 @@ namespace GMEPDesignTool
                 if (sender is ElectricalPanel panel)
                 {
                     Lcl = panel.Lcl;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Lml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    Lml = panel.Lml;
                 }
             }
 

@@ -306,10 +306,23 @@
                 <TextBox Text="{Binding PhaseCVa}" FontWeight="Bold" Height="50" />
             </StackPanel>
             <StackPanel Grid.Column="3">
+                
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
-                <TextBox Text="LCL (VA)" Margin="0 10 0 0 " FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding Lcl}" FontWeight="Bold" Height="50" />
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Margin="0 10 0 0">
+                        <TextBox Text="LCL (VA)" FontWeight="Bold" Margin="0 0 0 100" Height="50"/>
+                        <TextBox Text="{Binding Lcl}" Margin="0 0 0 0" FontWeight="Bold" Height="50" />
+                    </Grid>
+                    <Grid Grid.Column="1"  Margin="0 10 0 0">
+                        <TextBox Text="LML (VA)" Margin="0 0 0 100" FontWeight="Bold" Height="50"/>
+                        <TextBox Text="{Binding Lml}" Margin="0 0 0 0" FontWeight="Bold" Height="50" />
+                    </Grid>
+                </Grid>
             </StackPanel>
             <StackPanel Grid.Column="3">
                 

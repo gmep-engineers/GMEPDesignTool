@@ -89,6 +89,7 @@ namespace GMEPDesignTool
             phaseBVa = 0;
             phaseCVa = 0;
             lcl = 0;
+            lml = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -323,6 +324,35 @@ namespace GMEPDesignTool
             }
            
         }
+        public void CalculateLml()
+        {
+            Lml = 0;
+            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
+            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
+            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
+            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
+            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
+            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
+
+            var combinedList = new List<ElectricalComponent>();
+            combinedList.AddRange(leftPanels);
+            combinedList.AddRange(rightPanels);
+            combinedList.AddRange(leftTransformers);
+            combinedList.AddRange(rightTransformers);
+
+            var equipmentList = new List<ElectricalEquipment>();
+            equipmentList.AddRange(leftEquipment);
+            equipmentList.AddRange(rightEquipment);
+
+            foreach(var equipment in equipmentList)
+            {
+                if (equipment.IsLml && (equipment.Va/4) > Lml) { Lml = (equipment.Va / 4); }
+            }
+            foreach (var component in combinedList)
+            {
+                if (component.Lml > Lml) { Lml = component.Lml; }
+            }
+        }
 
         public void SetPole()
         {
@@ -406,6 +436,14 @@ namespace GMEPDesignTool
                 }
                 
             }
+            if (e.PropertyName == nameof(ElectricalEquipment.IsLml))
+            {
+                if (sender is ElectricalEquipment equipment)
+                {
+                    CalculateLml();
+                }
+
+            }
         }
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -438,6 +476,13 @@ namespace GMEPDesignTool
                 if (sender is ElectricalPanel panel)
                 {
                     CalculateLcl();
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Lml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CalculateLml();
                 }
 
             }
@@ -472,7 +517,13 @@ namespace GMEPDesignTool
                 {
                     CalculateLcl();
                 }
-
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.Lml))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    CalculateLml();
+                }
             }
         }
         public void AssignEquipment(ElectricalEquipment equipment)
@@ -662,6 +713,7 @@ namespace GMEPDesignTool
             Kva = (float)Math.Ceiling(Kva / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
             CalculateLcl();
+            CalculateLml();
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
