@@ -23,7 +23,6 @@ namespace GMEPDesignTool
         public string name;
         public float amp;
         public float lcl;
-        public bool isLcl;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,15 +34,6 @@ namespace GMEPDesignTool
             {
                 lcl = value;
                 OnPropertyChanged(nameof(Lcl));
-            }
-        }
-        public virtual bool IsLcl
-        {
-            get => isLcl;
-            set
-            {
-                isLcl = value;
-                OnPropertyChanged(nameof(IsLcl));
             }
         }
 

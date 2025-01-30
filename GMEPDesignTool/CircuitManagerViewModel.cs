@@ -73,6 +73,13 @@ namespace GMEPDesignTool
             get => _amp;
             set => SetProperty(ref _amp, value);
         }
+        private float _lcl;
+        public float Lcl
+        {
+            get => _lcl;
+            set => SetProperty(ref _lcl, value);
+        }
+
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -88,6 +95,7 @@ namespace GMEPDesignTool
             _name = panel.Name;
             _pole = panel.Pole;
             _amp = panel.Amp;
+            _lcl = panel.Lcl;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -127,7 +135,12 @@ namespace GMEPDesignTool
                 {
                     Amp = Panel.Amp;
                     OnPropertyChanged(nameof(Amp));
-            }
+                }
+                if (e.PropertyName == nameof(Lcl))
+                {
+                    Lcl = Panel.Lcl;
+                    OnPropertyChanged(nameof(Lcl));
+                }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {
@@ -171,6 +184,7 @@ namespace GMEPDesignTool
                     targetCollection.Insert(targetIndex, sourceItem);
                     Panel.SetCircuitNumbers();
                     Panel.SetCircuitVa();
+                    Panel.CalculateLcl();
 
                 }
             }

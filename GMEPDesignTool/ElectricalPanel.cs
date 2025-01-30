@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace GMEPDesignTool
 {
@@ -87,7 +88,6 @@ namespace GMEPDesignTool
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
-            isLcl = false;
             lcl = 0;
             SetPole();
             PopulateCircuits();
@@ -272,7 +272,7 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(Powered));
             }
         }
-        public override bool IsLcl {
+       /* public override bool IsLcl {
             get => isLcl;
             set
             {
@@ -280,11 +280,48 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(IsLcl));
                 CalculateLcl();
             }
-        }
+        }*/
         public void CalculateLcl()
         {
             //for electrical panels
             //
+            Lcl = 0;
+            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
+            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
+            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
+            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
+            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
+            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
+
+            var combinedList = new List<ElectricalComponent>();
+            combinedList.AddRange(leftPanels);
+            combinedList.AddRange(rightPanels);
+            combinedList.AddRange(leftTransformers);
+            combinedList.AddRange(rightTransformers);
+
+            var equipmentList = new List<ElectricalEquipment>();
+            equipmentList.AddRange(leftEquipment);
+            equipmentList.AddRange(rightEquipment);
+
+            foreach(var component in combinedList)
+            {
+                Lcl += component.Lcl;
+                
+            }
+            bool isLcl = false;
+            foreach (var equipment in equipmentList)
+            {
+                if (equipment.IsLcl)
+                {
+                    isLcl = true;
+                    break;
+                }
+            }
+            if (isLcl || Lcl > 0)
+            {
+                Lcl += (float)((PhaseAVA + PhaseBVA + PhaseCVA)/4);
+            }
+           
         }
 
         public void SetPole()
@@ -365,7 +402,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalEquipment equipment)
                 {
-                    IsLcl = equipment.IsLcl;
+                    CalculateLcl();
                 }
                 
             }
@@ -396,6 +433,14 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CalculateLcl();
+                }
+
+            }
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -421,6 +466,14 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(ElectricalTransformer.Lcl))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    CalculateLcl();
+                }
+
+            }
         }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
@@ -434,6 +487,7 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
+            CalculateLcl();
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
 
@@ -449,6 +503,7 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
+            CalculateLcl();
             panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void AssignTransformer(ElectricalTransformer transformer)
@@ -463,6 +518,7 @@ namespace GMEPDesignTool
             }
             SetCircuitNumbers();
             SetCircuitVa();
+            CalculateLcl();
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
 
@@ -748,6 +804,7 @@ namespace GMEPDesignTool
                 }
             }
             SetCircuitVa();
+            CalculateLcl();
         }
 
      

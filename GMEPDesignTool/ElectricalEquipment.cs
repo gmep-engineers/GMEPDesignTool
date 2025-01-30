@@ -34,6 +34,7 @@ namespace GMEPDesignTool
         private float va;
         private bool isHiddenOnPlan;
         private int loadType;
+        private bool isLcl;
 
         public ElectricalEquipment(
             string id,
@@ -470,6 +471,19 @@ namespace GMEPDesignTool
                     loadType = value;
                     OnPropertyChanged(nameof(LoadType));
                     DetermineLoadTypes();
+                }
+            }
+        }
+
+        public bool IsLcl
+        {
+            get => isLcl;
+            set
+            {
+                if (isLcl != value)
+                {
+                    isLcl = value;
+                    OnPropertyChanged(nameof(IsLcl));
                 }
             }
         }

@@ -164,6 +164,14 @@ namespace GMEPDesignTool
                     Amp = panel.Amp;
                 }
             }
+            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    Lcl = panel.Lcl;
+                }
+            }
+
             Kva = SetKva();
         }
         public int SetKva()

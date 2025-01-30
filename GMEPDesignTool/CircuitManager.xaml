@@ -292,6 +292,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical" Height="2000" Margin="20 0 0 0" >
                 <TextBox Text="Phase A" Height="50"  FontWeight="Bold" />
@@ -308,6 +309,10 @@
             <StackPanel Grid.Column="3">
                 <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
                 <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
+            </StackPanel>
+            <StackPanel Grid.Column="3">
+                <TextBox Text="LCL" FontWeight="Bold" Height="50"/>
+                <TextBox Text="{Binding Lcl}" FontWeight="Bold" Height="50" />
             </StackPanel>
             <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0 0 20 0">
                 <TextBox Text="Total Feeder Amp" FontWeight="Bold" Height="50"/>
