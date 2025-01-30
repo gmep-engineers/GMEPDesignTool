@@ -307,21 +307,27 @@ namespace GMEPDesignTool
             foreach(var component in combinedList)
             {
                 Lcl += component.Lcl;
-                
             }
-            bool isLcl = false;
+  
             foreach (var equipment in equipmentList)
             {
                 if (equipment.IsLcl)
                 {
-                    isLcl = true;
-                    break;
+                    switch (equipment.Pole)
+                    {
+                        case 1:
+                            Lcl += (float)((equipment.PhaseAVA)/4);
+                            break;
+                        case 2:
+                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                            break;
+                        case 3:
+                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                            break;
+                    }
                 }
             }
-            if (isLcl || Lcl > 0)
-            {
-                Lcl += (float)((PhaseAVA + PhaseBVA + PhaseCVA)/4);
-            }
+        
            
         }
         public void CalculateLml()
