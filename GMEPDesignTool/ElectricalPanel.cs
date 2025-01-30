@@ -352,7 +352,26 @@ namespace GMEPDesignTool
 
             foreach(var equipment in equipmentList)
             {
-                if (equipment.IsLml && (equipment.Va/4) > Lml) { Lml = (equipment.Va / 4); }
+                if (equipment.IsLml)
+                {
+                    float TempValue = 0;
+                    switch (equipment.Pole)
+                    {
+                        case 1:
+                            TempValue = (float)((equipment.PhaseAVA)/4);
+                            break;
+                        case 2:
+                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                            break;
+                        case 3:
+                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                            break;
+                    }
+                    if (TempValue > Lml)
+                    {
+                        Lml = TempValue;
+                    }
+                }
             }
             foreach (var component in combinedList)
             {
