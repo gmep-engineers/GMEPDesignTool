@@ -22,9 +22,30 @@ namespace GMEPDesignTool
         public int pole;
         public string name;
         public float amp;
+        public float lcl;
+        public bool isLcl;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public virtual float Lcl
+        {
+            get => lcl;
+            set
+            {
+                lcl = value;
+                OnPropertyChanged(nameof(Lcl));
+            }
+        }
+        public virtual bool IsLcl
+        {
+            get => isLcl;
+            set
+            {
+                isLcl = value;
+                OnPropertyChanged(nameof(IsLcl));
+            }
+        }
 
         public virtual string Id
         {

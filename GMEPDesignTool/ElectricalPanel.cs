@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
+       // private bool _isLcl;
+       // private float _lcl;
 
         //private int _phaseAVa;
         // private int _phaseBVa;
@@ -84,10 +87,12 @@ namespace GMEPDesignTool
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
+            isLcl = false;
+            lcl = 0;
             SetPole();
             PopulateCircuits();
         }
-
+        
         public override int Pole
         {
             get => this.pole;
@@ -267,6 +272,20 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(Powered));
             }
         }
+        public override bool IsLcl {
+            get => isLcl;
+            set
+            {
+                isLcl = value;
+                OnPropertyChanged(nameof(IsLcl));
+                CalculateLcl();
+            }
+        }
+        public void CalculateLcl()
+        {
+            //for electrical panels
+            //
+        }
 
         public void SetPole()
         {
@@ -341,6 +360,14 @@ namespace GMEPDesignTool
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
+            }
+            if (e.PropertyName == nameof(ElectricalEquipment.IsLcl))
+            {
+                if (sender is ElectricalEquipment equipment)
+                {
+                    IsLcl = equipment.IsLcl;
+                }
+                
             }
         }
 

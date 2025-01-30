@@ -100,6 +100,9 @@ namespace GMEPDesignTool
             this.circuitNo = circuitNo;
             this.isHiddenOnPlan = isHiddenOnPlan;
             this.loadType = loadType;
+            this.lcl = 0;
+            this.isLcl = false;
+            DetermineLoadTypes();
             determineEquipmentPole();
         }
 
@@ -466,6 +469,7 @@ namespace GMEPDesignTool
                 {
                     loadType = value;
                     OnPropertyChanged(nameof(LoadType));
+                    DetermineLoadTypes();
                 }
             }
         }
@@ -486,7 +490,18 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
-
+        public void DetermineLoadTypes()
+        {
+            switch (LoadType)
+            {
+                case 2:
+                    IsLcl = true;
+                    break;
+                case 3:
+                    IsLcl = false;
+                    break;
+            }
+        }
         public bool Verify()
         {
             if (!Utils.IsOwnerName(Owner))
