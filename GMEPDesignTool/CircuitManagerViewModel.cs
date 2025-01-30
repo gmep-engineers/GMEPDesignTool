@@ -73,6 +73,19 @@ namespace GMEPDesignTool
             get => _amp;
             set => SetProperty(ref _amp, value);
         }
+        private float _lcl;
+        public float Lcl
+        {
+            get => _lcl;
+            set => SetProperty(ref _lcl, value);
+        }
+        private float _lml;
+        public float Lml
+        {
+            get => _lml;
+            set => SetProperty(ref _lml, value);
+        }
+
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -88,6 +101,8 @@ namespace GMEPDesignTool
             _name = panel.Name;
             _pole = panel.Pole;
             _amp = panel.Amp;
+            _lcl = panel.Lcl;
+            _lml = panel.Lml;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -127,14 +142,24 @@ namespace GMEPDesignTool
                 {
                     Amp = Panel.Amp;
                     OnPropertyChanged(nameof(Amp));
-            }
+                }
+                if (e.PropertyName == nameof(Lcl))
+                {
+                    Lcl = Panel.Lcl;
+                    OnPropertyChanged(nameof(Lcl));
+                }
+                if (e.PropertyName == nameof(Lml))
+                {
+                    Lml = Panel.Lml;
+                    OnPropertyChanged(nameof(Lml));
+                }
         }
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
-            if (sourceItem != null && targetItem != null)
+            if (sourceItem != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
@@ -146,15 +171,26 @@ namespace GMEPDesignTool
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
-            if (sourceItem != null && targetItem != null)
+            if (sourceItem != null)
             {
                 ObservableCollection<ElectricalComponent> sourceCollection = LeftComponents.Contains(sourceItem) ? LeftComponents : RightComponents;
                 ObservableCollection<ElectricalComponent> targetCollection = LeftComponents.Contains(targetItem) ? LeftComponents : RightComponents;
 
-                int sourceIndex = sourceCollection.IndexOf(sourceItem);
-                int targetIndex = targetCollection.IndexOf(targetItem);
+                if (targetItem == null){
+                    if (LeftComponents.Count == 0)
+                    {
+                        targetCollection = LeftComponents;
+                    }
+                    else if (RightComponents.Count == 0)
+                    {
+                        targetCollection = RightComponents;
+                    }
+                }
 
-                if (sourceIndex != -1 && targetIndex != -1)
+                int sourceIndex = sourceCollection.IndexOf(sourceItem);
+                int targetIndex = targetItem != null ? targetCollection.IndexOf(targetItem) : targetCollection.Count;
+
+                if (sourceIndex != -1)
                 {
                     sourceCollection.RemoveAt(sourceIndex);
                     targetCollection.Insert(targetIndex, sourceItem);

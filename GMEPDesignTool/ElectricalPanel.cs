@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO.Packaging;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace GMEPDesignTool
 {
@@ -24,6 +26,8 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
+       // private bool _isLcl;
+       // private float _lcl;
 
         //private int _phaseAVa;
         // private int _phaseBVa;
@@ -84,10 +88,12 @@ namespace GMEPDesignTool
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
+            lcl = 0;
+            lml = 0;
             SetPole();
             PopulateCircuits();
         }
-
+        
         public override int Pole
         {
             get => this.pole;
@@ -255,6 +261,7 @@ namespace GMEPDesignTool
                 _type = value;
                 OnPropertyChanged(nameof(Type));
                 SetPole();
+                SetCircuitVa();
             }
         }
         public bool Powered
@@ -264,6 +271,111 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged(nameof(Powered));
+            }
+        }
+       /* public override bool IsLcl {
+            get => isLcl;
+            set
+            {
+                isLcl = value;
+                OnPropertyChanged(nameof(IsLcl));
+                CalculateLcl();
+            }
+        }*/
+        public void CalculateLcl()
+        {
+            //for electrical panels
+            //
+            Lcl = 0;
+            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
+            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
+            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
+            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
+            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
+            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
+
+            var combinedList = new List<ElectricalComponent>();
+            combinedList.AddRange(leftPanels);
+            combinedList.AddRange(rightPanels);
+            combinedList.AddRange(leftTransformers);
+            combinedList.AddRange(rightTransformers);
+
+            var equipmentList = new List<ElectricalEquipment>();
+            equipmentList.AddRange(leftEquipment);
+            equipmentList.AddRange(rightEquipment);
+
+            foreach(var component in combinedList)
+            {
+                Lcl += component.Lcl;
+            }
+  
+            foreach (var equipment in equipmentList)
+            {
+                if (equipment.IsLcl)
+                {
+                    switch (equipment.Pole)
+                    {
+                        case 1:
+                            Lcl += (float)((equipment.PhaseAVA)/4);
+                            break;
+                        case 2:
+                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                            break;
+                        case 3:
+                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                            break;
+                    }
+                }
+            }
+        
+           
+        }
+        public void CalculateLml()
+        {
+            Lml = 0;
+            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
+            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
+            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
+            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
+            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
+            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
+
+            var combinedList = new List<ElectricalComponent>();
+            combinedList.AddRange(leftPanels);
+            combinedList.AddRange(rightPanels);
+            combinedList.AddRange(leftTransformers);
+            combinedList.AddRange(rightTransformers);
+
+            var equipmentList = new List<ElectricalEquipment>();
+            equipmentList.AddRange(leftEquipment);
+            equipmentList.AddRange(rightEquipment);
+
+            foreach(var equipment in equipmentList)
+            {
+                if (equipment.IsLml)
+                {
+                    float TempValue = 0;
+                    switch (equipment.Pole)
+                    {
+                        case 1:
+                            TempValue = (float)((equipment.PhaseAVA)/4);
+                            break;
+                        case 2:
+                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                            break;
+                        case 3:
+                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                            break;
+                    }
+                    if (TempValue > Lml)
+                    {
+                        Lml = TempValue;
+                    }
+                }
+            }
+            foreach (var component in combinedList)
+            {
+                if (component.Lml > Lml) { Lml = component.Lml; }
             }
         }
 
@@ -341,6 +453,22 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(ElectricalEquipment.IsLcl))
+            {
+                if (sender is ElectricalEquipment equipment)
+                {
+                    CalculateLcl();
+                }
+                
+            }
+            if (e.PropertyName == nameof(ElectricalEquipment.IsLml))
+            {
+                if (sender is ElectricalEquipment equipment)
+                {
+                    CalculateLml();
+                }
+
+            }
         }
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -368,6 +496,21 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CalculateLcl();
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Lml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CalculateLml();
+                }
+
+            }
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -391,6 +534,20 @@ namespace GMEPDesignTool
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.Lcl))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    CalculateLcl();
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.Lml))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    CalculateLml();
                 }
             }
         }
@@ -580,6 +737,8 @@ namespace GMEPDesignTool
             }
             Kva = (float)Math.Ceiling(Kva / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
+            CalculateLcl();
+            CalculateLml();
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
@@ -643,14 +802,35 @@ namespace GMEPDesignTool
         }
         public float SetAmp()
         {
+            int lineNullVolt = 0;
+            int lineLineVolt = 0;
+            switch (Type)
+            {
+                case 1:
+                    lineNullVolt = 120;
+                    lineLineVolt = 208;
+                    break;
+                case 2:
+                    lineNullVolt = 120;
+                    lineLineVolt = 240;
+                    break;
+                case 3:
+                    lineNullVolt = 277;
+                    lineLineVolt = 480;
+                    break;
+                case 4:
+                    lineNullVolt = 120;
+                    lineLineVolt = 240;
+                    break;
+            }
             int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Pole)
             {
                 case 2:
-                    Amp = (float)Math.Round((double)largestPhase / 120, 10);
+                    Amp = (float)Math.Round((double)largestPhase / lineNullVolt, 10);
                     break;
                 default:
-                    Amp = (float)Math.Round((double)((largestPhase * 1.732) / 208), 10);
+                    Amp = (float)Math.Round((double)(largestPhase / (1.732 * lineLineVolt)), 10);
                     break;
             }
             return Amp;

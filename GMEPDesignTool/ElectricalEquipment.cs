@@ -34,6 +34,8 @@ namespace GMEPDesignTool
         private float va;
         private bool isHiddenOnPlan;
         private int loadType;
+        private bool isLcl;
+        private bool isLml;
 
         public ElectricalEquipment(
             string id,
@@ -100,6 +102,11 @@ namespace GMEPDesignTool
             this.circuitNo = circuitNo;
             this.isHiddenOnPlan = isHiddenOnPlan;
             this.loadType = loadType;
+            this.lcl = 0;
+            this.Lml = 0;
+            this.isLcl = false;
+            this.isLml = false;
+            DetermineLoadTypes();
             determineEquipmentPole();
         }
 
@@ -466,6 +473,32 @@ namespace GMEPDesignTool
                 {
                     loadType = value;
                     OnPropertyChanged(nameof(LoadType));
+                    DetermineLoadTypes();
+                }
+            }
+        }
+
+        public bool IsLcl
+        {
+            get => isLcl;
+            set
+            {
+                if (isLcl != value)
+                {
+                    isLcl = value;
+                    OnPropertyChanged(nameof(IsLcl));
+                }
+            }
+        }
+        public bool IsLml
+        {
+            get => isLml;
+            set
+            {
+                if (isLml != value)
+                {
+                    isLml = value;
+                    OnPropertyChanged(nameof(IsLml));
                 }
             }
         }
@@ -486,7 +519,24 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
-
+        public void DetermineLoadTypes()
+        {
+            switch (LoadType)
+            {
+                case 3:
+                    IsLcl = true;
+                    IsLml = false;
+                    break;
+                case 2:
+                    IsLcl = false;
+                    IsLml = true;
+                    break;
+                case 1:
+                    IsLcl = false;
+                    IsLml = false;
+                    break;
+            }
+        }
         public bool Verify()
         {
             if (!Utils.IsOwnerName(Owner))
