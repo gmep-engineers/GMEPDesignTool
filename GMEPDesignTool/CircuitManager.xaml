@@ -18,15 +18,47 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock FontSize="30" FontWeight="Bold">
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="Panel {0} ({1}P)">
-                        <Binding Path="Name"/>
-                        <Binding Path="Pole"/>
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+        <Grid Grid.Row="0" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" >
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="30">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="PANEL '{0}'">
+                            <Binding Path="Name"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" Text="LOCATION: "  />
+                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" Text="LOCATION: "  />
+                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" Text="LOCATION: "  />
+                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
+            </Grid>
+
         </Grid>
         <Border Grid.Row="1" BorderBrush="Black" BorderThickness="2" Margin="20 0 20 30">
             <ScrollViewer>
