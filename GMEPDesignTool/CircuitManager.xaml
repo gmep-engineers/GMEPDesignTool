@@ -37,7 +37,7 @@
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox Grid.Column="0" Margin="20 0 0 0"  ItemsSource="{Binding LeftComponents}" 
+                    <ListBox Grid.Column="0" Margin="20 25 0 0"  ItemsSource="{Binding LeftComponents}" 
                  dd:DragDrop.IsDragSource="True"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
@@ -62,7 +62,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <DataGrid HeadersVisibility="None" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                    <DataGrid HeadersVisibility="Column" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="20">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -159,7 +159,7 @@
                                </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid HeadersVisibility="None" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                    <DataGrid HeadersVisibility="Column" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width=".5*" Header="Breaker Size">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -256,7 +256,7 @@
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <ListBox Grid.Column="3" Margin="20 0 20 0"  ItemsSource="{Binding RightComponents}" 
+                    <ListBox Grid.Column="3" Margin="20 25 20 0"  ItemsSource="{Binding RightComponents}" 
        dd:DragDrop.IsDragSource="True"
        dd:DragDrop.IsDropTarget="True"
        dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
