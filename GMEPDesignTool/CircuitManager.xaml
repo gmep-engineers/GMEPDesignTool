@@ -17,8 +17,6 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-
         <ScrollViewer>
             <Grid Margin="0 20 0 20">
                 <Grid.ColumnDefinitions>
@@ -56,6 +54,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
@@ -297,6 +296,36 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                        </Grid>
+                        <Grid Grid.Row="2" Margin="5 0 0 0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="SUB-TOTAL" FontSize="20"/>
+                            <TextBlock Grid.Column="1" FontSize="20">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="ɸA= {0}VA">
+                                        <Binding Path="PhaseAVa"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Grid.Column="2" FontSize="20">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="ɸB= {0}VA">
+                                        <Binding Path="PhaseBVa"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                            <TextBlock Grid.Column="3" FontSize="20">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="ɸC= {0}VA">
+                                        <Binding Path="PhaseCVa"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Grid>
                     </Grid>
                 </Border>
