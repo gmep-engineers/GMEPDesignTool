@@ -62,7 +62,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <DataGrid HeadersVisibility="Column" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                    <DataGrid FontFamily="Roboto Mono" HeadersVisibility="Column" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="20">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -71,7 +71,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Phase A">
+                            <DataGridTemplateColumn Width="*" Header="ɸA">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}">
@@ -94,7 +94,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Phase B">
+                            <DataGridTemplateColumn Width="*" Header="ɸB">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}">
@@ -117,7 +117,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Phase C" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
+                            <DataGridTemplateColumn Width="*" Header="ɸC" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}">
@@ -140,7 +140,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width=".5*" Header="Breaker Size">
+                            <DataGridTemplateColumn Width=".5*" Header="BKR">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding BreakerSize}">
@@ -159,9 +159,9 @@
                                </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid HeadersVisibility="Column" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                    <DataGrid FontFamily="Roboto Mono" HeadersVisibility="Column" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width=".5*" Header="Breaker Size">
+                            <DataGridTemplateColumn Width=".5*" Header="BKR">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding BreakerSize}">
@@ -178,7 +178,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Phase A">
+                            <DataGridTemplateColumn Width="*" Header="ɸA">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}" >
@@ -201,7 +201,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="Phase B">
+                            <DataGridTemplateColumn Width="*" Header="ɸB">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}">
@@ -224,7 +224,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}" Header="Phase C">
+                            <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}" Header="ɸC">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Va}">
