@@ -33,13 +33,13 @@
                             <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Height" Value="160"/>
+                                        <Setter Property="Height" Value="80"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                <Setter Property="Height" Value="50"/>
+                                                <Setter Property="Height" Value="23"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                <Setter Property="Height" Value="110"/>
+                                                <Setter Property="Height" Value="53"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -440,13 +440,13 @@
                             <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
                                 <Border.Style>
                                     <Style TargetType="Border">
-                                        <Setter Property="Height" Value="160"/>
+                                        <Setter Property="Height" Value="80"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                <Setter Property="Height" Value="50"/>
+                                                <Setter Property="Height" Value="23"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                <Setter Property="Height" Value="110"/>
+                                                <Setter Property="Height" Value="53"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
