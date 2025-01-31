@@ -13,311 +13,322 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="5"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" VerticalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" >
-                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="30">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="PANEL '{0}'">
-                            <Binding Path="Name"/>
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" Text="LOCATION: "  />
-                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
-            </Grid>
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" Text="LOCATION: "  />
-                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
-            </Grid>
-            <Grid Grid.Column="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBox Grid.Row="0" Text="LOCATION: "  />
-                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
-            </Grid>
 
-        </Grid>
-        <Border Grid.Row="1" BorderBrush="Black" BorderThickness="2" Margin="20 0 20 30">
-            <ScrollViewer>
-                <Grid Margin=" 0 20 0 20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <ListBox Grid.Column="0" Margin="20 25 0 0"  ItemsSource="{Binding LeftComponents}" 
+
+        <ScrollViewer>
+            <Grid Margin="0 20 0 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <ListBox Grid.Column="0" Margin="20 125 0 0"  ItemsSource="{Binding LeftComponents}" 
                  dd:DragDrop.IsDragSource="True"
                  dd:DragDrop.IsDropTarget="True"
                  dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Height" Value="160"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="50"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                    <Setter Property="Height" Value="110"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <DataGrid FontFamily="Roboto Mono" HeadersVisibility="Column" Margin="20 0 20 0" Grid.Column="1" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="20">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Number}" Background="LightBlue"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="ɸA">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="ɸB">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="ɸC" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width=".5*" Header="BKR">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding BreakerSize}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                               </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <DataGrid FontFamily="Roboto Mono" HeadersVisibility="Column" Margin="0 0 20 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Width=".5*" Header="BKR">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding BreakerSize}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="ɸA">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}" >
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Header="ɸB">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}" Header="ɸC">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Va}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                            <Setter Property="Background" Value="LightGray"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Va}" Value="0">
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Setter Property="Background" Value="White"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="20">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Number}" Background="LightBlue"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <ListBox Grid.Column="3" Margin="20 25 20 0"  ItemsSource="{Binding RightComponents}" 
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Height" Value="160"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                <Setter Property="Height" Value="50"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                <Setter Property="Height" Value="110"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" Margin="20 0 20 30">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" VerticalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" >
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="30">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="PANEL '{0}'">
+                                            <Binding Path="Name"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBox Grid.Row="0" Text="LOCATION: "  />
+                                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
+                            </Grid>
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBox Grid.Row="0" Text="BUS RATING A"  />
+                                <TextBox Grid.Row="1" Text="FED FROM PANEL ''"/>
+                            </Grid>
+                            <Grid Grid.Column="3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBox Grid.Row="0" Text="V P W "  />
+                                <TextBox Grid.Row="1" Text="MOUNTING: "/>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <DataGrid Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="20">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Header="ɸA">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Header="ɸB">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Header="ɸC" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width=".5*" Header="BKR">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding BreakerSize}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="1" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width=".5*" Header="BKR">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding BreakerSize}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Header="ɸA">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}" >
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Header="ɸB">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="*" Visibility="{Binding Data, Source={StaticResource PoleBindingProxy}, Converter={StaticResource PoleToVisibilityConverter}}" Header="ɸC">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Va}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightGray"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Va}" Value="0">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Background" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Width="20">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <ListBox Grid.Column="3" Margin="20 125 20 0"  ItemsSource="{Binding RightComponents}" 
        dd:DragDrop.IsDragSource="True"
        dd:DragDrop.IsDropTarget="True"
        dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Height" Value="160"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="50"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                    <Setter Property="Height" Value="110"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </ScrollViewer>
-        </Border>
-        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="2"/>
-        <Grid Grid.Row="3"  MinWidth="650" Margin=" 0 20 0 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Height" Value="160"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                <Setter Property="Height" Value="50"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                <Setter Property="Height" Value="110"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </ScrollViewer>
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1"/>
+        <Grid Grid.Row="2"  MinWidth="650" Margin=" 0 20 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
