@@ -64,7 +64,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" >
+                            <Grid Grid.Column="0">
                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="30">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="PANEL '{0}'">
@@ -106,10 +106,12 @@
                             <Grid Grid.Column="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width=".5*"/>
                                     <ColumnDefinition Width="22"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
+                                <TextBox Text="DESCRIPTION" TextAlignment="Center" FontSize="15" Grid.Column="0"/>
+                                <Grid Grid.Column="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
@@ -126,21 +128,45 @@
                                         <TextBox Text="ɸC" TextAlignment="Center" Grid.Column="2"/>
                                     </Grid>
                                 </Grid>
+                                <Grid Grid.Column="2">
+                                    <TextBox Text="BKR"/>
+                                </Grid>
+                                <Grid Grid.Column="3">
+                                    <TextBox Text="#"/>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width=".5*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <TextBox Text="#"/>
+                                </Grid>
+                                
                                 <Grid Grid.Column="1">
                                     <TextBox Text="BKR"/>
                                 </Grid>
                                 <Grid Grid.Column="2">
-                                    <TextBox Text="#"/>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox Grid.Row="0" TextAlignment="Center" Text="VOLT AMPS"></TextBox>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Text="ɸA" TextAlignment="Center" Grid.Column="0"/>
+                                        <TextBox Text="ɸB" TextAlignment="Center" Grid.Column="1"/>
+                                        <TextBox Text="ɸC" TextAlignment="Center" Grid.Column="2"/>
+                                    </Grid>
                                 </Grid>
-
-                            </Grid>
-                            <Grid Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Text="BUS RATING A"  />
-                                <TextBox Grid.Row="1" Text="FED FROM PANEL ''"/>
+                                <TextBox Text="DESCRIPTION" TextAlignment="Center" FontSize="15" Grid.Column="3"/>
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="2">
@@ -150,6 +176,7 @@
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Width="3*" />
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -340,6 +367,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
+                                    <DataGridTextColumn Width="3*" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
