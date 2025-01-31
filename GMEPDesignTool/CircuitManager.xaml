@@ -17,8 +17,8 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer>
-            <Grid Margin="0 20 0 20">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <Grid Margin="0 20 0 20" MinWidth="1200" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="8*"/>
