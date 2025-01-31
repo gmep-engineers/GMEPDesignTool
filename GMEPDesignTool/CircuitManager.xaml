@@ -100,8 +100,9 @@
                         </Grid>
                         <Grid Grid.Row="1" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="7*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
                                 <Grid.ColumnDefinitions>
@@ -135,7 +136,32 @@
                                     <TextBox Text="#"/>
                                 </Grid>
                             </Grid>
-                            <Grid Grid.Column="1">
+                            <Grid Grid.Column="1" VerticalAlignment="Stretch">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBox Grid.Row="0" TextAlignment="Center" Text="BUS"/>
+                                <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.Column="0">
+                                            <TextBlock  Text="ɸA" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Column="1">
+                                            <TextBlock  Text="ɸB" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Column="2">
+                                            <TextBlock  Text="ɸC" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <Grid Grid.Column="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>
                                     <ColumnDefinition Width=".5*"/>
@@ -171,8 +197,9 @@
                         </Grid>
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="7*"/>
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                                 <DataGrid.Columns>
@@ -272,7 +299,8 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <DataGrid FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="1" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
+                            <Grid Background="AliceBlue" Grid.Column="1"/>
+                            <DataGrid FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
