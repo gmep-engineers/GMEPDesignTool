@@ -311,19 +311,31 @@ namespace GMEPDesignTool
   
             foreach (var equipment in equipmentList)
             {
-                if (equipment.IsLcl)
+                int leftIndex = leftCircuits.IndexOf(
+                   leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+               );
+                int rightIndex = rightCircuits.IndexOf(
+                   rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+               );
+                bool fitsLeft = leftComponents.Contains(equipment) && ((leftIndex + equipment.Pole) <= leftCircuits.Count);
+                bool fitsRight = rightComponents.Contains(equipment) && ((rightIndex + equipment.Pole) <= rightCircuits.Count);
+
+                if (fitsLeft || fitsRight)
                 {
-                    switch (equipment.Pole)
+                    if (equipment.IsLcl)
                     {
-                        case 1:
-                            Lcl += (float)((equipment.PhaseAVA)/4);
-                            break;
-                        case 2:
-                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
-                            break;
-                        case 3:
-                            Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
-                            break;
+                        switch (equipment.Pole)
+                        {
+                            case 1:
+                                Lcl += (float)((equipment.PhaseAVA)/4);
+                                break;
+                            case 2:
+                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                break;
+                            case 3:
+                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                break;
+                        }
                     }
                 }
             }
@@ -350,32 +362,44 @@ namespace GMEPDesignTool
             equipmentList.AddRange(leftEquipment);
             equipmentList.AddRange(rightEquipment);
 
-            foreach(var equipment in equipmentList)
+            foreach (var equipment in equipmentList)
             {
-                if (equipment.IsLml)
+                int leftIndex = leftCircuits.IndexOf(
+                  leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+              );
+                int rightIndex = rightCircuits.IndexOf(
+                   rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+               );
+                bool fitsLeft = leftComponents.Contains(equipment) && ((leftIndex + equipment.Pole) <= leftCircuits.Count);
+                bool fitsRight = rightComponents.Contains(equipment) && ((rightIndex + equipment.Pole) <= rightCircuits.Count);
+
+                if (fitsLeft || fitsRight)
                 {
-                    float TempValue = 0;
-                    switch (equipment.Pole)
+                    if (equipment.IsLml)
                     {
-                        case 1:
-                            TempValue = (float)((equipment.PhaseAVA)/4);
-                            break;
-                        case 2:
-                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
-                            break;
-                        case 3:
-                            TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
-                            break;
-                    }
-                    if (TempValue > Lml)
-                    {
-                        Lml = TempValue;
+                        float TempValue = 0;
+                        switch (equipment.Pole)
+                        {
+                            case 1:
+                                TempValue = (float)((equipment.PhaseAVA)/4);
+                                break;
+                            case 2:
+                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                break;
+                            case 3:
+                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                break;
+                        }
+                        if (TempValue > Lml)
+                        {
+                            Lml = TempValue;
+                        }
                     }
                 }
-            }
-            foreach (var component in combinedList)
-            {
-                if (component.Lml > Lml) { Lml = component.Lml; }
+                foreach (var component in combinedList)
+                {
+                    if (component.Lml > Lml) { Lml = component.Lml; }
+                }
             }
         }
 
