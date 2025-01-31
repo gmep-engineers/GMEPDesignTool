@@ -119,17 +119,18 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
         public override string Name
         {
-            get => equipNo;
+            get => description;
             set
             {
-                if (equipNo != value)
+                if (description != value)
                 {
-                    equipNo = value;
+                    description = value;
                 }
             }
         }
@@ -156,7 +157,6 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
-                    OnPropertyChanged(nameof(Name));
                 }
             }
         }

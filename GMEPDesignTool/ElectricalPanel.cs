@@ -430,11 +430,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, ""));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, ""));
                 }
                 totalCircuits++;
             }
@@ -455,7 +455,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -498,7 +498,7 @@ namespace GMEPDesignTool
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole))
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -538,7 +538,7 @@ namespace GMEPDesignTool
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole))
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -643,11 +643,13 @@ namespace GMEPDesignTool
             {
                 circuit.Va = 0;
                 circuit.BreakerSize = 0;
+                circuit.Description = "";
             }
             foreach (var circuit in rightCircuits)
             {
                 circuit.Va = 0;
                 circuit.BreakerSize = 0;
+                circuit.Description = "";
             }
             PhaseAVA = 0;
             PhaseBVA = 0;
@@ -677,6 +679,14 @@ namespace GMEPDesignTool
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
+                        if (i == 0)
+                        {
+                            leftCircuits[circuitIndex + i].Description = component.Name;
+                        }
+                        else
+                        {
+                            leftCircuits[circuitIndex + i].Description = "---";
+                        }
                         if (i == component.Pole - 1)
                         {
                             leftCircuits[circuitIndex + i].BreakerSize = i + 1;
@@ -729,7 +739,14 @@ namespace GMEPDesignTool
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
-
+                        if (i == 0)
+                        {
+                            rightCircuits[circuitIndex + i].Description = component.Name;
+                        }
+                        else
+                        {
+                            rightCircuits[circuitIndex + i].Description = "---";
+                        }
                         if (i == component.Pole - 1)
                         {
                             rightCircuits[circuitIndex + i].BreakerSize = i + 1;
@@ -933,14 +950,15 @@ namespace GMEPDesignTool
         public int va;
         public int breakerSize;
         public int index;
+        public string description;
 
-        public Circuit(int _number, int _va, int _breakerSize)
+        public Circuit(int _number, int _va, int _breakerSize, string _description)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
+            description = _description;
         }
-
         public int BreakerSize
         {
             get => breakerSize;
@@ -950,6 +968,7 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+
         public int Va
         {
             get => va;
@@ -965,6 +984,15 @@ namespace GMEPDesignTool
             set
             {
                 number = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Description
+        {
+            get => description;
+            set
+            {
+                description = value;
                 OnPropertyChanged();
             }
         }

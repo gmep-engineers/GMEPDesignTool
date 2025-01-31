@@ -176,7 +176,7 @@
                             </Grid.ColumnDefinitions>
                             <DataGrid Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="56" IsEnabled="False" AlternationCount="{Binding Pole}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Width="3*" />
+                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}"/>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -367,7 +367,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width="3*" />
+                                    <DataGridTextColumn Width="3*"  Binding="{Binding Description}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
