@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Controls;
 
 
 
@@ -104,6 +105,18 @@ namespace GMEPDesignTool
             get => mainRating;
             set => SetProperty(ref mainRating, value);
         }
+        public string voltage;
+        public string Voltage
+        {
+            get => voltage;
+            set => SetProperty(ref voltage, value);
+        }
+        public string phases;
+        public string Phases
+        {
+            get => phases;
+            set => SetProperty(ref phases, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -124,6 +137,8 @@ namespace GMEPDesignTool
             _va = panel.Va;
             busRating = setBusRating(panel.BusSize);
             MainRating = setMainRating(panel);
+            voltage = determineVoltage(panel.Type);
+            phases = determinePhases(panel.Type);
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -159,22 +174,22 @@ namespace GMEPDesignTool
                     Name = Panel.Name;
                     OnPropertyChanged(nameof(Name));
                 }
-                if (e.PropertyName == nameof(Pole))
+                if (e.PropertyName == nameof(ElectricalPanel.Pole))
                 {
                     Pole = Panel.Pole;
                     OnPropertyChanged(nameof(Pole));
             }
-                if (e.PropertyName == nameof(Amp))
+                if (e.PropertyName == nameof(ElectricalPanel.Amp))
                 {
                     Amp = Panel.Amp;
                     OnPropertyChanged(nameof(Amp));
                 }
-                if (e.PropertyName == nameof(Lcl))
+                if (e.PropertyName == nameof(ElectricalPanel.Lcl))
                 {
                     Lcl = Panel.Lcl;
                     OnPropertyChanged(nameof(Lcl));
                 }
-                if (e.PropertyName == nameof(Lml))
+                if (e.PropertyName == nameof(ElectricalPanel.Lml))
                 {
                     Lml = Panel.Lml;
                     OnPropertyChanged(nameof(Lml));
@@ -190,6 +205,11 @@ namespace GMEPDesignTool
                 if (e.PropertyName == nameof(ElectricalPanel.IsMlo))
                 {
                     MainRating = setMainRating(Panel);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.Type))
+                {
+                    Voltage = determineVoltage(Panel.Type);
+                    Phases = determinePhases(Panel.Type);
                 }
         }
         public string setBusRating(int bus)
@@ -291,8 +311,42 @@ namespace GMEPDesignTool
             }
             return result;
         }
-    
-            void IDropTarget.DragOver(IDropInfo dropInfo)
+        public string determineVoltage(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "120/208V";
+                case 2:
+                    return "120/240V";
+                case 3:
+                    return "277/480V";
+                case 4:
+                    return "120/240V";
+                case 5:
+                    return "120/208V";
+            }
+            return "";
+        }
+        public string determinePhases(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "3ɸ";
+                case 2:
+                    return "1ɸ";
+                case 3:
+                    return "3ɸ";
+                case 4:
+                    return "3ɸ";
+                case 5:
+                    return "1ɸ";
+            }
+            return "";
+        }
+
+        void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;

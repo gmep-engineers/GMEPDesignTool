@@ -107,7 +107,14 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Text="V P W "  />
+                                <TextBox Grid.Row="0" >
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat=" {0}     {1}" >
+                                            <Binding Path="Voltage"/>
+                                            <Binding Path="Phases"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
                                 <TextBox Grid.Row="1" Text="MOUNTING: "/>
                             </Grid>
                         </Grid>
