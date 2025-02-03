@@ -52,6 +52,13 @@ namespace GMEPDesignTool
             get => _kva;
             set => SetProperty(ref _kva, value);
         }
+        public float _va;
+
+        public float Va
+        {
+            get => _va;
+            set => SetProperty(ref _va, value);
+        }
         public string _name;
 
         public string Name
@@ -103,6 +110,7 @@ namespace GMEPDesignTool
             _amp = panel.Amp;
             _lcl = panel.Lcl;
             _lml = panel.Lml;
+            _va = panel.Va;
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -128,7 +136,12 @@ namespace GMEPDesignTool
                     Kva = Panel.Kva;
                     OnPropertyChanged(nameof(Kva));
                 }
-                if (e.PropertyName == nameof(ElectricalPanel.Name))
+                if (e.PropertyName == nameof(ElectricalPanel.Va))
+                {
+                    Va = Panel.Va;
+                    OnPropertyChanged(nameof(Va));
+                }
+            if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     Name = Panel.Name;
                     OnPropertyChanged(nameof(Name));
@@ -218,6 +231,22 @@ namespace GMEPDesignTool
                 return pole == 3 ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LclConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is float newVal)
+            {
+                return newVal * 1.25;
+            }
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

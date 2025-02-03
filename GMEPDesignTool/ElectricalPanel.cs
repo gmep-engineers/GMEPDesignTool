@@ -22,6 +22,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
+        private float _va;
        // private float _amp;
         private int _type;
         private bool _powered;
@@ -90,6 +91,7 @@ namespace GMEPDesignTool
             phaseCVa = 0;
             lcl = 0;
             lml = 0;
+            _va = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -142,15 +144,15 @@ namespace GMEPDesignTool
             }
         }
 
-        /*public override float Va
+       public  float Va
          {
-             get => _kva;
+             get => _va;
              set
              {
-                 _kva = value;
+                 _va = value;
                  OnPropertyChanged(nameof(Va));
              }
-         }*/
+         }
 
         public int BusSize
         {
@@ -327,13 +329,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                Lcl += (float)(equipment.PhaseAVA*1.25);
+                                Lcl += (float)(equipment.PhaseAVA);
                                 break;
                             case 2:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)*1.25);
+                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA);
                                 break;
                             case 3:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)*1.25);
+                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
                                 break;
                         }
                     }
@@ -381,13 +383,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                TempValue = (float)(equipment.PhaseAVA*1.25);
+                                TempValue = (float)(equipment.PhaseAVA);
                                 break;
                             case 2:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)*1.25);
+                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA);
                                 break;
                             case 3:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)*1.25);
+                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
                                 break;
                         }
                         if (TempValue > Lml)
@@ -776,10 +778,11 @@ namespace GMEPDesignTool
                     }
                 }
             }
-            Kva = (float)Math.Ceiling(Kva / 1000);
-            Amp = (float)Math.Ceiling(SetAmp());
             CalculateLcl();
             CalculateLml();
+            Va = Kva;
+            Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
+            Amp = (float)Math.Ceiling(SetAmp());
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
@@ -843,38 +846,25 @@ namespace GMEPDesignTool
         }
         public float SetAmp()
         {
-            int lineNullVolt = 0;
-            int lineLineVolt = 0;
+            float Amp = 0;
             int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Type)
             {
                 case 1:
-                    lineNullVolt = 120;
-                    lineLineVolt = 208;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
                     break;
                 case 2:
-                    lineNullVolt = 120;
-                    lineLineVolt = 240;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
                     break;
                 case 3:
-                    lineNullVolt = 277;
-                    lineLineVolt = 480;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 277, 10);
                     break;
                 case 4:
-                    lineNullVolt = 120;
-                    lineLineVolt = 240;
+                    //change later
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
                     break;
             }
             
-            switch (Pole)
-            {
-                case 2:
-                    Amp = (float)Math.Round((double)largestPhase / lineNullVolt, 10);
-                    break;
-                default:
-                    Amp = (float)Math.Round((double)(largestPhase / (1.732 * lineLineVolt)), 10);
-                    break;
-            }
             return Amp;
         }
         public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
