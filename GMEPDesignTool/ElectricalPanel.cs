@@ -815,8 +815,23 @@ namespace GMEPDesignTool
                     Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 277, 10);
                     break;
                 case 4:
-                    //change later
-                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    double l1 = PhaseAVA;
+                    double l2 = PhaseBVA;
+                    double l3 = PhaseCVA;
+                    double fA = Math.Abs(l3 - l1);
+                    double fB = Math.Abs(l1 - l2);
+                    double fC = Math.Abs(l2 - l3);
+                    double l3N = l3;
+                    double l2N = l2;
+                    double iFa = (fA + (0.25 * Lml)) / 240;
+                    double iFb = (fB + (0.25 * Lml)) / 240;
+                    double iFc = (fC + (0.25 * Lml)) / 240;
+                    double iL2N = (l2N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
+                    double iL3N = (l3N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
+                    double iL1 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow(iFb, 2) + (iFa * iFb));
+                    double iL2 = Math.Sqrt(Math.Pow(iFb, 2) + Math.Pow((iL2N + iFc), 2) + (iFb * (iL2N + iFc)));
+                    double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
+                    Amp = (float)Math.Max(Math.Max(iL3, iL1), iL2);
                     break;
             }
             
