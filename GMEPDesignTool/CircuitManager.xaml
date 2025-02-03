@@ -80,14 +80,26 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Row="0" Text="LOCATION: "  />
-                                <TextBox Grid.Row="1" Text="MAIN (AMP)"/>
+                                <TextBox Grid.Row="1">
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="MAIN (AMP) {0}">
+                                            <Binding Path="MainRating"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
                             </Grid>
                             <Grid Grid.Column="2">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Text="BUS RATING A"  />
+                                <TextBox Grid.Row="0">
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="BUS RATING {0}">
+                                            <Binding Path="BusRating"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
                                 <TextBox Grid.Row="1" Text="FED FROM PANEL ''"/>
                             </Grid>
                             <Grid Grid.Column="3">

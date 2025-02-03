@@ -92,7 +92,18 @@ namespace GMEPDesignTool
             get => _lml;
             set => SetProperty(ref _lml, value);
         }
-
+        private string busRating;
+        public string BusRating
+        {
+            get => busRating;
+            set => SetProperty(ref busRating, value);
+        }
+        private string mainRating;
+        public string MainRating
+        {
+            get => mainRating;
+            set => SetProperty(ref mainRating, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -111,6 +122,8 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
+            busRating = setBusRating(panel.BusSize);
+            MainRating = setMainRating(panel);
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -166,7 +179,119 @@ namespace GMEPDesignTool
                     Lml = Panel.Lml;
                     OnPropertyChanged(nameof(Lml));
                 }
+                if (e.PropertyName == nameof(ElectricalPanel.BusSize))
+                {
+                    BusRating = setBusRating(Panel.BusSize);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.MainSize))
+                {
+                    MainRating = setMainRating(Panel);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.IsMlo))
+                {
+                    MainRating = setMainRating(Panel);
+                }
         }
+        public string setBusRating(int bus)
+        {
+            string result = "0A";
+            switch (bus)
+            {
+                case 1:
+                    result = "60A";
+                    break;
+                case 2:
+                    result = "100A";
+                    break;
+                case 3:
+                    result = "125A";
+                    break;
+                case 4:
+                    result = "150A";
+                    break;
+                case 5:
+                    result = "175A";
+                    break;
+                case 6:
+                    result = "200A";
+                    break;
+                case 7:
+                    result = "225A";
+                    break;
+                case 8:
+                    result = "250A";
+                    break;
+                case 9:
+                    result = "275A";
+                    break;
+                case 10:
+                    result = "400A";
+                    break;
+                case 11:
+                    result = "500A";
+                    break;
+                case 12:
+                    result = "600A";
+                    break;
+                case 13:
+                    result = "800A";
+                    break;
+            }
+            return result;
+        }
+
+        public string setMainRating(ElectricalPanel panel)
+        {
+            string result = "0";
+            switch (panel.MainSize)
+            {
+                case 1:
+                    result = "60A";
+                    break;
+                case 2:
+                    result = "100A";
+                    break;
+                case 3:
+                    result = "125A";
+                    break;
+                case 4:
+                    result = "150A";
+                    break;
+                case 5:
+                    result = "175A";
+                    break;
+                case 6:
+                    result = "200A";
+                    break;
+                case 7:
+                    result = "225A";
+                    break;
+                case 8:
+                    result = "250A";
+                    break;
+                case 9:
+                    result = "275A";
+                    break;
+                case 10:
+                    result = "400A";
+                    break;
+                case 11:
+                    result = "500A";
+                    break;
+                case 12:
+                    result = "600A";
+                    break;
+                case 13:
+                    result = "800";
+                    break;
+            }
+            if (panel.IsMlo)
+            {
+                result = "M.L.O";
+            }
+            return result;
+        }
+    
             void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
