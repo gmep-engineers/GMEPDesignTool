@@ -327,13 +327,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                Lcl += (float)((equipment.PhaseAVA)/4);
+                                Lcl += (float)(equipment.PhaseAVA*1.25);
                                 break;
                             case 2:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)*1.25);
                                 break;
                             case 3:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)*1.25);
                                 break;
                         }
                     }
@@ -381,13 +381,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                TempValue = (float)((equipment.PhaseAVA)/4);
+                                TempValue = (float)(equipment.PhaseAVA*1.25);
                                 break;
                             case 2:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)*1.25);
                                 break;
                             case 3:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)*1.25);
                                 break;
                         }
                         if (TempValue > Lml)
@@ -845,6 +845,7 @@ namespace GMEPDesignTool
         {
             int lineNullVolt = 0;
             int lineLineVolt = 0;
+            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Type)
             {
                 case 1:
@@ -864,7 +865,7 @@ namespace GMEPDesignTool
                     lineLineVolt = 240;
                     break;
             }
-            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
+            
             switch (Pole)
             {
                 case 2:
