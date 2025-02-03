@@ -76,6 +76,7 @@
                                                         <ComboBoxItem Content="120/240V 1-Φ" Tag="2" />
                                                         <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
                                                         <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
+                                                        <ComboBoxItem Content="120/208V 1-Φ" Tag="5" />
                                                     </ComboBox>
                                                     <Label Content="Amp"  VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="230 27 0 0"/>
                                                     <ComboBox Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="230 50 150 0" Width="60" SelectedValue="{Binding Amp}" SelectedValuePath="Tag">
@@ -237,6 +238,7 @@
                                                             <ComboBoxItem Content="120/240V 1-Φ" Tag="2"/>
                                                             <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
                                                             <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
+                                                            <ComboBoxItem Content="120/208V 1-Φ" Tag="5" />
                                                         </ComboBox>
 
                                                         <Label VerticalAlignment="Top" Margin="230,28,0,0" HorizontalAlignment="Left" Content="Main (A)" FontWeight="Bold"/>

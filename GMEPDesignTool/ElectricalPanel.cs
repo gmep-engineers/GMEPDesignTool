@@ -833,6 +833,10 @@ namespace GMEPDesignTool
                     double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
                     Amp = (float)Math.Max(Math.Max(iL3, iL1), iL2);
                     break;
+                case 5:
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    break;
+
             }
             
             return Amp;
