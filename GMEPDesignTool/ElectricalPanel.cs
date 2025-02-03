@@ -457,7 +457,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) ||  e.PropertyName == nameof(ElectricalEquipment.IsLcl) || e.PropertyName == nameof(ElectricalEquipment.IsLml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -479,28 +479,12 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
-            if (e.PropertyName == nameof(ElectricalEquipment.IsLcl))
-            {
-                if (sender is ElectricalEquipment equipment)
-                {
-                    CalculateLcl();
-                }
-                
-            }
-            if (e.PropertyName == nameof(ElectricalEquipment.IsLml))
-            {
-                if (sender is ElectricalEquipment equipment)
-                {
-                    CalculateLml();
-                }
-
-            }
         }
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalPanel.Lcl) || e.PropertyName == nameof(ElectricalPanel.Lml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -522,25 +506,10 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
-            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CalculateLcl();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.Lml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CalculateLml();
-                }
-
-            }
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name))
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalTransformer.Lcl) || e.PropertyName == nameof(ElectricalTransformer.Lml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -560,20 +529,6 @@ namespace GMEPDesignTool
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalTransformer.Lcl))
-            {
-                if (sender is ElectricalTransformer transformer)
-                {
-                    CalculateLcl();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalTransformer.Lml))
-            {
-                if (sender is ElectricalTransformer transformer)
-                {
-                    CalculateLml();
                 }
             }
         }

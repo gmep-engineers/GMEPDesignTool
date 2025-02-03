@@ -9,6 +9,7 @@
         Title="CircuitManager" Height="450" Width="800">
     <Window.Resources>
         <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
+        <local:LclConverter x:Key="LclConverter"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
     </Window.Resources>
     <Grid>
@@ -477,52 +478,62 @@
             </Grid>
         </ScrollViewer>
         <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1"/>
-        <Grid Grid.Row="2"  MinWidth="650" Margin=" 0 20 0 0">
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto">
+        <Grid MinWidth="1450" Margin=" 0 0 0 0" Background="LightSlateGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1.5*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Vertical" Height="2000" Margin="20 0 0 0" >
-                <TextBox Text="Phase A" Height="50"  FontWeight="Bold" />
-                <TextBox Text="{Binding PhaseAVa}" Height="50" FontWeight="Bold" />
+            <StackPanel VerticalAlignment="Top" Grid.Column="0"  Margin="20 20 0 0">
+                <StackPanel.Effect>
+                    <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
+                </StackPanel.Effect>
+                <TextBox Grid.Row="0" FontSize="23" >
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="TOTAL CONNECTED VA  =  {0}">
+                            <Binding Path="Va"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBox Grid.Row="1" FontSize="23">
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="LCL @ 125%  {0}  =  {1}">
+                            <Binding Path="Lcl"/>
+                            <Binding Path="Lcl" Converter="{StaticResource LclConverter}"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBox Grid.Row="2" FontSize="23"  >
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="LML @ 125%  {0} =  {1}">
+                            <Binding Path="Lml"/>
+                            <Binding Path="Lml" Converter="{StaticResource LclConverter}"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBox Grid.Row="3" FontSize="23" >
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="PANEL LOAD  =   {0} KVA">
+                            <Binding Path="Kva"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBox Grid.Row="4" FontSize="23"  >
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="FEDER AMPS  =   {0} A">
+                            <Binding Path="Amp"/>
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
             </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Vertical" >
-                <TextBox Text="Phase B" FontWeight="Bold" Height="50" />
-                <TextBox Text="{Binding PhaseBVa}" FontWeight="Bold" Height="50"/>
-            </StackPanel>
-            <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0 0 30 0" Visibility="{Binding Pole, Converter={StaticResource PoleToVisibilityConverter}}">
-                <TextBox Text="Phase C" FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding PhaseCVa}" FontWeight="Bold" Height="50" />
-            </StackPanel>
-            <StackPanel Grid.Column="3">
-                
-                <TextBox Text="Total Kva" FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding Kva}" FontWeight="Bold" Height="50" />
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" Margin="0 10 0 0">
-                        <TextBox Text="LCL (VA)" FontWeight="Bold" Margin="0 0 0 100" Height="50"/>
-                        <TextBox Text="{Binding Lcl}" Margin="0 0 0 0" FontWeight="Bold" Height="50" />
-                    </Grid>
-                    <Grid Grid.Column="1"  Margin="0 10 0 0">
-                        <TextBox Text="LML (VA)" Margin="0 0 0 100" FontWeight="Bold" Height="50"/>
-                        <TextBox Text="{Binding Lml}" Margin="0 0 0 0" FontWeight="Bold" Height="50" />
-                    </Grid>
-                </Grid>
-            </StackPanel>
-            <StackPanel Grid.Column="3">
-                
-            </StackPanel>
-            <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0 0 20 0">
-                <TextBox Text="Total Feeder Amp" FontWeight="Bold" Height="50"/>
-                <TextBox Text="{Binding Amp}" FontWeight="Bold" Height="50" />
+            <StackPanel Grid.Column="1" Margin="20 20 20 0">
+                <StackPanel.Effect>
+                    <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
+                </StackPanel.Effect>
+                <TextBox FontSize="23"  Text="NOTES: "/>
+                <TextBox Height="130"/>
             </StackPanel>
         </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>
