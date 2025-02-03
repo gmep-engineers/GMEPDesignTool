@@ -117,6 +117,12 @@ namespace GMEPDesignTool
             get => phases;
             set => SetProperty(ref phases, value);
         }
+        private string wire;
+        public string Wire
+        {
+            get => wire;
+            set => SetProperty(ref wire, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -135,6 +141,7 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
+            wire = determineWire(panel.Type);
             busRating = setBusRating(panel.BusSize);
             MainRating = setMainRating(panel);
             voltage = determineVoltage(panel.Type);
@@ -210,6 +217,7 @@ namespace GMEPDesignTool
                 {
                     Voltage = determineVoltage(Panel.Type);
                     Phases = determinePhases(Panel.Type);
+                Wire = determineWire(Panel.Type);
                 }
         }
         public string setBusRating(int bus)
@@ -325,6 +333,23 @@ namespace GMEPDesignTool
                     return "120/240V";
                 case 5:
                     return "120/208V";
+            }
+            return "";
+        }
+        public string determineWire(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "4W";
+                case 2:
+                    return "3W";
+                case 3:
+                    return "4W";
+                case 4:
+                    return "4W";
+                case 5:
+                    return "3W";
             }
             return "";
         }

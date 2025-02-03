@@ -109,9 +109,10 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Row="0" >
                                     <TextBox.Text>
-                                        <MultiBinding StringFormat=" {0}     {1}" >
+                                        <MultiBinding StringFormat=" {0}     {1}     {2}" >
                                             <Binding Path="Voltage"/>
                                             <Binding Path="Phases"/>
+                                            <Binding Path="Wire"/>
                                         </MultiBinding>
                                     </TextBox.Text>
                                 </TextBox>
