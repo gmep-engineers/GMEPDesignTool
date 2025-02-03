@@ -319,6 +319,12 @@
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                 </DataTrigger>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="2">
+                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="3">
+                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                                </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </TextBlock.Style>
@@ -389,6 +395,12 @@
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="2">
+                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="3">
+                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
