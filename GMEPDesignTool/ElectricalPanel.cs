@@ -746,7 +746,9 @@ namespace GMEPDesignTool
           
             switch (breakerSize)
             {
-                case var _ when breakerSize <= 25:
+                case var _ when breakerSize <= 20:
+                    return 20;
+                case var _ when breakerSize <= 25 && breakerSize > 20:
                     return 25;
                 case var _ when breakerSize <= 30 && breakerSize > 25:
                     return 30;
