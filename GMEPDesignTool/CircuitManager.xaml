@@ -399,10 +399,38 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                             <Grid Background="AliceBlue" Grid.Column="1">
-                                <Rectangle VerticalAlignment="Stretch" Stroke="Black" Width="1" Margin="20 0 0 0" HorizontalAlignment="Left"/>
-                                <Rectangle VerticalAlignment="Stretch" Stroke="Black" Width="1" HorizontalAlignment="Center"/>
-                                <Rectangle VerticalAlignment="Stretch" Stroke="Black" Width="1" Margin="0 0 20 0" HorizontalAlignment="Right"/>
-                                <ItemsControl ItemsSource="{Binding LeftCircuits}" AlternationCount="3">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition>
+                                            <ColumnDefinition.Style>
+                                                <Style TargetType="ColumnDefinition">
+                                                    <Setter Property="Width" Value="*"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                            <Setter Property="Width" Value="0"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ColumnDefinition.Style>
+                                        </ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0" VerticalAlignment="Stretch" Stroke="Black" Width="1" />
+                                    <Rectangle Grid.Column="1"  VerticalAlignment="Stretch" Stroke="Black" Width="1"/>
+                                    <Rectangle Grid.Column="2"  VerticalAlignment="Stretch" Stroke="Black" Width="1" />
+                                </Grid>
+                                <ItemsControl ItemsSource="{Binding LeftCircuits}" >
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Setter Property="AlternationCount" Value="3"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DataContext.Pole, RelativeSource={RelativeSource AncestorType=Window}}" Value="2">
+                                                    <Setter Property="AlternationCount" Value="2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Vertical" Height="Auto"/>
@@ -411,23 +439,36 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Margin="0 10 0 8">
-                                                <Rectangle HorizontalAlignment="Stretch" Height="1" Stroke="Black"/>
-                                                <Ellipse x:Name="Dot1" Width="10" Height="10" Fill="Black" HorizontalAlignment="Left" Margin="15 0 0 0"/>
-                                                <Ellipse x:Name="Dot2" Width="10" Height="10" Fill="Black" HorizontalAlignment="Center"/>
-                                                <Ellipse x:Name="Dot3" Width="10" Height="10" Fill="Black" HorizontalAlignment="Right" Margin="0 0 15 0"/>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition>
+                                                        <ColumnDefinition.Style>
+                                                            <Style TargetType="ColumnDefinition">
+                                                                <Setter Property="Width" Value="*"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Data, Source={StaticResource PoleBindingProxy}}" Value="2">
+                                                                        <Setter Property="Width" Value="0"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ColumnDefinition.Style>
+                                                    </ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Rectangle Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Height="1" Stroke="Black"/>
+                                                <Ellipse Grid.Column="0" x:Name="Dot1" Width="10" Height="10" Fill="Black" Visibility="Hidden"/>
+                                                <Ellipse Grid.Column="1" x:Name="Dot2" Width="10" Height="10" Fill="Black"  Visibility="Hidden"/>
+                                                <Ellipse Grid.Column="2" x:Name="Dot3" Width="10" Height="10" Fill="Black" Visibility="Hidden"/>
                                             </Grid>
                                             <DataTemplate.Triggers>
                                                 <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                                    <Setter Property="Visibility" TargetName="Dot2" Value="Collapsed"/>
-                                                    <Setter Property="Visibility" TargetName="Dot3" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" TargetName="Dot1" Value="Visible"/>
                                                 </Trigger>
                                                 <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                                    <Setter Property="Visibility" TargetName="Dot1" Value="Collapsed"/>
-                                                    <Setter Property="Visibility" TargetName="Dot3" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" TargetName="Dot2" Value="Visible"/>
                                                 </Trigger>
                                                 <Trigger Property="ItemsControl.AlternationIndex" Value="2">
-                                                    <Setter Property="Visibility" TargetName="Dot2" Value="Collapsed"/>
-                                                    <Setter Property="Visibility" TargetName="Dot1" Value="Collapsed"/>
+                                                    <Setter Property="Visibility" TargetName="Dot3" Value="Visible"/>
                                                 </Trigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>
@@ -553,7 +594,18 @@
                                     <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition>
+                                        <ColumnDefinition.Style>
+                                            <Style TargetType="ColumnDefinition">
+                                                <Setter Property="Width" Value="*"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                        <Setter Property="Width" Value="0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ColumnDefinition.Style>
+                                    </ColumnDefinition>
                                     <ColumnDefinition Width=".3*"/>
                                     <ColumnDefinition Width=".3*"/>
                                     <ColumnDefinition Width=".3*"/>
@@ -607,7 +659,18 @@
                                     <ColumnDefinition Width=".3*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition>
+                                        <ColumnDefinition.Style>
+                                            <Style TargetType="ColumnDefinition">
+                                                <Setter Property="Width" Value="*"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                        <Setter Property="Width" Value="0"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ColumnDefinition.Style>
+                                    </ColumnDefinition>
                                     <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
                                 <ItemsControl Grid.Column="1" ItemsSource="{Binding RightCircuits}" AlternationCount="3">
