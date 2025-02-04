@@ -513,9 +513,45 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Canvas>
-                                                <Line X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="56" X2="0" Stroke="Black" StrokeThickness="1"/>
-                                                <Line X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="84" X2="0" Stroke="Black" StrokeThickness="1"/>
+                                                <Canvas.Style>
+                                                    <Style TargetType="Canvas">
+                                                        <Setter Property="Height" Value="28"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                                <Setter Property="Height" Value="56"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Pole}" Value="3">
+                                                                <Setter Property="Height" Value="84"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Canvas.Style>
+                                                <Line x:Name="Line2" X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="56" X2="0" Stroke="Black" StrokeThickness="1">
+                                                    <Line.Style>
+                                                        <Style TargetType="Line">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Line.Style>
+                                                </Line>
+                                                <Line x:Name="Line3" X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="84" X2="0" Stroke="Black" StrokeThickness="1">
+                                                    <Line.Style>
+                                                        <Style TargetType="Line">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Pole}" Value="3">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Line.Style>
+                                                </Line>
                                             </Canvas>
+                                    
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
