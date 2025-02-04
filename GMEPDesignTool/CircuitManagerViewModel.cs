@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Controls;
 
 
 
@@ -52,6 +53,13 @@ namespace GMEPDesignTool
             get => _kva;
             set => SetProperty(ref _kva, value);
         }
+        public float _va;
+
+        public float Va
+        {
+            get => _va;
+            set => SetProperty(ref _va, value);
+        }
         public string _name;
 
         public string Name
@@ -85,7 +93,36 @@ namespace GMEPDesignTool
             get => _lml;
             set => SetProperty(ref _lml, value);
         }
-
+        private string busRating;
+        public string BusRating
+        {
+            get => busRating;
+            set => SetProperty(ref busRating, value);
+        }
+        private string mainRating;
+        public string MainRating
+        {
+            get => mainRating;
+            set => SetProperty(ref mainRating, value);
+        }
+        public string voltage;
+        public string Voltage
+        {
+            get => voltage;
+            set => SetProperty(ref voltage, value);
+        }
+        public string phases;
+        public string Phases
+        {
+            get => phases;
+            set => SetProperty(ref phases, value);
+        }
+        private string wire;
+        public string Wire
+        {
+            get => wire;
+            set => SetProperty(ref wire, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -103,6 +140,12 @@ namespace GMEPDesignTool
             _amp = panel.Amp;
             _lcl = panel.Lcl;
             _lml = panel.Lml;
+            _va = panel.Va;
+            wire = determineWire(panel.Type);
+            busRating = setBusRating(panel.BusSize);
+            MainRating = setMainRating(panel);
+            voltage = determineVoltage(panel.Type);
+            phases = determinePhases(panel.Type);
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -128,33 +171,207 @@ namespace GMEPDesignTool
                     Kva = Panel.Kva;
                     OnPropertyChanged(nameof(Kva));
                 }
-                if (e.PropertyName == nameof(ElectricalPanel.Name))
+                if (e.PropertyName == nameof(ElectricalPanel.Va))
+                {
+                    Va = Panel.Va;
+                    OnPropertyChanged(nameof(Va));
+                }
+            if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     Name = Panel.Name;
                     OnPropertyChanged(nameof(Name));
                 }
-                if (e.PropertyName == nameof(Pole))
+                if (e.PropertyName == nameof(ElectricalPanel.Pole))
                 {
                     Pole = Panel.Pole;
                     OnPropertyChanged(nameof(Pole));
             }
-                if (e.PropertyName == nameof(Amp))
+                if (e.PropertyName == nameof(ElectricalPanel.Amp))
                 {
                     Amp = Panel.Amp;
                     OnPropertyChanged(nameof(Amp));
                 }
-                if (e.PropertyName == nameof(Lcl))
+                if (e.PropertyName == nameof(ElectricalPanel.Lcl))
                 {
                     Lcl = Panel.Lcl;
                     OnPropertyChanged(nameof(Lcl));
                 }
-                if (e.PropertyName == nameof(Lml))
+                if (e.PropertyName == nameof(ElectricalPanel.Lml))
                 {
                     Lml = Panel.Lml;
                     OnPropertyChanged(nameof(Lml));
                 }
+                if (e.PropertyName == nameof(ElectricalPanel.BusSize))
+                {
+                    BusRating = setBusRating(Panel.BusSize);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.MainSize))
+                {
+                    MainRating = setMainRating(Panel);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.IsMlo))
+                {
+                    MainRating = setMainRating(Panel);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.Type))
+                {
+                    Voltage = determineVoltage(Panel.Type);
+                    Phases = determinePhases(Panel.Type);
+                Wire = determineWire(Panel.Type);
+                }
         }
-            void IDropTarget.DragOver(IDropInfo dropInfo)
+        public string setBusRating(int bus)
+        {
+            string result = "0A";
+            switch (bus)
+            {
+                case 1:
+                    result = "60A";
+                    break;
+                case 2:
+                    result = "100A";
+                    break;
+                case 3:
+                    result = "125A";
+                    break;
+                case 4:
+                    result = "150A";
+                    break;
+                case 5:
+                    result = "175A";
+                    break;
+                case 6:
+                    result = "200A";
+                    break;
+                case 7:
+                    result = "225A";
+                    break;
+                case 8:
+                    result = "250A";
+                    break;
+                case 9:
+                    result = "275A";
+                    break;
+                case 10:
+                    result = "400A";
+                    break;
+                case 11:
+                    result = "500A";
+                    break;
+                case 12:
+                    result = "600A";
+                    break;
+                case 13:
+                    result = "800A";
+                    break;
+            }
+            return result;
+        }
+
+        public string setMainRating(ElectricalPanel panel)
+        {
+            string result = "0";
+            switch (panel.MainSize)
+            {
+                case 1:
+                    result = "60A";
+                    break;
+                case 2:
+                    result = "100A";
+                    break;
+                case 3:
+                    result = "125A";
+                    break;
+                case 4:
+                    result = "150A";
+                    break;
+                case 5:
+                    result = "175A";
+                    break;
+                case 6:
+                    result = "200A";
+                    break;
+                case 7:
+                    result = "225A";
+                    break;
+                case 8:
+                    result = "250A";
+                    break;
+                case 9:
+                    result = "275A";
+                    break;
+                case 10:
+                    result = "400A";
+                    break;
+                case 11:
+                    result = "500A";
+                    break;
+                case 12:
+                    result = "600A";
+                    break;
+                case 13:
+                    result = "800";
+                    break;
+            }
+            if (panel.IsMlo)
+            {
+                result = "M.L.O";
+            }
+            return result;
+        }
+        public string determineVoltage(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "120/208V";
+                case 2:
+                    return "120/240V";
+                case 3:
+                    return "277/480V";
+                case 4:
+                    return "120/240V";
+                case 5:
+                    return "120/208V";
+            }
+            return "";
+        }
+        public string determineWire(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "4W";
+                case 2:
+                    return "3W";
+                case 3:
+                    return "4W";
+                case 4:
+                    return "4W";
+                case 5:
+                    return "3W";
+            }
+            return "";
+        }
+        public string determinePhases(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "3ɸ";
+                case 2:
+                    return "1ɸ";
+                case 3:
+                    return "3ɸ";
+                case 4:
+                    return "3ɸ";
+                case 5:
+                    return "1ɸ";
+            }
+            return "";
+        }
+
+        void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
@@ -225,6 +442,38 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
     }
+    public class LclConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is float newVal)
+            {
+                return Math.Ceiling(newVal * 1.25);
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ValueRounder : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is float newVal)
+            {
+                return Math.Ceiling(newVal);
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class BindingProxy : Freezable
     {
         protected override Freezable CreateInstanceCore()
@@ -241,6 +490,7 @@ namespace GMEPDesignTool
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
     }
+    
 
 
 }

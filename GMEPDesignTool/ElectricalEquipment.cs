@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -77,9 +78,6 @@ namespace GMEPDesignTool
             this.parentId = parentId;
             this.voltage = voltage;
             this.fla = fla;
-            this.phaseAVa = va;
-            this.phaseBVa = va;
-            this.phaseCVa = va;
             this.va = va;
             this.amp = fla;
             this.is3Ph = is3Ph;
@@ -106,8 +104,12 @@ namespace GMEPDesignTool
             this.Lml = 0;
             this.isLcl = false;
             this.isLml = false;
+            this.phaseAVa = 0;
+            this.phaseBVa = 0;
+            this.phaseCVa = 0;
             DetermineLoadTypes();
             determineEquipmentPole();
+            SetPhaseVa();
         }
 
         public string Description
@@ -119,17 +121,18 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
         public override string Name
         {
-            get => equipNo;
+            get => description;
             set
             {
-                if (equipNo != value)
+                if (description != value)
                 {
-                    equipNo = value;
+                    description = value;
                 }
             }
         }
@@ -156,7 +159,6 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
-                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -424,46 +426,26 @@ namespace GMEPDesignTool
                 if (va != value)
                 {
                     va = value;
+                    SetPhaseVa();
                     OnPropertyChanged(nameof(Va));
-                    OnPropertyChanged(nameof(PhaseAVA));
-                    OnPropertyChanged(nameof(PhaseBVA));
-                    OnPropertyChanged(nameof(PhaseCVA));
                 }
             }
         }
-        public override float PhaseAVA
+        public override int Pole
         {
-            get => va;
+            get => pole;
             set
             {
-                if (va != value)
+                if (pole != value)
                 {
-                    va = value;
+                    pole = value;
+                    SetPhaseVa();
+                    OnPropertyChanged(nameof(Pole));
+                
                 }
             }
         }
-        public override float PhaseBVA
-        {
-            get => va;
-            set
-            {
-                if (va != value)
-                {
-                    va = value;
-                }
-            }
-        }
-        public override float PhaseCVA
-        {
-            get => va;
-            set
-            {
-                if (va != value)
-                {
-                    va = value;
-                }
-            }
-        }
+   
         public int LoadType
         {
             get => loadType;
@@ -502,7 +484,22 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        public void SetPhaseVa()
+        {
+            double vaTemp = Va;
+            switch (Pole)
+            {
+                case 2:
+                    vaTemp /= 2;
+                    break;
+                case 3:
+                    vaTemp /= 1.732;
+                    break;
+            }
+            PhaseAVA = (float)vaTemp;
+            PhaseBVA = (float)vaTemp;
+            PhaseCVA = (float)vaTemp;
+        }
         private void determineEquipmentPole()
         {
             int pole = 3;

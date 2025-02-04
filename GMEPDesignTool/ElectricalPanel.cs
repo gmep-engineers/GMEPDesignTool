@@ -22,6 +22,7 @@ namespace GMEPDesignTool
         private int _distanceFromParent;
         private int _aicRating;
         private float _kva;
+        private float _va;
        // private float _amp;
         private int _type;
         private bool _powered;
@@ -90,6 +91,7 @@ namespace GMEPDesignTool
             phaseCVa = 0;
             lcl = 0;
             lml = 0;
+            _va = 0;
             SetPole();
             PopulateCircuits();
         }
@@ -142,15 +144,15 @@ namespace GMEPDesignTool
             }
         }
 
-        /*public override float Va
+       public  float Va
          {
-             get => _kva;
+             get => _va;
              set
              {
-                 _kva = value;
+                 _va = value;
                  OnPropertyChanged(nameof(Va));
              }
-         }*/
+         }
 
         public int BusSize
         {
@@ -327,13 +329,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                Lcl += (float)((equipment.PhaseAVA)/4);
+                                Lcl += (float)(equipment.PhaseAVA);
                                 break;
                             case 2:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA);
                                 break;
                             case 3:
-                                Lcl += (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
                                 break;
                         }
                     }
@@ -381,13 +383,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                TempValue = (float)((equipment.PhaseAVA)/4);
+                                TempValue = (float)(equipment.PhaseAVA);
                                 break;
                             case 2:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA)/4);
+                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA);
                                 break;
                             case 3:
-                                TempValue = (float)((equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA)/4);
+                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
                                 break;
                         }
                         if (TempValue > Lml)
@@ -430,11 +432,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, ""));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, ""));
                 }
                 totalCircuits++;
             }
@@ -455,7 +457,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) ||  e.PropertyName == nameof(ElectricalEquipment.IsLcl) || e.PropertyName == nameof(ElectricalEquipment.IsLml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -477,28 +479,12 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
-            if (e.PropertyName == nameof(ElectricalEquipment.IsLcl))
-            {
-                if (sender is ElectricalEquipment equipment)
-                {
-                    CalculateLcl();
-                }
-                
-            }
-            if (e.PropertyName == nameof(ElectricalEquipment.IsLml))
-            {
-                if (sender is ElectricalEquipment equipment)
-                {
-                    CalculateLml();
-                }
-
-            }
         }
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole))
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalPanel.Lcl) || e.PropertyName == nameof(ElectricalPanel.Lml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -520,25 +506,10 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
-            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CalculateLcl();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.Lml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CalculateLml();
-                }
-
-            }
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole))
+            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalTransformer.Lcl) || e.PropertyName == nameof(ElectricalTransformer.Lml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -558,20 +529,6 @@ namespace GMEPDesignTool
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalTransformer.Lcl))
-            {
-                if (sender is ElectricalTransformer transformer)
-                {
-                    CalculateLcl();
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalTransformer.Lml))
-            {
-                if (sender is ElectricalTransformer transformer)
-                {
-                    CalculateLml();
                 }
             }
         }
@@ -643,11 +600,13 @@ namespace GMEPDesignTool
             {
                 circuit.Va = 0;
                 circuit.BreakerSize = 0;
+                circuit.Description = "";
             }
             foreach (var circuit in rightCircuits)
             {
                 circuit.Va = 0;
                 circuit.BreakerSize = 0;
+                circuit.Description = "";
             }
             PhaseAVA = 0;
             PhaseBVA = 0;
@@ -677,6 +636,14 @@ namespace GMEPDesignTool
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
+                        if (i == 0)
+                        {
+                            leftCircuits[circuitIndex + i].Description = component.Name;
+                        }
+                        else
+                        {
+                            leftCircuits[circuitIndex + i].Description = "---";
+                        }
                         if (i == component.Pole - 1)
                         {
                             leftCircuits[circuitIndex + i].BreakerSize = i + 1;
@@ -729,7 +696,14 @@ namespace GMEPDesignTool
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
-
+                        if (i == 0)
+                        {
+                            rightCircuits[circuitIndex + i].Description = component.Name;
+                        }
+                        else
+                        {
+                            rightCircuits[circuitIndex + i].Description = "---";
+                        }
                         if (i == component.Pole - 1)
                         {
                             rightCircuits[circuitIndex + i].BreakerSize = i + 1;
@@ -759,10 +733,11 @@ namespace GMEPDesignTool
                     }
                 }
             }
-            Kva = (float)Math.Ceiling(Kva / 1000);
-            Amp = (float)Math.Ceiling(SetAmp());
             CalculateLcl();
             CalculateLml();
+            Va = Kva;
+            Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
+            Amp = (float)Math.Ceiling(SetAmp());
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
@@ -771,7 +746,9 @@ namespace GMEPDesignTool
           
             switch (breakerSize)
             {
-                case var _ when breakerSize <= 25:
+                case var _ when breakerSize <= 20:
+                    return 20;
+                case var _ when breakerSize <= 25 && breakerSize > 20:
                     return 25;
                 case var _ when breakerSize <= 30 && breakerSize > 25:
                     return 30;
@@ -826,37 +803,44 @@ namespace GMEPDesignTool
         }
         public float SetAmp()
         {
-            int lineNullVolt = 0;
-            int lineLineVolt = 0;
+            float Amp = 0;
+            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
             switch (Type)
             {
                 case 1:
-                    lineNullVolt = 120;
-                    lineLineVolt = 208;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
                     break;
                 case 2:
-                    lineNullVolt = 120;
-                    lineLineVolt = 240;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
                     break;
                 case 3:
-                    lineNullVolt = 277;
-                    lineLineVolt = 480;
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 277, 10);
                     break;
                 case 4:
-                    lineNullVolt = 120;
-                    lineLineVolt = 240;
+                    double l1 = PhaseAVA;
+                    double l2 = PhaseBVA;
+                    double l3 = PhaseCVA;
+                    double fA = Math.Abs(l3 - l1);
+                    double fB = Math.Abs(l1 - l2);
+                    double fC = Math.Abs(l2 - l3);
+                    double l3N = l3;
+                    double l2N = l2;
+                    double iFa = (fA + (0.25 * Lml)) / 240;
+                    double iFb = (fB + (0.25 * Lml)) / 240;
+                    double iFc = (fC + (0.25 * Lml)) / 240;
+                    double iL2N = (l2N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
+                    double iL3N = (l3N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
+                    double iL1 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow(iFb, 2) + (iFa * iFb));
+                    double iL2 = Math.Sqrt(Math.Pow(iFb, 2) + Math.Pow((iL2N + iFc), 2) + (iFb * (iL2N + iFc)));
+                    double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
+                    Amp = (float)Math.Max(Math.Max(iL3, iL1), iL2);
                     break;
+                case 5:
+                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    break;
+
             }
-            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
-            switch (Pole)
-            {
-                case 2:
-                    Amp = (float)Math.Round((double)largestPhase / lineNullVolt, 10);
-                    break;
-                default:
-                    Amp = (float)Math.Round((double)(largestPhase / (1.732 * lineLineVolt)), 10);
-                    break;
-            }
+            
             return Amp;
         }
         public void DownloadComponents(ObservableCollection<ElectricalEquipment> equipment, ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
@@ -933,14 +917,15 @@ namespace GMEPDesignTool
         public int va;
         public int breakerSize;
         public int index;
+        public string description;
 
-        public Circuit(int _number, int _va, int _breakerSize)
+        public Circuit(int _number, int _va, int _breakerSize, string _description)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
+            description = _description;
         }
-
         public int BreakerSize
         {
             get => breakerSize;
@@ -950,6 +935,7 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+
         public int Va
         {
             get => va;
@@ -965,6 +951,15 @@ namespace GMEPDesignTool
             set
             {
                 number = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Description
+        {
+            get => description;
+            set
+            {
+                description = value;
                 OnPropertyChanged();
             }
         }

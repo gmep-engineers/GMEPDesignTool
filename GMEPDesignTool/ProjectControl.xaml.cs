@@ -393,6 +393,10 @@ namespace GMEPDesignTool
                 {
                     compatibleVoltages.Add(4);
                 }
+                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 3))
+                {
+                    compatibleVoltages.Add(5);
+                }
                 return compatibleVoltages;
             }
 

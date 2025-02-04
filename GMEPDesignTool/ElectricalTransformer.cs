@@ -195,7 +195,7 @@ namespace GMEPDesignTool
         }
         public int SetKva()
         {
-            var kva = (float)Math.Ceiling((PhaseAVA + PhaseBVA + PhaseCVA) / 1000);
+            var kva = (float)Math.Ceiling((PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000);
 
             switch (kva)
             {
