@@ -228,6 +228,7 @@
                                 <TextBox Text="DESCRIPTION" TextAlignment="Center" FontSize="15" Grid.Column="6"/>
                             </Grid>
                         </Grid>
+                       
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="7*"/>
@@ -484,6 +485,42 @@
                                     <DataGridTextColumn Width="3*"  Binding="{Binding Description}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="7*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".5*"/>
+                                    <ColumnDefinition Width="20"/>
+                                </Grid.ColumnDefinitions>
+                                <ItemsControl Grid.Column="7" ItemsSource="{Binding LeftComponents}" AlternationCount="3">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical" Height="Auto"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Canvas>
+                                                <Line X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="56" X2="0" Stroke="Black" StrokeThickness="1"/>
+                                                <Line X1="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Canvas}}" Y1="0" Y2="84" X2="0" Stroke="Black" StrokeThickness="1"/>
+                                            </Canvas>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                      
                         </Grid>
                         <Grid Grid.Row="3" Margin="5 0 0 0" VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
