@@ -448,7 +448,23 @@ namespace GMEPDesignTool
         {
             if (value is float newVal)
             {
-                return newVal * 1.25;
+                return Math.Ceiling(newVal * 1.25);
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ValueRounder : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is float newVal)
+            {
+                return Math.Ceiling(newVal);
             }
             return 0;
         }

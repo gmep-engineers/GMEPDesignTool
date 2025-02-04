@@ -10,6 +10,7 @@
     <Window.Resources>
         <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
         <local:LclConverter x:Key="LclConverter"/>
+        <local:ValueRounder x:Key="ValueRounder"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
     </Window.Resources>
     <Grid>
@@ -674,7 +675,7 @@
                 <TextBox Grid.Row="1" FontSize="23">
                     <TextBox.Text>
                         <MultiBinding StringFormat="LCL @ 125%  {0}  =  {1}">
-                            <Binding Path="Lcl"/>
+                            <Binding Path="Lcl" Converter="{StaticResource ValueRounder}"/>
                             <Binding Path="Lcl" Converter="{StaticResource LclConverter}"/>
                         </MultiBinding>
                     </TextBox.Text>
@@ -682,7 +683,7 @@
                 <TextBox Grid.Row="2" FontSize="23"  >
                     <TextBox.Text>
                         <MultiBinding StringFormat="LML @ 125%  {0} =  {1}">
-                            <Binding Path="Lml"/>
+                            <Binding Path="Lml" Converter="{StaticResource ValueRounder}"/>
                             <Binding Path="Lml" Converter="{StaticResource LclConverter}"/>
                         </MultiBinding>
                     </TextBox.Text>
