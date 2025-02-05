@@ -36,10 +36,15 @@ namespace GMEPDesignTool
         //public string ProjectNo { get; set; }
 
         //public ElectricalProject ElectricalProject { get; set; }
+
+        
         public ProjectControl(string projectNo)
         {
             InitializeComponent();
-            ElectricalTab.Content = new ElectricalProject(projectNo);
+            var viewModel = new ProjectControlViewModel();
+            this.DataContext = viewModel;
+
+            ElectricalTab.Content = new ElectricalProject(projectNo, viewModel);
         }
 
        

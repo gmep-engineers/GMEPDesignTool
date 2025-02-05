@@ -53,8 +53,9 @@ namespace GMEPDesignTool
         public Database.Database database = new Database.Database();
 
         public Database.S3 s3 = new Database.S3();
+        ProjectControlViewModel ProjectView { get; set; }
 
-        public ElectricalProject(string projectNo)
+        public ElectricalProject(string projectNo, ProjectControlViewModel projectView)
         {
             InitializeComponent();
             ProjectId = database.GetProjectId(projectNo);
@@ -76,6 +77,7 @@ namespace GMEPDesignTool
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
             LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
             LightingViewSource.Filter += LightingViewSource_Filter;
+            ProjectView = projectView;
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
@@ -116,8 +118,7 @@ namespace GMEPDesignTool
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
             timer.Tick += Timer_Tick;
-
-            //SaveText.Text = "";
+            ProjectView.SaveText = "";
             GetNames();
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
@@ -160,15 +161,15 @@ namespace GMEPDesignTool
                 ElectricalLightings,
                 LightingLocations
             );
-            //SaveText.Text = "Last Save: " + DateTime.Now.ToString();
             timer.Stop();
+            ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
         }
 
         private void StartTimer()
         {
             timer.Stop();
             timer.Start();
-            //SaveText.Text = "*SAVING*";
+            ProjectView.SaveText = "*SAVING*";
         }
 
         public void setPower()
