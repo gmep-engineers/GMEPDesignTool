@@ -20,6 +20,7 @@ namespace GMEPDesignTool
         private bool _powered;
         public ElectricalPanel ChildPanel { get; set; }
         private bool _isHiddenOnPlan;
+        private bool _isWallMounted;
 
         public ElectricalTransformer(
             string id,
@@ -32,7 +33,8 @@ namespace GMEPDesignTool
             int kva,
             bool powered,
             int circuitNo,
-            bool isHiddenOnPlan
+            bool isHiddenOnPlan,
+            bool isWallMounted
         )
         {
             this.id = id;
@@ -53,6 +55,7 @@ namespace GMEPDesignTool
             Lml = lml;
             SetPole();
             _isHiddenOnPlan = isHiddenOnPlan;
+            _isWallMounted = isWallMounted;
         }
 
 
@@ -94,6 +97,16 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged(nameof(Powered));
+            }
+        }
+
+        public bool IsWallMounted
+        {
+            get => _isWallMounted;
+            set
+            {
+                _isWallMounted = value;
+                OnPropertyChanged(nameof(IsWallMounted));
             }
         }
         public void SetPole()
