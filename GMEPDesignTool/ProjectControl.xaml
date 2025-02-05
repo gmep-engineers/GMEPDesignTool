@@ -11,6 +11,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
  
     <Grid Background="White">
+       
         <TabControl>
             <TabItem Header="Structural" Visibility="Visible">
                 <Grid Background="LightBlue" />
@@ -30,14 +31,14 @@
                 <Grid Background="Gainsboro"/>
             </TabItem>-->
         </TabControl>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <ComboBox Width="200" Height="20"></ComboBox>
-            <Button Margin="10 0 0 0" Width="50" Height="20" Content="New" FontWeight="Bold"/>
-        </StackPanel>
-        <Grid Background="White" Height="22" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
+       
+        <Grid  Background="White" Height="22" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Rectangle Width="1" Stroke="Black" Height="19" Margin="0 0 5 0"/>
+                <Rectangle Width="1"  Stroke="Black" Height="19" Margin="0 0 5 0"/>
                 <TextBlock x:Name="SaveText" Text="{Binding SaveText}" Height="22" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+                <Button Margin="10 0 10 0" Width="50" Height="20" Content="New" FontWeight="Bold"/>
+                <ComboBox Grid.Column="0" Width="200" Height="20"></ComboBox>
+                
             </StackPanel>
         </Grid>
     </Grid>
