@@ -23,7 +23,6 @@ namespace GMEPDesignTool
     public partial class MainWindow
     {
         public ViewModel MainWindowViewModel { get; set; }
-
         public MainWindow()
         {
             MainWindowViewModel = new ViewModel();

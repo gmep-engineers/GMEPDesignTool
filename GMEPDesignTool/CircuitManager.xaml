@@ -20,7 +20,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <Grid Margin="0 20 0 20" MinWidth="1450" MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
+            <Grid Margin="0 20 0 20" MinWidth="1200"  MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="8*"/>
@@ -363,9 +363,9 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -507,9 +507,9 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
-                                    <DataGridCheckBoxColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".3*"/>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
