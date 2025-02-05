@@ -1586,7 +1586,8 @@ namespace GMEPDesignTool
                 false,
                 0,
                 false,
-                true
+                true,
+                0
             );
             AddElectricalTransformer(electricalTransformer);
         }

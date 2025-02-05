@@ -188,7 +188,9 @@
                                                         <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="340 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                         <Label VerticalAlignment="Top" Margin="340,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
                                                         <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="340,55,150,0" HorizontalAlignment="Left" MaxLength="5"/>
-                                                        <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan" VerticalAlignment="Top" Margin="440,50,150,0" HorizontalAlignment="Left" Width="150" />
+                                                        <Label VerticalAlignment="Top" Margin="440,25,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
+                                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="440,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
+                                                        <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan" VerticalAlignment="Top" Margin="540,50,150,0" HorizontalAlignment="Left" Width="150" />
                                                     </Grid>
                                                     <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                                         <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>

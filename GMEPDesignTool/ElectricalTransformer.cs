@@ -18,6 +18,7 @@ namespace GMEPDesignTool
         private int _voltage;
         private int _kva;
         private bool _powered;
+        private int _aicRating;
         public ElectricalPanel ChildPanel { get; set; }
         private bool _isHiddenOnPlan;
         private bool _isWallMounted;
@@ -34,7 +35,9 @@ namespace GMEPDesignTool
             bool powered,
             int circuitNo,
             bool isHiddenOnPlan,
-            bool isWallMounted
+            bool isWallMounted,
+            int aicRating
+
         )
         {
             this.id = id;
@@ -56,6 +59,7 @@ namespace GMEPDesignTool
             SetPole();
             _isHiddenOnPlan = isHiddenOnPlan;
             _isWallMounted = isWallMounted;
+            _aicRating=aicRating;
         }
 
 
@@ -249,6 +253,15 @@ namespace GMEPDesignTool
             {
                 _isHiddenOnPlan = value;
                 OnPropertyChanged(nameof(IsHiddenOnPlan));
+            }
+        }
+        public int AicRating
+        {
+            get => _aicRating;
+            set
+            {
+                _aicRating = value;
+                OnPropertyChanged(nameof(AicRating));
             }
         }
 
