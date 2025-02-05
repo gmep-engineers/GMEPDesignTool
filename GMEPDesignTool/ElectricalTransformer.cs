@@ -18,8 +18,10 @@ namespace GMEPDesignTool
         private int _voltage;
         private int _kva;
         private bool _powered;
+        private int _aicRating;
         public ElectricalPanel ChildPanel { get; set; }
         private bool _isHiddenOnPlan;
+        private bool _isWallMounted;
 
         public ElectricalTransformer(
             string id,
@@ -32,7 +34,10 @@ namespace GMEPDesignTool
             int kva,
             bool powered,
             int circuitNo,
-            bool isHiddenOnPlan
+            bool isHiddenOnPlan,
+            bool isWallMounted,
+            int aicRating
+
         )
         {
             this.id = id;
@@ -53,6 +58,8 @@ namespace GMEPDesignTool
             Lml = lml;
             SetPole();
             _isHiddenOnPlan = isHiddenOnPlan;
+            _isWallMounted = isWallMounted;
+            _aicRating=aicRating;
         }
 
 
@@ -94,6 +101,16 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged(nameof(Powered));
+            }
+        }
+
+        public bool IsWallMounted
+        {
+            get => _isWallMounted;
+            set
+            {
+                _isWallMounted = value;
+                OnPropertyChanged(nameof(IsWallMounted));
             }
         }
         public void SetPole()
@@ -236,6 +253,15 @@ namespace GMEPDesignTool
             {
                 _isHiddenOnPlan = value;
                 OnPropertyChanged(nameof(IsHiddenOnPlan));
+            }
+        }
+        public int AicRating
+        {
+            get => _aicRating;
+            set
+            {
+                _aicRating = value;
+                OnPropertyChanged(nameof(AicRating));
             }
         }
 

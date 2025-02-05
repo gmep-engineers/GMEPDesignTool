@@ -20,7 +20,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <Grid Margin="0 20 0 20" MinWidth="1200"  MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
+            <Grid Margin="0 20 0 20" MinWidth="1080"  MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="8*"/>
@@ -141,9 +141,9 @@
                                             </Style>
                                         </ColumnDefinition.Style>
                                     </ColumnDefinition>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
                                     <ColumnDefinition Width=".5*"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
@@ -226,9 +226,9 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>
                                     <ColumnDefinition Width=".5*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
                                     <ColumnDefinition>
                                         <ColumnDefinition.Style>
                                             <Style TargetType="ColumnDefinition">
@@ -363,9 +363,9 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width=".3*"/>
-                                    <DataGridTextColumn Width=".3*"/>
-                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTemplateColumn Width=".4*"/>
+                                    <DataGridTextColumn Width=".4*"/>
+                                    <DataGridTextColumn Width=".4*"/>
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -507,9 +507,9 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width=".3*"/>
-                                    <DataGridTextColumn Width=".3*"/>
-                                    <DataGridTextColumn Width=".3*"/>
+                                    <DataGridTextColumn Width=".4*"/>
+                                    <DataGridTextColumn Width=".4*"/>
+                                    <DataGridTextColumn Width=".4*"/>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -606,9 +606,9 @@
                                             </Style>
                                         </ColumnDefinition.Style>
                                     </ColumnDefinition>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
                                     <ColumnDefinition Width=".5*"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
@@ -654,9 +654,9 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="20"/>
                                     <ColumnDefinition Width=".5*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
-                                    <ColumnDefinition Width=".3*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
+                                    <ColumnDefinition Width=".4*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition>

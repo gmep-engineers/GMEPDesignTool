@@ -1072,7 +1072,8 @@ namespace GMEPDesignTool
                 1,
                 1,
                 1,
-                "White"
+                "White",
+                0
             );
             AddElectricalService(electricalService);
         }
@@ -1585,7 +1586,9 @@ namespace GMEPDesignTool
                 1,
                 false,
                 0,
-                false
+                false,
+                true,
+                0
             );
             AddElectricalTransformer(electricalTransformer);
         }

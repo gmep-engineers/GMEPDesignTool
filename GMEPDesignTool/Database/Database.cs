@@ -367,7 +367,7 @@ namespace GMEPDesignTool.Database
         private void UpdateService(ElectricalService service)
         {
             string query =
-                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code WHERE id = @id";
+                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@name", service.Name);
             command.Parameters.AddWithValue("@amp", service.Amp);
@@ -375,13 +375,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@type", service.Type);
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.ExecuteNonQuery();
         }
 
         private void InsertService(string projectId, ElectricalService service)
         {
             string query =
-                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code)";
+                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", service.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -390,6 +391,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@type", service.Type);
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.ExecuteNonQuery();
         }
 
@@ -575,7 +577,7 @@ namespace GMEPDesignTool.Database
         private void UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan WHERE id = @id";
+                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@id", transformer.Id);
@@ -587,13 +589,15 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@name", transformer.Name);
             command.Parameters.AddWithValue("@circuitNo", transformer.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", transformer.IsHiddenOnPlan);
+            command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
+            command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
             command.ExecuteNonQuery();
         }
 
         private void InsertTransformer(string projectId, ElectricalTransformer transformer)
         {
             string query =
-                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan)";
+                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan, is_wall_mounted, aic_rating) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan, @isWallMounted, @aicRating)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", transformer.Id);
             command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
@@ -605,6 +609,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@voltage", transformer.Voltage);
             command.Parameters.AddWithValue("@circuitNo", transformer.CircuitNo);
             command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
+            command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
+            command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
             command.ExecuteNonQuery();
         }
         private void UpdateLocation(Location location)
@@ -671,7 +677,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("electrical_service_voltage_id"),
                         reader.GetInt32("electrical_service_amp_rating_id"),
                         reader.GetInt32("electrical_service_meter_config_id"),
-                        reader.GetString("color_code")
+                        reader.GetString("color_code"),
+                        reader.GetInt32("aic_rating")
                     )
                 );
             }
@@ -886,7 +893,9 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("kva_id"),
                         false,
                        reader.GetInt32("circuit_no"),
-                       reader.GetBoolean("is_hidden_on_plan")
+                       reader.GetBoolean("is_hidden_on_plan"),
+                       reader.GetBoolean("is_wall_mounted"),
+                       reader.GetInt32("aic_rating")
                     )
                 );
             }
