@@ -45,6 +45,7 @@ namespace GMEPDesignTool
             this.DataContext = viewModel;
 
             ElectricalTab.Content = new ElectricalProject(projectNo, viewModel);
+            AdminTab.Content = new Admin();
         }
 
        

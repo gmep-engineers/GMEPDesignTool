@@ -18,19 +18,19 @@
             <TabItem Header="Mechanical" Visibility="Visible">
                 <Grid Background="White"/>
             </TabItem>
-            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top">
-            </TabItem>
+            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top"/>
             <TabItem Header="Plumbing" Visibility="Visible">
                 <Grid Background="DarkMagenta"/>
             </TabItem>
             <TabItem Header="" Visibility="Hidden">
                 <Grid Background="DarkMagenta"/>
             </TabItem>
-            <TabItem Header="Info" Visibility="Visible">
+            <TabItem x:Name="AdminTab" Header="Admin" Visibility="Visible"/>
+            <!--<TabItem Header="Info" Visibility="Visible">
                 <Grid Background="Gainsboro"/>
-            </TabItem>
+            </TabItem>-->
+            
         </TabControl>
-
         <Grid Background="White" Height="22" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Rectangle Width="1" Stroke="Black" Height="19" Margin="0 0 5 0"/>
