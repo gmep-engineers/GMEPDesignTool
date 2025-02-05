@@ -34,7 +34,7 @@ namespace GMEPDesignTool
     public partial class ElectricalProject : UserControl
     {
 
-        private DispatcherTimer timer;
+        private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
@@ -115,7 +115,7 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            timer = new DispatcherTimer();
+            //timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(2);
             timer.Tick += Timer_Tick;
             ProjectView.SaveText = "";

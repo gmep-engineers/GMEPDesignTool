@@ -8,25 +8,27 @@ using System.ComponentModel;
 
 namespace GMEPDesignTool
 {
-    public class ProjectControlViewModel : ViewModelBase
+    public class ProjectControlViewModel : INotifyPropertyChanged
     {
-        public string saveText;
+        private string saveText;
         public string SaveText
         {
-            get => saveText;
+            get { return saveText; }
             set
             {
                 if (saveText != value)
                 {
                     saveText = value;
-                    SetProperty(ref saveText, value);
+                    OnPropertyChanged(nameof(SaveText));
                 }
             }
         }
 
-        public ProjectControlViewModel()
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            SaveText = "";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
