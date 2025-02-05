@@ -398,7 +398,19 @@ namespace GMEPDesignTool
                         }
                     }
                 }
-                foreach (var component in combinedList)
+            }
+            foreach (var component in combinedList)
+            {
+                int leftIndex = leftCircuits.IndexOf(
+                  leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+              );
+                int rightIndex = rightCircuits.IndexOf(
+                   rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+               );
+                bool fitsLeft = leftComponents.Contains(component) && ((leftIndex + component.Pole) <= leftCircuits.Count);
+                bool fitsRight = rightComponents.Contains(component) && ((rightIndex + component.Pole) <= rightCircuits.Count);
+
+                if (fitsLeft || fitsRight)
                 {
                     if (component.Lml > Lml) { Lml = component.Lml; }
                 }

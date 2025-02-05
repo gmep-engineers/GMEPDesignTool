@@ -316,7 +316,7 @@
                                                         <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="550,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
 
                                                         <Label VerticalAlignment="Top" Margin="650,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
                                                         <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="750,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
                                                         <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="850,50,150,0" HorizontalAlignment="Left" Width="150" />
                                                     </Grid>
@@ -492,7 +492,7 @@
                                                                 </Grid>
                                                                 <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
                                                                     <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" MaxLength="10"></TextBox>
+                                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
                                                                 </StackPanel>
                                                            
 
