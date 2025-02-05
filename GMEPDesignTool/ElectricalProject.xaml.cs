@@ -27,15 +27,7 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl
     {
-        public static readonly DependencyProperty ProjectNoProperty =
-           DependencyProperty.Register("ProjectNo", typeof(string), typeof(ElectricalProject), new PropertyMetadata(string.Empty));
-
-        public string ProjectNo
-        {
-            get { return (string)GetValue(ProjectNoProperty); }
-            set { SetValue(ProjectNoProperty, value); }
-        }
-
+        public string ProjectNo{ get; set; }
 
         private DispatcherTimer timer;
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -59,7 +51,6 @@ namespace GMEPDesignTool
 
         public ElectricalProject()
         {
-            InitializeComponent();
             ProjectId = database.GetProjectId(ProjectNo);
             ElectricalPanels = database.GetProjectPanels(ProjectId);
             ElectricalServices = database.GetProjectServices(ProjectId);
@@ -126,6 +117,7 @@ namespace GMEPDesignTool
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
             List<Tuple<string, ElectricalPanel>> panelParentIds = new List<Tuple<string, ElectricalPanel>>();
+         
 
             foreach (var panel in ElectricalPanels)
             {
@@ -145,12 +137,9 @@ namespace GMEPDesignTool
                     }
                 }
             }
+            InitializeComponent();
         }
 
-        private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private void Timer_Tick(object sender, EventArgs e)
         {

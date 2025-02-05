@@ -40,6 +40,7 @@ namespace GMEPDesignTool
         {
             ProjectNo =  projectNo;
             InitializeComponent();
+            DataContext = this;
         }
     }
 
