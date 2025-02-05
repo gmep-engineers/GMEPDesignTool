@@ -17,6 +17,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using BCrypt.Net;
 using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 
 namespace GMEPDesignTool.Database
 {
@@ -244,7 +245,6 @@ namespace GMEPDesignTool.Database
             {
                 if (existingEquipmentIds.Contains(equipment.Id))
                 {
-                    SyncEquipmentQuantity(equipment);
                     UpdateEquipment(equipment);
                     existingEquipmentIds.Remove(equipment.Id);
                 }
@@ -257,36 +257,7 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
         }
 
-        public void SyncEquipmentQuantity(ElectricalEquipment equipment)
-        {
-            // Get the current count of entries with the same group_id
-            string countQuery =
-                "SELECT COUNT(*) FROM electrical_equipment WHERE group_id = @groupId";
-            MySqlCommand countCommand = new MySqlCommand(countQuery, Connection);
-            countCommand.Parameters.AddWithValue("@groupId", equipment.Id);
-            int currentCount = Convert.ToInt32(countCommand.ExecuteScalar());
-
-            // If the current count is less than the qty, add new entries
-            if (currentCount < equipment.Qty)
-            {
-                int entriesToAdd = equipment.Qty - currentCount;
-                for (int i = 0; i < entriesToAdd; i++)
-                {
-                    InsertEquipment(equipment.ProjectId, equipment);
-                }
-            }
-            // If the current count is more than the qty, remove excess entries
-            else if (currentCount > equipment.Qty)
-            {
-                int entriesToRemove = currentCount - equipment.Qty;
-                string deleteQuery =
-                    "DELETE FROM electrical_equipment WHERE group_id = @groupId LIMIT @limit";
-                MySqlCommand deleteCommand = new MySqlCommand(deleteQuery, Connection);
-                deleteCommand.Parameters.AddWithValue("@groupId", equipment.Id);
-                deleteCommand.Parameters.AddWithValue("@limit", entriesToRemove);
-                deleteCommand.ExecuteNonQuery();
-            }
-        }
+       
 
         private void UpdateLightings(
             string projectId,
@@ -342,15 +313,9 @@ namespace GMEPDesignTool.Database
             string projectId
         )
         {
-            var idType = "";
-            if (tableName == "electrical_equipment")
-            {
-                idType = "group_id";
-            }
-            else
-            {
-                idType = "id";
-            }
+           
+            var idType = "id";
+            
             string query = $"SELECT {idType} FROM {tableName} WHERE {columnName} = @projectId";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -445,8 +410,9 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType WHERE group_id = @group_id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
             command.Parameters.AddWithValue("@parent_id", equipment.ParentId);
             command.Parameters.AddWithValue("@voltage", equipment.Voltage);
@@ -462,7 +428,6 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@distanceFromParent", equipment.DistanceFromParent);
             command.Parameters.AddWithValue("@category", equipment.Category);
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
-            command.Parameters.AddWithValue("@group_id", equipment.Id);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@connection", equipment.Connection);
             command.Parameters.AddWithValue("@mca_id", equipment.McaId);
@@ -481,10 +446,9 @@ namespace GMEPDesignTool.Database
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, group_id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type) VALUES (@id, @group_id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType)";
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
-            command.Parameters.AddWithValue("@group_id", equipment.Id);
+            command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -640,15 +604,8 @@ namespace GMEPDesignTool.Database
 
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
-            var idType = "";
-            if (tableName == "electrical_equipment")
-            {
-                idType = "group_id";
-            }
-            else
-            {
-                idType = "id";
-            }
+            var idType = "id";
+            
             foreach (var id in ids)
             {
                 string query = $"DELETE FROM {tableName} WHERE {idType} = @id";
@@ -735,57 +692,41 @@ namespace GMEPDesignTool.Database
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = command.ExecuteReader();
-            Dictionary<string, ElectricalEquipment> equipmentDict =
-                new Dictionary<string, ElectricalEquipment>();
-            Dictionary<string, int> qtyDict = new Dictionary<string, int>();
-
             while (reader.Read())
-            {
-                string groupId = reader.GetString("group_id");
-                if (!equipmentDict.ContainsKey(groupId))
-                {
-                    var newEquip = new ElectricalEquipment(
-                        groupId,
-                        reader.GetString("project_id"),
-                        reader.GetString("owner_id"),
-                        reader.GetString("equip_no"),
-                        0,
-                        reader.GetString("parent_id"),
-                        reader.GetInt32("voltage_id"),
-                        reader.GetFloat("fla"),
-                        idToVoltage(reader.GetInt32("voltage_id")) * reader.GetFloat("fla"),
-                        reader.GetBoolean("is_three_phase"),
-                        reader.GetString("spec_sheet_id"),
-                        reader.GetInt32("aic_rating"),
-                        reader.GetBoolean("spec_sheet_from_client"),
-                        reader.GetInt32("parent_distance"),
-                        reader.GetInt32("category_id"),
-                        reader.GetString("color_code"),
-                        false,
-                        reader.GetInt32("connection_type_id"),
-                        reader.GetString("description"),
-                        reader.GetInt32("mca_id"),
-                        reader.GetString("hp"),
-                        reader.GetBoolean("has_plug"),
-                        reader.GetBoolean("locking_connector"),
-                        reader.GetFloat("width"),
-                        reader.GetFloat("depth"),
-                        reader.GetFloat("height"),
-                        reader.GetInt32("circuit_no"),
-                        reader.GetBoolean("is_hidden_on_plan"),
-                        reader.GetInt32("load_type")
-                    );
-                    equipmentDict[groupId] = newEquip;
-                    qtyDict[groupId] = 0;
-                }
-                qtyDict[groupId]++;
-            }
 
-            foreach (var pair in equipmentDict)
-            {
-                pair.Value.Qty = qtyDict[pair.Key];
-                equipments.Add(pair.Value);
-            }
+                equipments.Add(new ElectricalEquipment(
+                    reader.GetString("id"),
+                    reader.GetString("project_id"),
+                    reader.GetString("owner_id"),
+                    reader.GetString("equip_no"),
+                    0,
+                    reader.GetString("parent_id"),
+                    reader.GetInt32("voltage_id"),
+                    reader.GetFloat("fla"),
+                    idToVoltage(reader.GetInt32("voltage_id")) * reader.GetFloat("fla"),
+                    reader.GetBoolean("is_three_phase"),
+                    reader.GetString("spec_sheet_id"),
+                    reader.GetInt32("aic_rating"),
+                    reader.GetBoolean("spec_sheet_from_client"),
+                    reader.GetInt32("parent_distance"),
+                    reader.GetInt32("category_id"),
+                    reader.GetString("color_code"),
+                    false,
+                    reader.GetInt32("connection_type_id"),
+                    reader.GetString("description"),
+                    reader.GetInt32("mca_id"),
+                    reader.GetString("hp"),
+                    reader.GetBoolean("has_plug"),
+                    reader.GetBoolean("locking_connector"),
+                    reader.GetFloat("width"),
+                    reader.GetFloat("depth"),
+                    reader.GetFloat("height"),
+                    reader.GetInt32("circuit_no"),
+                    reader.GetBoolean("is_hidden_on_plan"),
+                    reader.GetInt32("load_type")
+                )
+             );
+           
 
             reader.Close();
             CloseConnection();
