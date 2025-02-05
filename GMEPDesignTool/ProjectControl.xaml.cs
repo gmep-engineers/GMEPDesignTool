@@ -1072,7 +1072,8 @@ namespace GMEPDesignTool
                 1,
                 1,
                 1,
-                "White"
+                "White",
+                0
             );
             AddElectricalService(electricalService);
         }

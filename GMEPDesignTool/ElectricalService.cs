@@ -18,6 +18,7 @@ namespace GMEPDesignTool
         private int _amp;
         private int _config;
         private string _colorCode;
+        private int _aicRating;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,7 +29,8 @@ namespace GMEPDesignTool
             int type,
             int amp,
             int config,
-            string colorCode
+            string colorCode,
+            int aicRating
         )
         {
             _id = id;
@@ -38,6 +40,7 @@ namespace GMEPDesignTool
             _amp = amp;
             _config = config;
             _colorCode = colorCode;
+            _aicRating = aicRating;
         }
 
         public string Id
@@ -105,6 +108,16 @@ namespace GMEPDesignTool
             set
             {
                 _colorCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int AicRating
+        {
+            get => _aicRating;
+            set
+            {
+                _aicRating = value;
                 OnPropertyChanged();
             }
         }

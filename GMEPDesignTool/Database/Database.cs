@@ -367,7 +367,7 @@ namespace GMEPDesignTool.Database
         private void UpdateService(ElectricalService service)
         {
             string query =
-                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code WHERE id = @id";
+                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@name", service.Name);
             command.Parameters.AddWithValue("@amp", service.Amp);
@@ -375,13 +375,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@type", service.Type);
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.ExecuteNonQuery();
         }
 
         private void InsertService(string projectId, ElectricalService service)
         {
             string query =
-                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code)";
+                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", service.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -390,6 +391,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@type", service.Type);
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
+            command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.ExecuteNonQuery();
         }
 
@@ -675,7 +677,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("electrical_service_voltage_id"),
                         reader.GetInt32("electrical_service_amp_rating_id"),
                         reader.GetInt32("electrical_service_meter_config_id"),
-                        reader.GetString("color_code")
+                        reader.GetString("color_code"),
+                        reader.GetInt32("aic_rating")
                     )
                 );
             }
