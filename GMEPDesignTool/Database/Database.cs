@@ -71,35 +71,80 @@ namespace GMEPDesignTool.Database
             return result;
         }
 
-        public string GetProjectId(string projectNo)
+        public Dictionary<int, string> GetProjectIds(string projectNo)
         {
-            string query = "SELECT id FROM projects WHERE gmep_project_no = @projectNo";
+            string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
             MySqlDataReader reader = command.ExecuteReader();
 
-            string id = null;
-            if (reader.Read())
+            Dictionary<int, string> projectIds = new Dictionary<int, string>();
+            while (reader.Read())
             {
-                id = reader.GetString("id");
+                projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
             reader.Close();
 
-            if (id == null)
+            if (!projectIds.Any())
             {
                 // Project name does not exist, insert a new entry with a generated ID
-                id = Guid.NewGuid().ToString();
+                var id = Guid.NewGuid().ToString();
                 string insertQuery =
                     "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.ExecuteNonQuery();
+                projectIds.Add(1, id);
             }
 
             CloseConnection();
-            return id;
+            return projectIds;
+        }
+        public Dictionary<int, string> AddProjectVersions(string projectNo, string projectId)
+        {
+            string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectNo", projectNo);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            Dictionary<int, string> projectIds = new Dictionary<int, string>();
+            while (reader.Read())
+            {
+                projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
+            }
+            reader.Close();
+
+            if (!projectIds.Any())
+            {
+                // Project name does not exist, insert a new entry with a generated ID
+                var id = Guid.NewGuid().ToString();
+                string insertQuery =
+                    "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+                MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
+                insertCommand.Parameters.AddWithValue("@id", id);
+                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
+                insertCommand.ExecuteNonQuery();
+                projectIds.Add(1, id);
+            }
+            else
+            {
+                var id = Guid.NewGuid().ToString();
+                string insertQuery =
+                   "INSERT INTO projects (id, gmep_project_no, version) VALUES (@id, @projectNo, @version)";
+                MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
+                insertCommand.Parameters.AddWithValue("@id", id);
+                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
+                insertCommand.Parameters.AddWithValue("@version", projectIds.Count + 1);
+                insertCommand.ExecuteNonQuery();
+                CloneElectricalProject(projectId, id);
+                projectIds.Add(projectIds.Count + 1, id);
+            }
+
+            CloseConnection();
+            return projectIds;
         }
 
         public Dictionary<string, string> getOwners()
@@ -864,6 +909,85 @@ namespace GMEPDesignTool.Database
             reader.Close();
             CloseConnection();
             return locations;
+        }
+        public void CloneElectricalProject(string projectId, string newProjectId)
+        {
+            var services = GetProjectServices(projectId);
+            var panels = GetProjectPanels(projectId);
+            var equipments = GetProjectEquipment(projectId);
+            var lightings = GetProjectLighting(projectId);
+            var transformers = GetProjectTransformers(projectId);
+            var locations = GetLightingLocations(projectId);
+
+            Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
+            Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
+
+            foreach (var service in services)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(service.Id, Id);
+                service.Id = Id;
+                service.ProjectId = newProjectId;
+            }
+            foreach (var panel in panels)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(panel.Id, Id);
+                panel.Id = Id;
+                panel.ProjectId = newProjectId;
+            }
+            foreach (var transformer in transformers)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(transformer.Id, Id);
+                transformer.Id = Id;
+                transformer.ProjectId = newProjectId;
+            }
+            foreach (var equipment in equipments)
+            {
+                string Id = Guid.NewGuid().ToString();
+                equipment.Id = Id;
+                equipment.ProjectId = newProjectId;
+            }
+            foreach (var location in locations)
+            {
+                string Id = Guid.NewGuid().ToString();
+                locationIdSwitch.Add(location.Id, Id);
+                location.Id = Id;
+            }
+            foreach (var lighting in lightings)
+            {
+                string Id = Guid.NewGuid().ToString();
+                lighting.Id = Id;
+                lighting.ProjectId = newProjectId;
+                if (!string.IsNullOrEmpty(lighting.LocationId))
+                {
+                    lighting.LocationId = locationIdSwitch[lighting.LocationId];
+                }
+            }
+            foreach(var panel in panels)
+            {
+                if (!string.IsNullOrEmpty(panel.parentId))
+                {
+                    panel.ParentId = parentIdSwitch[panel.ParentId];
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (!string.IsNullOrEmpty(transformer.parentId))
+                {
+                    transformer.ParentId = parentIdSwitch[transformer.ParentId];
+                }
+            }
+            foreach (var equipment in equipments)
+            {
+                if (!string.IsNullOrEmpty(equipment.parentId))
+                {
+                    equipment.ParentId = parentIdSwitch[equipment.ParentId];
+                }
+            }
+            UpdateProject(newProjectId, services, panels, equipments, transformers, lightings, locations);
+
         }
        
     }
