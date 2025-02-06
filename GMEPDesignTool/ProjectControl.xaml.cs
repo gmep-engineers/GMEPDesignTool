@@ -57,6 +57,7 @@ namespace GMEPDesignTool
         private void AddVersion_Click(object sender, RoutedEventArgs e)
         {
             viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo);
+            VersionComboBox.SelectedValue = viewModel.ProjectIds.Count;
         }
 
         private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -65,7 +66,7 @@ namespace GMEPDesignTool
             {
                 string newprojectId = selectedPair.Value;
                 viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
-                ElectricalTab.Content =  viewModel.ActiveElectricalProject;
+                ElectricalTab.Content = viewModel.ActiveElectricalProject;
 
             }
         }
