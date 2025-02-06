@@ -11,6 +11,7 @@ namespace GMEPDesignTool
     public class ProjectControlViewModel : INotifyPropertyChanged
     {
         private string saveText;
+        public Database.Database database = new Database.Database();
         public string SaveText
         {
             get { return saveText; }

@@ -9,9 +9,8 @@
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
- 
+
     <Grid Background="White">
-       
         <TabControl>
             <TabItem Header="Structural" Visibility="Visible">
                 <Grid Background="LightBlue" />

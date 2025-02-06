@@ -50,7 +50,7 @@ namespace GMEPDesignTool
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
 
-        public Database.Database database = new Database.Database();
+        //public Database.Database database = new Database.Database();
 
         public Database.S3 s3 = new Database.S3();
         ProjectControlViewModel ProjectView { get; set; }
@@ -58,26 +58,27 @@ namespace GMEPDesignTool
         public ElectricalProject(string projectNo, ProjectControlViewModel projectView)
         {
             InitializeComponent();
-            ProjectId = database.GetProjectId(projectNo);
-            ElectricalPanels = database.GetProjectPanels(ProjectId);
-            ElectricalServices = database.GetProjectServices(ProjectId);
-            ElectricalEquipments = database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = database.GetProjectTransformers(ProjectId);
-            ElectricalLightings = database.GetProjectLighting(ProjectId);
+            ProjectView = projectView;
+            ProjectId = ProjectView.database.GetProjectId(projectNo);
+            ElectricalPanels = ProjectView.database.GetProjectPanels(ProjectId);
+            ElectricalServices = ProjectView.database.GetProjectServices(ProjectId);
+            ElectricalEquipments = ProjectView.database.GetProjectEquipment(ProjectId);
+            ElectricalTransformers = ProjectView.database.GetProjectTransformers(ProjectId);
+            ElectricalLightings = ProjectView.database.GetProjectLighting(ProjectId);
             LightingLocations = new ObservableCollection<Location>();
-            LightingLocations = database.GetLightingLocations(ProjectId);
+            LightingLocations = ProjectView.database.GetLightingLocations(ProjectId);
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
-            Owners = database.getOwners();
+            Owners = ProjectView.database.getOwners();
             EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
             LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
             LightingViewSource.Filter += LightingViewSource_Filter;
-            ProjectView = projectView;
+            
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
@@ -152,7 +153,7 @@ namespace GMEPDesignTool
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            database.UpdateProject(
+            ProjectView.database.UpdateProject(
                 ProjectId,
                 ElectricalServices,
                 ElectricalPanels,
