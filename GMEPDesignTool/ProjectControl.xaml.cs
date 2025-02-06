@@ -37,21 +37,26 @@ namespace GMEPDesignTool
 
         //public ElectricalProject ElectricalProject { get; set; }
 
-        
+        ProjectControlViewModel viewModel;
         public ProjectControl(string projectNo)
         {
             InitializeComponent();
-            var viewModel = new ProjectControlViewModel();
+            viewModel = new ProjectControlViewModel(projectNo);
             this.DataContext = viewModel;
 
-            Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
+            //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
 
-            string projectId = projectIds[1];
+            string projectId = viewModel.ProjectIds[1];
 
-            ElectricalTab.Content = new ElectricalProject(projectId, viewModel);
+            viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
+
+            ElectricalTab.Content =  viewModel.ActiveElectricalProject;
             AdminTab.Content = new Admin();
         }
 
-       
+        private void AddVersion_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo);
+        }
     }
 }
