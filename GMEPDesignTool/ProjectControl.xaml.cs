@@ -44,7 +44,9 @@ namespace GMEPDesignTool
             var viewModel = new ProjectControlViewModel();
             this.DataContext = viewModel;
 
-            var projectId = viewModel.database.GetProjectId(projectNo);
+            Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
+
+            string projectId = projectIds[1];
 
             ElectricalTab.Content = new ElectricalProject(projectId, viewModel);
             AdminTab.Content = new Admin();

@@ -71,35 +71,36 @@ namespace GMEPDesignTool.Database
             return result;
         }
 
-        public string GetProjectId(string projectNo)
+        public Dictionary<int, string> GetProjectIds(string projectNo)
         {
-            string query = "SELECT id FROM projects WHERE gmep_project_no = @projectNo";
+            string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
             MySqlDataReader reader = command.ExecuteReader();
 
-            string id = null;
-            if (reader.Read())
+            Dictionary<int, string> projectIds = new Dictionary<int, string>();
+            while (reader.Read())
             {
-                id = reader.GetString("id");
+                projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
             reader.Close();
 
-            if (id == null)
+            if (!projectIds.Any())
             {
                 // Project name does not exist, insert a new entry with a generated ID
-                id = Guid.NewGuid().ToString();
+                var id = Guid.NewGuid().ToString();
                 string insertQuery =
                     "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.ExecuteNonQuery();
+                projectIds.Add(1, id);
             }
 
             CloseConnection();
-            return id;
+            return projectIds;
         }
 
         public Dictionary<string, string> getOwners()
