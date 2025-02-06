@@ -58,5 +58,16 @@ namespace GMEPDesignTool
         {
             viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo);
         }
+
+        private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+            {
+                string newprojectId = selectedPair.Value;
+                viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
+                ElectricalTab.Content =  viewModel.ActiveElectricalProject;
+
+            }
+        }
     }
 }

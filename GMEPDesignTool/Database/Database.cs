@@ -139,6 +139,7 @@ namespace GMEPDesignTool.Database
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.Parameters.AddWithValue("@version", projectIds.Count + 1);
                 insertCommand.ExecuteNonQuery();
+                CloneElectricalProject(projectIds[projectIds.Count], id);
                 projectIds.Add(projectIds.Count + 1, id);
             }
 
@@ -908,6 +909,85 @@ namespace GMEPDesignTool.Database
             reader.Close();
             CloseConnection();
             return locations;
+        }
+        public void CloneElectricalProject(string projectId, string newProjectId)
+        {
+            var services = GetProjectServices(projectId);
+            var panels = GetProjectPanels(projectId);
+            var equipments = GetProjectEquipment(projectId);
+            var lightings = GetProjectLighting(projectId);
+            var transformers = GetProjectTransformers(projectId);
+            var locations = GetLightingLocations(projectId);
+
+            Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
+            Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
+
+            foreach (var service in services)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(service.Id, Id);
+                service.Id = Id;
+                service.ProjectId = newProjectId;
+            }
+            foreach (var panel in panels)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(panel.Id, Id);
+                panel.Id = Id;
+                panel.ProjectId = newProjectId;
+            }
+            foreach (var transformer in transformers)
+            {
+                string Id = Guid.NewGuid().ToString();
+                parentIdSwitch.Add(transformer.Id, Id);
+                transformer.Id = Id;
+                transformer.ProjectId = newProjectId;
+            }
+            foreach (var equipment in equipments)
+            {
+                string Id = Guid.NewGuid().ToString();
+                equipment.Id = Id;
+                equipment.ProjectId = newProjectId;
+            }
+            foreach (var location in locations)
+            {
+                string Id = Guid.NewGuid().ToString();
+                locationIdSwitch.Add(location.Id, Id);
+                location.Id = Id;
+            }
+            foreach (var lighting in lightings)
+            {
+                string Id = Guid.NewGuid().ToString();
+                lighting.Id = Id;
+                lighting.ProjectId = newProjectId;
+                if (!string.IsNullOrEmpty(lighting.LocationId))
+                {
+                    lighting.LocationId = locationIdSwitch[lighting.LocationId];
+                }
+            }
+            foreach(var panel in panels)
+            {
+                if (!string.IsNullOrEmpty(panel.parentId))
+                {
+                    panel.ParentId = parentIdSwitch[panel.ParentId];
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (!string.IsNullOrEmpty(transformer.parentId))
+                {
+                    transformer.ParentId = parentIdSwitch[transformer.ParentId];
+                }
+            }
+            foreach (var equipment in equipments)
+            {
+                if (!string.IsNullOrEmpty(equipment.parentId))
+                {
+                    equipment.ParentId = parentIdSwitch[equipment.ParentId];
+                }
+            }
+            UpdateProject(newProjectId, services, panels, equipments, transformers, lightings, locations);
+
         }
        
     }
