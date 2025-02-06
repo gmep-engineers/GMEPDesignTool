@@ -74,5 +74,16 @@ namespace GMEPDesignTool
 
             }
         }
+
+        private void DeleteProject_Click(object sender, RoutedEventArgs e)
+        {
+            if (
+              sender is Button button
+              && button.CommandParameter is KeyValuePair<int, string> projects
+          )
+            {
+                //viewModel.database.RemoveProject
+            }
+        }
     }
 }

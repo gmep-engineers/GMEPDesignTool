@@ -36,7 +36,16 @@
                 <Rectangle Width="1"  Stroke="Black" Height="19" Margin="0 0 5 0"/>
                 <TextBlock x:Name="SaveText" Text="{Binding SaveText}" Height="22" HorizontalAlignment="Right" Margin="0 0 5 0"/>
                 <Button Margin="10 0 10 0" Width="50" Height="20" Content="New" FontWeight="Bold" Click="AddVersion_Click"/>
-                <ComboBox x:Name="VersionComboBox" Grid.Column="0" Width="130" Height="20" ItemsSource="{Binding ProjectIds}" DisplayMemberPath="Key" SelectedValuePath="Key" SelectedValue="{Binding SelectedVersion}" SelectionChanged="Version_SelectionChanged"></ComboBox>
+                <ComboBox x:Name="VersionComboBox" Grid.Column="0" Width="130" Height="20" ItemsSource="{Binding ProjectIds}" SelectedValuePath="Key" SelectedValue="{Binding SelectedVersion}" SelectionChanged="Version_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Key}" />
+                                <Button Margin="50 0 0 0" Background="Red" Foreground="White" FontSize="9" Content="Delete" Width="50" HorizontalAlignment="Right" Click="DeleteProject_Click" CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
         </Grid>
     </Grid>
