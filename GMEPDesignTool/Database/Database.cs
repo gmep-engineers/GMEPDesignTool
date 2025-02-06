@@ -102,7 +102,7 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return projectIds;
         }
-        public Dictionary<int, string> AddProjectVersions(string projectNo)
+        public Dictionary<int, string> AddProjectVersions(string projectNo, string projectId)
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
             OpenConnection();
@@ -139,7 +139,7 @@ namespace GMEPDesignTool.Database
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.Parameters.AddWithValue("@version", projectIds.Count + 1);
                 insertCommand.ExecuteNonQuery();
-                CloneElectricalProject(projectIds[projectIds.Count], id);
+                CloneElectricalProject(projectId, id);
                 projectIds.Add(projectIds.Count + 1, id);
             }
 

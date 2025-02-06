@@ -56,8 +56,12 @@ namespace GMEPDesignTool
 
         private void AddVersion_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo);
-            VersionComboBox.SelectedValue = viewModel.ProjectIds.Count;
+            if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+            {
+                string projectId = selectedPair.Value;
+                viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
+                VersionComboBox.SelectedValue = viewModel.ProjectIds.Count;
+            }
         }
 
         private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
