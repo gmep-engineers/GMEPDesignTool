@@ -55,11 +55,11 @@ namespace GMEPDesignTool
         public Database.S3 s3 = new Database.S3();
         ProjectControlViewModel ProjectView { get; set; }
 
-        public ElectricalProject(string projectNo, ProjectControlViewModel projectView)
+        public ElectricalProject(string projectId, ProjectControlViewModel projectView)
         {
             InitializeComponent();
             ProjectView = projectView;
-            ProjectId = ProjectView.database.GetProjectId(projectNo);
+            ProjectId = projectId;
             ElectricalPanels = ProjectView.database.GetProjectPanels(ProjectId);
             ElectricalServices = ProjectView.database.GetProjectServices(ProjectId);
             ElectricalEquipments = ProjectView.database.GetProjectEquipment(ProjectId);
