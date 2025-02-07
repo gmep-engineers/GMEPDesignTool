@@ -465,8 +465,6 @@ namespace GMEPDesignTool
                 }
                 totalCircuits--;
             }
-            SetCircuitNumbers();
-            SetCircuitVa();
         }
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -637,12 +635,16 @@ namespace GMEPDesignTool
             }
             while (leftCircuitIndex < leftCircuits.Count)
             {
-                AssignSpace(true);
+                Space newSpace = new Space();
+                newSpace.CircuitNo = leftCircuitIndex * 2 + 1;
+                leftComponents.Add(newSpace);
                 leftCircuitIndex++;
             }
             while (rightCircuitIndex < rightCircuits.Count)
             {
-                AssignSpace(false);
+                Space newSpace = new Space();
+                newSpace.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightComponents.Add(newSpace);
                 rightCircuitIndex++;
             }
         }
