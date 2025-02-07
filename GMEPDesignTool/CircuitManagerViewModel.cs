@@ -20,7 +20,6 @@ namespace GMEPDesignTool
    public class CircuitManagerViewModel : ViewModelBase, IDropTarget
     {
         public ElectricalPanel Panel { get; set; }
-
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }

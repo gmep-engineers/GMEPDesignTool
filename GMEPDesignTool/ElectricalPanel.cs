@@ -587,8 +587,18 @@ namespace GMEPDesignTool
             SetCircuitVa();
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
-
-        public void SetCircuitNumbers()
+        public void AssignSpace(bool isLeft)
+        {
+            if (isLeft)
+            {
+                leftComponents.Add(new Space());
+            }
+            else
+            {
+                rightComponents.Add(new Space());
+            }
+        }
+            public void SetCircuitNumbers()
         {
             int leftCircuitIndex = 0;
             int rightCircuitIndex = 0;
@@ -979,6 +989,14 @@ namespace GMEPDesignTool
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public class Space : ElectricalComponent
+    {
+        public Space()
+        {
+            Pole = 1;
+            Name = "Space";
         }
     }
 }

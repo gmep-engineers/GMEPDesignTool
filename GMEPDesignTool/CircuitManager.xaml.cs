@@ -20,12 +20,27 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class CircuitManager : Window
     {
+        CircuitManagerViewModel viewModel { get; set; }
         public CircuitManager(ElectricalPanel panel)
         {
             InitializeComponent();
-            var viewModel = new CircuitManagerViewModel(panel);
+            viewModel = new CircuitManagerViewModel(panel);
             this.DataContext = viewModel;
             
+        }
+        private void AddSpaceLeft(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                viewModel.Panel.AssignSpace(true);
+            }
+        }
+        private void AddSpaceRight(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                viewModel.Panel.AssignSpace(false);
+            }
         }
     }
 }
