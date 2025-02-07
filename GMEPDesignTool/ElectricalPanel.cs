@@ -929,6 +929,16 @@ namespace GMEPDesignTool
                     }
                 }
             }
+            while (CurrentLeftCircuit < leftCircuits.Count * 2)
+            {
+                AssignSpace(true);
+                CurrentLeftCircuit += 2;
+            }
+            while (CurrentRightCircuit < (rightCircuits.Count * 2) + 1)
+            {
+                AssignSpace(false);
+                CurrentRightCircuit += 2;
+            }
             SetCircuitVa();
         }
 

@@ -40,7 +40,7 @@
                                             <Setter Property="Height" Value="80"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="23"/>
+                                                    <Setter Property="Height" Value="24"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Pole}" Value="2">
                                                     <Setter Property="Height" Value="53"/>
@@ -762,7 +762,7 @@
                                             <Setter Property="Height" Value="80"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="23"/>
+                                                    <Setter Property="Height" Value="24"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Pole}" Value="2">
                                                     <Setter Property="Height" Value="53"/>
