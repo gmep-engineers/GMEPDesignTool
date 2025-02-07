@@ -465,6 +465,8 @@ namespace GMEPDesignTool
                 }
                 totalCircuits--;
             }
+            SetCircuitNumbers();
+            SetCircuitVa();
         }
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -970,7 +972,19 @@ namespace GMEPDesignTool
             SetCircuitVa();
         }
 
-     
+        public void fillInitialSpaces()
+        {
+            for (int i = 0; i < leftCircuits.Count; i++)
+            {
+                leftComponents.Add(new Space());
+            }
+            for (int i = 0; i < rightCircuits.Count; i++)
+            {
+                rightComponents.Add(new Space());
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+        }
 
         public bool Verify()
         {
