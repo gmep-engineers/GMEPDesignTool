@@ -597,6 +597,8 @@ namespace GMEPDesignTool
             {
                 rightComponents.Add(new Space());
             }
+            SetCircuitNumbers();
+            SetCircuitVa();
         }
             public void SetCircuitNumbers()
         {
@@ -894,17 +896,31 @@ namespace GMEPDesignTool
                 }
             }
             temp = new ObservableCollection<ElectricalComponent>(temp.OrderBy(e => e.CircuitNo));
+            int CurrentLeftCircuit = 1;
+            int CurrentRightCircuit = 2;
             foreach (var component in temp)
             {
                 if (component.ParentId == Id)
                 {
                     if (component.CircuitNo % 2 != 0)
                     {
+                        while (CurrentLeftCircuit < component.CircuitNo)
+                        {
+                            AssignSpace(true);
+                            CurrentLeftCircuit += 2;
+                        }
                         leftComponents.Add(component);
+                        CurrentLeftCircuit += (component.Pole * 2);
                     }
                     else
                     {
+                        while (CurrentRightCircuit < component.CircuitNo)
+                         {
+                             AssignSpace(false);
+                             CurrentRightCircuit += 2;
+                         }
                         rightComponents.Add(component);
+                        CurrentRightCircuit += (component.Pole * 2);
                     }
                 }
             }
