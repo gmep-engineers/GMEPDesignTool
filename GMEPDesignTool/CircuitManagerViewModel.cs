@@ -22,6 +22,7 @@ namespace GMEPDesignTool
         public ElectricalPanel Panel { get; set; }
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
+        public  ObservableCollection<ElectricalComponent> ComponentsCollection { get; set; }
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
 
@@ -127,6 +128,7 @@ namespace GMEPDesignTool
         {
             RightComponents = panel.rightComponents;
             LeftComponents = panel.leftComponents;
+            ComponentsCollection = panel.componentsCollection;
             Panel = panel;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
@@ -389,10 +391,11 @@ namespace GMEPDesignTool
 
             if (sourceItem != null)
             {
-                ObservableCollection<ElectricalComponent> sourceCollection = LeftComponents.Contains(sourceItem) ? LeftComponents : RightComponents;
-                ObservableCollection<ElectricalComponent> targetCollection = LeftComponents.Contains(targetItem) ? LeftComponents : RightComponents;
+                ObservableCollection<ElectricalComponent> sourceCollection = GetSourceCollection(sourceItem);
+                ObservableCollection<ElectricalComponent> targetCollection = GetTargetCollection(targetItem);
 
-                if (targetItem == null){
+                if (targetItem == null)
+                {
                     if (LeftComponents.Count == 0)
                     {
                         targetCollection = LeftComponents;
@@ -400,6 +403,10 @@ namespace GMEPDesignTool
                     else if (RightComponents.Count == 0)
                     {
                         targetCollection = RightComponents;
+                    }
+                    else if (ComponentsCollection.Count == 0)
+                    {
+                        targetCollection = ComponentsCollection;
                     }
                 }
 
@@ -416,7 +423,42 @@ namespace GMEPDesignTool
                 }
             }
         }
-       
+        private ObservableCollection<ElectricalComponent> GetSourceCollection(ElectricalComponent item)
+        {
+            if (LeftComponents.Contains(item))
+            {
+                return LeftComponents;
+            }
+            else if (RightComponents.Contains(item))
+            {
+                return RightComponents;
+            }
+            else
+            {
+                return ComponentsCollection;
+            }
+        }
+
+        private ObservableCollection<ElectricalComponent> GetTargetCollection(ElectricalComponent item)
+        {
+            if (item == null)
+            {
+                return ComponentsCollection;
+            }
+            else if (LeftComponents.Contains(item))
+            {
+                return LeftComponents;
+            }
+            else if (RightComponents.Contains(item))
+            {
+                return RightComponents;
+            }
+            else
+            {
+                return ComponentsCollection;
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

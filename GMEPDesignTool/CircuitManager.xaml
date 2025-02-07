@@ -15,11 +15,46 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height=".5*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="3*"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="0">
+            <ListBox ItemsSource="{Binding ComponentsCollection}" 
+             dd:DragDrop.IsDragSource="True"
+             dd:DragDrop.IsDropTarget="True"
+             dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" Width="100" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Height" Value="80"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Pole}" Value="1">
+                                            <Setter Property="Height" Value="24"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Pole}" Value="2">
+                                            <Setter Property="Height" Value="53"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch"/>
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto">
             <Grid Margin="0 20 0 20" MinWidth="1080"  MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
@@ -776,8 +811,8 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="1"/>
-        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto">
+        <GridSplitter HorizontalAlignment="Stretch" Grid.Row="3"/>
+        <ScrollViewer Grid.Row="4" HorizontalScrollBarVisibility="Auto">
         <Grid MinWidth="1450" Margin=" 0 0 0 0" Background="LightSlateGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
