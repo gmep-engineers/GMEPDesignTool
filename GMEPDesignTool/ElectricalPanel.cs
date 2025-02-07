@@ -597,8 +597,6 @@ namespace GMEPDesignTool
             {
                 rightComponents.Add(new Space());
             }
-            SetCircuitNumbers();
-            SetCircuitVa();
         }
         public void SetCircuitNumbers()
         {
@@ -634,6 +632,16 @@ namespace GMEPDesignTool
             foreach (var component in componentsToRemove)
             {
                 rightComponents.Remove(component);
+            }
+            while (leftCircuitIndex < leftCircuits.Count)
+            {
+                AssignSpace(true);
+                leftCircuitIndex++;
+            }
+            while (rightCircuitIndex < rightCircuits.Count)
+            {
+                AssignSpace(false);
+                rightCircuitIndex++;
             }
         }
 
@@ -958,6 +966,7 @@ namespace GMEPDesignTool
                 AssignSpace(false);
                 CurrentRightCircuit += 2;
             }
+            SetCircuitNumbers();
             SetCircuitVa();
         }
 
