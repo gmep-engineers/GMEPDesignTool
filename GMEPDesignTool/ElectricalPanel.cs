@@ -767,6 +767,11 @@ namespace GMEPDesignTool
         public int DetermineBreakerSize(ElectricalComponent component)
         {
             var breakerSize = component.Amp * 1.25;
+
+            if (component is Space)
+            {
+                return 0;
+            }
           
             switch (breakerSize)
             {
