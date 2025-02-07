@@ -756,6 +756,7 @@ namespace GMEPDesignTool
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             ElectricalPanels.Add(electricalPanel);
+            electricalPanel.fillInitialSpaces();
             GetNames();
             StartTimer();
         }

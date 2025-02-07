@@ -27,12 +27,15 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
-       // private bool _isLcl;
-       // private float _lcl;
+        // private bool _isLcl;
+        // private float _lcl;
 
         //private int _phaseAVa;
         // private int _phaseBVa;
         //private int _phaseCVa;
+
+        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
+           new ObservableCollection<ElectricalComponent>();
 
         public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
             new ObservableCollection<ElectricalComponent>();
@@ -546,63 +549,84 @@ namespace GMEPDesignTool
         }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
-            if (leftComponents.Count <= rightComponents.Count)
-            {
-                leftComponents.Add(equipment);
-            }
-            else
-            {
-                rightComponents.Add(equipment);
-            }
-            SetCircuitNumbers();
-            SetCircuitVa();
+            componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
 
         public void AssignPanel(ElectricalPanel panel)
         {
-            if (leftComponents.Count <= rightComponents.Count)
-            {
-                leftComponents.Add(panel);
-            }
-            else
-            {
-                rightComponents.Add(panel);
-            }
-            SetCircuitNumbers();
-            SetCircuitVa();
+
+            componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void AssignTransformer(ElectricalTransformer transformer)
         {
-            if (leftComponents.Count <= rightComponents.Count)
+            componentsCollection.Add(transformer);
+            transformer.PropertyChanged += Transformer_PropertyChanged;
+        }
+        public void AssignSpace(bool isLeft)
+        {
+            if (isLeft)
             {
-                leftComponents.Add(transformer);
+                leftComponents.Add(new Space());
             }
             else
             {
-                rightComponents.Add(transformer);
+                rightComponents.Add(new Space());
             }
-            SetCircuitNumbers();
-            SetCircuitVa();
-            transformer.PropertyChanged += Transformer_PropertyChanged;
         }
-
         public void SetCircuitNumbers()
         {
             int leftCircuitIndex = 0;
             int rightCircuitIndex = 0;
+            var componentsToRemove = new List<ElectricalComponent>();
 
-            foreach (var equipment in leftComponents)
+            foreach (var component in leftComponents)
             {
-                equipment.CircuitNo = leftCircuitIndex * 2 + 1;
-                leftCircuitIndex += equipment.Pole;
+                component.CircuitNo = leftCircuitIndex * 2 + 1;
+                leftCircuitIndex += component.Pole;
+                if (component is Space && (component.CircuitNo / 2) + 1 > leftCircuits.Count)
+                {
+                    componentsToRemove.Add(component);
+                }
+            }
+            foreach (var component in componentsToRemove)
+            {
+                leftComponents.Remove(component);
             }
 
-            foreach (var equipment in rightComponents)
+            componentsToRemove.Clear();
+
+            foreach (var component in rightComponents)
             {
-                equipment.CircuitNo = rightCircuitIndex * 2 + 2;
-                rightCircuitIndex += equipment.Pole;
+                component.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightCircuitIndex += component.Pole;
+                if (component is Space && (component.CircuitNo / 2) > rightCircuits.Count)
+                {
+                    componentsToRemove.Add(component);
+                }
+            }
+            foreach (var component in componentsToRemove)
+            {
+                rightComponents.Remove(component);
+            }
+            while (leftCircuitIndex < leftCircuits.Count)
+            {
+                Space newSpace = new Space();
+                newSpace.CircuitNo = leftCircuitIndex * 2 + 1;
+                leftComponents.Add(newSpace);
+                leftCircuitIndex++;
+            }
+            while (rightCircuitIndex < rightCircuits.Count)
+            {
+                Space newSpace = new Space();
+                newSpace.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightComponents.Add(newSpace);
+                rightCircuitIndex++;
+            }
+            foreach (var component in componentsCollection)
+            {
+                component.CircuitNo = 0;
             }
         }
 
@@ -755,6 +779,11 @@ namespace GMEPDesignTool
         public int DetermineBreakerSize(ElectricalComponent component)
         {
             var breakerSize = component.Amp * 1.25;
+
+            if (component is Space)
+            {
+                return 0;
+            }
           
             switch (breakerSize)
             {
@@ -884,24 +913,65 @@ namespace GMEPDesignTool
                 }
             }
             temp = new ObservableCollection<ElectricalComponent>(temp.OrderBy(e => e.CircuitNo));
+            int CurrentLeftCircuit = 1;
+            int CurrentRightCircuit = 2;
             foreach (var component in temp)
             {
                 if (component.ParentId == Id)
                 {
-                    if (component.CircuitNo % 2 != 0)
+                    if (component.CircuitNo == 0)
                     {
+                        componentsCollection.Add(component);
+                    }
+                    else if (component.CircuitNo % 2 != 0)
+                    {
+                        while (CurrentLeftCircuit < component.CircuitNo)
+                        {
+                            AssignSpace(true);
+                            CurrentLeftCircuit += 2;
+                        }
                         leftComponents.Add(component);
+                        CurrentLeftCircuit += (component.Pole * 2);
                     }
                     else
                     {
+                        while (CurrentRightCircuit < component.CircuitNo)
+                         {
+                             AssignSpace(false);
+                             CurrentRightCircuit += 2;
+                         }
                         rightComponents.Add(component);
+                        CurrentRightCircuit += (component.Pole * 2);
                     }
                 }
             }
+            while (CurrentLeftCircuit < leftCircuits.Count * 2)
+            {
+                AssignSpace(true);
+                CurrentLeftCircuit += 2;
+            }
+            while (CurrentRightCircuit < (rightCircuits.Count * 2) + 1)
+            {
+                AssignSpace(false);
+                CurrentRightCircuit += 2;
+            }
+            SetCircuitNumbers();
             SetCircuitVa();
         }
 
-     
+        public void fillInitialSpaces()
+        {
+            for (int i = 0; i < leftCircuits.Count; i++)
+            {
+                leftComponents.Add(new Space());
+            }
+            for (int i = 0; i < rightCircuits.Count; i++)
+            {
+                rightComponents.Add(new Space());
+            }
+            SetCircuitNumbers();
+            SetCircuitVa();
+        }
 
         public bool Verify()
         {
@@ -979,6 +1049,14 @@ namespace GMEPDesignTool
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+    public class Space : ElectricalComponent
+    {
+        public Space()
+        {
+            Pole = 1;
+            Name = "Space";
         }
     }
 }
