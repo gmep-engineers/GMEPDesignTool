@@ -26,8 +26,7 @@
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Vertical" Grid.Column="0" Margin="20 70 20 0">
-                    <Button Content="Add Space" Height="20" FontWeight="Bold" Margin="0 0 0 10" Click="AddSpaceLeft"/>
+                <StackPanel Orientation="Vertical" Grid.Column="0" Margin="20 100 20 0">
                     <ListBox ItemsSource="{Binding LeftComponents}" 
                      dd:DragDrop.IsDragSource="True"
                      dd:DragDrop.IsDropTarget="True"
@@ -748,8 +747,7 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <StackPanel Orientation="Vertical" Grid.Column="3" Margin="20 70 20 0">
-                    <Button Content="Add Space" Height="20" FontWeight="Bold" Margin="0 0 0 10" Click="AddSpaceRight"/>
+                <StackPanel Orientation="Vertical" Grid.Column="3" Margin="20 100 20 0">
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"
                        dd:DragDrop.IsDropTarget="True"
