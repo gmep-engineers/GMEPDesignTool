@@ -27,12 +27,15 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
-       // private bool _isLcl;
-       // private float _lcl;
+        // private bool _isLcl;
+        // private float _lcl;
 
         //private int _phaseAVa;
         // private int _phaseBVa;
         //private int _phaseCVa;
+
+        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
+           new ObservableCollection<ElectricalComponent>();
 
         public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
             new ObservableCollection<ElectricalComponent>();
@@ -546,45 +549,19 @@ namespace GMEPDesignTool
         }
         public void AssignEquipment(ElectricalEquipment equipment)
         {
-            if (leftComponents.Count <= rightComponents.Count)
-            {
-                leftComponents.Add(equipment);
-            }
-            else
-            {
-                rightComponents.Add(equipment);
-            }
-            SetCircuitNumbers();
-            SetCircuitVa();
+            componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
 
         public void AssignPanel(ElectricalPanel panel)
         {
-            if (leftComponents.Count <= rightComponents.Count)
-            {
-                leftComponents.Add(panel);
-            }
-            else
-            {
-                rightComponents.Add(panel);
-            }
-            SetCircuitNumbers();
-            SetCircuitVa();
+
+            componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
         }
         public void AssignTransformer(ElectricalTransformer transformer)
         {
-            if (leftComponents.Count <= rightComponents.Count)
-            {
-                leftComponents.Add(transformer);
-            }
-            else
-            {
-                rightComponents.Add(transformer);
-            }
-            SetCircuitNumbers();
-            SetCircuitVa();
+            componentsCollection.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
         public void AssignSpace(bool isLeft)
@@ -646,6 +623,10 @@ namespace GMEPDesignTool
                 newSpace.CircuitNo = rightCircuitIndex * 2 + 2;
                 rightComponents.Add(newSpace);
                 rightCircuitIndex++;
+            }
+            foreach (var component in componentsCollection)
+            {
+                component.CircuitNo = 0;
             }
         }
 
@@ -938,7 +919,11 @@ namespace GMEPDesignTool
             {
                 if (component.ParentId == Id)
                 {
-                    if (component.CircuitNo % 2 != 0)
+                    if (component.CircuitNo == 0)
+                    {
+                        componentsCollection.Add(component);
+                    }
+                    else if (component.CircuitNo % 2 != 0)
                     {
                         while (CurrentLeftCircuit < component.CircuitNo)
                         {
