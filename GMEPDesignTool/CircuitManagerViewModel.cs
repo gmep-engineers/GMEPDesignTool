@@ -377,7 +377,7 @@ namespace GMEPDesignTool
             ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
             ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
 
-            if (sourceItem != null)
+            if (sourceItem != null && !(sourceItem is Space))
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
