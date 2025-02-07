@@ -600,21 +600,40 @@ namespace GMEPDesignTool
             SetCircuitNumbers();
             SetCircuitVa();
         }
-            public void SetCircuitNumbers()
+        public void SetCircuitNumbers()
         {
             int leftCircuitIndex = 0;
             int rightCircuitIndex = 0;
+            var componentsToRemove = new List<ElectricalComponent>();
 
-            foreach (var equipment in leftComponents)
+            foreach (var component in leftComponents)
             {
-                equipment.CircuitNo = leftCircuitIndex * 2 + 1;
-                leftCircuitIndex += equipment.Pole;
+                component.CircuitNo = leftCircuitIndex * 2 + 1;
+                leftCircuitIndex += component.Pole;
+                if (component is Space && (component.CircuitNo / 2) + 1 > leftCircuits.Count)
+                {
+                    componentsToRemove.Add(component);
+                }
+            }
+            foreach (var component in componentsToRemove)
+            {
+                leftComponents.Remove(component);
             }
 
-            foreach (var equipment in rightComponents)
+            componentsToRemove.Clear();
+
+            foreach (var component in rightComponents)
             {
-                equipment.CircuitNo = rightCircuitIndex * 2 + 2;
-                rightCircuitIndex += equipment.Pole;
+                component.CircuitNo = rightCircuitIndex * 2 + 2;
+                rightCircuitIndex += component.Pole;
+                if (component is Space && (component.CircuitNo / 2) > rightCircuits.Count)
+                {
+                    componentsToRemove.Add(component);
+                }
+            }
+            foreach (var component in componentsToRemove)
+            {
+                rightComponents.Remove(component);
             }
         }
 
