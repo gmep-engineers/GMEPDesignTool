@@ -100,6 +100,7 @@ namespace GMEPDesignTool.Database
             }
 
             CloseConnection();
+            projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             return projectIds;
         }
         public Dictionary<int, string> AddProjectVersions(string projectNo, string projectId)
@@ -132,19 +133,73 @@ namespace GMEPDesignTool.Database
             else
             {
                 var id = Guid.NewGuid().ToString();
+                projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
                 string insertQuery =
                    "INSERT INTO projects (id, gmep_project_no, version) VALUES (@id, @projectNo, @version)";
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                insertCommand.Parameters.AddWithValue("@version", projectIds.Count + 1);
+                insertCommand.Parameters.AddWithValue("@version", projectIds.Last().Key + 1);
                 insertCommand.ExecuteNonQuery();
                 CloneElectricalProject(projectId, id);
-                projectIds.Add(projectIds.Count + 1, id);
+                projectIds.Add(projectIds.Last().Key + 1, id);
             }
 
             CloseConnection();
             return projectIds;
+        }
+        public Dictionary<int, string> DeleteProjectVersions(string projectNo, string projectId)
+        {
+            OpenConnection();
+            string[] tables = new string[] {
+                "electrical_panels",
+                "electrical_transformers",
+                "electrical_equipment",
+                "electrical_lighting_locations",
+                "electrical_lighting",
+                "electrical_services"
+            };
+            string query;
+            MySqlCommand command;
+            foreach (string table in tables)
+            {
+                query = $"DELETE FROM {table} WHERE project_id = @projectId";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@projectId", projectId);
+                command.ExecuteNonQuery();
+            }
+
+            query = "DELETE FROM projects WHERE id = @projectId";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.ExecuteNonQuery();
+
+            query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectNo", projectNo);
+            Dictionary<int, string> projectIds = new Dictionary<int, string>();
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
+            }
+            reader.Close();
+
+            if (!projectIds.Any())
+            {
+                // Project name does not exist, insert a new entry with a generated ID
+                var id = Guid.NewGuid().ToString();
+                string insertQuery =
+                    "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+                MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
+                insertCommand.Parameters.AddWithValue("@id", id);
+                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
+                insertCommand.ExecuteNonQuery();
+                projectIds.Add(1, id);
+            }
+            CloseConnection();
+            return projectIds;
+
         }
 
         public Dictionary<string, string> getOwners()
