@@ -60,10 +60,18 @@ namespace GMEPDesignTool
             {
                 string projectId = selectedPair.Value;
                 viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
-                VersionComboBox.SelectedValue = viewModel.ProjectIds.Count;
+                VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
             }
         }
-
+        private void DeleteVersion_Click(object sender, RoutedEventArgs e)
+        {
+            if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+            {
+                string projectId = selectedPair.Value;
+                viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
+                VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
+            }
+        }
         private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)

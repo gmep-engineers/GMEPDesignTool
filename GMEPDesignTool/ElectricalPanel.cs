@@ -490,6 +490,10 @@ namespace GMEPDesignTool
                     {
                         rightComponents.Remove(equipment);
                     }
+                    if (componentsCollection.Contains(equipment))
+                    {
+                        componentsCollection.Remove(equipment);
+                    }
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
@@ -517,6 +521,10 @@ namespace GMEPDesignTool
                     {
                         rightComponents.Remove(panel);
                     }
+                    if (componentsCollection.Contains(panel))
+                    {
+                        componentsCollection.Remove(panel);
+                    }
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
@@ -541,6 +549,10 @@ namespace GMEPDesignTool
                     if (rightComponents.Contains(transformer))
                     {
                         rightComponents.Remove(transformer);
+                    }
+                    if (componentsCollection.Contains(transformer))
+                    {
+                        componentsCollection.Remove(transformer);
                     }
                     SetCircuitNumbers();
                     SetCircuitVa();
