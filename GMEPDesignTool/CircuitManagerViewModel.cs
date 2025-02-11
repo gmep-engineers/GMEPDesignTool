@@ -388,9 +388,9 @@ namespace GMEPDesignTool
         {
             if (isRecessed)
             {
-                return "Recessed";
+                return "RECESSED";
             }
-            return "Surface";
+            return "SURFACE";
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
