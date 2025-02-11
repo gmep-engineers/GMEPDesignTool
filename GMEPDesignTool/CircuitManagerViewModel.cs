@@ -124,6 +124,13 @@ namespace GMEPDesignTool
             set => SetProperty(ref wire, value);
         }
 
+        private string mounting;
+        public string Mounting
+        {
+            get => mounting;
+            set => SetProperty(ref mounting, value);
+        }
+
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightComponents = panel.rightComponents;
@@ -147,6 +154,7 @@ namespace GMEPDesignTool
             MainRating = setMainRating(panel);
             voltage = determineVoltage(panel.Type);
             phases = determinePhases(panel.Type);
+            mounting = setMounting(panel.IsRecessed);
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -218,7 +226,11 @@ namespace GMEPDesignTool
                 {
                     Voltage = determineVoltage(Panel.Type);
                     Phases = determinePhases(Panel.Type);
-                Wire = determineWire(Panel.Type);
+                    Wire = determineWire(Panel.Type);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.IsRecessed))
+                {
+                Mounting = setMounting(Panel.IsRecessed);
                 }
         }
         public string setBusRating(int bus)
@@ -370,6 +382,15 @@ namespace GMEPDesignTool
                     return "1ɸ";
             }
             return "";
+        }
+
+        public string setMounting(bool isRecessed)
+        {
+            if (isRecessed)
+            {
+                return "RECESSED";
+            }
+            return "SURFACE";
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
