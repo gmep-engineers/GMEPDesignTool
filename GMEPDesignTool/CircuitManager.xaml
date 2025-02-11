@@ -213,9 +213,27 @@
                                         <TextBox Text="ɸC" TextAlignment="Center" Grid.Column="2"/>
                                     </Grid>
                                 </Grid>
-                                <TextBox Grid.Column="2" Text="L    T    G" TextAlignment="Center" TextWrapping="Wrap"  />
-                                <TextBox Grid.Column="3" Text="R    E    C" TextAlignment="Center" TextWrapping="Wrap" />
-                                <TextBox Grid.Column="4" Text="W    I    S" TextAlignment="Center" TextWrapping="Wrap" />
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="2">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="L" TextAlignment="Center"/>
+                                        <TextBlock Text="T" TextAlignment="Center"/>
+                                        <TextBlock Text="G" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="3">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="R" TextAlignment="Center"/>
+                                        <TextBlock Text="E" TextAlignment="Center"/>
+                                        <TextBlock Text="C" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="4">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="M" TextAlignment="Center"/>
+                                        <TextBlock Text="I" TextAlignment="Center"/>
+                                        <TextBlock Text="S" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
                                 <Grid Grid.Column="5">
                                     <TextBox Text="BKR"/>
                                 </Grid>
@@ -283,13 +301,31 @@
                                 <Grid Grid.Column="0">
                                     <TextBox Text="#"/>
                                 </Grid>
-
                                 <Grid Grid.Column="1">
                                     <TextBox Text="BKR"/>
                                 </Grid>
-                                <TextBox Grid.Column="2" Text="W    I    S" TextAlignment="Center" TextWrapping="Wrap"  />
-                                <TextBox Grid.Column="3" Text="R    E    C" TextAlignment="Center" TextWrapping="Wrap" />
-                                <TextBox Grid.Column="4" Text="L    T    G" TextAlignment="Center" TextWrapping="Wrap" />
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="2">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="M" TextAlignment="Center"/>
+                                        <TextBlock Text="I" TextAlignment="Center"/>
+                                        <TextBlock Text="S" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="3">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="R" TextAlignment="Center"/>
+                                        <TextBlock Text="E" TextAlignment="Center"/>
+                                        <TextBlock Text="C" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                               
+                                <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="4">
+                                    <StackPanel Orientation="Vertical" Grid.Column="2">
+                                        <TextBlock Text="L" TextAlignment="Center"/>
+                                        <TextBlock Text="T" TextAlignment="Center"/>
+                                        <TextBlock Text="G" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
                                 <Grid Grid.Column="5">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
