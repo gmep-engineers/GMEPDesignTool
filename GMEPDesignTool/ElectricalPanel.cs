@@ -92,6 +92,7 @@ namespace GMEPDesignTool
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
+            loadCategory = 3;
             lcl = 0;
             lml = 0;
             _va = 0;
@@ -447,11 +448,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, ""));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, "", 0));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, ""));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, "", 0));
                 }
                 totalCircuits++;
             }
@@ -472,7 +473,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) ||  e.PropertyName == nameof(ElectricalEquipment.IsLcl) || e.PropertyName == nameof(ElectricalEquipment.IsLml))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) ||  e.PropertyName == nameof(ElectricalEquipment.IsLcl) || e.PropertyName == nameof(ElectricalEquipment.IsLml) || e.PropertyName == nameof(ElectricalEquipment.LoadCategory))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -700,6 +701,8 @@ namespace GMEPDesignTool
                         {
                             leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         }
+
+                        leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
                        
                         switch (phaseIndex % Pole)
                         {
@@ -760,8 +763,8 @@ namespace GMEPDesignTool
                         {
                             rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         }
-                       
-                        
+
+                        rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -1012,13 +1015,16 @@ namespace GMEPDesignTool
         public int breakerSize;
         public int index;
         public string description;
+        public string name;
+        public int loadCategory;
 
-        public Circuit(int _number, int _va, int _breakerSize, string _description)
+        public Circuit(int _number, int _va, int _breakerSize, string _description, int _loadCategory)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
             description = _description;
+            loadCategory = _loadCategory;
         }
         public int BreakerSize
         {
@@ -1054,6 +1060,15 @@ namespace GMEPDesignTool
             set
             {
                 description = value;
+                OnPropertyChanged();
+            }
+        }
+        public int LoadCategory
+        {
+            get => loadCategory;
+            set
+            {
+                loadCategory = value;
                 OnPropertyChanged();
             }
         }

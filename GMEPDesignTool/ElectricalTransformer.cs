@@ -50,6 +50,7 @@ namespace GMEPDesignTool
             this.amp = 0;
             this.name = name;
             this.circuitNo = circuitNo;
+            this.loadCategory = 3;
             _distanceFromParent = distanceFromParent;
             _voltage = voltage;
             _kva = kva;
