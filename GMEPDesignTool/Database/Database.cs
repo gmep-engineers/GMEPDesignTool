@@ -510,7 +510,7 @@ namespace GMEPDesignTool.Database
         private void UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca_id = @mca_id, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType WHERE id = @id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -530,7 +530,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@owner", equipment.Owner);
             command.Parameters.AddWithValue("@connection", equipment.Connection);
-            command.Parameters.AddWithValue("@mca_id", equipment.McaId);
+            command.Parameters.AddWithValue("@mca", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
             command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
             command.Parameters.AddWithValue("@locking_connector", equipment.LockingConnector);
@@ -546,7 +546,7 @@ namespace GMEPDesignTool.Database
         private void InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca_id, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -567,7 +567,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@connection", equipment.Connection);
             command.Parameters.AddWithValue("@description", equipment.Description);
-            command.Parameters.AddWithValue("@mca_id", equipment.McaId);
+            command.Parameters.AddWithValue("@mca", equipment.McaId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
             command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
             command.Parameters.AddWithValue("@locking_connector", equipment.LockingConnector);
@@ -814,7 +814,7 @@ namespace GMEPDesignTool.Database
                     false,
                     reader.GetInt32("connection_type_id"),
                     reader.GetString("description"),
-                    reader.GetInt32("mca_id"),
+                    reader.GetInt32("mca"),
                     reader.GetString("hp"),
                     reader.GetBoolean("has_plug"),
                     reader.GetBoolean("locking_connector"),
