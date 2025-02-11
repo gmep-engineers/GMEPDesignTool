@@ -447,11 +447,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, ""));
+                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, "", 0));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, ""));
+                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, "", 0));
                 }
                 totalCircuits++;
             }
@@ -700,6 +700,8 @@ namespace GMEPDesignTool
                         {
                             leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         }
+
+                        leftCircuits[circuitIndex + i].loadType = 2;
                        
                         switch (phaseIndex % Pole)
                         {
@@ -760,8 +762,8 @@ namespace GMEPDesignTool
                         {
                             rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
                         }
-                       
-                        
+
+                        rightCircuits[circuitIndex + i].loadType = 2;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -1012,13 +1014,16 @@ namespace GMEPDesignTool
         public int breakerSize;
         public int index;
         public string description;
+        public string name;
+        public int loadType;
 
-        public Circuit(int _number, int _va, int _breakerSize, string _description)
+        public Circuit(int _number, int _va, int _breakerSize, string _description, int _loadType)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
             description = _description;
+            loadType = _loadType;
         }
         public int BreakerSize
         {
@@ -1054,6 +1059,15 @@ namespace GMEPDesignTool
             set
             {
                 description = value;
+                OnPropertyChanged();
+            }
+        }
+        public int LoadType
+        {
+            get => loadType;
+            set
+            {
+                loadType = value;
                 OnPropertyChanged();
             }
         }
