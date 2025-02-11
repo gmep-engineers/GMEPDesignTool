@@ -444,7 +444,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="1">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="1">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -462,7 +462,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="2">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="2">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -480,7 +480,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="3">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="3">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -639,7 +639,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="3">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="3">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -657,7 +657,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="2">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="2">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -675,7 +675,7 @@
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding LoadType}" Value="1">
+                                                                <DataTrigger Binding="{Binding LoadCategory}" Value="1">
                                                                     <Setter Property="Foreground" Value="Black"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>

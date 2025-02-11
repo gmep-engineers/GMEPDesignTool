@@ -107,6 +107,7 @@ namespace GMEPDesignTool
             this.phaseAVa = 0;
             this.phaseBVa = 0;
             this.phaseCVa = 0;
+            DetermineLoadCategory();
             DetermineLoadTypes();
             determineEquipmentPole();
             SetPhaseVa();
@@ -265,6 +266,7 @@ namespace GMEPDesignTool
                 {
                     hasPlug = value;
                     OnPropertyChanged(nameof(HasPlug));
+                    DetermineLoadCategory();
                 }
             }
         }
@@ -532,6 +534,17 @@ namespace GMEPDesignTool
                     IsLcl = false;
                     IsLml = false;
                     break;
+            }
+        }
+        public void DetermineLoadCategory()
+        {
+            if (hasPlug)
+            {
+                LoadCategory = 2;
+            }
+            else
+            {
+                LoadCategory = 3;
             }
         }
         public bool Verify()

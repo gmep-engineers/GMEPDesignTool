@@ -24,6 +24,7 @@ namespace GMEPDesignTool
         public float amp;
         public float lcl;
         public float lml;
+        public int loadCategory;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -182,6 +183,18 @@ namespace GMEPDesignTool
             }
         }
 
+        public virtual int LoadCategory
+        {
+            get => loadCategory;
+            set
+            {
+                if (loadCategory != value)
+                {
+                    loadCategory = value;
+                    OnPropertyChanged(nameof(LoadCategory));
+                }
+            }
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {
