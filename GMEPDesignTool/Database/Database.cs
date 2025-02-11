@@ -1015,7 +1015,7 @@ namespace GMEPDesignTool.Database
                 string Id = Guid.NewGuid().ToString();
                 lighting.Id = Id;
                 lighting.ProjectId = newProjectId;
-                if (!string.IsNullOrEmpty(lighting.LocationId))
+                if (!string.IsNullOrEmpty(lighting.LocationId) && lighting.LocationId != "0")
                 {
                     lighting.LocationId = locationIdSwitch[lighting.LocationId];
                 }
