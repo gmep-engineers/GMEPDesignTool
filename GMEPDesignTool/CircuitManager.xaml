@@ -104,7 +104,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="30">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="PANEL '{0}'">
                                             <Binding Path="Name"/>
@@ -117,14 +117,14 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0">
+                                <TextBox Grid.Row="0" IsReadOnly="True">
                                     <TextBox.Text>
                                         <MultiBinding StringFormat="LOCATION: {0}">
                                             <Binding Path="Location"/>
                                         </MultiBinding>
                                     </TextBox.Text>
                                 </TextBox>
-                                <TextBox Grid.Row="1">
+                                <TextBox Grid.Row="1" IsReadOnly="True">
                                     <TextBox.Text>
                                         <MultiBinding StringFormat="MAIN (AMP) {0}">
                                             <Binding Path="MainRating"/>
@@ -137,21 +137,21 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0">
+                                <TextBox Grid.Row="0" IsReadOnly="True">
                                     <TextBox.Text>
                                         <MultiBinding StringFormat="BUS RATING {0}">
                                             <Binding Path="BusRating"/>
                                         </MultiBinding>
                                     </TextBox.Text>
                                 </TextBox>
-                                <TextBox Grid.Row="1" Text="FED FROM PANEL ''"/>
+                                <TextBox Grid.Row="1" Text="FED FROM PANEL ''" IsReadOnly="True"/>
                             </Grid>
                             <Grid Grid.Column="3">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" >
+                                <TextBox Grid.Row="0" IsReadOnly="True" >
                                     <TextBox.Text>
                                         <MultiBinding StringFormat=" {0}     {1}     {2}" >
                                             <Binding Path="Voltage"/>
@@ -160,7 +160,7 @@
                                         </MultiBinding>
                                     </TextBox.Text>
                                 </TextBox>
-                                <TextBox Grid.Row="1">
+                                <TextBox Grid.Row="1" IsReadOnly="True">
                                     <TextBox.Text>
                                         <MultiBinding StringFormat="MOUNTING: {0}">
                                             <Binding Path="Mounting"/>
@@ -196,13 +196,13 @@
                                     <ColumnDefinition Width=".5*"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox Text="DESCRIPTION" TextAlignment="Center" FontSize="15" Grid.Column="0"/>
+                                <TextBox Text="DESCRIPTION" IsReadOnly="True" TextAlignment="Center" FontSize="15" Grid.Column="0"/>
                                 <Grid Grid.Column="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBox Grid.Row="0" TextAlignment="Center" Text="VOLT AMPS"></TextBox>
+                                    <TextBox Grid.Row="0" TextAlignment="Center" Text="VOLT AMPS" IsReadOnly="True"></TextBox>
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -220,9 +220,9 @@
                                                 </ColumnDefinition.Style>
                                             </ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox Text="ɸA" TextAlignment="Center" Grid.Column="0"/>
-                                        <TextBox Text="ɸB" TextAlignment="Center" Grid.Column="1"/>
-                                        <TextBox Text="ɸC" TextAlignment="Center" Grid.Column="2"/>
+                                        <TextBox Text="ɸA" IsReadOnly="True" TextAlignment="Center" Grid.Column="0"/>
+                                        <TextBox Text="ɸB" IsReadOnly="True" TextAlignment="Center" Grid.Column="1"/>
+                                        <TextBox Text="ɸC" IsReadOnly="True" TextAlignment="Center" Grid.Column="2"/>
                                     </Grid>
                                 </Grid>
                                 <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="2">
@@ -247,10 +247,10 @@
                                     </StackPanel>
                                 </Border>
                                 <Grid Grid.Column="5">
-                                    <TextBox Text="BKR"/>
+                                    <TextBox Text="BKR" IsReadOnly="True"/>
                                 </Grid>
                                 <Grid Grid.Column="6">
-                                    <TextBox Text="#"/>
+                                    <TextBox Text="#" IsReadOnly="True"/>
                                 </Grid>
                             </Grid>
                             <Grid Grid.Column="1" VerticalAlignment="Stretch">
@@ -258,7 +258,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" TextAlignment="Center" Text="BUS"/>
+                                <TextBox Grid.Row="0" TextAlignment="Center" Text="BUS" IsReadOnly="True"/>
                                 <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -278,7 +278,7 @@
                                             </ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Grid Grid.Column="0">
-                                            <TextBlock  Text="ɸA" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="ɸA" HorizontalAlignment="Center"/>
                                         </Grid>
                                         <Grid Grid.Column="1">
                                             <TextBlock  Text="ɸB" HorizontalAlignment="Center"/>
@@ -311,10 +311,10 @@
                                     <ColumnDefinition Width="3*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0">
-                                    <TextBox Text="#"/>
+                                    <TextBox Text="#" IsReadOnly="True"/>
                                 </Grid>
                                 <Grid Grid.Column="1">
-                                    <TextBox Text="BKR"/>
+                                    <TextBox Text="BKR" IsReadOnly="True"/>
                                 </Grid>
                                 <Border BorderBrush="Gray" BorderThickness=".5" Grid.Column="2">
                                     <StackPanel Orientation="Vertical" Grid.Column="2">
@@ -343,7 +343,7 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBox Grid.Row="0" TextAlignment="Center" Text="VOLT AMPS"></TextBox>
+                                    <TextBox Grid.Row="0" TextAlignment="Center" Text="VOLT AMPS" IsReadOnly="True"></TextBox>
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -361,12 +361,12 @@
                                                 </ColumnDefinition.Style>
                                             </ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox Text="ɸA" TextAlignment="Center" Grid.Column="0"/>
-                                        <TextBox Text="ɸB" TextAlignment="Center" Grid.Column="1"/>
-                                        <TextBox Text="ɸC" TextAlignment="Center" Grid.Column="2"/>
+                                        <TextBox Text="ɸA" IsReadOnly="True" TextAlignment="Center" Grid.Column="0"/>
+                                        <TextBox Text="ɸB" IsReadOnly="True" TextAlignment="Center" Grid.Column="1"/>
+                                        <TextBox Text="ɸC" IsReadOnly="True" TextAlignment="Center" Grid.Column="2"/>
                                     </Grid>
                                 </Grid>
-                                <TextBox Text="DESCRIPTION" TextAlignment="Center" FontSize="15" Grid.Column="6"/>
+                                <TextBox Text="DESCRIPTION" IsReadOnly="True" TextAlignment="Center" FontSize="15" Grid.Column="6"/>
                             </Grid>
                         </Grid>
                        
@@ -972,14 +972,14 @@
                 <StackPanel.Effect>
                     <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
                 </StackPanel.Effect>
-                <TextBox Grid.Row="0" FontSize="23" >
+                 <TextBox Grid.Row="0" FontSize="23" IsReadOnly="True">
                     <TextBox.Text>
                         <MultiBinding StringFormat="TOTAL CONNECTED VA  =  {0}">
                             <Binding Path="Va"/>
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBox Grid.Row="1" FontSize="23">
+                    <TextBox Grid.Row="1" FontSize="23" IsReadOnly="True">
                     <TextBox.Text>
                         <MultiBinding StringFormat="LCL @ 125%  {0}  =  {1}">
                             <Binding Path="Lcl" Converter="{StaticResource ValueRounder}"/>
@@ -987,7 +987,7 @@
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBox Grid.Row="2" FontSize="23"  >
+                <TextBox Grid.Row="2" FontSize="23" IsReadOnly="True">
                     <TextBox.Text>
                         <MultiBinding StringFormat="LML @ 125%  {0} =  {1}">
                             <Binding Path="Lml" Converter="{StaticResource ValueRounder}"/>
@@ -995,14 +995,14 @@
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBox Grid.Row="3" FontSize="23" >
+                    <TextBox Grid.Row="3" FontSize="23" IsReadOnly="True" >
                     <TextBox.Text>
                         <MultiBinding StringFormat="PANEL LOAD  =   {0} KVA">
                             <Binding Path="Kva"/>
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBox Grid.Row="4" FontSize="23"  >
+                    <TextBox Grid.Row="4" FontSize="23" IsReadOnly="True"  >
                     <TextBox.Text>
                         <MultiBinding StringFormat="FEDER AMPS  =   {0} A">
                             <Binding Path="Amp"/>
