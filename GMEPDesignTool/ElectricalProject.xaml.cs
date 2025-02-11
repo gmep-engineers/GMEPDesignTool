@@ -782,7 +782,9 @@ namespace GMEPDesignTool
                 false,
                 false,
                 0,
-                false
+                false,
+                "",
+                ""
             );
             AddElectricalPanel(electricalPanel);
         }

@@ -117,7 +117,13 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBox Grid.Row="0" Text="LOCATION: "  />
+                                <TextBox Grid.Row="0">
+                                    <TextBox.Text>
+                                        <MultiBinding StringFormat="LOCATION: {0}">
+                                            <Binding Path="Location"/>
+                                        </MultiBinding>
+                                    </TextBox.Text>
+                                </TextBox>
                                 <TextBox Grid.Row="1">
                                     <TextBox.Text>
                                         <MultiBinding StringFormat="MAIN (AMP) {0}">
@@ -1009,7 +1015,7 @@
                     <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
                 </StackPanel.Effect>
                 <TextBox FontSize="23"  Text="NOTES: "/>
-                <TextBox Height="130"/>
+                <TextBox Height="130" Text="{Binding Notes}"/>
             </StackPanel>
         </Grid>
         </ScrollViewer>

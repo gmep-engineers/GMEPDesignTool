@@ -67,6 +67,14 @@ namespace GMEPDesignTool
             get => _name;
             set => SetProperty(ref _name, value);
         }
+        public string _location;
+
+        public string Location
+        {
+            get => _location;
+            set => SetProperty(ref _location, value);
+        }
+
 
         private int _pole;
         public int Pole
@@ -130,6 +138,16 @@ namespace GMEPDesignTool
             get => mounting;
             set => SetProperty(ref mounting, value);
         }
+        private string notes;
+        public string Notes
+        {
+            get => notes;
+            set {
+                SetProperty(ref notes, value);
+                Panel.Notes = notes;
+                }
+        }
+
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -149,6 +167,8 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
+            notes = panel.Notes;
+            _location = panel.Location;
             wire = determineWire(panel.Type);
             busRating = setBusRating(panel.BusSize);
             MainRating = setMainRating(panel);
@@ -185,7 +205,7 @@ namespace GMEPDesignTool
                     Va = Panel.Va;
                     OnPropertyChanged(nameof(Va));
                 }
-            if (e.PropertyName == nameof(ElectricalPanel.Name))
+                if (e.PropertyName == nameof(ElectricalPanel.Name))
                 {
                     Name = Panel.Name;
                     OnPropertyChanged(nameof(Name));
@@ -194,7 +214,7 @@ namespace GMEPDesignTool
                 {
                     Pole = Panel.Pole;
                     OnPropertyChanged(nameof(Pole));
-            }
+                }
                 if (e.PropertyName == nameof(ElectricalPanel.Amp))
                 {
                     Amp = Panel.Amp;
@@ -230,7 +250,12 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.IsRecessed))
                 {
-                Mounting = setMounting(Panel.IsRecessed);
+                    Mounting = setMounting(Panel.IsRecessed);
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.Location))
+                {
+                    Location = Panel.Location;
+                    OnPropertyChanged(nameof(Location));
                 }
         }
         public string setBusRating(int bus)

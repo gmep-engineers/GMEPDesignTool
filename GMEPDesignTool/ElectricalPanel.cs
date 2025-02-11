@@ -27,6 +27,8 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
+        private string _location;
+        private string _notes;
         // private bool _isLcl;
         // private float _lcl;
 
@@ -67,7 +69,9 @@ namespace GMEPDesignTool
             bool powered,
             bool isRecessed,
             int circuitNo,
-            bool isHiddenOnPlan
+            bool isHiddenOnPlan,
+            string location,
+            string notes
         )
             : base()
         {
@@ -96,6 +100,8 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
+            this._notes = notes;
+            this._location = location;
             SetPole();
             PopulateCircuits();
         }
@@ -277,6 +283,24 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged(nameof(Powered));
+            }
+        }
+        public string Location
+        {
+            get => _location;
+            set
+            {
+                _location = value;
+                OnPropertyChanged(nameof(Location));
+            }
+        }
+        public string Notes
+        {
+            get => _notes;
+            set
+            {
+                _notes = value;
+                OnPropertyChanged(nameof(Notes));
             }
         }
        /* public override bool IsLcl {
