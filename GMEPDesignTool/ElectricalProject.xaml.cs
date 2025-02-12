@@ -1083,6 +1083,14 @@ namespace GMEPDesignTool
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is CircuitManager circuitManager)
+                        {
+                            circuitManager.Close();
+                            break;
+                        }
+                    }
                     CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
