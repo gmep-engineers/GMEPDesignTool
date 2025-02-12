@@ -147,7 +147,13 @@ namespace GMEPDesignTool
                 Panel.Notes = notes;
                 }
         }
+        private string parentName;
 
+        public string ParentName
+        {
+            get => parentName;
+            set => SetProperty(ref parentName, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -168,6 +174,7 @@ namespace GMEPDesignTool
             _lml = panel.Lml;
             _va = panel.Va;
             notes = panel.Notes;
+            parentName = panel.ParentName;
             _location = panel.Location;
             wire = determineWire(panel.Type);
             busRating = setBusRating(panel.BusSize);
@@ -256,6 +263,11 @@ namespace GMEPDesignTool
                 {
                     Location = Panel.Location;
                     OnPropertyChanged(nameof(Location));
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.ParentName))
+                {
+                    ParentName = Panel.ParentName;
+                    OnPropertyChanged(nameof(ParentName));
                 }
         }
         public string setBusRating(int bus)

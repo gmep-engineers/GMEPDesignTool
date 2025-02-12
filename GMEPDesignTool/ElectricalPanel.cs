@@ -118,6 +118,22 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(ParentName));
             }
         }
+
+        public override string ParentId
+        {
+            get => this.parentId;
+            set
+            {
+                this.parentId = value;
+                OnPropertyChanged(nameof(ParentId));
+                if (ParentComponent != null && string.IsNullOrEmpty(value))
+                {
+                    ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
+                    ParentName = "";
+                    ParentComponent = null;
+                }
+            }
+        }
         public override int Pole
         {
             get => this.pole;
@@ -601,11 +617,12 @@ namespace GMEPDesignTool
             if (e.PropertyName == nameof(ElectricalEquipment.Name) && sender is ElectricalComponent component)
             {
                ParentName = component.Name;
-            }  
+            }
         }
         public void AssignParentComponent(ElectricalComponent component)
         {
             ParentComponent = component;
+            ParentName = component.Name;
             component.PropertyChanged += ParentComponent_PropertyChanged;
         }
 
