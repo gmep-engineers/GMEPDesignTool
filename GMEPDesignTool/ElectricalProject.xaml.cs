@@ -117,8 +117,9 @@ namespace GMEPDesignTool
             this.DataContext = this;
 
             //timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(2);
+            timer.Interval = TimeSpan.FromSeconds(30);
             timer.Tick += Timer_Tick;
+            timer.Start();
             ProjectView.SaveText = "";
             GetNames();
             setPower();
@@ -172,9 +173,10 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
-            ProjectView.database.UpdateProject(
+            ProjectView.SaveText = "*SAVING*";
+            await ProjectView.database.UpdateProject(
                 ProjectId,
                 ElectricalServices,
                 ElectricalPanels,
@@ -183,16 +185,16 @@ namespace GMEPDesignTool
                 ElectricalLightings,
                 LightingLocations
             );
-            timer.Stop();
+            //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
         }
 
-        private void StartTimer()
+        /*private void StartTimer()
         {
             timer.Stop();
             timer.Start();
-            ProjectView.SaveText = "*SAVING*";
-        }
+            //ProjectView.SaveText = "*SAVING*";
+        }*/
 
         public void setPower()
         {
@@ -779,7 +781,7 @@ namespace GMEPDesignTool
             ElectricalPanels.Add(electricalPanel);
             electricalPanel.fillInitialSpaces();
             GetNames();
-            StartTimer();
+            //StartTimer();
         }
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
@@ -816,7 +818,7 @@ namespace GMEPDesignTool
             electricalPanel.ParentId = "";
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
-            StartTimer();
+            //StartTimer();
         }
 
         public void DeleteSelectedElectricalPanel(object sender, EventArgs e)
@@ -1071,7 +1073,7 @@ namespace GMEPDesignTool
                         }
                     }
                 }
-                StartTimer();
+                //StartTimer();
             }
         }
 
@@ -1093,7 +1095,7 @@ namespace GMEPDesignTool
             electricalService.PropertyChanged += ElectricalService_PropertyChanged;
             ElectricalServices.Add(electricalService);
             GetNames();
-            StartTimer();
+            //StartTimer();
         }
 
         public void AddNewElectricalService(object sender, EventArgs e)
@@ -1117,7 +1119,7 @@ namespace GMEPDesignTool
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
             ElectricalServices.Remove(electricalService);
             GetNames();
-            StartTimer();
+            //StartTimer();
         }
 
         public void DeleteSelectedElectricalService(object sender, EventArgs e)
@@ -1156,7 +1158,7 @@ namespace GMEPDesignTool
                     //setAmps();
                 }
 
-                StartTimer();
+                //StartTimer();
             }
         }
 
@@ -1165,7 +1167,7 @@ namespace GMEPDesignTool
         {
             electricalEquipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
             ElectricalEquipments.Add(electricalEquipment);
-            StartTimer();
+            //StartTimer();
         }
 
         public void AddNewElectricalEquipment(object sender, EventArgs e)
@@ -1214,7 +1216,7 @@ namespace GMEPDesignTool
             electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
             electricalEquipment.ParentId = "";
             ElectricalEquipments.Remove(electricalEquipment);
-            StartTimer();
+            //StartTimer();
         }
 
         public void DeleteSelectedElectricalEquipment(object sender, EventArgs e)
@@ -1273,7 +1275,7 @@ namespace GMEPDesignTool
                         }
                     }
                 }
-                StartTimer();
+                //StartTimer();
             }
         }
 
@@ -1371,7 +1373,7 @@ namespace GMEPDesignTool
         {
             electricalLighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             ElectricalLightings.Add(electricalLighting);
-            StartTimer();
+            //StartTimer();
         }
 
         public void AddNewElectricalLighting(object sender, EventArgs e)
@@ -1412,7 +1414,7 @@ namespace GMEPDesignTool
             }
             electricalLighting.PropertyChanged -= ElectricalLighting_PropertyChanged;
             ElectricalLightings.Remove(electricalLighting);
-            StartTimer();
+            //StartTimer();
         }
 
         public void DeleteSelectedElectricalLighting(object sender, EventArgs e)
@@ -1448,7 +1450,7 @@ namespace GMEPDesignTool
                     setPower();
                 }
 
-                StartTimer();
+                //StartTimer();
             }
         }
 
@@ -1594,7 +1596,7 @@ namespace GMEPDesignTool
         }
         private void LightingLocations_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            StartTimer();
+            //StartTimer();
         }
 
 
@@ -1604,7 +1606,7 @@ namespace GMEPDesignTool
             electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
             GetNames();
-            StartTimer();
+           // StartTimer();
         }
 
         public void AddNewElectricalTransformer(object sender, EventArgs e)
@@ -1634,7 +1636,7 @@ namespace GMEPDesignTool
             electricalTransformer.ParentId = "";
             ElectricalTransformers.Remove(electricalTransformer);
             GetNames();
-            StartTimer();
+            //StartTimer();
         }
 
         public void DeleteSelectedElectricalTransformer(object sender, EventArgs e)
@@ -1697,7 +1699,7 @@ namespace GMEPDesignTool
                 {
                     GetNames();
                 }
-                StartTimer();
+               // StartTimer();
             }
         }
 
