@@ -48,6 +48,7 @@ namespace GMEPDesignTool
             //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
 
             string projectId = viewModel.ProjectIds.First().Value;
+            viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
 
             viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
 
