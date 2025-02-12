@@ -238,7 +238,7 @@ namespace GMEPDesignTool.Database
         }
 
         //Update Project Functions
-        public void UpdateProject(
+        public async Task UpdateProject(
             string projectId,
             ObservableCollection<ElectricalService> services,
             ObservableCollection<ElectricalPanel> panels,
