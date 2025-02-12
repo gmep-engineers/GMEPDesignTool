@@ -141,6 +141,27 @@ namespace GMEPDesignTool
                     if (panelParentId.Item1 == transformer.Id)
                     {
                         transformer.AddChildPanel(panelParentId.Item2);
+                        panelParentId.Item2.AssignParentComponent(transformer);
+                    }
+                }
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                foreach (var panelParentId in panelParentIds)
+                {
+                    if (panelParentId.Item1 == panel.Id)
+                    {
+                        panelParentId.Item2.AssignParentComponent(panel);
+                    }
+                }
+            }
+            foreach (var service in ElectricalServices)
+            {
+                foreach (var panelParentId in panelParentIds)
+                {
+                    if (panelParentId.Item1 == service.Id)
+                    {
+                        panelParentId.Item2.AssignParentComponent(service);
                     }
                 }
             }
@@ -782,7 +803,9 @@ namespace GMEPDesignTool
                 false,
                 false,
                 0,
-                false
+                false,
+                "",
+                ""
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -1011,13 +1034,21 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.ParentId))
                 {
-                    //setKVAs();
-                    // setAmps();
-
                     var transformer = ElectricalTransformers.FirstOrDefault(transformer => transformer.Id == panel.ParentId);
+                    var panel2 = ElectricalPanels.FirstOrDefault(panel2 => panel2.Id == panel.ParentId);
+                    var service = ElectricalServices.FirstOrDefault(service => service.Id == panel.ParentId);
                     if (transformer != null)
                     {
                         transformer.AddChildPanel(panel);
+                        panel.AssignParentComponent(transformer);
+                    }
+                    if (panel2 != null)
+                    {
+                        panel.AssignParentComponent(panel2);
+                    }
+                    if (service != null)
+                    {
+                        panel.AssignParentComponent(service);
                     }
                 }
 

@@ -243,7 +243,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <Rectangle Width="530" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+                                            <Rectangle Width="710" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
 
 
                                             <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
@@ -306,18 +306,21 @@
 
                                             <CheckBox IsChecked="{Binding IsMlo}" FontWeight="Bold" Content="MLO"  VerticalAlignment="Top" Margin="370,53,0,0" HorizontalAlignment="Left" Width="70" />
 
-
                                             <Label VerticalAlignment="Top" Margin="440,28,0,0" HorizontalAlignment="Left" Content="# Breakers" FontWeight="Bold"/>
                                             <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="440,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper" MaxLength="2"/>
-                                            <Label VerticalAlignment="Top" Margin="550,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                            <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="550 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                            <Label VerticalAlignment="Top" Margin="550,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                            <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="550,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
+                                            
+                                            <Label VerticalAlignment="Top" Margin="530,28,0,0" HorizontalAlignment="Left" Content="Location" FontWeight="Bold"/>
+                                            <TextBox Text="{Binding Location}" Height="20" VerticalAlignment="Top" Margin="530,50,0,0" HorizontalAlignment="Left" Width="170"/>
 
-                                            <Label VerticalAlignment="Top" Margin="650,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                            <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="650,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
-                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="750,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
-                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="850,50,150,0" HorizontalAlignment="Left" Width="150" />
+                                            <Label VerticalAlignment="Top" Margin="730,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                            <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                            <Label VerticalAlignment="Top" Margin="730,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
+                                            <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="730,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
+
+                                            <Label VerticalAlignment="Top" Margin="830,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
+                                            <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="830,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
+                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="930,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
+                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="1030,50,150,0" HorizontalAlignment="Left" Width="150" />
                                         </Grid>
                                         <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>

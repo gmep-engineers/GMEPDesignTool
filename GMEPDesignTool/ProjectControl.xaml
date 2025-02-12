@@ -35,11 +35,28 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Rectangle Width="1"  Stroke="Black" Height="19" Margin="0 0 5 0"/>
                 <TextBlock x:Name="SaveText" Text="{Binding SaveText}" Height="22" HorizontalAlignment="Right" Margin="0 0 5 0"/>
-                <Button Margin="10 0 0 0" Width="50" Height="20" Content="Copy" FontWeight="Bold" Click="AddVersion_Click"/>
-                <Button Background="Crimson" Foreground="White" Margin="0 0 5 0" Width="50" Height="20" Content="Delete" FontWeight="Bold" Click="DeleteVersion_Click"/>
+                <Button Margin="10 0 0 0" Width="50" Height="20" Content="Copy" FontWeight="Bold" Click="CopyPopup_Click"/>
+                <Button Background="Crimson" Foreground="White" Margin="0 0 5 0" Width="50" Height="20" Content="Delete" FontWeight="Bold" Click="DeletePopup_Click"/>
                 <ComboBox x:Name="VersionComboBox" Grid.Column="0" Width="130" Height="20" ItemsSource="{Binding ProjectIds}" DisplayMemberPath="Key" SelectedValuePath="Key" SelectedValue="{Binding SelectedVersion}" SelectionChanged="Version_SelectionChanged"></ComboBox>
-                
             </StackPanel>
         </Grid>
+        <Popup Name="CopyPopup" StaysOpen="False" Placement="Mouse">
+            <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Copy Project?" />
+                    <Button Content="Copy" Click="AddVersion_Click" />
+                    <Button Content="Close" Click="CloseCopyPopup_Click" />
+                </StackPanel>
+            </Border>
+        </Popup>
+        <Popup Name="DeletePopup" StaysOpen="False" Placement="Mouse">
+            <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Delete Project?" />
+                    <Button Content="Delete" Click="DeleteVersion_Click" />
+                    <Button Content="Close" Click="CloseDeletePopup_Click" />
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>

@@ -27,12 +27,18 @@ namespace GMEPDesignTool
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
+        private string _location;
+        private string _notes;
+        private string _parentName;
+        private string _parentType;
         // private bool _isLcl;
         // private float _lcl;
 
         //private int _phaseAVa;
         // private int _phaseBVa;
         //private int _phaseCVa;
+
+        public ElectricalComponent ParentComponent { get; set; }
 
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
            new ObservableCollection<ElectricalComponent>();
@@ -67,7 +73,9 @@ namespace GMEPDesignTool
             bool powered,
             bool isRecessed,
             int circuitNo,
-            bool isHiddenOnPlan
+            bool isHiddenOnPlan,
+            string location,
+            string notes
         )
             : base()
         {
@@ -96,10 +104,47 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
+            this._notes = notes;
+            this._location = location;
             SetPole();
             PopulateCircuits();
         }
         
+        public string ParentName
+        {
+            get => _parentName;
+            set
+            {
+                this._parentName = value;
+                OnPropertyChanged(nameof(ParentName));
+            }
+        }
+        public string ParentType
+        {
+            get => _parentType;
+            set
+            {
+                this._parentType = value;
+                OnPropertyChanged(nameof(ParentType));
+            }
+        }
+
+        public override string ParentId
+        {
+            get => this.parentId;
+            set
+            {
+                this.parentId = value;
+                OnPropertyChanged(nameof(ParentId));
+                if (ParentComponent != null && string.IsNullOrEmpty(value))
+                {
+                    ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
+                    ParentName = "";
+                    ParentType = "";
+                    ParentComponent = null;
+                }
+            }
+        }
         public override int Pole
         {
             get => this.pole;
@@ -277,6 +322,24 @@ namespace GMEPDesignTool
             {
                 _powered = value;
                 OnPropertyChanged(nameof(Powered));
+            }
+        }
+        public string Location
+        {
+            get => _location;
+            set
+            {
+                _location = value;
+                OnPropertyChanged(nameof(Location));
+            }
+        }
+        public string Notes
+        {
+            get => _notes;
+            set
+            {
+                _notes = value;
+                OnPropertyChanged(nameof(Notes));
             }
         }
        /* public override bool IsLcl {
@@ -560,11 +623,41 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private void ParentComponent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalEquipment.Name) && sender is ElectricalComponent component)
+            {
+               ParentName = component.Name;
+            }
+        }
+        public void AssignParentComponent(ElectricalComponent component)
+        {
+            ParentComponent = component;
+            ParentName = component.Name;
+            component.PropertyChanged += ParentComponent_PropertyChanged;
+            switch (component)
+            {
+                case ElectricalService service:
+                    ParentType = "";
+                    break;
+                case ElectricalPanel panel:
+                    ParentType = "PANEL ";
+                    break;
+                case ElectricalTransformer transformer:
+                    ParentType = "TRANSFORMER ";
+                    break;
+                default:
+                    ParentType = "";
+                    break;
+            }
+        }
+
         public void AssignEquipment(ElectricalEquipment equipment)
         {
             componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
+
 
         public void AssignPanel(ElectricalPanel panel)
         {

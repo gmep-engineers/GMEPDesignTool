@@ -16,7 +16,6 @@ namespace GMEPDesignTool
         public ProjectControlViewModel(string projectNo)
         {
             projectIds = database.GetProjectIds(projectNo);
-            selectedVersion = 1;
             _projectNo = projectNo;
         }
 
