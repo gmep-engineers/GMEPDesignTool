@@ -36,6 +36,8 @@ namespace GMEPDesignTool
         // private int _phaseBVa;
         //private int _phaseCVa;
 
+        public ElectricalComponent ParentComponent { get; set; }
+
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
            new ObservableCollection<ElectricalComponent>();
 

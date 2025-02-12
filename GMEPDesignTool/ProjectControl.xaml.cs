@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -46,7 +47,7 @@ namespace GMEPDesignTool
 
             //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
 
-            string projectId = viewModel.ProjectIds[1];
+            string projectId = viewModel.ProjectIds.First().Value;
 
             viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
 
@@ -61,6 +62,7 @@ namespace GMEPDesignTool
                 string projectId = selectedPair.Value;
                 viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
+                CopyPopup.IsOpen = false;
             }
         }
         private void DeleteVersion_Click(object sender, RoutedEventArgs e)
@@ -70,6 +72,7 @@ namespace GMEPDesignTool
                 string projectId = selectedPair.Value;
                 viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
+                DeletePopup.IsOpen = false;
             }
         }
         private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -81,6 +84,22 @@ namespace GMEPDesignTool
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
 
             }
+        }
+        private void CopyPopup_Click(object sender, RoutedEventArgs e)
+        {
+            CopyPopup.IsOpen = true;
+        }
+        private void CloseCopyPopup_Click(object sender, RoutedEventArgs e)
+        {
+            CopyPopup.IsOpen = false;
+        }
+        private void DeletePopup_Click(object sender, RoutedEventArgs e)
+        {
+            DeletePopup.IsOpen = true;
+        }
+        private void CloseDeletePopup_Click(object sender, RoutedEventArgs e)
+        {
+            DeletePopup.IsOpen = false;
         }
     }
 }
