@@ -29,6 +29,7 @@ namespace GMEPDesignTool
         private bool _isHiddenOnPlan;
         private string _location;
         private string _notes;
+        private string _parentName;
         // private bool _isLcl;
         // private float _lcl;
 
@@ -108,6 +109,15 @@ namespace GMEPDesignTool
             PopulateCircuits();
         }
         
+        public string ParentName
+        {
+            get => _parentName;
+            set
+            {
+                this._parentName = value;
+                OnPropertyChanged(nameof(ParentName));
+            }
+        }
         public override int Pole
         {
             get => this.pole;
@@ -586,11 +596,25 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private void ParentComponent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalEquipment.Name) && sender is ElectricalComponent component)
+            {
+               ParentName = component.Name;
+            }  
+        }
+        public void AssignParentComponent(ElectricalComponent component)
+        {
+            ParentComponent = component;
+            component.PropertyChanged += ParentComponent_PropertyChanged;
+        }
+
         public void AssignEquipment(ElectricalEquipment equipment)
         {
             componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
         }
+
 
         public void AssignPanel(ElectricalPanel panel)
         {

@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ElectricalService : INotifyPropertyChanged
+    public class ElectricalService : ElectricalComponent
     {
-        private string _id;
-        private string _projectId;
-        private string _name;
+        //private string _id;
+        //private string _projectId;
+        //private string _name;
         private int _type;
-        private int _amp;
+       // private int _amp;
         private int _config;
-        private string _colorCode;
+       // private string _colorCode;
         private int _aicRating;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,17 +33,17 @@ namespace GMEPDesignTool
             int aicRating
         )
         {
-            _id = id;
-            _projectId = projectId;
-            _name = name;
+            this.id = id;
+            this.projectId = projectId;
+            this.name = name;
             _type = type;
-            _amp = amp;
+            this.amp = amp;
             _config = config;
-            _colorCode = colorCode;
+            this.colorCode = colorCode;
             _aicRating = aicRating;
         }
 
-        public string Id
+       /* public string Id
         {
             get => _id;
             set
@@ -71,7 +71,7 @@ namespace GMEPDesignTool
                 _name = value;
                 OnPropertyChanged();
             }
-        }
+        }*/
 
         public int Type
         {
@@ -83,15 +83,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Amp
-        {
-            get => _amp;
-            set
-            {
-                _amp = value;
-                OnPropertyChanged();
-            }
-        }
+       
         public int Config
         {
             get => _config;
@@ -102,7 +94,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string ColorCode
+        /*public string ColorCode
         {
             get => _colorCode;
             set
@@ -110,7 +102,7 @@ namespace GMEPDesignTool
                 _colorCode = value;
                 OnPropertyChanged();
             }
-        }
+        }*/
 
         public int AicRating
         {

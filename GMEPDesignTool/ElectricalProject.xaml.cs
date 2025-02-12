@@ -141,9 +141,11 @@ namespace GMEPDesignTool
                     if (panelParentId.Item1 == transformer.Id)
                     {
                         transformer.AddChildPanel(panelParentId.Item2);
+                        // add transformer to panels parentComponent
                     }
                 }
             }
+            //repeat adding for panels and services
         }
 
         private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
