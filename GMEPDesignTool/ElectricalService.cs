@@ -11,16 +11,9 @@ namespace GMEPDesignTool
 {
     public class ElectricalService : ElectricalComponent
     {
-        //private string _id;
-        //private string _projectId;
-        //private string _name;
         private int _type;
-       // private int _amp;
         private int _config;
-       // private string _colorCode;
         private int _aicRating;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ElectricalService(
             string id,
@@ -43,43 +36,13 @@ namespace GMEPDesignTool
             _aicRating = aicRating;
         }
 
-       /* public string Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ProjectId
-        {
-            get => _projectId;
-            set
-            {
-                _projectId = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
-        }*/
-
         public int Type
         {
             get => _type;
             set
             {
                 _type = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -90,19 +53,9 @@ namespace GMEPDesignTool
             set
             {
                 _config = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Config));
             }
         }
-
-        /*public string ColorCode
-        {
-            get => _colorCode;
-            set
-            {
-                _colorCode = value;
-                OnPropertyChanged();
-            }
-        }*/
 
         public int AicRating
         {
@@ -110,14 +63,11 @@ namespace GMEPDesignTool
             set
             {
                 _aicRating = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(AicRating));
             }
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
 
         public bool Verify()
         {
