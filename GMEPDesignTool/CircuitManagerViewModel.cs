@@ -194,7 +194,7 @@ namespace GMEPDesignTool
             mounting = setMounting(panel.IsRecessed);
             Panel.PropertyChanged += Panel_PropertyChanged;
         }
-        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
           
                 if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))

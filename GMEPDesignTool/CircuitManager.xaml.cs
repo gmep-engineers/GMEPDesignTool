@@ -26,7 +26,16 @@ namespace GMEPDesignTool
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
             this.DataContext = viewModel;
+            this.Closed += CircuitManager_Closed;
             
+        }
+        private void CircuitManager_Closed(object sender, EventArgs e)
+        {
+            // Unsubscribe from any events
+            if (viewModel.Panel != null)
+            {
+                viewModel.Panel.PropertyChanged -= viewModel.Panel_PropertyChanged;
+            }
         }
         private void AddSpaceLeft(object sender, RoutedEventArgs e)
         {
