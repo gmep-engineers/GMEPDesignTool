@@ -15,6 +15,7 @@ using System.Windows.Controls;
 
 
 
+
 namespace GMEPDesignTool
 {
    public class CircuitManagerViewModel : ViewModelBase, IDropTarget
@@ -155,6 +156,14 @@ namespace GMEPDesignTool
             set => SetProperty(ref parentName, value);
         }
 
+        private string parentType;
+
+        public string ParentType
+        {
+            get => parentType;
+            set => SetProperty(ref parentType, value);
+        }
+
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightComponents = panel.rightComponents;
@@ -175,6 +184,7 @@ namespace GMEPDesignTool
             _va = panel.Va;
             notes = panel.Notes;
             parentName = panel.ParentName;
+            parentType = panel.ParentType;
             _location = panel.Location;
             wire = determineWire(panel.Type);
             busRating = setBusRating(panel.BusSize);
@@ -268,6 +278,11 @@ namespace GMEPDesignTool
                 {
                     ParentName = Panel.ParentName;
                     OnPropertyChanged(nameof(ParentName));
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.ParentType))
+                {
+                    ParentType = Panel.ParentType;
+                    OnPropertyChanged(nameof(ParentType));
                 }
         }
         public string setBusRating(int bus)

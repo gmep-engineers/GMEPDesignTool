@@ -146,7 +146,8 @@
                                 </TextBox>
                                 <TextBox Grid.Row="1" IsReadOnly="True">
                                     <TextBox.Text>
-                                        <MultiBinding StringFormat="FED FROM PANEL '{0}'">
+                                        <MultiBinding StringFormat="FED FROM {0}'{1}'">
+                                            <Binding Path="ParentType"/>
                                             <Binding Path="ParentName"/>
                                         </MultiBinding>
                                     </TextBox.Text>

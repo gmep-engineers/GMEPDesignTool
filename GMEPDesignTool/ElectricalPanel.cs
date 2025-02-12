@@ -30,6 +30,7 @@ namespace GMEPDesignTool
         private string _location;
         private string _notes;
         private string _parentName;
+        private string _parentType;
         // private bool _isLcl;
         // private float _lcl;
 
@@ -118,6 +119,15 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(ParentName));
             }
         }
+        public string ParentType
+        {
+            get => _parentType;
+            set
+            {
+                this._parentType = value;
+                OnPropertyChanged(nameof(ParentType));
+            }
+        }
 
         public override string ParentId
         {
@@ -130,6 +140,7 @@ namespace GMEPDesignTool
                 {
                     ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
                     ParentName = "";
+                    ParentType = "";
                     ParentComponent = null;
                 }
             }
@@ -624,6 +635,21 @@ namespace GMEPDesignTool
             ParentComponent = component;
             ParentName = component.Name;
             component.PropertyChanged += ParentComponent_PropertyChanged;
+            switch (component)
+            {
+                case ElectricalService service:
+                    ParentType = "";
+                    break;
+                case ElectricalPanel panel:
+                    ParentType = "PANEL ";
+                    break;
+                case ElectricalTransformer transformer:
+                    ParentType = "TRANSFORMER ";
+                    break;
+                default:
+                    ParentType = "";
+                    break;
+            }
         }
 
         public void AssignEquipment(ElectricalEquipment equipment)
