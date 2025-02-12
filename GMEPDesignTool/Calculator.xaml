@@ -28,7 +28,6 @@
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
                                     <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
                                     <DataGridTemplateColumn Header="Voltage">
                                         <DataGridTemplateColumn.CellTemplate>
@@ -137,7 +136,6 @@
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Id}" Header="ID"/>
                                     <DataGridTextColumn Binding="{Binding Name }" Header="Name"/>
                                     <DataGridTemplateColumn Header="Kva">
                                         <DataGridTemplateColumn.CellTemplate>
