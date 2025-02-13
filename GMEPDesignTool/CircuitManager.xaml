@@ -968,22 +968,43 @@
                        dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">    
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Height" Value="80"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="24"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                    <Setter Property="Height" Value="53"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                                </Border>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition>
+                                            <ColumnDefinition.Style>
+                                                <Style TargetType="ColumnDefinition">
+                                                    <Setter Property="Width" Value="30"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ComponentType}" Value="Space">
+                                                            <Setter Property="Width" Value="0"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ColumnDefinition.Style>
+                                        </ColumnDefinition>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Ellipse Margin="0 0 4 0" Stroke="Black" StrokeThickness=".5" Width="20" Height="20"/>
+                                        <TextBox Margin="0 0 4 0" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
+                                    </Grid>
+                                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Height" Value="80"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                        <Setter Property="Height" Value="24"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                        <Setter Property="Height" Value="53"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                    </Border>
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
