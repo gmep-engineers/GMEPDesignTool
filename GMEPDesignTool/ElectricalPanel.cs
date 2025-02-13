@@ -705,7 +705,6 @@ namespace GMEPDesignTool
 
         public void AssignPanel(ElectricalPanel panel)
         {
-
             componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
         }
@@ -798,7 +797,16 @@ namespace GMEPDesignTool
             PhaseBVA = 0;
             PhaseCVA = 0;
             Kva = 0;
+            ALml = 0;
+            BLml = 0;
+            CLml = 0;
+            ALcl = 0;
+            BLcl = 0;
+            CLcl = 0;
             int phaseIndex = 0;
+            float lmlATemp = 0;
+            float lmlBTemp = 0;
+            float lmlCTemp = 0;
             foreach (var component in leftComponents)
             {
                 int circuitIndex = leftCircuits.IndexOf(
@@ -806,23 +814,33 @@ namespace GMEPDesignTool
                 );
                 if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
                 {
+                    
+                    if ((component.ALml + component.BLml + component.CLml) > (lmlATemp + lmlBTemp + lmlCTemp))
+                    {
+                        lmlATemp = component.ALml;
+                        lmlBTemp = component.BLml;
+                        lmlCTemp = component.CLml;
+                    }
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
                         var phaseLcl = 0;
+                        var phaseLml = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
                                 phaseLcl = (int)component.ALcl;
+                                phaseLml = (int)lmlATemp;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
                                 phaseLcl = (int)component.BLcl;
+                                phaseLml = (int)lmlBTemp;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
-                                phaseLcl = (int)component.CLcl;
+                                phaseLcl = (int)lmlCTemp;
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
@@ -851,16 +869,19 @@ namespace GMEPDesignTool
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
                                 ALcl += phaseLcl;
+                                ALml = phaseLml;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
                                 BLcl += phaseLcl;
+                                BLml = phaseLml;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
                                 CLcl += phaseLcl;
+                                CLml = phaseLml;
                                 break;
                         }
                         Lcl += phaseLcl;
@@ -876,23 +897,33 @@ namespace GMEPDesignTool
                 );
                 if (circuitIndex != -1 && circuitIndex + component.Pole <= rightCircuits.Count)
                 {
+                    if ((component.ALml + component.BLml + component.CLml) > (lmlATemp + lmlBTemp + lmlCTemp))
+                    {
+                        lmlATemp = component.ALml;
+                        lmlBTemp = component.BLml;
+                        lmlCTemp = component.CLml;
+                    }
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
                         var phaseLcl = 0;
+                        var phaseLml = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
                                 phaseLcl = (int)component.ALcl;
+                                phaseLml = (int)lmlATemp;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
                                 phaseLcl = (int)component.BLcl;
+                                phaseLml = (int)lmlBTemp;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
                                 phaseLcl = (int)component.CLcl;
+                                phaseLml = (int)lmlCTemp;
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
@@ -920,16 +951,19 @@ namespace GMEPDesignTool
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
                                 ALcl += phaseLcl;
+                                ALml = phaseLml;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
                                 BLcl += phaseLcl;
+                                BLml = phaseLml;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
                                 CLcl += phaseLcl;
+                                CLml = phaseLml;
                                 break;
                         }
                         phaseIndex++;
@@ -1012,17 +1046,20 @@ namespace GMEPDesignTool
         public float SetAmp()
         {
             float Amp = 0;
-            int largestPhase = (int)Math.Max(PhaseAVA, Math.Max(PhaseBVA, PhaseCVA));
+            float AVA = PhaseAVA + (ALcl/4) + (ALml/4);
+            float BVA = PhaseBVA + (BLcl/4) + (BLml/4);
+            float CVA = PhaseCVA + (CLcl/4) + (CLml/4);
+            int largestPhase = (int)Math.Max(AVA, Math.Max(BVA, CVA));
             switch (Type)
             {
                 case 1:
-                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    Amp = (float)Math.Round(((double)largestPhase) / 120, 10);
                     break;
                 case 2:
-                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    Amp = (float)Math.Round(((double)largestPhase) / 120, 10);
                     break;
                 case 3:
-                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 277, 10);
+                    Amp = (float)Math.Round(((double)largestPhase) / 277, 10);
                     break;
                 case 4:
                     double l1 = PhaseAVA;
@@ -1033,18 +1070,18 @@ namespace GMEPDesignTool
                     double fC = Math.Abs(l2 - l3);
                     double l3N = l3;
                     double l2N = l2;
-                    double iFa = (fA + (0.25 * Lml)) / 240;
-                    double iFb = (fB + (0.25 * Lml)) / 240;
-                    double iFc = (fC + (0.25 * Lml)) / 240;
-                    double iL2N = (l2N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
-                    double iL3N = (l3N + (0.25 * Lcl) + (0.25 * Lml)) / 120;
+                    double iFa = (fA + (0.25 * ALml)) / 240;
+                    double iFb = (fB + (0.25 * BLml)) / 240;
+                    double iFc = (fC + (0.25 * CLml)) / 240;
+                    double iL2N = (l2N + (0.25 * BLcl) + (0.25 * BLml)) / 120;
+                    double iL3N = (l3N + (0.25 * CLcl) + (0.25 * CLml)) / 120;
                     double iL1 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow(iFb, 2) + (iFa * iFb));
                     double iL2 = Math.Sqrt(Math.Pow(iFb, 2) + Math.Pow((iL2N + iFc), 2) + (iFb * (iL2N + iFc)));
                     double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
                     Amp = (float)Math.Max(Math.Max(iL3, iL1), iL2);
                     break;
                 case 5:
-                    Amp = (float)Math.Round(((double)largestPhase + (Lcl/4) + (Lml/4)) / 120, 10);
+                    Amp = (float)Math.Round(((double)largestPhase) / 120, 10);
                     break;
 
             }
