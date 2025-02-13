@@ -490,18 +490,27 @@ namespace GMEPDesignTool
         public void SetPhaseVa()
         {
             double vaTemp = Va;
+            double lclLmlTemp = Va;
             switch (Pole)
             {
                 case 2:
                     vaTemp /= 2;
+                    lclLmlTemp /= 2;
                     break;
                 case 3:
                     vaTemp /= 1.732;
+                    lclLmlTemp /= 3;
                     break;
             }
             PhaseAVA = (float)vaTemp;
             PhaseBVA = (float)vaTemp;
             PhaseCVA = (float)vaTemp;
+            ALcl = (float)lclLmlTemp;
+            BLcl = (float)lclLmlTemp;
+            CLcl = (float)lclLmlTemp;
+            ALml = (float)lclLmlTemp;
+            BLml = (float)lclLmlTemp;
+            CLml = (float)lclLmlTemp;
         }
         private void determineEquipmentPole()
         {
