@@ -102,7 +102,7 @@
                                     </Border>
                                     <Grid Grid.Column="1">
                                         <Ellipse Margin="4 0 0 0" Stroke="Black" StrokeThickness=".5" Width="20" Height="20"/>
-                                        <TextBox Margin="4 0 0 0" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
+                                        <TextBox Margin="4 0 0 0" Width="20" Height="20" MaxLength="2" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
                                      </Grid>
 
                                     </Grid>
@@ -986,7 +986,7 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid Grid.Column="0">
                                         <Ellipse Margin="0 0 4 0" Stroke="Black" StrokeThickness=".5" Width="20" Height="20"/>
-                                        <TextBox Margin="0 0 4 0" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
+                                        <TextBox Margin="0 0 4 0" MaxLength="2" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
                                     </Grid>
                                     <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
                                         <Border.Style>
@@ -1064,8 +1064,8 @@
                 <StackPanel.Effect>
                     <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
                 </StackPanel.Effect>
-                <TextBox FontSize="23"  Text="NOTES: "/>
-                <TextBox Height="130" Text="{Binding Notes}"/>
+                <TextBox FontSize="23"  Text="NOTES: " IsReadOnly="True"/>
+                <TextBox Height="130" Text="{Binding Notes}" AcceptsReturn="True" />
             </StackPanel>
         </Grid>
         </ScrollViewer>
