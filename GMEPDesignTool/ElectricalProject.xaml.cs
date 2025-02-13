@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
+using GongSolutions.Wpf.DragDrop;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
@@ -31,7 +32,7 @@ namespace GMEPDesignTool
     /// <summary>
     /// Interaction logic for ElectricalProject.xaml
     /// </summary>
-    public partial class ElectricalProject : UserControl
+    public partial class ElectricalProject : UserControl, IDropTarget
     {
 
         private DispatcherTimer timer = new DispatcherTimer();
@@ -1856,6 +1857,50 @@ namespace GMEPDesignTool
                 s3.DeleteFileAsync(equipment.SpecSheetId);
                 equipment.SpecSheetId = "";
             }
+        }
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
+            ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
+
+            if (sourceItem != null && !(sourceItem is Space) && targetItem != null && sourceItem.GetType() == targetItem.GetType())
+            {
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+                dropInfo.Effects = DragDropEffects.Move;
+            }
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            ElectricalComponent sourceItem = dropInfo.Data as ElectricalComponent;
+            ElectricalComponent targetItem = dropInfo.TargetItem as ElectricalComponent;
+
+            if (sourceItem != null && targetItem != null && sourceItem.GetType() == targetItem.GetType())
+            {
+                ObservableCollection<ElectricalComponent> collection = GetSourceCollection(sourceItem);
+
+                int sourceIndex = collection.IndexOf(sourceItem);
+                int targetIndex = collection.IndexOf(targetItem);
+
+                if (sourceIndex != -1 && targetIndex != -1)
+                {
+                    collection.Move(sourceIndex, targetIndex);
+                }
+            }
+        }
+
+        private ObservableCollection<ElectricalComponent> GetSourceCollection(ElectricalComponent item)
+        {
+            if (ElectricalPanels.Contains(item))
+                return new ObservableCollection<ElectricalComponent>(ElectricalPanels.Cast<ElectricalComponent>());
+            if (ElectricalServices.Contains(item))
+                return new ObservableCollection<ElectricalComponent>(ElectricalServices.Cast<ElectricalComponent>());
+            if (ElectricalEquipments.Contains(item))
+                return new ObservableCollection<ElectricalComponent>(ElectricalEquipments.Cast<ElectricalComponent>());
+            if (ElectricalTransformers.Contains(item))
+                return new ObservableCollection<ElectricalComponent>(ElectricalTransformers.Cast<ElectricalComponent>()); 
+
+            return null;
         }
     }
 
