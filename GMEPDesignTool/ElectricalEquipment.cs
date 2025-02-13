@@ -511,6 +511,8 @@ namespace GMEPDesignTool
             ALml = (float)lclLmlTemp;
             BLml = (float)lclLmlTemp;
             CLml = (float)lclLmlTemp;
+            Lcl = (float)Va;
+            Lml = (float)Va;
         }
         private void determineEquipmentPole()
         {
