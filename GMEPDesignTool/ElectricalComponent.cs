@@ -41,8 +41,11 @@ namespace GMEPDesignTool
             get => lcl;
             set
             {
-                lcl = value;
-                OnPropertyChanged(nameof(Lcl));
+                if (lcl != value)
+                {
+                    lcl = value;
+                    OnPropertyChanged(nameof(Lcl));
+                }
             }
         }
         public virtual float ALcl
@@ -50,8 +53,11 @@ namespace GMEPDesignTool
             get => aLcl;
             set
             {
-                aLcl = value;
-                OnPropertyChanged(nameof(ALcl));
+                if (aLcl != value)
+                {
+                    aLcl = value;
+                    OnPropertyChanged(nameof(ALcl));
+                }
             }
         }
         public virtual float BLcl
@@ -59,8 +65,11 @@ namespace GMEPDesignTool
             get => bLcl;
             set
             {
-                bLcl = value;
-                OnPropertyChanged(nameof(BLcl));
+                if (bLcl != value)
+                {
+                    bLcl = value;
+                    OnPropertyChanged(nameof(BLcl));
+                }
             }
         }
         public virtual float CLcl
@@ -68,8 +77,11 @@ namespace GMEPDesignTool
             get => cLcl;
             set
             {
-                cLcl = value;
-                OnPropertyChanged(nameof(CLcl));
+                if (cLcl != value)
+                {
+                    cLcl = value;
+                    OnPropertyChanged(nameof(CLcl));
+                }
             }
         }
         public virtual float Lml
@@ -77,8 +89,11 @@ namespace GMEPDesignTool
             get => lml;
             set
             {
-                lml = value;
-                OnPropertyChanged(nameof(Lml));
+                if (lml != value)
+                {
+                    lml = value;
+                    OnPropertyChanged(nameof(Lml));
+                }
             }
         }
         public virtual float ALml
@@ -86,8 +101,11 @@ namespace GMEPDesignTool
             get => aLml;
             set
             {
-                aLml = value;
-                OnPropertyChanged(nameof(ALml));
+                if (aLml != value)
+                {
+                    aLml = value;
+                    OnPropertyChanged(nameof(ALml));
+                }
             }
         }
         public virtual float BLml
@@ -95,8 +113,11 @@ namespace GMEPDesignTool
             get => bLml;
             set
             {
-                bLml = value;
-                OnPropertyChanged(nameof(BLml));
+                if (bLml != value)
+                {
+                    bLml = value;
+                    OnPropertyChanged(nameof(BLml));
+                }
             }
         }
         public virtual float CLml
@@ -104,8 +125,11 @@ namespace GMEPDesignTool
             get => cLml;
             set
             {
-                cLml = value;
-                OnPropertyChanged(nameof(CLml));
+                if (cLml != value)
+                {
+                    cLml = value;
+                    OnPropertyChanged(nameof(CLml));
+                }
             }
         }
 
