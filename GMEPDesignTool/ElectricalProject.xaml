@@ -488,7 +488,6 @@
                                                                 <CheckBox Content="Has Plug"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" IsChecked="{Binding HasPlug}" FontWeight="Bold" />
                                                                 <CheckBox Content="Locking Connector"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" IsChecked="{Binding LockingConnector}" FontWeight="Bold" />
                                                                 <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="150" />
-
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>

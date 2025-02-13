@@ -68,22 +68,44 @@
                      dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Height" Value="80"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="24"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                    <Setter Property="Height" Value="53"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                                </Border>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition>
+                                            <ColumnDefinition.Style>
+                                                <Style TargetType="ColumnDefinition">
+                                                    <Setter Property="Width" Value="30"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Name}" Value="Space">
+                                                            <Setter Property="Width" Value="0"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ColumnDefinition.Style>
+                                        </ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Height" Value="80"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                        <Setter Property="Height" Value="24"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                        <Setter Property="Height" Value="53"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Grid Grid.Column="1">
+                                        <Ellipse Margin="4 0 0 0" Stroke="Black" StrokeThickness=".5" Width="25" Height="25"/>
+                                        <TextBox Margin="4 0 0 0" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
+                                     </Grid>
+
+                                    </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
