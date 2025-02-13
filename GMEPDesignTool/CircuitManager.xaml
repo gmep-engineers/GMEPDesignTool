@@ -101,7 +101,7 @@
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <Grid Grid.Column="1">
-                                        <Ellipse Margin="4 0 0 0" Stroke="Black" StrokeThickness=".5" Width="25" Height="25"/>
+                                        <Ellipse Margin="4 0 0 0" Stroke="Black" StrokeThickness=".5" Width="20" Height="20"/>
                                         <TextBox Margin="4 0 0 0" Width="20" Height="20" BorderThickness="0" FontWeight="Bold" TextAlignment="Center" Background="Transparent"/>
                                      </Grid>
 
