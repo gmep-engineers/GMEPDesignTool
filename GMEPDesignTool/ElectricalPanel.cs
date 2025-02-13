@@ -106,6 +106,7 @@ namespace GMEPDesignTool
             _va = 0;
             this._notes = notes;
             this._location = location;
+            this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
         }
@@ -1177,6 +1178,7 @@ namespace GMEPDesignTool
         {
             Pole = 1;
             Name = "Space";
+            this.componentType = "Space";
         }
     }
 }

@@ -34,6 +34,7 @@ namespace GMEPDesignTool
             _config = config;
             this.colorCode = colorCode;
             _aicRating = aicRating;
+            this.componentType = "Service";
         }
 
         public int Type

@@ -61,6 +61,7 @@ namespace GMEPDesignTool
             _isHiddenOnPlan = isHiddenOnPlan;
             _isWallMounted = isWallMounted;
             _aicRating=aicRating;
+            this.componentType = "Transformer";
         }
 
 

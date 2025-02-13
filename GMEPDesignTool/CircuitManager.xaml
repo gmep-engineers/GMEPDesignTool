@@ -76,7 +76,7 @@
                                                 <Style TargetType="ColumnDefinition">
                                                     <Setter Property="Width" Value="30"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Name}" Value="Space">
+                                                        <DataTrigger Binding="{Binding ComponentType}" Value="Space">
                                                             <Setter Property="Width" Value="0"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
