@@ -107,6 +107,12 @@ namespace GMEPDesignTool
             this.phaseAVa = 0;
             this.phaseBVa = 0;
             this.phaseCVa = 0;
+            this.aLcl = 0;
+            this.bLcl = 0;
+            this.cLcl = 0;
+            this.aLml = 0;
+            this.bLml = 0;
+            this.cLml = 0;
             this.componentType = "Equipment";
             DetermineLoadCategory();
             DetermineLoadTypes();
@@ -490,18 +496,27 @@ namespace GMEPDesignTool
         public void SetPhaseVa()
         {
             double vaTemp = Va;
+            double lclLmlTemp = Va;
             switch (Pole)
             {
                 case 2:
                     vaTemp /= 2;
+                    lclLmlTemp /= 2;
                     break;
                 case 3:
                     vaTemp /= 1.732;
+                    lclLmlTemp /= 3;
                     break;
             }
             PhaseAVA = (float)vaTemp;
             PhaseBVA = (float)vaTemp;
             PhaseCVA = (float)vaTemp;
+            ALcl = (float)lclLmlTemp;
+            BLcl = (float)lclLmlTemp;
+            CLcl = (float)lclLmlTemp;
+            ALml = (float)lclLmlTemp;
+            BLml = (float)lclLmlTemp;
+            CLml = (float)lclLmlTemp;
         }
         private void determineEquipmentPole()
         {

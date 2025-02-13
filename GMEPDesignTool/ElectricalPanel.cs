@@ -440,13 +440,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                Lcl += (float)(equipment.PhaseAVA);
+                                Lcl += (float)(equipment.ALcl);
                                 break;
                             case 2:
-                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA);
+                                Lcl += (float)(equipment.ALcl + equipment.BLcl);
                                 break;
                             case 3:
-                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
+                                Lcl += (float)(equipment.ALcl + equipment.BLcl + equipment.CLcl);
                                 break;
                         }
                     }
@@ -494,13 +494,13 @@ namespace GMEPDesignTool
                         switch (equipment.Pole)
                         {
                             case 1:
-                                TempValue = (float)(equipment.PhaseAVA);
+                                TempValue = (float)(equipment.ALml);
                                 break;
                             case 2:
-                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA);
+                                TempValue = (float)(equipment.ALml + equipment.BLml);
                                 break;
                             case 3:
-                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
+                                TempValue = (float)(equipment.ALml + equipment.BLml + equipment.CLml);
                                 break;
                         }
                         if (TempValue > Lml)
@@ -809,16 +809,20 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
-                        switch(i)
+                        var phaseLcl = 0;
+                        switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                phaseLcl = (int)component.ALcl;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                phaseLcl = (int)component.BLcl;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                phaseLcl = (int)component.CLcl;
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
@@ -846,16 +850,20 @@ namespace GMEPDesignTool
                             case 0:
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
+                                ALcl += phaseLcl;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
+                                BLcl += phaseLcl;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
+                                CLcl += phaseLcl;
                                 break;
                         }
+                        Lcl += phaseLcl;
                         phaseIndex++;
                     }
                 }
@@ -871,16 +879,20 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
+                        var phaseLcl = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                phaseLcl = (int)component.ALcl;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                phaseLcl = (int)component.BLcl;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                phaseLcl = (int)component.CLcl;
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
@@ -907,14 +919,17 @@ namespace GMEPDesignTool
                             case 0:
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
+                                ALcl += phaseLcl;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
+                                BLcl += phaseLcl;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
+                                CLcl += phaseLcl;
                                 break;
                         }
                         phaseIndex++;
