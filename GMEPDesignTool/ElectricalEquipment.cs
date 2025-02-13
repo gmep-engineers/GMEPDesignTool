@@ -107,6 +107,7 @@ namespace GMEPDesignTool
             this.phaseAVa = 0;
             this.phaseBVa = 0;
             this.phaseCVa = 0;
+            this.componentType = "Equipment";
             DetermineLoadCategory();
             DetermineLoadTypes();
             determineEquipmentPole();

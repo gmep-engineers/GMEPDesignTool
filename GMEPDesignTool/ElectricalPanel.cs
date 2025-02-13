@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO.Packaging;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-
 namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
@@ -106,6 +98,7 @@ namespace GMEPDesignTool
             _va = 0;
             this._notes = notes;
             this._location = location;
+            this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
         }
@@ -115,8 +108,11 @@ namespace GMEPDesignTool
             get => _parentName;
             set
             {
-                this._parentName = value;
-                OnPropertyChanged(nameof(ParentName));
+                if (_parentName != value)
+                {
+                    this._parentName = value;
+                    OnPropertyChanged(nameof(ParentName));
+                }
             }
         }
         public string ParentType
@@ -124,8 +120,11 @@ namespace GMEPDesignTool
             get => _parentType;
             set
             {
-                this._parentType = value;
-                OnPropertyChanged(nameof(ParentType));
+                if (_parentType != value)
+                {
+                    this._parentType = value;
+                    OnPropertyChanged(nameof(ParentType));
+                }
             }
         }
 
@@ -134,15 +133,19 @@ namespace GMEPDesignTool
             get => this.parentId;
             set
             {
-                this.parentId = value;
-                OnPropertyChanged(nameof(ParentId));
-                if (ParentComponent != null && string.IsNullOrEmpty(value))
+                if (this.parentId != value)
                 {
-                    ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
-                    ParentName = "";
-                    ParentType = "";
-                    ParentComponent = null;
+                    this.parentId = value;
+                    OnPropertyChanged(nameof(ParentId));
+                    if (ParentComponent != null && string.IsNullOrEmpty(value))
+                    {
+                        ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
+                        ParentName = "";
+                        ParentType = "";
+                        ParentComponent = null;
+                    }
                 }
+
             }
         }
         public override int Pole
@@ -150,9 +153,12 @@ namespace GMEPDesignTool
             get => this.pole;
             set
             {
-                this.pole = value;
-                OnPropertyChanged(nameof(Pole));
-                SetCircuitVa();
+                if (this.pole != value)
+                {
+                    this.pole = value;
+                    OnPropertyChanged(nameof(Pole));
+                    SetCircuitVa();
+                }
             }
         }
 
@@ -161,8 +167,11 @@ namespace GMEPDesignTool
             get => _isRecessed;
             set
             {
-                _isRecessed = value;
-                OnPropertyChanged(nameof(IsRecessed));
+                if (_isRecessed != value)
+                {
+                    _isRecessed = value;
+                    OnPropertyChanged(nameof(IsRecessed));
+                }
             }
         }
         public override float PhaseAVA
@@ -170,8 +179,11 @@ namespace GMEPDesignTool
             get => phaseAVa;
             set
             {
-                phaseAVa = value;
-                OnPropertyChanged(nameof(PhaseAVA));
+                if (this.phaseAVa != value)
+                {
+                    phaseAVa = value;
+                    OnPropertyChanged(nameof(PhaseAVA));
+                }
             }
         }
         public override float PhaseBVA
@@ -179,8 +191,11 @@ namespace GMEPDesignTool
             get => phaseBVa;
             set
             {
-                phaseBVa = value;
-                OnPropertyChanged(nameof(PhaseBVA));
+                if (this.phaseBVa != value)
+                {
+                    phaseBVa = value;
+                    OnPropertyChanged(nameof(PhaseBVA));
+                }
             }
         }
         public override float PhaseCVA
@@ -188,8 +203,11 @@ namespace GMEPDesignTool
             get => phaseCVa;
             set
             {
-                phaseCVa = value;
-                OnPropertyChanged(nameof(PhaseCVA));
+                if (this.phaseCVa != value)
+                {
+                    phaseCVa = value;
+                    OnPropertyChanged(nameof(PhaseCVA));
+                }
             }
         }
 
@@ -198,8 +216,11 @@ namespace GMEPDesignTool
              get => _va;
              set
              {
-                 _va = value;
-                 OnPropertyChanged(nameof(Va));
+                if (_va != value)
+                {
+                    _va = value;
+                    OnPropertyChanged(nameof(Va));
+                }
              }
          }
 
@@ -208,8 +229,11 @@ namespace GMEPDesignTool
             get => _busSize;
             set
             {
-                _busSize = value;
-                OnPropertyChanged(nameof(BusSize));
+                if (_busSize != value)
+                {
+                    _busSize = value;
+                    OnPropertyChanged(nameof(BusSize));
+                }
             }
         }
 
@@ -218,8 +242,11 @@ namespace GMEPDesignTool
             get => _mainSize;
             set
             {
-                _mainSize = value;
-                OnPropertyChanged(nameof(MainSize));
+                if (_mainSize != value)
+                {
+                    _mainSize = value;
+                    OnPropertyChanged(nameof(MainSize));
+                }
             }
         }
 
@@ -228,8 +255,11 @@ namespace GMEPDesignTool
             get => _isMlo;
             set
             {
-                _isMlo = value;
-                OnPropertyChanged(nameof(IsMlo));
+                if (_isMlo != value)
+                {
+                    _isMlo = value;
+                    OnPropertyChanged(nameof(IsMlo));
+                }
             }
         }
         public bool IsHiddenOnPlan
@@ -237,8 +267,11 @@ namespace GMEPDesignTool
             get => _isHiddenOnPlan;
             set
             {
-                _isHiddenOnPlan = value;
-                OnPropertyChanged(nameof(IsHiddenOnPlan));
+                if (_isHiddenOnPlan != value)
+                {
+                    _isHiddenOnPlan = value;
+                    OnPropertyChanged(nameof(IsHiddenOnPlan));
+                }
             }
         }
         public bool IsDistribution
@@ -246,8 +279,11 @@ namespace GMEPDesignTool
             get => _isDistribution;
             set
             {
-                _isDistribution = value;
-                OnPropertyChanged(nameof(IsDistribution));
+                if (_isDistribution != value)
+                {
+                    _isDistribution = value;
+                    OnPropertyChanged(nameof(IsDistribution));
+                }
             }
         }
 
@@ -256,11 +292,14 @@ namespace GMEPDesignTool
             get => _numBreakers;
             set
             {
-                _numBreakers = value;
-                OnPropertyChanged(nameof(NumBreakers));
-                PopulateCircuits();
-                SetCircuitNumbers();
-                SetCircuitVa();
+                if (_numBreakers != value)
+                {
+                    _numBreakers = value;
+                    OnPropertyChanged(nameof(NumBreakers));
+                    PopulateCircuits();
+                    SetCircuitNumbers();
+                    SetCircuitVa();
+                }
             }
         }
 
@@ -269,8 +308,11 @@ namespace GMEPDesignTool
             get => _distanceFromParent;
             set
             {
-                _distanceFromParent = value;
-                OnPropertyChanged(nameof(DistanceFromParent));
+                if (_distanceFromParent != value)
+                {
+                    _distanceFromParent = value;
+                    OnPropertyChanged(nameof(DistanceFromParent));
+                }
             }
         }
 
@@ -279,8 +321,11 @@ namespace GMEPDesignTool
             get => _aicRating;
             set
             {
-                _aicRating = value;
-                OnPropertyChanged(nameof(AicRating));
+                if (_aicRating != value)
+                {
+                    _aicRating = value;
+                    OnPropertyChanged(nameof(AicRating));
+                }
             }
         }
 
@@ -289,30 +334,28 @@ namespace GMEPDesignTool
             get => _kva;
             set
             {
-                _kva = value;
-                OnPropertyChanged(nameof(Kva));
+                if (_kva != value)
+                {
+                    _kva = value;
+                    OnPropertyChanged(nameof(Kva));
+                }
             }
         }
 
-        /*public float Amp
-        {
-            get => _amp;
-            set
-            {
-                _amp = value;
-                OnPropertyChanged(nameof(Amp));
-            }
-        }*/
+   
 
         public int Type
         {
             get => _type;
             set
             {
-                _type = value;
-                OnPropertyChanged(nameof(Type));
-                SetPole();
-                SetCircuitVa();
+                if (_type != value)
+                {
+                    _type = value;
+                    OnPropertyChanged(nameof(Type));
+                    SetPole();
+                    SetCircuitVa();
+                }
             }
         }
         public bool Powered
@@ -320,8 +363,11 @@ namespace GMEPDesignTool
             get => _powered;
             set
             {
-                _powered = value;
-                OnPropertyChanged(nameof(Powered));
+                if (_powered != value)
+                {
+                    _powered = value;
+                    OnPropertyChanged(nameof(Powered));
+                }
             }
         }
         public string Location
@@ -329,8 +375,11 @@ namespace GMEPDesignTool
             get => _location;
             set
             {
-                _location = value;
-                OnPropertyChanged(nameof(Location));
+                if (_location != value)
+                {
+                    _location = value;
+                    OnPropertyChanged(nameof(Location));
+                }
             }
         }
         public string Notes
@@ -338,19 +387,14 @@ namespace GMEPDesignTool
             get => _notes;
             set
             {
-                _notes = value;
-                OnPropertyChanged(nameof(Notes));
+                if (_notes != value)
+                {
+                    _notes = value;
+                    OnPropertyChanged(nameof(Notes));
+                }
             }
         }
-       /* public override bool IsLcl {
-            get => isLcl;
-            set
-            {
-                isLcl = value;
-                OnPropertyChanged(nameof(IsLcl));
-                CalculateLcl();
-            }
-        }*/
+    
         public void CalculateLcl()
         {
             //for electrical panels
@@ -1177,6 +1221,7 @@ namespace GMEPDesignTool
         {
             Pole = 1;
             Name = "Space";
+            this.componentType = "Space";
         }
     }
 }

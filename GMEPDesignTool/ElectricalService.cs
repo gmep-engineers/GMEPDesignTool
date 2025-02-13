@@ -34,6 +34,7 @@ namespace GMEPDesignTool
             _config = config;
             this.colorCode = colorCode;
             _aicRating = aicRating;
+            this.componentType = "Service";
         }
 
         public int Type
@@ -41,8 +42,11 @@ namespace GMEPDesignTool
             get => _type;
             set
             {
-                _type = value;
-                OnPropertyChanged(nameof(Type));
+                if (_type != value)
+                {
+                    _type = value;
+                    OnPropertyChanged(nameof(Type));
+                }
             }
         }
 
@@ -52,8 +56,11 @@ namespace GMEPDesignTool
             get => _config;
             set
             {
-                _config = value;
-                OnPropertyChanged(nameof(Config));
+                if (_config != value)
+                {
+                    _config = value;
+                    OnPropertyChanged(nameof(Config));
+                }
             }
         }
 
@@ -62,8 +69,11 @@ namespace GMEPDesignTool
             get => _aicRating;
             set
             {
-                _aicRating = value;
-                OnPropertyChanged(nameof(AicRating));
+                if (_aicRating != value)
+                {
+                    _aicRating = value;
+                    OnPropertyChanged(nameof(AicRating));
+                }
             }
         }
 
