@@ -23,7 +23,13 @@ namespace GMEPDesignTool
         public string name;
         public float amp;
         public float lcl;
+        public float aLcl;
+        public float bLcl;
+        public float cLcl;
         public float lml;
+        public float aLml;
+        public float bLml;
+        public float cLml;
         public int loadCategory;
         public string componentType;
 
@@ -46,6 +52,60 @@ namespace GMEPDesignTool
             {
                 lml = value;
                 OnPropertyChanged(nameof(Lml));
+            }
+        }
+        public virtual float ALml
+        {
+            get => aLml;
+            set
+            {
+                aLml = value;
+                OnPropertyChanged(nameof(ALml));
+            }
+        }
+        public virtual float BLml
+        {
+            get => bLml;
+            set
+            {
+                bLml = value;
+                OnPropertyChanged(nameof(BLml));
+            }
+        }
+        public virtual float CLml
+        {
+            get => cLml;
+            set
+            {
+                cLml = value;
+                OnPropertyChanged(nameof(CLml));
+            }
+        }
+        public virtual float ALcl
+        {
+            get => aLcl;
+            set
+            {
+                aLcl = value;
+                OnPropertyChanged(nameof(ALcl));
+            }
+        }
+        public virtual float BLcl
+        {
+            get => bLcl;
+            set
+            {
+                bLcl = value;
+                OnPropertyChanged(nameof(BLcl));
+            }
+        }
+        public virtual float CLcl
+        {
+            get => cLcl;
+            set
+            {
+                cLcl = value;
+                OnPropertyChanged(nameof(CLcl));
             }
         }
 
