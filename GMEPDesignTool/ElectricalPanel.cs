@@ -95,6 +95,12 @@ namespace GMEPDesignTool
             loadCategory = 3;
             lcl = 0;
             lml = 0;
+            aLcl = 0;
+            bLcl = 0;
+            cLcl = 0;
+            aLml = 0;
+            bLml = 0;
+            cLml = 0;
             _va = 0;
             this._notes = notes;
             this._location = location;
