@@ -70,8 +70,11 @@ namespace GMEPDesignTool
             get => _distanceFromParent;
             set
             {
-                _distanceFromParent = value;
-                OnPropertyChanged(nameof(DistanceFromParent));
+                if (_distanceFromParent != value)
+                {
+                    _distanceFromParent = value;
+                    OnPropertyChanged(nameof(DistanceFromParent));
+                }
             }
         }
 
@@ -80,9 +83,12 @@ namespace GMEPDesignTool
             get => _voltage;
             set
             {
-                _voltage = value;
-                OnPropertyChanged(nameof(Voltage));
-                SetPole();
+                if (_voltage != value)
+                {
+                    _voltage = value;
+                    OnPropertyChanged(nameof(Voltage));
+                    SetPole();
+                }
             }
         }
 
@@ -91,8 +97,11 @@ namespace GMEPDesignTool
             get => _kva;
             set
             {
-                _kva = value;
-                OnPropertyChanged(nameof(Kva));
+                if (_kva != value)
+                {
+                    _kva = value;
+                    OnPropertyChanged(nameof(Kva));
+                }
             }
         }
 
@@ -101,8 +110,11 @@ namespace GMEPDesignTool
             get => _powered;
             set
             {
-                _powered = value;
-                OnPropertyChanged(nameof(Powered));
+                if (_powered != value)
+                {
+                    _powered = value;
+                    OnPropertyChanged(nameof(Powered));
+                }
             }
         }
 
@@ -111,8 +123,11 @@ namespace GMEPDesignTool
             get => _isWallMounted;
             set
             {
-                _isWallMounted = value;
-                OnPropertyChanged(nameof(IsWallMounted));
+                if (_isWallMounted != value)
+                {
+                    _isWallMounted = value;
+                    OnPropertyChanged(nameof(IsWallMounted));
+                }
             }
         }
         public void SetPole()
