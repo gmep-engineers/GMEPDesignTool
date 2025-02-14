@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
+using GongSolutions.Wpf.DragDrop;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
@@ -31,7 +32,7 @@ namespace GMEPDesignTool
     /// <summary>
     /// Interaction logic for ElectricalProject.xaml
     /// </summary>
-    public partial class ElectricalProject : UserControl
+    public partial class ElectricalProject : UserControl, IDropTarget
     {
 
         private DispatcherTimer timer = new DispatcherTimer();
@@ -1857,6 +1858,28 @@ namespace GMEPDesignTool
                 equipment.SpecSheetId = "";
             }
         }
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+   
+                dropInfo.Effects = DragDropEffects.Move;
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+      
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            if (dropInfo.Data is ElectricalEquipment sourceItem)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalEquipments.IndexOf(sourceItem);
+
+                if (sourceIndex != targetIndex)
+                {
+                    ElectricalEquipments.Move(sourceIndex, targetIndex);
+                }
+            }
+        }
+
     }
 
 
