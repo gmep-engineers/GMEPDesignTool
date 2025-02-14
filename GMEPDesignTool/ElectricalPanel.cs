@@ -437,18 +437,7 @@ namespace GMEPDesignTool
                 {
                     if (equipment.IsLcl)
                     {
-                        switch (equipment.Pole)
-                        {
-                            case 1:
-                                Lcl += (float)(equipment.PhaseAVA);
-                                break;
-                            case 2:
-                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA);
-                                break;
-                            case 3:
-                                Lcl += (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
-                                break;
-                        }
+                        Lcl += equipment.Lcl;
                     }
                 }
             }
@@ -490,22 +479,9 @@ namespace GMEPDesignTool
                 {
                     if (equipment.IsLml)
                     {
-                        float TempValue = 0;
-                        switch (equipment.Pole)
+                        if (equipment.Lml > Lml)
                         {
-                            case 1:
-                                TempValue = (float)(equipment.PhaseAVA);
-                                break;
-                            case 2:
-                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA);
-                                break;
-                            case 3:
-                                TempValue = (float)(equipment.PhaseAVA + equipment.PhaseBVA + equipment.PhaseCVA);
-                                break;
-                        }
-                        if (TempValue > Lml)
-                        {
-                            Lml = TempValue;
+                            Lml = equipment.Lml;
                         }
                     }
                 }
