@@ -680,7 +680,6 @@ namespace GMEPDesignTool
             Lcl = 0;
             Kva = 0;
             int phaseIndex = 0;
-            //float lmlTemp = 0;
             foreach (var component in leftComponents)
             {
                 int circuitIndex = leftCircuits.IndexOf(
@@ -778,7 +777,7 @@ namespace GMEPDesignTool
                         phaseIndex++;
                     }
                     Lcl += component.Lcl;
-                    if (component.Lml > Lml)
+                    if (lmlIsLarger)
                     {
                         Lml = component.Lml;
                     }
@@ -881,7 +880,7 @@ namespace GMEPDesignTool
                         phaseIndex++;
                     }
                     Lcl += component.Lcl;
-                    if (component.Lml > Lml)
+                    if (lmlIsLarger)
                     {
                         Lml = component.Lml;
                     }
