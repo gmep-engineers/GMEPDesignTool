@@ -400,58 +400,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-    
-        public void CalculateLcl()
-        {
-            Lcl = 0;
-            var combinedList = new List<ElectricalComponent>();
-            combinedList.AddRange(leftComponents);
-            combinedList.AddRange(rightComponents);
-  
-            foreach (var component in combinedList)
-            {
-                int leftIndex = leftCircuits.IndexOf(
-                   leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-               );
-                int rightIndex = rightCircuits.IndexOf(
-                   rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-               );
-                bool fitsLeft = leftComponents.Contains(component) && ((leftIndex + component.Pole) <= leftCircuits.Count);
-                bool fitsRight = rightComponents.Contains(component) && ((rightIndex + component.Pole) <= rightCircuits.Count);
-
-                if (fitsLeft || fitsRight)
-                {
-                    Lcl += component.Lcl;
-                }
-            }
-        
-           
-        }
-        public void CalculateLml()
-        {
-            Lml = 0;
-   
-            var combinedList = new List<ElectricalComponent>();
-            combinedList.AddRange(leftComponents);
-            combinedList.AddRange(rightComponents);
-
-            foreach (var component in combinedList)
-            {
-                int leftIndex = leftCircuits.IndexOf(
-                  leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-              );
-                int rightIndex = rightCircuits.IndexOf(
-                   rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-               );
-                bool fitsLeft = leftComponents.Contains(component) && ((leftIndex + component.Pole) <= leftCircuits.Count);
-                bool fitsRight = rightComponents.Contains(component) && ((rightIndex + component.Pole) <= rightCircuits.Count);
-
-                if (fitsLeft || fitsRight)
-                {
-                    if (component.Lml > Lml) { Lml = component.Lml; }
-                }
-            }
-        }
 
         public void SetPole()
         {
@@ -728,9 +676,11 @@ namespace GMEPDesignTool
             ALml = 0;
             BLml = 0;
             CLml = 0;
+            Lml = 0;
+            Lcl = 0;
             Kva = 0;
             int phaseIndex = 0;
-            float lmlTemp = 0;
+            //float lmlTemp = 0;
             foreach (var component in leftComponents)
             {
                 int circuitIndex = leftCircuits.IndexOf(
@@ -739,9 +689,10 @@ namespace GMEPDesignTool
                 if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
                 {
                     bool lmlIsLarger = false;
-                    if (component.Lml > lmlTemp){
+                    if (component.Lml > Lml){
                         lmlIsLarger = true;
                     }
+
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
@@ -802,7 +753,7 @@ namespace GMEPDesignTool
                                 ALcl += lclValue;
                                 if (lmlIsLarger)
                                 {
-                                    ALcl = lmlValue;
+                                    ALml = lmlValue;
                                 }
                                 break;
                             case 1:
@@ -811,7 +762,7 @@ namespace GMEPDesignTool
                                 BLcl += lclValue;
                                 if (lmlIsLarger)
                                 {
-                                    BLcl = lmlValue;
+                                    BLml = lmlValue;
                                 }
                                 break;
                             case 2:
@@ -820,15 +771,16 @@ namespace GMEPDesignTool
                                 CLcl += lclValue;
                                 if (lmlIsLarger)
                                 {
-                                    CLcl = lmlValue;
+                                    CLml = lmlValue;
                                 }
                                 break;
                         }
                         phaseIndex++;
                     }
-                    if (Lml > lmlTemp)
+                    Lcl += component.Lcl;
+                    if (component.Lml > Lml)
                     {
-                        lmlTemp = Lml;
+                        Lml = component.Lml;
                     }
                 }
             }
@@ -841,7 +793,7 @@ namespace GMEPDesignTool
                 if (circuitIndex != -1 && circuitIndex + component.Pole <= rightCircuits.Count)
                 {
                     bool lmlIsLarger = false;
-                    if (component.Lml > lmlTemp)
+                    if (component.Lml > Lml)
                     {
                         lmlIsLarger = true;
                     }
@@ -928,14 +880,15 @@ namespace GMEPDesignTool
                         }
                         phaseIndex++;
                     }
-                    if (Lml > lmlTemp)
+                    Lcl += component.Lcl;
+                    if (component.Lml > Lml)
                     {
-                        lmlTemp = Lml;
+                        Lml = component.Lml;
                     }
                 }
             }
-            CalculateLcl();
-            CalculateLml();
+            //CalculateLcl();
+           // CalculateLml();
             Va = Kva;
             Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
