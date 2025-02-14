@@ -468,35 +468,12 @@ namespace GMEPDesignTool
                 {
                     loadType = value;
                     OnPropertyChanged(nameof(LoadType));
-                    DetermineLoadTypes();
+                    SetPhaseVa();
                 }
             }
         }
 
-        public bool IsLcl
-        {
-            get => isLcl;
-            set
-            {
-                if (isLcl != value)
-                {
-                    isLcl = value;
-                    OnPropertyChanged(nameof(IsLcl));
-                }
-            }
-        }
-        public bool IsLml
-        {
-            get => isLml;
-            set
-            {
-                if (isLml != value)
-                {
-                    isLml = value;
-                    OnPropertyChanged(nameof(IsLml));
-                }
-            }
-        }
+
         public void SetPhaseVa()
         {
             double vaTemp = Va;
@@ -512,12 +489,42 @@ namespace GMEPDesignTool
             PhaseAVA = (float)vaTemp;
             PhaseBVA = (float)vaTemp;
             PhaseCVA = (float)vaTemp;
-            ALml = (float)vaTemp;
-            BLml = (float)vaTemp;
-            CLml = (float)vaTemp;
-            ALcl = (float)vaTemp;
-            BLcl = (float)vaTemp;
-            CLcl = (float)vaTemp;
+
+            switch (loadType)
+            {
+                case 3:
+                    Lcl = Va;
+                    ALcl = (float)vaTemp;
+                    BLcl = (float)vaTemp;
+                    CLcl = (float)vaTemp;
+                    Lml = 0;
+                    ALml = 0;
+                    BLml = 0;
+                    CLml = 0;
+                    break;
+                case 2:
+                    Lcl = 0;
+                    ALcl = 0;
+                    BLcl = 0;
+                    CLcl = 0;
+                    Lml = Va;
+                    ALml = (float)vaTemp;
+                    BLml = (float)vaTemp;
+                    CLml = (float)vaTemp;
+                    break;
+                default:
+                    Lcl = 0;
+                    ALcl = 0;
+                    BLcl = 0;
+                    CLcl = 0;
+                    Lml = 0;
+                    ALml = 0;
+                    BLml = 0;
+                    CLml = 0;
+                    break;
+
+
+            }
         }
         private void determineEquipmentPole()
         {
@@ -535,7 +542,7 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
-        public void DetermineLoadTypes()
+        /*public void DetermineLoadTypes()
         {
             switch (LoadType)
             {
@@ -552,7 +559,7 @@ namespace GMEPDesignTool
                     IsLml = false;
                     break;
             }
-        }
+        }*/
         public void DetermineLoadCategory()
         {
             if (hasPlug)

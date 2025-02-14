@@ -403,48 +403,25 @@ namespace GMEPDesignTool
     
         public void CalculateLcl()
         {
-            //for electrical panels
-            //
             Lcl = 0;
-            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
-            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
-            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
-            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
-            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
-            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
-
             var combinedList = new List<ElectricalComponent>();
-            combinedList.AddRange(leftPanels);
-            combinedList.AddRange(rightPanels);
-            combinedList.AddRange(leftTransformers);
-            combinedList.AddRange(rightTransformers);
-
-            var equipmentList = new List<ElectricalEquipment>();
-            equipmentList.AddRange(leftEquipment);
-            equipmentList.AddRange(rightEquipment);
-
-            foreach(var component in combinedList)
-            {
-                Lcl += component.Lcl;
-            }
+            combinedList.AddRange(leftComponents);
+            combinedList.AddRange(rightComponents);
   
-            foreach (var equipment in equipmentList)
+            foreach (var component in combinedList)
             {
                 int leftIndex = leftCircuits.IndexOf(
-                   leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+                   leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
                );
                 int rightIndex = rightCircuits.IndexOf(
-                   rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
+                   rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
                );
-                bool fitsLeft = leftComponents.Contains(equipment) && ((leftIndex + equipment.Pole) <= leftCircuits.Count);
-                bool fitsRight = rightComponents.Contains(equipment) && ((rightIndex + equipment.Pole) <= rightCircuits.Count);
+                bool fitsLeft = leftComponents.Contains(component) && ((leftIndex + component.Pole) <= leftCircuits.Count);
+                bool fitsRight = rightComponents.Contains(component) && ((rightIndex + component.Pole) <= rightCircuits.Count);
 
                 if (fitsLeft || fitsRight)
                 {
-                    if (equipment.IsLcl)
-                    {
-                        Lcl += equipment.Lcl;
-                    }
+                    Lcl += component.Lcl;
                 }
             }
         
@@ -453,45 +430,11 @@ namespace GMEPDesignTool
         public void CalculateLml()
         {
             Lml = 0;
-            var leftPanels = leftComponents.OfType<ElectricalPanel>().ToList();
-            var rightPanels = rightComponents.OfType<ElectricalPanel>().ToList();
-            var leftTransformers = leftComponents.OfType<ElectricalTransformer>().ToList();
-            var rightTransformers = rightComponents.OfType<ElectricalTransformer>().ToList();
-            var rightEquipment = rightComponents.OfType<ElectricalEquipment>().ToList();
-            var leftEquipment = leftComponents.OfType<ElectricalEquipment>().ToList();
-
+   
             var combinedList = new List<ElectricalComponent>();
-            combinedList.AddRange(leftPanels);
-            combinedList.AddRange(rightPanels);
-            combinedList.AddRange(leftTransformers);
-            combinedList.AddRange(rightTransformers);
+            combinedList.AddRange(leftComponents);
+            combinedList.AddRange(rightComponents);
 
-            var equipmentList = new List<ElectricalEquipment>();
-            equipmentList.AddRange(leftEquipment);
-            equipmentList.AddRange(rightEquipment);
-
-            foreach (var equipment in equipmentList)
-            {
-                int leftIndex = leftCircuits.IndexOf(
-                  leftCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
-              );
-                int rightIndex = rightCircuits.IndexOf(
-                   rightCircuits.FirstOrDefault(c => c.Number == equipment.CircuitNo)
-               );
-                bool fitsLeft = leftComponents.Contains(equipment) && ((leftIndex + equipment.Pole) <= leftCircuits.Count);
-                bool fitsRight = rightComponents.Contains(equipment) && ((rightIndex + equipment.Pole) <= rightCircuits.Count);
-
-                if (fitsLeft || fitsRight)
-                {
-                    if (equipment.IsLml)
-                    {
-                        if (equipment.Lml > Lml)
-                        {
-                            Lml = equipment.Lml;
-                        }
-                    }
-                }
-            }
             foreach (var component in combinedList)
             {
                 int leftIndex = leftCircuits.IndexOf(
