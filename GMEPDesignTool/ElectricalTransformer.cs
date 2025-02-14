@@ -160,6 +160,12 @@ namespace GMEPDesignTool
             Kva = SetKva();
             Lcl = panel.Lcl;
             Lml = panel.Lml;
+            ALcl = panel.ALcl;
+            BLcl = panel.BLcl;
+            CLcl = panel.CLcl;
+            ALml = panel.ALml;
+            BLml = panel.BLml;
+            CLml = panel.CLml;
         }
 
 
@@ -179,6 +185,12 @@ namespace GMEPDesignTool
                     Kva = 0;
                     Lcl = 0;
                     Lml = 0;
+                    ALcl = 0;
+                    BLcl = 0;
+                    CLcl = 0;
+                    ALml = 0;
+                    BLml = 0;
+                    CLml = 0;
 
                 }
             }
@@ -222,6 +234,48 @@ namespace GMEPDesignTool
                 if (sender is ElectricalPanel panel)
                 {
                     Lml = panel.Lml;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.ALml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    ALml = panel.ALml;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.BLml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    BLml = panel.BLml;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.CLml))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CLml = panel.CLml;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.ALcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    ALcl = panel.ALcl;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.BLcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    BLcl = panel.BLcl;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.CLcl))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    CLcl = panel.CLcl;
                 }
             }
 
