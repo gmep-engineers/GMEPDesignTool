@@ -505,7 +505,7 @@ namespace GMEPDesignTool
 
         private void Equipment_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) ||  e.PropertyName == nameof(ElectricalEquipment.IsLcl) || e.PropertyName == nameof(ElectricalEquipment.IsLml) || e.PropertyName == nameof(ElectricalEquipment.LoadCategory))
+            if (e.PropertyName == nameof(ElectricalEquipment.Va) || e.PropertyName == nameof(ElectricalEquipment.Amp) ||  e.PropertyName == nameof(ElectricalEquipment.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalEquipment.LoadType) || e.PropertyName == nameof(ElectricalEquipment.LoadCategory))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
