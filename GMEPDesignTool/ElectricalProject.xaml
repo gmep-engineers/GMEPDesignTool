@@ -396,9 +396,9 @@
                                 <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
                         </StackPanel>
-                        <ListBox ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" HorizontalContentAlignment="Stretch"  dd:DragDrop.IsDragSource="True"
+                        <ListBox Margin="0 40 0 0" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" HorizontalContentAlignment="Stretch"  dd:DragDrop.IsDragSource="True"
  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AlternationCount="2" ScrollViewer.CanContentScroll="False">
-                                <ListBox.ItemTemplate>
+                            <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <!-- Make Dynamic -->
                                         <Grid x:Name="EquipmentGrid" Margin="0 0 0 0" VerticalAlignment="Top">
