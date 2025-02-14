@@ -35,8 +35,6 @@ namespace GMEPDesignTool
         private float va;
         private bool isHiddenOnPlan;
         private int loadType;
-        private bool isLcl;
-        private bool isLml;
 
         public ElectricalEquipment(
             string id,
@@ -100,16 +98,20 @@ namespace GMEPDesignTool
             this.circuitNo = circuitNo;
             this.isHiddenOnPlan = isHiddenOnPlan;
             this.loadType = loadType;
-            this.lcl = 0;
-            this.Lml = 0;
-            this.isLcl = false;
-            this.isLml = false;
+            this.lcl = va;
+            this.lml = va;
             this.phaseAVa = 0;
             this.phaseBVa = 0;
             this.phaseCVa = 0;
+            this.ALml = 0;
+            this.BLml = 0;
+            this.CLml = 0;
+            this.ALcl = 0;
+            this.BLcl = 0;
+            this.CLcl = 0;
             this.componentType = "Equipment";
             DetermineLoadCategory();
-            DetermineLoadTypes();
+            //DetermineLoadTypes();
             determineEquipmentPole();
             SetPhaseVa();
         }
@@ -457,36 +459,13 @@ namespace GMEPDesignTool
                 if (loadType != value)
                 {
                     loadType = value;
+                    SetPhaseVa();
                     OnPropertyChanged(nameof(LoadType));
-                    DetermineLoadTypes();
                 }
             }
         }
 
-        public bool IsLcl
-        {
-            get => isLcl;
-            set
-            {
-                if (isLcl != value)
-                {
-                    isLcl = value;
-                    OnPropertyChanged(nameof(IsLcl));
-                }
-            }
-        }
-        public bool IsLml
-        {
-            get => isLml;
-            set
-            {
-                if (isLml != value)
-                {
-                    isLml = value;
-                    OnPropertyChanged(nameof(IsLml));
-                }
-            }
-        }
+
         public void SetPhaseVa()
         {
             double vaTemp = Va;
@@ -502,6 +481,43 @@ namespace GMEPDesignTool
             PhaseAVA = (float)vaTemp;
             PhaseBVA = (float)vaTemp;
             PhaseCVA = (float)vaTemp;
+
+            switch (loadType)
+            {
+                case 3:
+                    Lcl = Va;
+                    ALcl = (float)vaTemp;
+                    BLcl = (float)vaTemp;
+                    CLcl = (float)vaTemp;
+                    Lml = 0;
+                    ALml = 0;
+                    BLml = 0;
+                    CLml = 0;
+                    break;
+                case 2:
+                    Lcl = 0;
+                    ALcl = 0;
+                    BLcl = 0;
+                    CLcl = 0;
+                    Lml = Va;
+                    ALml = (float)vaTemp;
+                    BLml = (float)vaTemp;
+                    CLml = (float)vaTemp;
+                    break;
+                default:
+                    Lcl = 0;
+                    ALcl = 0;
+                    BLcl = 0;
+                    CLcl = 0;
+                    Lml = 0;
+                    ALml = 0;
+                    BLml = 0;
+                    CLml = 0;
+                    break;
+
+
+            }
+           // OnPropertyChanged(nameof())
         }
         private void determineEquipmentPole()
         {
@@ -519,7 +535,7 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
-        public void DetermineLoadTypes()
+        /*public void DetermineLoadTypes()
         {
             switch (LoadType)
             {
@@ -536,7 +552,7 @@ namespace GMEPDesignTool
                     IsLml = false;
                     break;
             }
-        }
+        }*/
         public void DetermineLoadCategory()
         {
             if (hasPlug)
