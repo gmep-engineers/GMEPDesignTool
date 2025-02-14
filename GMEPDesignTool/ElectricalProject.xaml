@@ -429,9 +429,8 @@
                                                         </Image.ToolTip>
                                                     </Image>
                                                 </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-
-                                                    <Grid HorizontalAlignment="Left">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Grid HorizontalAlignment="Left">
                                                         <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                         <StackPanel Orientation="Horizontal">
                                                             <StackPanel Margin="10 0 0 0" Orientation="Vertical">
@@ -486,23 +485,20 @@
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
-                                                    <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
-                                                        <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
-                                                    </StackPanel>
+                                                <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
+                                                    <Label Content="AIC Rating" FontWeight="Bold"/>
+                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
+                                                </StackPanel>
 
+                                                <StackPanel Margin="20 0 0 0">
+                                                    <Label Content="Panel" FontWeight="Bold"/>
+                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
-                                                    <StackPanel Margin="20 0 0 0">
-                                                        <Label Content="Panel" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label Content="Distance" FontWeight="Bold"/>
+                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
+                                                </StackPanel>
 
-                                                        <Label Content="Distance" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
-                                                    </StackPanel>
-
-
-
-                                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 15 110 0">
+                                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 15 110 0">
                                                         <Button Height="30" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
                                                             <Button.Style>
                                                                 <Style TargetType="Button">
@@ -554,14 +550,14 @@
                                             </Grid>
                                         </Grid>
                                         <DataTemplate.Triggers>
-                                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <DataTrigger Binding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="0">
                                                 <Setter Property="Background" Value="White" TargetName="EquipmentGrid"/>
                                                 <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
-                                            </Trigger>
-                                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="1">
                                                 <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
                                                 <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
-                                            </Trigger>
+                                            </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
