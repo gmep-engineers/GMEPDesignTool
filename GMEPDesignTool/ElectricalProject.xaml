@@ -396,9 +396,8 @@
                                 <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
                         </StackPanel>
-                        <ScrollViewer Margin="0 40 0 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <ListBox ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" HorizontalContentAlignment="Stretch"  dd:DragDrop.IsDragSource="True"
- dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AlternationCount="2">
+                        <ListBox ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" HorizontalContentAlignment="Stretch"  dd:DragDrop.IsDragSource="True"
+ dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AlternationCount="2" ScrollViewer.CanContentScroll="False">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <!-- Make Dynamic -->
@@ -568,7 +567,6 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                             <!-- End Dynamic -->
-                        </ScrollViewer>
                     </Grid>
                 </GroupBox>
             </TabItem>
