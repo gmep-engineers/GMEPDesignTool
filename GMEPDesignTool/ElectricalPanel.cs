@@ -92,6 +92,12 @@ namespace GMEPDesignTool
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
+            aLcl = 0;
+            bLcl = 0;
+            cLcl = 0;
+            aLml = 0;
+            bLml = 0;
+            cLml = 0;
             loadCategory = 3;
             lcl = 0;
             lml = 0;
@@ -773,6 +779,12 @@ namespace GMEPDesignTool
             PhaseAVA = 0;
             PhaseBVA = 0;
             PhaseCVA = 0;
+            ALcl = 0;
+            BLcl = 0;
+            CLcl = 0;
+            ALml = 0;
+            BLml = 0;
+            CLml = 0;
             Kva = 0;
             int phaseIndex = 0;
             foreach (var component in leftComponents)
@@ -785,16 +797,20 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
+                        var lclValue = 0;
                         switch(i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                lclValue = (int)component.ALcl;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                lclValue = (int)component.BLcl;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                lclValue = (int)component.CLcl;
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
@@ -822,14 +838,17 @@ namespace GMEPDesignTool
                             case 0:
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
+                                ALcl += lclValue;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
+                                BLcl += lclValue;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
+                                CLcl += lclValue;
                                 break;
                         }
                         phaseIndex++;
@@ -847,16 +866,20 @@ namespace GMEPDesignTool
                     for (int i = 0; i < component.Pole; i++)
                     {
                         var addedValue = 0;
+                        var lclValue = 0;
                         switch (i)
                         {
                             case 0:
                                 addedValue = (int)component.PhaseAVA;
+                                lclValue = (int)component.ALcl;
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
+                                lclValue = (int)component.BLcl;
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
+                                lclValue = (int)component.CLcl;
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
@@ -883,14 +906,17 @@ namespace GMEPDesignTool
                             case 0:
                                 PhaseAVA += addedValue;
                                 Kva += (float)addedValue;
+                                ALcl += lclValue;
                                 break;
                             case 1:
                                 PhaseBVA += addedValue;
                                 Kva += (float)addedValue;
+                                BLcl += lclValue;
                                 break;
                             case 2:
                                 PhaseCVA += addedValue;
                                 Kva += (float)addedValue;
+                                CLcl += lclValue;
                                 break;
                         }
                         phaseIndex++;
