@@ -118,7 +118,7 @@ namespace GMEPDesignTool
             this.DataContext = this;
 
             //timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(30);
+            timer.Interval = TimeSpan.FromSeconds(15);
             timer.Tick += Timer_Tick;
             timer.Start();
             ProjectView.SaveText = "";
@@ -1877,16 +1877,16 @@ namespace GMEPDesignTool
                 if (sourceIndex != targetIndex)
                 {
                     ElectricalEquipments.Move(sourceIndex, targetIndex);
-                    OrderComponents(new ObservableCollection<ElectricalComponent>(ElectricalEquipments.Cast<ElectricalComponent>()));
+                    OrderEquipment(ElectricalEquipments);
                 }
             }
         }
-        void OrderComponents(ObservableCollection<ElectricalComponent> components)
+        void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
         {
             int index = 0;
-            foreach(var component in components)
+            foreach(var equipment in equipments)
             {
-                component.OrderNo = index;
+                equipment.OrderNo = index;
                 index++;
             }
         }
