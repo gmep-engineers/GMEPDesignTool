@@ -1211,7 +1211,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 false,
-                1
+                1,
+                ElectricalEquipments.Count + 1
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -1876,7 +1877,17 @@ namespace GMEPDesignTool
                 if (sourceIndex != targetIndex)
                 {
                     ElectricalEquipments.Move(sourceIndex, targetIndex);
+                    OrderComponents(new ObservableCollection<ElectricalComponent>(ElectricalEquipments.Cast<ElectricalComponent>()));
                 }
+            }
+        }
+        void OrderComponents(ObservableCollection<ElectricalComponent> components)
+        {
+            int index = 0;
+            foreach(var component in components)
+            {
+                component.OrderNo = index;
+                index++;
             }
         }
 
