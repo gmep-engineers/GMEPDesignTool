@@ -1861,10 +1861,8 @@ namespace GMEPDesignTool
         }
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
-   
-                dropInfo.Effects = DragDropEffects.Move;
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-      
+            dropInfo.Effects = DragDropEffects.Move;
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo)
