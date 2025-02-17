@@ -55,7 +55,7 @@ namespace GMEPDesignTool
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
             viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
-            await viewModel.ActiveElectricalProject.InitializeAsync(projectId, viewModel);
+            await viewModel.ActiveElectricalProject.InitializeAsync();
             ElectricalTab.Content = viewModel.ActiveElectricalProject;
             AdminTab.Content = new Admin();
         }

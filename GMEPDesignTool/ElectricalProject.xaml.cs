@@ -86,7 +86,7 @@ namespace GMEPDesignTool
             //InitializeAsync(projectId, projectView).ConfigureAwait(false);
         }
 
-        public async Task InitializeAsync(string projectId, ProjectControlViewModel projectView)
+        public async Task InitializeAsync()
         {
             ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
             ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
