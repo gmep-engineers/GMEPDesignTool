@@ -1239,7 +1239,53 @@ namespace GMEPDesignTool
                 RemoveElectricalEquipment(electricalEquipment);
             }
         }
+        public void CopySelectedElectricalEquipment(object sender, EventArgs e)
+        {
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalEquipment electricalEquipment
+            )
+            {
+                ElectricalEquipment equipment = new ElectricalEquipment(
+               Guid.NewGuid().ToString(),
+               ProjectId,
+               electricalEquipment.Owner,
+               electricalEquipment.EquipNo,
+               electricalEquipment.Qty,
+               "",
+               electricalEquipment.Voltage,
+               electricalEquipment.Fla,
+               electricalEquipment.Va,
+               electricalEquipment.Is3Ph,
+               "",
+               0,
+               false,
+               0,
+               electricalEquipment.Category,
+               electricalEquipment.ColorCode,
+               false,
+               electricalEquipment.Connection,
+               electricalEquipment.Description,
+               electricalEquipment.McaId,
+               electricalEquipment.Hp,
+               electricalEquipment.HasPlug,
+               electricalEquipment.LockingConnector,
+               electricalEquipment.Width,
+               electricalEquipment.Depth,
+               electricalEquipment.Height,
+               0,
+               electricalEquipment.IsHiddenOnPlan,
+               electricalEquipment.LoadType,
+               0
+               );
+                equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
+                ElectricalEquipments.Insert(newOrder, equipment);
+                OrderEquipment(ElectricalEquipments);
+            }
 
+            
+        }
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalEquipment equipment)
