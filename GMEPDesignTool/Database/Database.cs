@@ -796,7 +796,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalEquipment> equipments =
                 new ObservableCollection<ElectricalEquipment>();
             string query = "SELECT * FROM electrical_equipment WHERE project_id = @projectId ORDER BY order_no";
-            OpenConnection();
+            await OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();

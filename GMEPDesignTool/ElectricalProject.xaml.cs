@@ -24,6 +24,7 @@ using System.Windows.Threading;
 using Amazon.S3.Model;
 using GongSolutions.Wpf.DragDrop;
 using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
@@ -59,27 +60,45 @@ namespace GMEPDesignTool
         public ElectricalProject(string projectId, ProjectControlViewModel projectView)
         {
             InitializeComponent();
-            ProjectView = projectView;
-            ProjectId = projectId;
-            ElectricalPanels = ProjectView.database.GetProjectPanels(ProjectId);
-            ElectricalServices = ProjectView.database.GetProjectServices(ProjectId);
-            ElectricalEquipments = ProjectView.database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = ProjectView.database.GetProjectTransformers(ProjectId);
-            ElectricalLightings = ProjectView.database.GetProjectLighting(ProjectId);
-            LightingLocations = new ObservableCollection<Location>();
-            LightingLocations = ProjectView.database.GetLightingLocations(ProjectId);
+            ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
+            ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
+
+            // Initialize collections to avoid null references
+            ElectricalPanels = new ObservableCollection<ElectricalPanel>();
+            ElectricalServices = new ObservableCollection<ElectricalService>();
+            ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
+            ElectricalLightings = new ObservableCollection<ElectricalLighting>();
+            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            ImagePaths = new ObservableCollection<string>();
+            LightingLocations = new ObservableCollection<Location>();
+            Owners = new Dictionary<string, string>();
+
+            // Initialize ViewSources
+            EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource") ?? throw new InvalidOperationException("EquipmentViewSource resource not found.");
+            EquipmentViewSource.Filter += EquipmentViewSource_Filter;
+            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource") ?? throw new InvalidOperationException("LightingViewSource resource not found.");
+            LightingViewSource.Filter += LightingViewSource_Filter;
+
+            // Initialize other properties and event handlers
+            //InitializeAsync(projectId, projectView).ConfigureAwait(false);
+        }
+
+        public async Task InitializeAsync(string projectId, ProjectControlViewModel projectView)
+        {
+            ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+            ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+            ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
+            ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+            ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+            LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            Owners = await ProjectView.database.getOwners();
+
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
-            Owners = ProjectView.database.getOwners();
-            EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
-            EquipmentViewSource.Filter += EquipmentViewSource_Filter;
-            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
-            LightingViewSource.Filter += LightingViewSource_Filter;
-            
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
@@ -114,10 +133,9 @@ namespace GMEPDesignTool
                 location.PropertyChanged += LightingLocations_PropertyChanged;
             }
 
-
             this.DataContext = this;
 
-            //timer = new DispatcherTimer();
+            timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(15);
             timer.Tick += Timer_Tick;
             timer.Start();
@@ -168,8 +186,8 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-        private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
+    
+    private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
         {
             throw new NotImplementedException();
         }

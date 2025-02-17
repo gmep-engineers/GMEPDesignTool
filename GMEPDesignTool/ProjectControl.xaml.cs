@@ -24,6 +24,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
 using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
@@ -39,39 +40,42 @@ namespace GMEPDesignTool
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
-        public ProjectControl(string projectNo)
+        public ProjectControl()
         {
             InitializeComponent();
+            //InitializeProject(projectNo);
+        }
+
+        public async Task InitializeProject(string projectNo)
+        {
+            
             viewModel = new ProjectControlViewModel(projectNo);
+            await viewModel.InitializeProjectControlViewModel();
             this.DataContext = viewModel;
-
-            //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
-
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
-
             viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
-
-            ElectricalTab.Content =  viewModel.ActiveElectricalProject;
+            await viewModel.ActiveElectricalProject.InitializeAsync(projectId, viewModel);
+            ElectricalTab.Content = viewModel.ActiveElectricalProject;
             AdminTab.Content = new Admin();
         }
 
-        private void AddVersion_Click(object sender, RoutedEventArgs e)
+        private async void AddVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = await viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 CopyPopup.IsOpen = false;
             }
         }
-        private void DeleteVersion_Click(object sender, RoutedEventArgs e)
+        private async void DeleteVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = await viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 DeletePopup.IsOpen = false;
             }
