@@ -1820,6 +1820,11 @@ namespace GMEPDesignTool
                         }
                     }
                 }
+                if (timer != null)
+                {
+                    timer.Stop();
+                    timer.Tick -= Timer_Tick;
+                }
             });
         }
 
