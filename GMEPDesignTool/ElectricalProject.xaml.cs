@@ -1874,6 +1874,9 @@ namespace GMEPDesignTool
 
                 if (sourceIndex != targetIndex)
                 {
+                    if (targetIndex > ElectricalEquipments.Count - 1) {
+                        targetIndex = ElectricalEquipments.Count - 1;
+                    }
                     ElectricalEquipments.Move(sourceIndex, targetIndex);
                     OrderEquipment(ElectricalEquipments);
                 }
