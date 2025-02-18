@@ -26,9 +26,9 @@ namespace GMEPDesignTool.Database
         public string ConnectionString { get; set; }
         public MySqlConnection Connection { get; set; }
 
-        public Database()
+        public Database(string sqlConnectionString)
         {
-            ConnectionString = Properties.Settings.Default.ConnectionString;
+            ConnectionString = sqlConnectionString;
             Connection = new MySqlConnection(ConnectionString);
         }
 
@@ -103,6 +103,7 @@ namespace GMEPDesignTool.Database
             projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             return projectIds;
         }
+
         public Dictionary<int, string> AddProjectVersions(string projectNo, string projectId)
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
@@ -135,7 +136,7 @@ namespace GMEPDesignTool.Database
                 var id = Guid.NewGuid().ToString();
                 projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
                 string insertQuery =
-                   "INSERT INTO projects (id, gmep_project_no, version) VALUES (@id, @projectNo, @version)";
+                    "INSERT INTO projects (id, gmep_project_no, version) VALUES (@id, @projectNo, @version)";
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
@@ -148,16 +149,18 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return projectIds;
         }
+
         public Dictionary<int, string> DeleteProjectVersions(string projectNo, string projectId)
         {
             OpenConnection();
-            string[] tables = new string[] {
+            string[] tables = new string[]
+            {
                 "electrical_panels",
                 "electrical_transformers",
                 "electrical_equipment",
                 "electrical_lighting_locations",
                 "electrical_lighting",
-                "electrical_services"
+                "electrical_services",
             };
             string query;
             MySqlCommand command;
@@ -199,7 +202,6 @@ namespace GMEPDesignTool.Database
             }
             CloseConnection();
             return projectIds;
-
         }
 
         public Dictionary<string, string> getOwners()
@@ -357,8 +359,6 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
         }
 
-       
-
         private void UpdateLightings(
             string projectId,
             ObservableCollection<ElectricalLighting> lightings
@@ -386,9 +386,16 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_lighting", existingLightingIds);
         }
 
-        private void UpdateLightingLocations(string projectId, ObservableCollection<Location> locations)
+        private void UpdateLightingLocations(
+            string projectId,
+            ObservableCollection<Location> locations
+        )
         {
-            var existingLocationIds = GetExistingIds("electrical_lighting_locations", "project_id", projectId);
+            var existingLocationIds = GetExistingIds(
+                "electrical_lighting_locations",
+                "project_id",
+                projectId
+            );
 
             foreach (var location in locations)
             {
@@ -406,16 +413,14 @@ namespace GMEPDesignTool.Database
             DeleteRemovedItems("electrical_lighting_locations", existingLocationIds);
         }
 
-
         private HashSet<string> GetExistingIds(
             string tableName,
             string columnName,
             string projectId
         )
         {
-           
             var idType = "id";
-            
+
             string query = $"SELECT {idType} FROM {tableName} WHERE {columnName} = @projectId";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -681,6 +686,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
             command.ExecuteNonQuery();
         }
+
         private void UpdateLocation(Location location)
         {
             string query =
@@ -702,14 +708,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
-           
+
             command.ExecuteNonQuery();
         }
 
         private void DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
             var idType = "id";
-            
+
             foreach (var id in ids)
             {
                 string query = $"DELETE FROM {tableName} WHERE {idType} = @id";
@@ -763,21 +769,35 @@ namespace GMEPDesignTool.Database
                     new ElectricalPanel(
                         reader.GetString("id"),
                         reader.GetString("project_id"),
-                        reader.IsDBNull(reader.GetOrdinal("bus_amp_rating_id")) ? 0 : reader.GetInt32("bus_amp_rating_id"),
-                        reader.IsDBNull(reader.GetOrdinal("main_amp_rating_id")) ? 0 : reader.GetInt32("main_amp_rating_id"),
+                        reader.IsDBNull(reader.GetOrdinal("bus_amp_rating_id"))
+                            ? 0
+                            : reader.GetInt32("bus_amp_rating_id"),
+                        reader.IsDBNull(reader.GetOrdinal("main_amp_rating_id"))
+                            ? 0
+                            : reader.GetInt32("main_amp_rating_id"),
                         reader.GetBoolean("is_mlo"),
                         reader.GetBoolean("is_distribution"),
                         reader.GetString("name"),
                         reader.GetString("color_code"),
                         reader.GetString("parent_id"),
-                        reader.IsDBNull(reader.GetOrdinal("num_breakers")) ? 0 : reader.GetInt32("num_breakers"),
-                        reader.IsDBNull(reader.GetOrdinal("parent_distance")) ? 0 : reader.GetInt32("parent_distance"),
-                        reader.IsDBNull(reader.GetOrdinal("aic_rating")) ? 0 : reader.GetInt32("aic_rating"),
+                        reader.IsDBNull(reader.GetOrdinal("num_breakers"))
+                            ? 0
+                            : reader.GetInt32("num_breakers"),
+                        reader.IsDBNull(reader.GetOrdinal("parent_distance"))
+                            ? 0
+                            : reader.GetInt32("parent_distance"),
+                        reader.IsDBNull(reader.GetOrdinal("aic_rating"))
+                            ? 0
+                            : reader.GetInt32("aic_rating"),
                         0,
-                        reader.IsDBNull(reader.GetOrdinal("voltage_id")) ? 0 : reader.GetInt32("voltage_id"),
+                        reader.IsDBNull(reader.GetOrdinal("voltage_id"))
+                            ? 0
+                            : reader.GetInt32("voltage_id"),
                         false,
                         reader.GetBoolean("is_recessed"),
-                        reader.IsDBNull(reader.GetOrdinal("circuit_no")) ? 0 : reader.GetInt32("circuit_no"),
+                        reader.IsDBNull(reader.GetOrdinal("circuit_no"))
+                            ? 0
+                            : reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
                         reader.GetString("location"),
                         reader.GetString("notes")
@@ -799,40 +819,39 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
-
-                equipments.Add(new ElectricalEquipment(
-                    reader.GetString("id"),
-                    reader.GetString("project_id"),
-                    reader.GetString("owner_id"),
-                    reader.GetString("equip_no"),
-                    0,
-                    reader.GetString("parent_id"),
-                    reader.GetInt32("voltage_id"),
-                    reader.GetFloat("fla"),
-                    idToVoltage(reader.GetInt32("voltage_id")) * reader.GetFloat("fla"),
-                    reader.GetBoolean("is_three_phase"),
-                    reader.GetString("spec_sheet_id"),
-                    reader.GetInt32("aic_rating"),
-                    reader.GetBoolean("spec_sheet_from_client"),
-                    reader.GetInt32("parent_distance"),
-                    reader.GetInt32("category_id"),
-                    reader.GetString("color_code"),
-                    false,
-                    reader.GetInt32("connection_type_id"),
-                    reader.GetString("description"),
-                    reader.GetInt32("mca"),
-                    reader.GetString("hp"),
-                    reader.GetBoolean("has_plug"),
-                    reader.GetBoolean("locking_connector"),
-                    reader.GetFloat("width"),
-                    reader.GetFloat("depth"),
-                    reader.GetFloat("height"),
-                    reader.GetInt32("circuit_no"),
-                    reader.GetBoolean("is_hidden_on_plan"),
-                    reader.GetInt32("load_type")
-                )
-             );
-           
+                equipments.Add(
+                    new ElectricalEquipment(
+                        reader.GetString("id"),
+                        reader.GetString("project_id"),
+                        reader.GetString("owner_id"),
+                        reader.GetString("equip_no"),
+                        0,
+                        reader.GetString("parent_id"),
+                        reader.GetInt32("voltage_id"),
+                        reader.GetFloat("fla"),
+                        idToVoltage(reader.GetInt32("voltage_id")) * reader.GetFloat("fla"),
+                        reader.GetBoolean("is_three_phase"),
+                        reader.GetString("spec_sheet_id"),
+                        reader.GetInt32("aic_rating"),
+                        reader.GetBoolean("spec_sheet_from_client"),
+                        reader.GetInt32("parent_distance"),
+                        reader.GetInt32("category_id"),
+                        reader.GetString("color_code"),
+                        false,
+                        reader.GetInt32("connection_type_id"),
+                        reader.GetString("description"),
+                        reader.GetInt32("mca"),
+                        reader.GetString("hp"),
+                        reader.GetBoolean("has_plug"),
+                        reader.GetBoolean("locking_connector"),
+                        reader.GetFloat("width"),
+                        reader.GetFloat("depth"),
+                        reader.GetFloat("height"),
+                        reader.GetInt32("circuit_no"),
+                        reader.GetBoolean("is_hidden_on_plan"),
+                        reader.GetInt32("load_type")
+                    )
+                );
 
             reader.Close();
             CloseConnection();
@@ -892,21 +911,39 @@ namespace GMEPDesignTool.Database
                         reader.GetString("manufacturer"),
                         reader.GetString("model_no"),
                         reader.IsDBNull(reader.GetOrdinal("qty")) ? 0 : reader.GetInt32("qty"),
-                        reader.IsDBNull(reader.GetOrdinal("occupancy")) ? false : reader.GetBoolean("occupancy"),
-                        reader.IsDBNull(reader.GetOrdinal("wattage")) ? 0 : reader.GetInt32("wattage"),
-                        reader.IsDBNull(reader.GetOrdinal("em_capable")) ? false : reader.GetBoolean("em_capable"),
-                        reader.IsDBNull(reader.GetOrdinal("mounting_type_id")) ? 0 : reader.GetInt32("mounting_type_id"),
+                        reader.IsDBNull(reader.GetOrdinal("occupancy"))
+                            ? false
+                            : reader.GetBoolean("occupancy"),
+                        reader.IsDBNull(reader.GetOrdinal("wattage"))
+                            ? 0
+                            : reader.GetInt32("wattage"),
+                        reader.IsDBNull(reader.GetOrdinal("em_capable"))
+                            ? false
+                            : reader.GetBoolean("em_capable"),
+                        reader.IsDBNull(reader.GetOrdinal("mounting_type_id"))
+                            ? 0
+                            : reader.GetInt32("mounting_type_id"),
                         reader.GetString("tag"),
                         reader.GetString("notes"),
-                        reader.IsDBNull(reader.GetOrdinal("voltage_id")) ? 0 : reader.GetInt32("voltage_id"),
-                        reader.IsDBNull(reader.GetOrdinal("symbol_id")) ? 0 : reader.GetInt32("symbol_id"),
+                        reader.IsDBNull(reader.GetOrdinal("voltage_id"))
+                            ? 0
+                            : reader.GetInt32("voltage_id"),
+                        reader.IsDBNull(reader.GetOrdinal("symbol_id"))
+                            ? 0
+                            : reader.GetInt32("symbol_id"),
                         reader.GetString("color_code"),
                         false,
                         reader.GetString("description"),
-                        reader.IsDBNull(reader.GetOrdinal("driver_type_id")) ? 0 : reader.GetInt32("driver_type_id"),
-                        reader.IsDBNull(reader.GetOrdinal("spec_sheet_from_client")) ? false : reader.GetBoolean("spec_sheet_from_client"),
+                        reader.IsDBNull(reader.GetOrdinal("driver_type_id"))
+                            ? 0
+                            : reader.GetInt32("driver_type_id"),
+                        reader.IsDBNull(reader.GetOrdinal("spec_sheet_from_client"))
+                            ? false
+                            : reader.GetBoolean("spec_sheet_from_client"),
                         reader.GetString("spec_sheet_id"),
-                        reader.IsDBNull(reader.GetOrdinal("has_photocell")) ? false : reader.GetBoolean("has_photocell"),
+                        reader.IsDBNull(reader.GetOrdinal("has_photocell"))
+                            ? false
+                            : reader.GetBoolean("has_photocell"),
                         reader.GetString("location_id")
                     )
                 );
@@ -939,10 +976,10 @@ namespace GMEPDesignTool.Database
                         reader.GetString("name"),
                         reader.GetInt32("kva_id"),
                         false,
-                       reader.GetInt32("circuit_no"),
-                       reader.GetBoolean("is_hidden_on_plan"),
-                       reader.GetBoolean("is_wall_mounted"),
-                       reader.GetInt32("aic_rating")
+                        reader.GetInt32("circuit_no"),
+                        reader.GetBoolean("is_hidden_on_plan"),
+                        reader.GetBoolean("is_wall_mounted"),
+                        reader.GetInt32("aic_rating")
                     )
                 );
             }
@@ -950,11 +987,12 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return transformers;
         }
+
         public ObservableCollection<Location> GetLightingLocations(string projectId)
         {
-            ObservableCollection<Location> locations =
-                new ObservableCollection<Location>();
-            string query = "SELECT * FROM electrical_lighting_locations WHERE project_id = @projectId";
+            ObservableCollection<Location> locations = new ObservableCollection<Location>();
+            string query =
+                "SELECT * FROM electrical_lighting_locations WHERE project_id = @projectId";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -971,6 +1009,7 @@ namespace GMEPDesignTool.Database
             CloseConnection();
             return locations;
         }
+
         public void CloneElectricalProject(string projectId, string newProjectId)
         {
             var services = GetProjectServices(projectId);
@@ -1026,7 +1065,7 @@ namespace GMEPDesignTool.Database
                     lighting.LocationId = locationIdSwitch[lighting.LocationId];
                 }
             }
-            foreach(var panel in panels)
+            foreach (var panel in panels)
             {
                 if (!string.IsNullOrEmpty(panel.parentId))
                 {
@@ -1047,10 +1086,16 @@ namespace GMEPDesignTool.Database
                     equipment.ParentId = parentIdSwitch[equipment.ParentId];
                 }
             }
-            UpdateProject(newProjectId, services, panels, equipments, transformers, lightings, locations);
-
+            UpdateProject(
+                newProjectId,
+                services,
+                panels,
+                equipments,
+                transformers,
+                lightings,
+                locations
+            );
         }
-       
     }
 
     public class S3

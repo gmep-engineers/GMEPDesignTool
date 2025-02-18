@@ -23,19 +23,19 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class LightingLocations : Window
     {
-        public Database.Database database = new Database.Database();
-        public ObservableCollection<Location> Locations { get; set; } = new ObservableCollection<Location>();
-     
-        public LightingLocations(ObservableCollection<Location> locations)
+        public Database.Database database;
+        public ObservableCollection<Location> Locations { get; set; } =
+            new ObservableCollection<Location>();
+
+        public LightingLocations(ObservableCollection<Location> locations, Database.Database db)
         {
+            database = db;
             Locations = locations;
             InitializeComponent();
             DataContext = this;
         }
-
- 
     }
-    
+
     public class Location : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -43,7 +43,6 @@ namespace GMEPDesignTool
         public string id;
         public string locationDescription;
         public bool isOutside;
-
 
         public Location()
         {

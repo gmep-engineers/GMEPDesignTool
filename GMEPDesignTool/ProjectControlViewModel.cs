@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
 
 namespace GMEPDesignTool
 {
     public class ProjectControlViewModel : INotifyPropertyChanged
     {
-       
-        public Database.Database database = new Database.Database();
+        public Database.Database database;
 
-        public ProjectControlViewModel(string projectNo)
+        public ProjectControlViewModel(string projectNo, LoginResponse loginResponse)
         {
+            database = new Database.Database(loginResponse.SqlConnectionString);
             projectIds = database.GetProjectIds(projectNo);
             _projectNo = projectNo;
         }
@@ -89,8 +89,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

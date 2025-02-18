@@ -14,6 +14,7 @@ namespace GMEPDesignTool
 {
     public class ViewModel : ViewModelBase
     {
+        private LoginResponse loginResponse;
         private List<Project> _projects = new List<Project>();
         public List<Project> Projects
         {
@@ -104,8 +105,9 @@ namespace GMEPDesignTool
         public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
         public ObservableCollection<TabItem> Tabs { get; set; }
 
-        public ViewModel()
+        public ViewModel(LoginResponse loginResponse)
         {
+            this.loginResponse = loginResponse;
             Tabs = new ObservableCollection<TabItem>();
             _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
             Name = "My Name";
@@ -139,7 +141,7 @@ namespace GMEPDesignTool
                 new TabItem
                 {
                     Header = projectNo,
-                    Content = new ProjectControl(projectNo),
+                    Content = new ProjectControl(projectNo, loginResponse),
                     IsSelected = true,
                 }
             );

@@ -16,17 +16,17 @@ namespace GMEPDesignTool
             _loginWindow = loginWindow;
         }
 
-        public void openApp()
+        public void OpenApp(LoginResponse loginResponse)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MainWindow mainWindow = new MainWindow();
+                MainWindow mainWindow = new MainWindow(loginResponse);
                 mainWindow.Show();
                 _loginWindow.Close();
             });
         }
 
-        public void closeApp()
+        public void CloseApp()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

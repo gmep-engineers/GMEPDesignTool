@@ -27,22 +27,22 @@ using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
-
 namespace GMEPDesignTool
 {
     /// <summary>
     /// Interaction logic for ProjectControl.xaml
-   public partial class ProjectControl : UserControl
+    public partial class ProjectControl : UserControl
     {
         //public string ProjectNo { get; set; }
 
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
-        public ProjectControl(string projectNo)
+
+        public ProjectControl(string projectNo, LoginResponse loginResponse)
         {
             InitializeComponent();
-            viewModel = new ProjectControlViewModel(projectNo);
+            viewModel = new ProjectControlViewModel(projectNo, loginResponse);
             this.DataContext = viewModel;
 
             //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
@@ -52,7 +52,7 @@ namespace GMEPDesignTool
 
             viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
 
-            ElectricalTab.Content =  viewModel.ActiveElectricalProject;
+            ElectricalTab.Content = viewModel.ActiveElectricalProject;
             AdminTab.Content = new Admin();
         }
 
@@ -61,21 +61,29 @@ namespace GMEPDesignTool
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = viewModel.database.AddProjectVersions(
+                    viewModel.ProjectNo,
+                    projectId
+                );
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 CopyPopup.IsOpen = false;
             }
         }
+
         private void DeleteVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(
+                    viewModel.ProjectNo,
+                    projectId
+                );
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 DeletePopup.IsOpen = false;
             }
         }
+
         private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
@@ -83,21 +91,24 @@ namespace GMEPDesignTool
                 string newprojectId = selectedPair.Value;
                 viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
-
             }
         }
+
         private void CopyPopup_Click(object sender, RoutedEventArgs e)
         {
             CopyPopup.IsOpen = true;
         }
+
         private void CloseCopyPopup_Click(object sender, RoutedEventArgs e)
         {
             CopyPopup.IsOpen = false;
         }
+
         private void DeletePopup_Click(object sender, RoutedEventArgs e)
         {
             DeletePopup.IsOpen = true;
         }
+
         private void CloseDeletePopup_Click(object sender, RoutedEventArgs e)
         {
             DeletePopup.IsOpen = false;
