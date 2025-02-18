@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,23 @@ namespace GMEPDesignTool
             {
                 viewModel.Panel.AssignSpace(false);
             }
+        }
+    }
+    public class NumberToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int notesCount)
+            {
+                // Adjust the margin based on the number of notes
+                return new Thickness(0, notesCount * 10, 0, 0);
+            }
+            return new Thickness(0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

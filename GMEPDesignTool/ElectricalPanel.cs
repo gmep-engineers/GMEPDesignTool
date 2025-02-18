@@ -32,20 +32,15 @@ namespace GMEPDesignTool
 
         public ElectricalComponent ParentComponent { get; set; }
 
-        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
-           new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } = new ObservableCollection<ElectricalComponent>();
 
-        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<Circuit> leftCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
-
-        public ObservableCollection<Circuit> rightCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
-
+        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<Circuit> leftCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<Circuit> rightCircuits { get; set; } = new ObservableCollection<Circuit>();
         public ObservableCollection<Note> notes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> leftNodes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> rightNodes { get; set; } = new ObservableCollection<Note>();
 
         private bool _isRecessed;
 

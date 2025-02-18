@@ -12,6 +12,7 @@
         <local:LclConverter x:Key="LclConverter"/>
         <local:ValueRounder x:Key="ValueRounder"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
+        <local:NumberToMarginConverter x:Key="NumberToMarginConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -89,18 +90,23 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <Grid Grid.Column="1" Background="AliceBlue" Margin="0 100 0 0">
-                    <ListBox ItemsSource="{Binding Notes}" AlternationCount="2">
-                        <ListBox.ItemTemplate>
+                    <ItemsControl ItemsSource="{Binding LeftNodes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas  />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Background="White" Height="24" HorizontalAlignment="Center">
-                                    
+                                <Grid Background="Blue" Height="24" Width="40" HorizontalAlignment="Center" Margin="{Binding Number, Converter={StaticResource NumberToMarginConverter}}">
+                                    <TextBlock Text="{Binding Description}"/>
                                 </Grid>
                                 <DataTemplate.Triggers>
-                                  
+                                    <!-- Add triggers here if needed -->
                                 </DataTemplate.Triggers>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
                 <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2" Margin="0 0 0 30">
                     <Grid>
@@ -400,7 +406,7 @@
                             <DataGrid BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Place Note"/>
+                                        <MenuItem Header="Place Note" Command=""/>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
@@ -1058,7 +1064,8 @@
                                     <DataTemplate>
                                         <Grid>
                                             <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="Black" Fill="White"/>
-                                            <TextBox Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Text="{Binding Number}" MaxLength="2" TextAlignment="Center"/>
+                                            <TextBox Foreground="Black" HorizontalAlignment="Center" Text="{Binding Number, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" BorderThickness="0" MaxLength="4" TextAlignment="Center"/>
+
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Controls;
+using System.Windows.Input;
+
 
 
 
@@ -27,6 +29,8 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
+        public ObservableCollection<Note> LeftNodes { get; set; }
+        public ObservableCollection<Note> RightNodes { get; set; }
 
 
         private float _phaseAVa;
@@ -166,6 +170,8 @@ namespace GMEPDesignTool
             Notes = panel.notes;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
+            LeftNodes = panel.leftNodes;
+            RightNodes = panel.rightNodes;
             _phaseAVa = panel.PhaseAVA;
             _phaseBVa = panel.PhaseBVA;
             _phaseCVa = panel.PhaseCVA;
@@ -436,6 +442,11 @@ namespace GMEPDesignTool
                 return "RECESSED";
             }
             return "SURFACE";
+        }
+        private void CheckSelectedItems()
+        {
+            var selectedItems = LeftCircuits.Where(c => c.IsSelected).ToList();
+            // Implement your logic to handle the selected items
         }
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
