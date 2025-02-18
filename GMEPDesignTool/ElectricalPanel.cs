@@ -21,7 +21,6 @@ namespace GMEPDesignTool
         private bool _powered;
         private bool _isHiddenOnPlan;
         private string _location;
-        private string _notes;
         private string _parentName;
         private string _parentType;
         // private bool _isLcl;
@@ -67,8 +66,7 @@ namespace GMEPDesignTool
             bool isRecessed,
             int circuitNo,
             bool isHiddenOnPlan,
-            string location,
-            string notes
+            string location
         )
             : base()
         {
@@ -103,7 +101,6 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
-            this._notes = notes;
             this._location = location;
             this.componentType = "Panel";
             SetPole();
@@ -389,18 +386,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string Notes
-        {
-            get => _notes;
-            set
-            {
-                if (_notes != value)
-                {
-                    _notes = value;
-                    OnPropertyChanged(nameof(Notes));
-                }
-            }
-        }
+      
 
         public void SetPole()
         {

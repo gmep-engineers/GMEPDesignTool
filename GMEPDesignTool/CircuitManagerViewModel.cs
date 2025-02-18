@@ -139,15 +139,7 @@ namespace GMEPDesignTool
             get => mounting;
             set => SetProperty(ref mounting, value);
         }
-        private string notes;
-        public string Notes
-        {
-            get => notes;
-            set {
-                SetProperty(ref notes, value);
-                Panel.Notes = notes;
-                }
-        }
+  
         private string parentName;
 
         public string ParentName
@@ -182,7 +174,6 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
-            notes = panel.Notes;
             parentName = panel.ParentName;
             parentType = panel.ParentType;
             _location = panel.Location;
