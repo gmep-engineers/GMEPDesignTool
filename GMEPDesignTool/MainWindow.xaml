@@ -30,9 +30,6 @@
                     <MenuItem Header="_Copy"/>
                     <MenuItem Header="_Paste"/>
                 </MenuItem>
-                <MenuItem Header="_User">
-                    <MenuItem Header="_Logout"/>
-                </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_About"/>
                 </MenuItem>
