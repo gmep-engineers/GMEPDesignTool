@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GMEPDesignTool"
              xmlns:uc="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
+             xmlns:dd="urn:gong-wpf-dragdrop"
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
@@ -395,14 +396,9 @@
                                 <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
                         </StackPanel>
-                        <ScrollViewer Margin="0 40 0 0" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" AlternationCount="2">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" Height="Auto"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
+                        <ListBox Margin="0 40 0 0" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" HorizontalContentAlignment="Stretch"  dd:DragDrop.IsDragSource="True"
+ dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AlternationCount="2" ScrollViewer.CanContentScroll="False">
+                            <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <!-- Make Dynamic -->
                                         <Grid x:Name="EquipmentGrid" Margin="0 0 0 0" VerticalAlignment="Top">
@@ -411,7 +407,6 @@
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
                                             <StackPanel Orientation="Vertical" Grid.Row="0"  Height="160" Width="Auto" VerticalAlignment="Top">
-
                                                 <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
                                                     <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
                                                     <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding Category}" SelectedValuePath="Tag">
@@ -434,9 +429,8 @@
                                                         </Image.ToolTip>
                                                     </Image>
                                                 </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-
-                                                    <Grid HorizontalAlignment="Left">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Grid HorizontalAlignment="Left">
                                                         <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                         <StackPanel Orientation="Horizontal">
                                                             <StackPanel Margin="10 0 0 0" Orientation="Vertical">
@@ -491,23 +485,20 @@
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
-                                                    <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
-                                                        <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
-                                                    </StackPanel>
+                                                <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
+                                                    <Label Content="AIC Rating" FontWeight="Bold"/>
+                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
+                                                </StackPanel>
 
+                                                <StackPanel Margin="20 0 0 0">
+                                                    <Label Content="Panel" FontWeight="Bold"/>
+                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
 
-                                                    <StackPanel Margin="20 0 0 0">
-                                                        <Label Content="Panel" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Label Content="Distance" FontWeight="Bold"/>
+                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
+                                                </StackPanel>
 
-                                                        <Label Content="Distance" FontWeight="Bold"/>
-                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
-                                                    </StackPanel>
-
-
-
-                                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 15 110 0">
+                                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 15 110 0">
                                                         <Button Height="30" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
                                                             <Button.Style>
                                                                 <Style TargetType="Button">
@@ -555,24 +546,26 @@
                                             </Expander>
                                             <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                 <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
-                                                <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                            <StackPanel Width="50" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                                <Button Height="20" Content="Copy" FontWeight="Bold" Click="CopySelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                                <Button Height="20" Content="Delete" Foreground="White" Background="Crimson" FontWeight="Bold" Click="DeleteSelectedElectricalEquipment" CommandParameter="{Binding}"/>
+                                            </StackPanel>
                                             </Grid>
                                         </Grid>
                                         <DataTemplate.Triggers>
-                                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <DataTrigger Binding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="0">
                                                 <Setter Property="Background" Value="White" TargetName="EquipmentGrid"/>
                                                 <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
-                                            </Trigger>
-                                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="1">
                                                 <Setter Property="Background" Value="LightGray" TargetName="EquipmentGrid"/>
                                                 <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
-                                            </Trigger>
+                                            </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                             <!-- End Dynamic -->
-                        </ScrollViewer>
                     </Grid>
                 </GroupBox>
             </TabItem>

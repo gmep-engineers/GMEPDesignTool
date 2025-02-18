@@ -486,6 +486,11 @@ namespace GMEPDesignTool
                 int sourceIndex = sourceCollection.IndexOf(sourceItem);
                 int targetIndex = targetItem != null ? targetCollection.IndexOf(targetItem) : targetCollection.Count;
 
+                if (targetIndex > targetCollection.Count - 1)
+                {
+                    targetIndex = targetCollection.Count - 1;
+                }
+
                 if (sourceIndex != -1)
                 {
                     sourceCollection.RemoveAt(sourceIndex);
