@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.RightsManagement;
 namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
@@ -1177,6 +1178,108 @@ namespace GMEPDesignTool
                 OnPropertyChanged();
             }
         }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class Note: INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string id;
+        public int number;
+        public string panelId;
+        public string projectId;
+        public int circuitNo;
+        public int length;
+
+        public Note(string id, int number, string panelId, string projectId, int circuitNo, int length)
+        {
+            this.id=id;
+            this.number=number;
+            this.panelId=panelId;
+            this.projectId=projectId;
+            this.circuitNo=circuitNo;
+            this.length=length;
+        }
+
+        public string Id
+        {
+            get => id;
+            set
+            {
+                if (id != value)
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
+        }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                if (number != value)
+                {
+                    number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                if (panelId != value)
+                {
+                    panelId = value;
+                    OnPropertyChanged(nameof(PanelId));
+                }
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                if (projectId != value)
+                {
+                    projectId = value;
+                    OnPropertyChanged(nameof(ProjectId));
+                }
+            }
+        }
+        public int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+        public int Length
+        {
+            get => length;
+            set
+            {
+                if (length != value)
+                {
+                    length = value;
+                    OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+
+
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
