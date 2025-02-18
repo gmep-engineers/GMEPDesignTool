@@ -73,7 +73,7 @@ namespace GMEPDesignTool
                 if (_distanceFromParent != value)
                 {
                     _distanceFromParent = value;
-                    OnPropertyChanged(nameof(DistanceFromParent));
+                    _ = OnPropertyChanged(nameof(DistanceFromParent));
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace GMEPDesignTool
                 if (_voltage != value)
                 {
                     _voltage = value;
-                    OnPropertyChanged(nameof(Voltage));
+                    _ = OnPropertyChanged(nameof(Voltage));
                     SetPole();
                 }
             }
@@ -100,7 +100,7 @@ namespace GMEPDesignTool
                 if (_kva != value)
                 {
                     _kva = value;
-                    OnPropertyChanged(nameof(Kva));
+                    _ = OnPropertyChanged(nameof(Kva));
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace GMEPDesignTool
                 if (_powered != value)
                 {
                     _powered = value;
-                    OnPropertyChanged(nameof(Powered));
+                    _ = OnPropertyChanged(nameof(Powered));
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace GMEPDesignTool
                 if (_isWallMounted != value)
                 {
                     _isWallMounted = value;
-                    OnPropertyChanged(nameof(IsWallMounted));
+                    _ = OnPropertyChanged(nameof(IsWallMounted));
                 }
             }
         }
@@ -152,7 +152,7 @@ namespace GMEPDesignTool
                 ChildPanel.ParentId = "";
             }
             ChildPanel = panel;
-            ChildPanel.PropertyChanged +=Panel_PropertyChanged;
+            ChildPanel.PropertyChanged += Panel_PropertyChanged;
             PhaseAVA = panel.PhaseAVA;
             PhaseBVA = panel.PhaseBVA;
             PhaseCVA = panel.PhaseCVA;
@@ -323,7 +323,7 @@ namespace GMEPDesignTool
             set
             {
                 _isHiddenOnPlan = value;
-                OnPropertyChanged(nameof(IsHiddenOnPlan));
+                _ = OnPropertyChanged(nameof(IsHiddenOnPlan));
             }
         }
         public int AicRating
@@ -332,7 +332,7 @@ namespace GMEPDesignTool
             set
             {
                 _aicRating = value;
-                OnPropertyChanged(nameof(AicRating));
+                _ = OnPropertyChanged(nameof(AicRating));
             }
         }
 

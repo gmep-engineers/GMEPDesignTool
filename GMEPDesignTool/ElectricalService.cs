@@ -45,7 +45,7 @@ namespace GMEPDesignTool
                 if (_type != value)
                 {
                     _type = value;
-                    OnPropertyChanged(nameof(Type));
+                    _ = OnPropertyChanged(nameof(Type));
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace GMEPDesignTool
                 if (_config != value)
                 {
                     _config = value;
-                    OnPropertyChanged(nameof(Config));
+                    _ = OnPropertyChanged(nameof(Config));
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace GMEPDesignTool
                 if (_aicRating != value)
                 {
                     _aicRating = value;
-                    OnPropertyChanged(nameof(AicRating));
+                    _ = OnPropertyChanged(nameof(AicRating));
                 }
             }
         }

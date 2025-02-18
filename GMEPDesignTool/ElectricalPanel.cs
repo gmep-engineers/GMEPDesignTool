@@ -117,7 +117,7 @@ namespace GMEPDesignTool
                 if (_parentName != value)
                 {
                     this._parentName = value;
-                    OnPropertyChanged(nameof(ParentName));
+                    _ = OnPropertyChanged(nameof(ParentName));
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace GMEPDesignTool
                 if (_parentType != value)
                 {
                     this._parentType = value;
-                    OnPropertyChanged(nameof(ParentType));
+                    _ = OnPropertyChanged(nameof(ParentType));
                 }
             }
         }
@@ -142,7 +142,7 @@ namespace GMEPDesignTool
                 if (this.parentId != value)
                 {
                     this.parentId = value;
-                    OnPropertyChanged(nameof(ParentId));
+                    _ = OnPropertyChanged(nameof(ParentId));
                     if (ParentComponent != null && string.IsNullOrEmpty(value))
                     {
                         ParentComponent.PropertyChanged -= ParentComponent_PropertyChanged;
@@ -162,7 +162,7 @@ namespace GMEPDesignTool
                 if (this.pole != value)
                 {
                     this.pole = value;
-                    OnPropertyChanged(nameof(Pole));
+                    _ = OnPropertyChanged(nameof(Pole));
                     SetCircuitVa();
                 }
             }
@@ -176,7 +176,7 @@ namespace GMEPDesignTool
                 if (_isRecessed != value)
                 {
                     _isRecessed = value;
-                    OnPropertyChanged(nameof(IsRecessed));
+                    _ = OnPropertyChanged(nameof(IsRecessed));
                 }
             }
         }
@@ -188,7 +188,7 @@ namespace GMEPDesignTool
                 if (this.phaseAVa != value)
                 {
                     phaseAVa = value;
-                    OnPropertyChanged(nameof(PhaseAVA));
+                    _ = OnPropertyChanged(nameof(PhaseAVA));
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace GMEPDesignTool
                 if (this.phaseBVa != value)
                 {
                     phaseBVa = value;
-                    OnPropertyChanged(nameof(PhaseBVA));
+                    _ = OnPropertyChanged(nameof(PhaseBVA));
                 }
             }
         }
@@ -212,7 +212,7 @@ namespace GMEPDesignTool
                 if (this.phaseCVa != value)
                 {
                     phaseCVa = value;
-                    OnPropertyChanged(nameof(PhaseCVA));
+                    _ = OnPropertyChanged(nameof(PhaseCVA));
                 }
             }
         }
@@ -225,7 +225,7 @@ namespace GMEPDesignTool
                 if (_va != value)
                 {
                     _va = value;
-                    OnPropertyChanged(nameof(Va));
+                    _ = OnPropertyChanged(nameof(Va));
                 }
              }
          }
@@ -238,7 +238,7 @@ namespace GMEPDesignTool
                 if (_busSize != value)
                 {
                     _busSize = value;
-                    OnPropertyChanged(nameof(BusSize));
+                    _ = OnPropertyChanged(nameof(BusSize));
                 }
             }
         }
@@ -251,7 +251,7 @@ namespace GMEPDesignTool
                 if (_mainSize != value)
                 {
                     _mainSize = value;
-                    OnPropertyChanged(nameof(MainSize));
+                    _ = OnPropertyChanged(nameof(MainSize));
                 }
             }
         }
@@ -264,7 +264,7 @@ namespace GMEPDesignTool
                 if (_isMlo != value)
                 {
                     _isMlo = value;
-                    OnPropertyChanged(nameof(IsMlo));
+                    _ = OnPropertyChanged(nameof(IsMlo));
                 }
             }
         }
@@ -276,7 +276,7 @@ namespace GMEPDesignTool
                 if (_isHiddenOnPlan != value)
                 {
                     _isHiddenOnPlan = value;
-                    OnPropertyChanged(nameof(IsHiddenOnPlan));
+                    _ = OnPropertyChanged(nameof(IsHiddenOnPlan));
                 }
             }
         }
@@ -288,7 +288,7 @@ namespace GMEPDesignTool
                 if (_isDistribution != value)
                 {
                     _isDistribution = value;
-                    OnPropertyChanged(nameof(IsDistribution));
+                    _ = OnPropertyChanged(nameof(IsDistribution));
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace GMEPDesignTool
                 if (_numBreakers != value)
                 {
                     _numBreakers = value;
-                    OnPropertyChanged(nameof(NumBreakers));
+                    _ = OnPropertyChanged(nameof(NumBreakers));
                     PopulateCircuits();
                     SetCircuitNumbers();
                     SetCircuitVa();
@@ -317,7 +317,7 @@ namespace GMEPDesignTool
                 if (_distanceFromParent != value)
                 {
                     _distanceFromParent = value;
-                    OnPropertyChanged(nameof(DistanceFromParent));
+                    _ = OnPropertyChanged(nameof(DistanceFromParent));
                 }
             }
         }
@@ -330,7 +330,7 @@ namespace GMEPDesignTool
                 if (_aicRating != value)
                 {
                     _aicRating = value;
-                    OnPropertyChanged(nameof(AicRating));
+                    _ = OnPropertyChanged(nameof(AicRating));
                 }
             }
         }
@@ -343,7 +343,7 @@ namespace GMEPDesignTool
                 if (_kva != value)
                 {
                     _kva = value;
-                    OnPropertyChanged(nameof(Kva));
+                    _ = OnPropertyChanged(nameof(Kva));
                 }
             }
         }
@@ -358,7 +358,7 @@ namespace GMEPDesignTool
                 if (_type != value)
                 {
                     _type = value;
-                    OnPropertyChanged(nameof(Type));
+                    _ = OnPropertyChanged(nameof(Type));
                     SetPole();
                     SetCircuitVa();
                 }
@@ -372,7 +372,7 @@ namespace GMEPDesignTool
                 if (_powered != value)
                 {
                     _powered = value;
-                    OnPropertyChanged(nameof(Powered));
+                    _ = OnPropertyChanged(nameof(Powered));
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace GMEPDesignTool
                 if (_location != value)
                 {
                     _location = value;
-                    OnPropertyChanged(nameof(Location));
+                    _ = OnPropertyChanged(nameof(Location));
                 }
             }
         }
@@ -396,7 +396,7 @@ namespace GMEPDesignTool
                 if (_notes != value)
                 {
                     _notes = value;
-                    OnPropertyChanged(nameof(Notes));
+                    _ = OnPropertyChanged(nameof(Notes));
                 }
             }
         }

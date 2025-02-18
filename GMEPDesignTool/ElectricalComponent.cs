@@ -43,7 +43,7 @@ namespace GMEPDesignTool
             set
             {
                 lcl = value;
-                OnPropertyChanged(nameof(Lcl));
+                _ = OnPropertyChanged(nameof(Lcl));
             }
         }
 
@@ -53,7 +53,7 @@ namespace GMEPDesignTool
             set
             {
                 aLcl = value;
-                OnPropertyChanged(nameof(ALcl));
+                _ = OnPropertyChanged(nameof(ALcl));
             }
         }
         public virtual float BLcl
@@ -62,7 +62,7 @@ namespace GMEPDesignTool
             set
             {
                 bLcl = value;
-                OnPropertyChanged(nameof(BLcl));
+                _ = OnPropertyChanged(nameof(BLcl));
             }
         }
         public virtual float CLcl
@@ -71,7 +71,7 @@ namespace GMEPDesignTool
             set
             {
                 cLcl = value;
-                OnPropertyChanged(nameof(CLcl));
+                _ = OnPropertyChanged(nameof(CLcl));
             }
         }
         public virtual float Lml
@@ -80,7 +80,7 @@ namespace GMEPDesignTool
             set
             {
                 lml = value;
-                OnPropertyChanged(nameof(Lml));
+                _ = OnPropertyChanged(nameof(Lml));
             }
         }
         public virtual float ALml
@@ -89,7 +89,7 @@ namespace GMEPDesignTool
             set
             {
                 aLml = value;
-                OnPropertyChanged(nameof(ALml));
+                _ = OnPropertyChanged(nameof(ALml));
             }
         }
         public virtual float BLml
@@ -98,7 +98,7 @@ namespace GMEPDesignTool
             set
             {
                 bLml = value;
-                OnPropertyChanged(nameof(BLml));
+                _ = OnPropertyChanged(nameof(BLml));
             }
         }
         public virtual float CLml
@@ -107,7 +107,7 @@ namespace GMEPDesignTool
             set
             {
                 cLml = value;
-                OnPropertyChanged(nameof(CLml));
+                _ = OnPropertyChanged(nameof(CLml));
             }
         }
 
@@ -119,7 +119,7 @@ namespace GMEPDesignTool
                 if (id != value)
                 {
                     id = value;
-                    OnPropertyChanged(nameof(Id));
+                    _ = OnPropertyChanged(nameof(Id));
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace GMEPDesignTool
                 if (parentId != value)
                 {
                     parentId = value ?? string.Empty;
-                    OnPropertyChanged(nameof(ParentId));
+                    _ = OnPropertyChanged(nameof(ParentId));
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace GMEPDesignTool
                 if (phaseAVa != value)
                 {
                     phaseAVa = value;
-                    OnPropertyChanged(nameof(PhaseAVA));
+                    _ = OnPropertyChanged(nameof(PhaseAVA));
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace GMEPDesignTool
                 if (phaseBVa != value)
                 {
                     phaseBVa = value;
-                    OnPropertyChanged(nameof(PhaseBVA));
+                    _ = OnPropertyChanged(nameof(PhaseBVA));
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace GMEPDesignTool
                 if (phaseCVa != value)
                 {
                     phaseCVa = value;
-                    OnPropertyChanged(nameof(PhaseCVA));
+                    _ = OnPropertyChanged(nameof(PhaseCVA));
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace GMEPDesignTool
                 if (projectId != value)
                 {
                     projectId = value;
-                    OnPropertyChanged(nameof(ProjectId));
+                    _ = OnPropertyChanged(nameof(ProjectId));
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace GMEPDesignTool
                 if (colorCode != value)
                 {
                     colorCode = value;
-                    OnPropertyChanged(nameof(ColorCode));
+                    _ = OnPropertyChanged(nameof(ColorCode));
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace GMEPDesignTool
                 if (circuitNo != value)
                 {
                     circuitNo = value;
-                    OnPropertyChanged(nameof(CircuitNo));
+                    _ = OnPropertyChanged(nameof(CircuitNo));
                 }
             }
         }
@@ -216,7 +216,7 @@ namespace GMEPDesignTool
                 if (pole != value)
                 {
                     pole = value;
-                    OnPropertyChanged(nameof(Pole));
+                    _ = OnPropertyChanged(nameof(Pole));
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace GMEPDesignTool
                 if (name != value)
                 {
                     name = value;
-                    OnPropertyChanged(nameof(Name));
+                    _ = OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -241,7 +241,7 @@ namespace GMEPDesignTool
                 if (amp != value)
                 {
                     amp = value;
-                    OnPropertyChanged(nameof(Amp));
+                    _ = OnPropertyChanged(nameof(Amp));
                 }
             }
         }
@@ -254,7 +254,7 @@ namespace GMEPDesignTool
                 if (loadCategory != value)
                 {
                     loadCategory = value;
-                    OnPropertyChanged(nameof(LoadCategory));
+                    _ = OnPropertyChanged(nameof(LoadCategory));
                 }
             }
         }
@@ -266,7 +266,7 @@ namespace GMEPDesignTool
                 if (componentType != value)
                 {
                     componentType = value;
-                    OnPropertyChanged(nameof(ComponentType));
+                    _ = OnPropertyChanged(nameof(ComponentType));
                 }
             }
         }
@@ -278,13 +278,16 @@ namespace GMEPDesignTool
                 if (orderNo != value)
                 {
                     orderNo = value;
-                    OnPropertyChanged(nameof(OrderNo));
+                    _ = OnPropertyChanged(nameof(OrderNo));
                 }
             }
         }
-        protected void OnPropertyChanged(string propertyName)
+        protected async Task OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                await Task.Run(() => PropertyChanged(this, new PropertyChangedEventArgs(propertyName)));
+            }
         }
     }
 }
