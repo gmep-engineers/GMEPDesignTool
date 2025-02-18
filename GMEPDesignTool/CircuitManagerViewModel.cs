@@ -26,6 +26,7 @@ namespace GMEPDesignTool
         public  ObservableCollection<ElectricalComponent> ComponentsCollection { get; set; }
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
+        public ObservableCollection<Note> Notes { get; set; }
 
 
         private float _phaseAVa;
@@ -162,6 +163,7 @@ namespace GMEPDesignTool
             LeftComponents = panel.leftComponents;
             ComponentsCollection = panel.componentsCollection;
             Panel = panel;
+            Notes = panel.notes;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
             _phaseAVa = panel.PhaseAVA;

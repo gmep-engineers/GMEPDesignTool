@@ -1038,10 +1038,19 @@
                         <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
                     </StackPanel.Effect>
                     <TextBox FontSize="23"  Text="NOTES: " IsReadOnly="True"/>
-                    <DataGrid Height="130" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" HeadersVisibility="None">
+                    <DataGrid ItemsSource="{Binding Notes}" Height="130" CanUserAddRows="True" AutoGenerateColumns="False" HeadersVisibility="None" RowHeight="30">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" Width="40"/>
-                            <DataGridTextColumn Header="Note" Width="*"/>
+                            <DataGridTemplateColumn Width="40">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="Black" Fill="White"/>
+                                            <TextBlock Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Number}" TextAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Note" Binding="{Binding Description}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

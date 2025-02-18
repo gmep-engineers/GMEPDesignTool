@@ -45,6 +45,8 @@ namespace GMEPDesignTool
         public ObservableCollection<Circuit> rightCircuits { get; set; } =
             new ObservableCollection<Circuit>();
 
+        public ObservableCollection<Note> notes { get; set; } = new ObservableCollection<Note>();
+
         private bool _isRecessed;
 
         public ElectricalPanel(
@@ -1181,15 +1183,11 @@ namespace GMEPDesignTool
         public string projectId;
         public int circuitNo;
         public int length;
+        public string description;
 
-        public Note(string id, int number, string panelId, string projectId, int circuitNo, int length)
+        public Note()
         {
-            this.id=id;
-            this.number=number;
-            this.panelId=panelId;
-            this.projectId=projectId;
-            this.circuitNo=circuitNo;
-            this.length=length;
+            this.id = Guid.NewGuid().ToString();
         }
 
         public string Id
@@ -1264,8 +1262,18 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
