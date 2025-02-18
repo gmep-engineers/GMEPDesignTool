@@ -1045,7 +1045,7 @@
                                     <DataTemplate>
                                         <Grid>
                                             <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="Black" Fill="White"/>
-                                            <TextBlock Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Number}" TextAlignment="Center"/>
+                                            <TextBox Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" Text="{Binding Number}" MaxLength="2" TextAlignment="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
