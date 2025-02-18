@@ -54,10 +54,6 @@ namespace GMEPDesignTool
             this.DataContext = viewModel;
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
-            viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
-            await viewModel.ActiveElectricalProject.InitializeAsync();
-            ElectricalTab.Content = viewModel.ActiveElectricalProject;
-            AdminTab.Content = new Admin();
         }
 
         private async void AddVersion_Click(object sender, RoutedEventArgs e)
@@ -80,14 +76,18 @@ namespace GMEPDesignTool
                 DeletePopup.IsOpen = false;
             }
         }
-        private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
+                //Electrical Tab
                 string newprojectId = selectedPair.Value;
                 viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
+                await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
 
+                //Admin Tab
+                AdminTab.Content = new Admin();
             }
         }
         private void CopyPopup_Click(object sender, RoutedEventArgs e)
