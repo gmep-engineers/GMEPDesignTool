@@ -459,13 +459,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="1">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -477,13 +477,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="2">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -495,13 +495,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="3">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -513,12 +513,13 @@
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding BreakerSize}">
+                                                <TextBlock>
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding BreakerSize}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Text" Value=""/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="2">
                                                                     <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -631,12 +632,13 @@
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding BreakerSize}">
+                                                <TextBlock>
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="{Binding BreakerSize}"/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                    <Setter Property="Text" Value=""/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="2">
                                                                     <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -654,13 +656,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="3">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -672,13 +674,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="2">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -690,13 +692,13 @@
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="X" TextAlignment="Center">
+                                                <TextBlock TextAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Setter Property="Text" Value=""/>
                                                             <Style.Triggers>
                                                                 <DataTrigger Binding="{Binding LoadCategory}" Value="1">
-                                                                    <Setter Property="Foreground" Value="Black"/>
+                                                                    <Setter Property="Text" Value="X"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
