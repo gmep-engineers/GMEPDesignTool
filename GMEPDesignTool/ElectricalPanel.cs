@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.RightsManagement;
 namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
@@ -20,7 +21,6 @@ namespace GMEPDesignTool
         private bool _powered;
         private bool _isHiddenOnPlan;
         private string _location;
-        private string _notes;
         private string _parentName;
         private string _parentType;
         // private bool _isLcl;
@@ -32,18 +32,15 @@ namespace GMEPDesignTool
 
         public ElectricalComponent ParentComponent { get; set; }
 
-        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
-           new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } = new ObservableCollection<ElectricalComponent>();
 
-        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<Circuit> leftCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
-
-        public ObservableCollection<Circuit> rightCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
+        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<Circuit> leftCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<Circuit> rightCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<Note> notes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> leftNodes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> rightNodes { get; set; } = new ObservableCollection<Note>();
 
         private bool _isRecessed;
 
@@ -66,8 +63,7 @@ namespace GMEPDesignTool
             bool isRecessed,
             int circuitNo,
             bool isHiddenOnPlan,
-            string location,
-            string notes
+            string location
         )
             : base()
         {
@@ -102,7 +98,6 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
-            this._notes = notes;
             this._location = location;
             this.componentType = "Panel";
             SetPole();
@@ -388,18 +383,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string Notes
-        {
-            get => _notes;
-            set
-            {
-                if (_notes != value)
-                {
-                    _notes = value;
-                    OnPropertyChanged(nameof(Notes));
-                }
-            }
-        }
+      
 
         public void SetPole()
         {
@@ -1175,6 +1159,114 @@ namespace GMEPDesignTool
             {
                 loadCategory = value;
                 OnPropertyChanged();
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class Note: INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string id;
+        public int number;
+        public string panelId;
+        public string projectId;
+        public int circuitNo;
+        public int length;
+        public string description;
+
+        public Note()
+        {
+            this.id = Guid.NewGuid().ToString();
+        }
+
+        public string Id
+        {
+            get => id;
+            set
+            {
+                if (id != value)
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
+        }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                if (number != value)
+                {
+                    number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                if (panelId != value)
+                {
+                    panelId = value;
+                    OnPropertyChanged(nameof(PanelId));
+                }
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                if (projectId != value)
+                {
+                    projectId = value;
+                    OnPropertyChanged(nameof(ProjectId));
+                }
+            }
+        }
+        public int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+        public int Length
+        {
+            get => length;
+            set
+            {
+                if (length != value)
+                {
+                    length = value;
+                    OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
             }
         }
 

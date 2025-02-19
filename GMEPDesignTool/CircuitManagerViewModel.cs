@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Controls;
+using System.Windows.Input;
+
 
 
 
@@ -26,6 +28,9 @@ namespace GMEPDesignTool
         public  ObservableCollection<ElectricalComponent> ComponentsCollection { get; set; }
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
+        public ObservableCollection<Note> Notes { get; set; }
+        public ObservableCollection<Note> LeftNodes { get; set; }
+        public ObservableCollection<Note> RightNodes { get; set; }
 
 
         private float _phaseAVa;
@@ -139,15 +144,7 @@ namespace GMEPDesignTool
             get => mounting;
             set => SetProperty(ref mounting, value);
         }
-        private string notes;
-        public string Notes
-        {
-            get => notes;
-            set {
-                SetProperty(ref notes, value);
-                Panel.Notes = notes;
-                }
-        }
+  
         private string parentName;
 
         public string ParentName
@@ -170,8 +167,11 @@ namespace GMEPDesignTool
             LeftComponents = panel.leftComponents;
             ComponentsCollection = panel.componentsCollection;
             Panel = panel;
+            Notes = panel.notes;
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
+            LeftNodes = panel.leftNodes;
+            RightNodes = panel.rightNodes;
             _phaseAVa = panel.PhaseAVA;
             _phaseBVa = panel.PhaseBVA;
             _phaseCVa = panel.PhaseCVA;
@@ -182,7 +182,6 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
-            notes = panel.Notes;
             parentName = panel.ParentName;
             parentType = panel.ParentType;
             _location = panel.Location;
@@ -444,6 +443,7 @@ namespace GMEPDesignTool
             }
             return "SURFACE";
         }
+  
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
@@ -486,10 +486,11 @@ namespace GMEPDesignTool
                 int sourceIndex = sourceCollection.IndexOf(sourceItem);
                 int targetIndex = targetItem != null ? targetCollection.IndexOf(targetItem) : targetCollection.Count;
 
-                if (targetIndex > targetCollection.Count - 1)
+                if (targetIndex > targetCollection.Count - 1 && targetIndex != 0)
                 {
                     targetIndex = targetCollection.Count - 1;
                 }
+                
 
                 if (sourceIndex != -1)
                 {

@@ -765,7 +765,6 @@
                                                     <Grid Margin="20 25 10 0">
                                                         <CheckBox Content="From Client" FontWeight="Bold" IsChecked="{Binding SpecSheetFromClient}"/>
                                                     </Grid>
-
                                                 </StackPanel>
                                             </StackPanel>
                                             <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description/Notes/Location" FontWeight="Bold">
