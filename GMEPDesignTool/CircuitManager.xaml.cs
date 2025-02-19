@@ -56,7 +56,7 @@ namespace GMEPDesignTool
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-            if (sender is ComboBox comboBox && comboBox.SelectedItem is Note selectedNote)
+            if (sender is ListBox listBox && listBox.SelectedItem is Note selectedNote)
             {
                 if (selectedItems.Any())
                 {
@@ -101,13 +101,13 @@ namespace GMEPDesignTool
                 }
                 
             }
-            var comboBox2 = sender as ComboBox;
-            comboBox2.SelectedValue = null;
+            var listBox2 = sender as ListBox;
+            listBox2.SelectedValue = null;
         }
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-            if (sender is ComboBox comboBox && comboBox.SelectedItem is Note selectedNote)
+            if (sender is ListBox listBox && listBox.SelectedItem is Note selectedNote)
             {
                 if (selectedItems.Any())
                 {
@@ -153,8 +153,8 @@ namespace GMEPDesignTool
                 }
 
             }
-            var comboBox2 = sender as ComboBox;
-            comboBox2.SelectedValue = null;
+            var listBox2 = sender as ListBox;
+            listBox2.SelectedValue = null;
         }
     }
     public class CircuitToMarginConverter : IValueConverter

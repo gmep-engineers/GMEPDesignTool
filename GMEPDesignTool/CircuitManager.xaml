@@ -428,16 +428,16 @@
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Place Note">
-                                            <ComboBox HorizontalContentAlignment="Center" Width="45" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
-                                                <ComboBox.ItemTemplate>
+                                            <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
+                                                <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
                                                             <Ellipse StrokeThickness="1" Stroke="Black"/>
                                                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
                                                         </Grid>
                                                     </DataTemplate>
-                                                </ComboBox.ItemTemplate>
-                                            </ComboBox>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
@@ -680,16 +680,16 @@
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Place Note">
-                                            <ComboBox HorizontalContentAlignment="Center" Width="45" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
-                                                <ComboBox.ItemTemplate>
+                                            <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
+                                                <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
                                                             <Ellipse StrokeThickness="1" Stroke="Black"/>
                                                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
                                                         </Grid>
                                                     </DataTemplate>
-                                                </ComboBox.ItemTemplate>
-                                            </ComboBox>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
                                         </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
