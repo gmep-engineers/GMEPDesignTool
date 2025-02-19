@@ -96,14 +96,40 @@ namespace GMEPDesignTool
                         viewModel.LeftNodes.Remove(node);
                     }
 
-                    if (!viewModel.LeftNodes.Contains(selectedNote)){
+                    if (!viewModel.LeftNodes.Contains(selectedNote))
+                    {
                         viewModel.LeftNodes.Add(selectedNote);
                     }
                 }
-                
+
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
+        }
+        private void LeftCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem)
+            {
+                List<Note> toRemove = new List<Note>();
+
+                foreach (var node in viewModel.LeftNodes)
+                {
+                    int startCircuit = node.CircuitNo;
+                    int endCircuit = node.CircuitNo + (node.Length - 1)*2;
+                    foreach (var item in selectedItems)
+                    {
+                        if (item.Number >= startCircuit && item.Number <= endCircuit)
+                        {
+                            toRemove.Add(node);
+                        }
+                    }
+                }
+                foreach (var node in toRemove)
+                {
+                    viewModel.LeftNodes.Remove(node);
+                }
+            }
         }
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
@@ -135,7 +161,8 @@ namespace GMEPDesignTool
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
                         if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
                         {
-                            if (!node.Equals(selectedNote)){
+                            if (!node.Equals(selectedNote))
+                            {
                                 toRemove.Add(node);
                             }
                         }
@@ -156,6 +183,31 @@ namespace GMEPDesignTool
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
+        }
+        private void RightCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem)
+            {
+                List<Note> toRemove = new List<Note>();
+
+                foreach (var node in viewModel.RightNodes)
+                {
+                    int startCircuit = node.CircuitNo;
+                    int endCircuit = node.CircuitNo + (node.Length - 1)*2;
+                    foreach (var item in selectedItems)
+                    {
+                        if (item.Number >= startCircuit && item.Number <= endCircuit)
+                        {
+                            toRemove.Add(node);
+                        }
+                    }
+                }
+                foreach(var node in toRemove)
+                {
+                    viewModel.RightNodes.Remove(node);
+                }
+            }
         }
     }
     public class CircuitToMarginConverter : IValueConverter

@@ -439,6 +439,7 @@
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
                                         </MenuItem>
+                                        <MenuItem Header="Delete Notes" Click="LeftCircuitGrid_DeleteNotes"/>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
@@ -691,6 +692,7 @@
                                                 </ListBox.ItemTemplate>
                                             </ListBox>
                                         </MenuItem>
+                                        <MenuItem Header="Delete Notes" Click="RightCircuitGrid_DeleteNotes"/>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
