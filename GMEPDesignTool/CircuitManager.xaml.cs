@@ -65,6 +65,8 @@ namespace GMEPDesignTool
                 Note newNote = new Note();
                 newNote.CircuitNo = firstItem.Number;
                 newNote.Length = range;
+                newNote.Number = 0;
+                newNote.Description = "Meow";
 
                 viewModel.LeftNodes.Add(newNote);
             }
