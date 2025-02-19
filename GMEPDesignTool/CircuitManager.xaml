@@ -676,10 +676,21 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
-                            <DataGrid BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
+                            <DataGrid x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Place Note"/>
+                                        <MenuItem Header="Place Note">
+                                            <ComboBox HorizontalContentAlignment="Center" Width="45" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="30" Width="30">
+                                                            <Ellipse StrokeThickness="1" Stroke="Black"/>
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
@@ -1003,7 +1014,45 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <Grid Grid.Column="3" Background="AliceBlue" Margin="0 100 0 0"/>
+                <Grid Grid.Column="3" Margin="0 101 0 0">
+                    <ItemsControl ItemsSource="{Binding RightNodes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas  />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                    <Grid HorizontalAlignment="Left" Width="30">
+                                        <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Length}" Value="1">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Border BorderBrush="Black" BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Center" Width="1"/>
+                                            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="1"/>
+                                            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="1"/>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.ToolTip>
+                                                <ToolTip Content="{Binding Description}"/>
+                                            </Grid.ToolTip>
+                                            <Ellipse Fill="White" Stroke="Black" StrokeThickness="1" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
                 <StackPanel Orientation="Vertical" Grid.Column="4" Margin="0 100 20 0">
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"

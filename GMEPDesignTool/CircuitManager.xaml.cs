@@ -63,6 +63,10 @@ namespace GMEPDesignTool
 
                 if (selectedItems.Any())
                 {
+                    if (viewModel.RightNodes.Contains(selectedNote))
+                    {
+                        viewModel.RightNodes.Remove(selectedNote);
+                    }
                     var firstItem = selectedItems.First();
                     var lastItem = selectedItems.Last();
                     var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
@@ -74,6 +78,35 @@ namespace GMEPDesignTool
                     viewModel.LeftNodes.Add(selectedNote);
                 }
                 
+            }
+            var comboBox2 = sender as ComboBox;
+            comboBox2.SelectedItem = null;
+        }
+        private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+
+
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is Note selectedNote)
+            {
+
+                if (selectedItems.Any())
+                {
+                    if (viewModel.LeftNodes.Contains(selectedNote))
+                    {
+                        viewModel.LeftNodes.Remove(selectedNote);
+                    }
+                    var firstItem = selectedItems.First();
+                    var lastItem = selectedItems.Last();
+                    var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
+
+                    //Note newNote = new Note();
+                    selectedNote.CircuitNo = firstItem.Number;
+                    selectedNote.Length = range;
+
+                    viewModel.RightNodes.Add(selectedNote);
+                }
+
             }
             var comboBox2 = sender as ComboBox;
             comboBox2.SelectedItem = null;
