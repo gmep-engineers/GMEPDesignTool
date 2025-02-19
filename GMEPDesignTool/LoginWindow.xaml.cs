@@ -37,7 +37,12 @@ namespace GMEPDesignTool
         public string AwsAccessKeyId { get; set; }
         public string AwsAccessSecretAccessKey { get; set; }
         public string AwsS3Bucket { get; set; }
-        public string AccessLevelId { get; set; }
+        public int AccessLevelId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Extension { get; set; }
+        public string EmailAddress { get; set; }
     }
 
     public partial class LoginWindow : Window

@@ -30,6 +30,9 @@
                     <MenuItem Header="_Copy"/>
                     <MenuItem Header="_Paste"/>
                 </MenuItem>
+                <MenuItem Header="_Admin" Visibility="{Binding AdminMenuVisible}">
+                    <MenuItem Header="_Users" Command="{Binding OpenUsersWindowCommand}"/>
+                </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_About"/>
                 </MenuItem>

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Data;
@@ -85,6 +86,19 @@ namespace GMEPDesignTool
             set => SetProperty(ref _searchResultKeys, value);
         }
 
+        private Visibility _AdminMenuVisible;
+        public Visibility AdminMenuVisible
+        {
+            get => _AdminMenuVisible;
+            set
+            {
+                if (_AdminMenuVisible != value)
+                {
+                    _AdminMenuVisible = value;
+                }
+            }
+        }
+
         private string _searchText = "";
         public string SearchText
         {
@@ -103,6 +117,9 @@ namespace GMEPDesignTool
 
         private readonly DelegateCommand _getSearchResultsCommand;
         public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
+
+        private readonly DelegateCommand _openUsersWindowCommand;
+        public ICommand OpenUsersWindowCommand => _openUsersWindowCommand;
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public ViewModel(LoginResponse loginResponse)
@@ -110,22 +127,39 @@ namespace GMEPDesignTool
             this.loginResponse = loginResponse;
             Tabs = new ObservableCollection<TabItem>();
             _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
-            Name = "My Name";
+            _openUsersWindowCommand = new DelegateCommand(OpenUsersWindow, CanOpenUsersWindow);
+            Name = loginResponse.FirstName + " " + loginResponse.LastName;
+            AdminMenuVisible = Visibility.Collapsed;
+            if (loginResponse.AccessLevelId == 1)
+            {
+                AdminMenuVisible = Visibility.Visible;
+            }
         }
 
         private void GetSearchResults(object commandParameter)
         {
             SearchResults = new List<Dictionary<string, string>>();
             SearchResultKeys = new List<string>();
-            Dictionary<string, string> thing = new Dictionary<string, string>();
-            thing["24-100"] = "Z:\\lskdjfksljf";
-            SearchResults.Add(thing);
             SearchResultKeys.Add(SearchText);
         }
 
         private bool CanGetSearchResults(object commandParameter)
         {
             return true;
+        }
+
+        private void OpenUsersWindow(object commandParameter)
+        {
+            Trace.WriteLine("Open users window");
+        }
+
+        private bool CanOpenUsersWindow(object commandParameter)
+        {
+            if (loginResponse.AccessLevelId == 1)
+            {
+                return true;
+            }
+            return false;
         }
 
         public void OpenProject(string projectNo)
