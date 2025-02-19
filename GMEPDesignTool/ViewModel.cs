@@ -71,6 +71,20 @@ namespace GMEPDesignTool
             set => SetProperty(ref _name, value);
         }
 
+        private string _emailAddress = "";
+        public string EmailAddress
+        {
+            get => _emailAddress;
+            set => SetProperty(ref _emailAddress, value);
+        }
+
+        private string _phoneNumber = "";
+        public string PhoneNumber
+        {
+            get => _phoneNumber;
+            set => SetProperty(ref _phoneNumber, value);
+        }
+
         private List<Dictionary<string, string>> _searchResults =
             new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> SearchResults
@@ -118,8 +132,8 @@ namespace GMEPDesignTool
         private readonly DelegateCommand _getSearchResultsCommand;
         public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
 
-        private readonly DelegateCommand _openUsersWindowCommand;
-        public ICommand OpenUsersWindowCommand => _openUsersWindowCommand;
+        private readonly DelegateCommand _openEmployeesWindowCommand;
+        public ICommand OpenEmployeesWindowCommand => _openEmployeesWindowCommand;
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public ViewModel(LoginResponse loginResponse)
@@ -127,8 +141,17 @@ namespace GMEPDesignTool
             this.loginResponse = loginResponse;
             Tabs = new ObservableCollection<TabItem>();
             _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
-            _openUsersWindowCommand = new DelegateCommand(OpenUsersWindow, CanOpenUsersWindow);
+            _openEmployeesWindowCommand = new DelegateCommand(
+                OpenEmployeesWindow,
+                CanOpenEmployeesWindow
+            );
             Name = loginResponse.FirstName + " " + loginResponse.LastName;
+            EmailAddress = loginResponse.EmailAddress;
+            PhoneNumber = loginResponse.PhoneNumber;
+            if (!String.IsNullOrEmpty(loginResponse.Extension))
+            {
+                PhoneNumber += " ext. " + loginResponse.Extension;
+            }
             AdminMenuVisible = Visibility.Collapsed;
             if (loginResponse.AccessLevelId == 1)
             {
@@ -148,12 +171,13 @@ namespace GMEPDesignTool
             return true;
         }
 
-        private void OpenUsersWindow(object commandParameter)
+        private void OpenEmployeesWindow(object commandParameter)
         {
-            Trace.WriteLine("Open users window");
+            EmployeesWindow employeesWindow = new EmployeesWindow(loginResponse);
+            employeesWindow.Show();
         }
 
-        private bool CanOpenUsersWindow(object commandParameter)
+        private bool CanOpenEmployeesWindow(object commandParameter)
         {
             if (loginResponse.AccessLevelId == 1)
             {

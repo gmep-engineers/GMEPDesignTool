@@ -1,0 +1,60 @@
+﻿<Window x:Class="GMEPDesignTool.EmployeesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Employees" Height="720" Width="1200">
+    <Grid>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" />
+                <MenuItem Header="_Close" />
+            </MenuItem>
+        </Menu>
+        <DataGrid Name="EmployeesDataGrid" ItemsSource="{Binding Employees}" SelectedItem="{Binding Path=SelectedEmployee}" AutoGenerateColumns="False" Margin="0 20 0 0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}"/>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName}"/>
+                <DataGridComboBoxColumn Header="Department"  SelectedValueBinding="{Binding DepartmentId}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridComboBoxColumn Header="Title"  SelectedValueBinding="{Binding TitleId}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                            <ComboBoxItem Content="Engineer" Tag="1"/> 
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridTextColumn Header="Email Address" Binding="{Binding EmailAddress}"/>
+                <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber}"/>
+                <DataGridTextColumn Header="Extension" Binding="{Binding Extension}"/>
+                <DataGridTextColumn Header="Hire Date" Binding="{Binding HireDate, StringFormat=\{0:yy.MM.dd\}}" />
+                <DataGridTextColumn Header="Termination Date" Binding="{Binding TerminationDate, StringFormat=\{0:yy.MM.dd\}}" />
+                <DataGridTextColumn Header="Username" Binding="{Binding Username}"/>
+                <DataGridTemplateColumn Header="Password">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="UpdatePasswordClick">Update Password</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

@@ -48,6 +48,56 @@ namespace GMEPDesignTool.Database
             }
         }
 
+        string GetSafeString(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetString(index);
+            }
+            return string.Empty;
+        }
+
+        string GetSafeDateString(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetDateTime(index).ToString();
+            }
+            return string.Empty;
+        }
+
+        int GetSafeInt(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetInt32(index);
+            }
+            return 0;
+        }
+
+        float GetSafeFloat(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetFloat(index);
+            }
+            return 0;
+        }
+
+        bool GetSafeBoolean(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetBoolean(index);
+            }
+            return false;
+        }
+
         public bool LoginUser(string userName, string password)
         {
             string query =
@@ -69,6 +119,76 @@ namespace GMEPDesignTool.Database
             }
             CloseConnection();
             return result;
+        }
+
+        public List<Employee> GetEmployees()
+        {
+            List<Employee> employees = new List<Employee>();
+            string query =
+                @"
+                SELECT 
+                employees.id as employee_id,
+                last_name,
+                first_name,
+                email_address,
+                email_addresses.id as email_address_id,
+                phone_number,
+                phone_numbers.id as phone_number_id,
+                extension,
+                hire_date,
+                termination_date,
+                employee_department_id,
+                employee_title_id,
+                username
+                FROM employees
+                LEFT JOIN contacts ON contacts.id = employees.contact_id
+                LEFT JOIN entities ON contacts.entity_id = entities.id
+                LEFT JOIN email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+                LEFT JOIN email_addresses ON email_addr_entity_rel.email_address_id = email_addresses.id
+                LEFT JOIN phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+                LEFT JOIN phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+                WHERE email_addr_entity_rel.is_primary = 1
+                AND phone_number_entity_rel.is_primary = 1
+                ORDER BY last_name ASC
+                ";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                employees.Add(
+                    new Employee(
+                        GetSafeString(reader, "employee_id"),
+                        GetSafeString(reader, "last_name"),
+                        GetSafeString(reader, "first_name"),
+                        GetSafeInt(reader, "employee_title_id"),
+                        GetSafeInt(reader, "employee_department_id"),
+                        GetSafeString(reader, "email_address"),
+                        GetSafeString(reader, "email_address_id"),
+                        GetSafeString(reader, "phone_number"),
+                        GetSafeString(reader, "phone_number_id"),
+                        GetSafeString(reader, "extension"),
+                        GetSafeDateString(reader, "hire_date"),
+                        GetSafeDateString(reader, "termination_date"),
+                        GetSafeString(reader, "username")
+                    )
+                );
+            }
+            CloseConnection();
+            return employees;
+        }
+
+        public void SetEmployeePassword(string employeeId, string password)
+        {
+            string query = "UPDATE employees SET passhash = @passhash WHERE id = @id";
+            string salt = BCrypt.Net.BCrypt.GenerateSalt(10);
+            string passhash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@passhash", passhash);
+            command.Parameters.AddWithValue("@id", employeeId);
+            command.ExecuteNonQuery();
+            CloseConnection();
         }
 
         public Dictionary<int, string> GetProjectIds(string projectNo)
