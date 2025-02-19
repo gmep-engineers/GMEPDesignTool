@@ -75,12 +75,39 @@ namespace GMEPDesignTool
                     selectedNote.CircuitNo = firstItem.Number;
                     selectedNote.Length = range;
 
-                    viewModel.LeftNodes.Add(selectedNote);
+                    List<Note> toRemove = new List<Note>();
+                    int startCircuit = selectedNote.CircuitNo;
+                    int endCircuit = selectedNote.CircuitNo + (selectedNote.Length - 1)*2;
+
+                    foreach (var node in viewModel.LeftNodes)
+                    {
+                        int startCircuit2 = node.CircuitNo;
+                        int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
+                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        {
+                            if (!node.Equals(selectedNote))
+                            {
+                                toRemove.Add(node);
+                            }
+                        }
+                    }
+                    foreach (var node in toRemove)
+                    {
+                        node.CircuitNo = 0;
+                        node.Length = 0;
+                        viewModel.LeftNodes.Remove(node);
+                    }
+
+                    if (!viewModel.LeftNodes.Contains(selectedNote)){
+                        viewModel.LeftNodes.Add(selectedNote);
+                    }
+
+                
                 }
                 
             }
             var comboBox2 = sender as ComboBox;
-            comboBox2.SelectedItem = null;
+            comboBox2.SelectedValue = null;
         }
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
@@ -104,12 +131,41 @@ namespace GMEPDesignTool
                     selectedNote.CircuitNo = firstItem.Number;
                     selectedNote.Length = range;
 
-                    viewModel.RightNodes.Add(selectedNote);
+
+                    List<Note> toRemove = new List<Note>();
+                    int startCircuit = selectedNote.CircuitNo;
+                    int endCircuit = selectedNote.CircuitNo + (selectedNote.Length - 1)*2;
+
+                    foreach (var node in viewModel.RightNodes)
+                    {
+                        int startCircuit2 = node.CircuitNo;
+                        int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
+                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        {
+                            if (!node.Equals(selectedNote)){
+                                toRemove.Add(node);
+                            }
+                        }
+                    }
+                    foreach (var node in toRemove)
+                    {
+                        node.CircuitNo = 0;
+                        node.Length = 0;
+                        viewModel.RightNodes.Remove(node);
+                    }
+
+                    if (!viewModel.RightNodes.Contains(selectedNote))
+                    {
+                        viewModel.RightNodes.Add(selectedNote);
+                    }
+                  
+
+
                 }
 
             }
             var comboBox2 = sender as ComboBox;
-            comboBox2.SelectedItem = null;
+            comboBox2.SelectedValue = null;
         }
     }
     public class CircuitToMarginConverter : IValueConverter
