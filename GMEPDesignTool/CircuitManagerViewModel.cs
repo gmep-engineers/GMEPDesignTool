@@ -443,11 +443,7 @@ namespace GMEPDesignTool
             }
             return "SURFACE";
         }
-        private void CheckSelectedItems()
-        {
-            var selectedItems = LeftCircuits.Where(c => c.IsSelected).ToList();
-            // Implement your logic to handle the selected items
-        }
+  
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {

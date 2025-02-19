@@ -28,7 +28,7 @@ namespace GMEPDesignTool
             viewModel = new CircuitManagerViewModel(panel);
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
-            
+
         }
         private void CircuitManager_Closed(object sender, EventArgs e)
         {
@@ -52,15 +52,30 @@ namespace GMEPDesignTool
                 viewModel.Panel.AssignSpace(false);
             }
         }
+
+        private void LeftCircuitGrid_AddNote(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (selectedItems.Any())
+            {
+                var firstItem = selectedItems.First();
+                var lastItem = selectedItems.Last();
+                Note newNote = new Note();
+                newNote.CircuitNo = firstItem.Number;
+                viewModel.LeftNodes.Add(newNote);
+            }
+
+        }
     }
-    public class NumberToMarginConverter : IValueConverter
+    public class CircuitToMarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is int notesCount)
+            if (value is int CircuitNo)
             {
+                var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
                 // Adjust the margin based on the number of notes
-                return new Thickness(0, notesCount * 10, 0, 0);
+                return new Thickness(0, NewCircuitNo * 25, 0, 0);
             }
             return new Thickness(0);
         }
@@ -71,3 +86,4 @@ namespace GMEPDesignTool
         }
     }
 }
+
