@@ -56,11 +56,8 @@ namespace GMEPDesignTool
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-            
-
             if (sender is ComboBox comboBox && comboBox.SelectedItem is Note selectedNote)
             {
-
                 if (selectedItems.Any())
                 {
                     if (viewModel.RightNodes.Contains(selectedNote))
@@ -101,8 +98,6 @@ namespace GMEPDesignTool
                     if (!viewModel.LeftNodes.Contains(selectedNote)){
                         viewModel.LeftNodes.Add(selectedNote);
                     }
-
-                
                 }
                 
             }
@@ -112,11 +107,8 @@ namespace GMEPDesignTool
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-
-
             if (sender is ComboBox comboBox && comboBox.SelectedItem is Note selectedNote)
             {
-
                 if (selectedItems.Any())
                 {
                     if (viewModel.LeftNodes.Contains(selectedNote))
@@ -158,9 +150,6 @@ namespace GMEPDesignTool
                     {
                         viewModel.RightNodes.Add(selectedNote);
                     }
-                  
-
-
                 }
 
             }
