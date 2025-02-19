@@ -137,7 +137,7 @@ namespace GMEPDesignTool
         {
             if (value is int length)
             {
-                return length * 28;
+                return (length * 28) + 1;
             }
             return 0;
         }
