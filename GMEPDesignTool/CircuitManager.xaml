@@ -13,6 +13,7 @@
         <local:ValueRounder x:Key="ValueRounder"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
         <local:CircuitToMarginConverter x:Key="CircuitToMarginConverter"/>
+        <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -98,7 +99,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Background="Blue" Height="24" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                <Grid Background="Blue" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
                                     <TextBlock HorizontalAlignment="Right" Text="{Binding Description}"/>
                                 </Grid>
                             </DataTemplate>

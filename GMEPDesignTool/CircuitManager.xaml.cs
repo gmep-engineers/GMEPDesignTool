@@ -60,8 +60,12 @@ namespace GMEPDesignTool
             {
                 var firstItem = selectedItems.First();
                 var lastItem = selectedItems.Last();
+                var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
+
                 Note newNote = new Note();
                 newNote.CircuitNo = firstItem.Number;
+                newNote.Length = range;
+
                 viewModel.LeftNodes.Add(newNote);
             }
 
@@ -75,9 +79,26 @@ namespace GMEPDesignTool
             {
                 var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
                 // Adjust the margin based on the number of notes
-                return new Thickness(0, NewCircuitNo * 25, 0, 0);
+                return new Thickness(0, NewCircuitNo * 28, 0, 0);
             }
             return new Thickness(0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class LengthToHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int length)
+            {
+                return length * 28;
+            }
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
