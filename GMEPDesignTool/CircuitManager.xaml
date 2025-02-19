@@ -116,11 +116,15 @@
                                             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="1"/>
                                             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="1"/>
                                         </Grid>
-                                        <Ellipse Fill="White" Stroke="Black" StrokeThickness="1" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <!--<TextBlock HorizontalAlignment="Right" Text="{Binding Description}"/>-->
+                                        <Grid>
+                                            <Grid.ToolTip>
+                                                <ToolTip Content="{Binding Description}"/>
+                                            </Grid.ToolTip>
+                                            <Ellipse Fill="White" Stroke="Black" StrokeThickness="1" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                              
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -423,7 +427,18 @@
                             <DataGrid x:Name="LeftCircuitGrid" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Place Note" Click="LeftCircuitGrid_AddNote"/>
+                                        <MenuItem Header="Place Note">
+                                            <ComboBox HorizontalContentAlignment="Center" Width="45" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="30" Width="30">
+                                                            <Ellipse StrokeThickness="1" Stroke="Black"/>
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
