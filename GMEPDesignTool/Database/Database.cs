@@ -309,7 +309,9 @@ namespace GMEPDesignTool.Database
         {
             var existingPanelIds = await GetExistingIds("panel_notes", "project_id", projectId);
 
-            foreach (var note in panelNotes)
+            var panelNotesCopy = panelNotes.ToList(); // Create a copy of the collection
+
+            foreach (var note in panelNotesCopy)
             {
                 if (existingPanelIds.Contains(note.Id))
                 {

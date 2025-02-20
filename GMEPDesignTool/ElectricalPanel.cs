@@ -1203,6 +1203,7 @@ namespace GMEPDesignTool
             this.circuitNo = 0;
             this.length = 0;
             this.sharedData = new SharedNoteData();
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
 
         }
         public Note(Note note)
@@ -1214,6 +1215,7 @@ namespace GMEPDesignTool
             this.id = Guid.NewGuid().ToString();
             this.groupId = note.GroupId;
             this.sharedData = note.sharedData;
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
         }
         private void SharedData_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -1340,7 +1342,7 @@ namespace GMEPDesignTool
 
     public class SharedNoteData : INotifyPropertyChanged
     {
-        private string description;
+        private string description = "";
         private int number;
 
         public string Description
