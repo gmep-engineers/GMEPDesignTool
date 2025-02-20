@@ -85,7 +85,14 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Grid>
+                                    <Rectangle Stroke="Red" Fill="{Binding ColorCode}" >
+                                        <Rectangle.ToolTip>
+                                            <ToolTip Content="3 Pole Panel Should not be placed in a 2 pole panel. " Foreground="Red"/>
+                                        </Rectangle.ToolTip>
+                                    </Rectangle>
+                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
