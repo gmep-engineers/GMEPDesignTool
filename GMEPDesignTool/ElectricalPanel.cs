@@ -1173,26 +1173,38 @@ namespace GMEPDesignTool
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string id;
-        public int number;
+        //public int number;
         public string panelId;
         public string projectId;
         public int circuitNo;
         public int length;
-        public string description;
+        //public string description;
+        public string groupId;
+        private SharedNoteData sharedData;
 
         public Note()
         {
             this.id = Guid.NewGuid().ToString();
+            this.groupId = Guid.NewGuid().ToString();
+            this.circuitNo = 0;
+            this.length = 0;
+            this.sharedData = new SharedNoteData();
+            this.sharedData.PropertyChanged += SharedData_PropertyChanged;
         }
         public Note(Note note)
         {
-            this.description = note.Description;
             this.circuitNo = note.CircuitNo;
             this.length = note.Length;
-            this.number = note.Number;
             this.panelId = note.PanelId;
             this.projectId = note.ProjectId;
             this.id = Guid.NewGuid().ToString();
+            this.groupId = note.GroupId;
+            this.sharedData = note.sharedData;
+            this.sharedData.PropertyChanged += SharedData_PropertyChanged;
+        }
+        private void SharedData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
         }
         public string Id
         {
@@ -1203,18 +1215,6 @@ namespace GMEPDesignTool
                 {
                     id = value;
                     OnPropertyChanged(nameof(Id));
-                }
-            }
-        }
-        public int Number
-        {
-            get => number;
-            set
-            {
-                if (number != value)
-                {
-                    number = value;
-                    OnPropertyChanged(nameof(Number));
                 }
             }
         }
@@ -1266,6 +1266,56 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public string GroupId
+        {
+            get => groupId;
+            set
+            {
+                if (groupId != value)
+                {
+                    groupId = value;
+                    OnPropertyChanged(nameof(GroupId));
+                }
+            }
+        }
+
+        public string Description
+        {
+            get => sharedData.Description;
+            set
+            {
+                if (sharedData.Description != value)
+                {
+                    sharedData.Description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+
+        public int Number
+        {
+            get => sharedData.Number;
+            set
+            {
+                if (sharedData.Number != value)
+                {
+                    sharedData.Number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class SharedNoteData : INotifyPropertyChanged
+    {
+        private string description;
+        private int number;
+
         public string Description
         {
             get => description;
@@ -1278,12 +1328,26 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                if (number != value)
+                {
+                    number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
     public class Space : ElectricalComponent
     {
         public Space()
