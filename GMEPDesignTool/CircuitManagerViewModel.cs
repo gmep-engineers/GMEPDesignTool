@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 
 
@@ -547,12 +548,18 @@ namespace GMEPDesignTool
             {
                 foreach (Note removedItem in e.OldItems)
                 {
-                    if (LeftNodes.Contains(removedItem)){
-                        LeftNodes.Remove(removedItem);
-                    }
-                    if (RightNodes.Contains(removedItem))
+                    var groupId = removedItem.GroupId;
+
+                    var leftNodesToRemove = LeftNodes.Where(node => node.GroupId == groupId).ToList();
+                    foreach (var node in leftNodesToRemove)
                     {
-                        RightNodes.Remove(removedItem);
+                        LeftNodes.Remove(node);
+                    }
+
+                    var rightNodesToRemove = RightNodes.Where(node => node.GroupId == groupId).ToList();
+                    foreach (var node in rightNodesToRemove)
+                    {
+                        RightNodes.Remove(node);
                     }
                 }
             }

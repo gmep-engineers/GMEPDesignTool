@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Org.BouncyCastle.Tls.Crypto;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
@@ -102,6 +104,7 @@ namespace GMEPDesignTool
             this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
+            notes.CollectionChanged += Notes_CollectionChanged;
         }
         
         public string ParentName
@@ -529,6 +532,17 @@ namespace GMEPDesignTool
             if (e.PropertyName == nameof(ElectricalEquipment.Name) && sender is ElectricalComponent component)
             {
                ParentName = component.Name;
+            }
+        }
+        private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Note newNote in e.NewItems)
+                {
+                    newNote.PanelId = this.Id;
+                    newNote.ProjectId = this.ProjectId;
+                }
             }
         }
         public void AssignParentComponent(ElectricalComponent component)
@@ -1173,18 +1187,54 @@ namespace GMEPDesignTool
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string id;
-        public int number;
+        //public int number;
         public string panelId;
         public string projectId;
         public int circuitNo;
         public int length;
-        public string description;
+        //public string description;
+        public string groupId;
+        public SharedNoteData sharedData;
 
         public Note()
         {
             this.id = Guid.NewGuid().ToString();
-        }
+            this.groupId = Guid.NewGuid().ToString();
+            this.circuitNo = 0;
+            this.length = 0;
+            this.sharedData = new SharedNoteData();
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
 
+        }
+        public Note(Note note)
+        {
+            this.circuitNo = note.CircuitNo;
+            this.length = note.Length;
+            this.panelId = note.PanelId;
+            this.projectId = note.ProjectId;
+            this.id = Guid.NewGuid().ToString();
+            this.groupId = note.GroupId;
+            this.sharedData = note.sharedData;
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
+        }
+        private void SharedData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+        }
+        public SharedNoteData SharedData
+        {
+            get => sharedData;
+            set
+            {
+                if (sharedData != value)
+                {
+                    sharedData.PropertyChanged -= SharedData_PropertyChanged;
+                    sharedData = value;
+                    sharedData.PropertyChanged += SharedData_PropertyChanged;
+                    OnPropertyChanged(nameof(SharedData));
+                }
+            }
+        }
         public string Id
         {
             get => id;
@@ -1194,18 +1244,6 @@ namespace GMEPDesignTool
                 {
                     id = value;
                     OnPropertyChanged(nameof(Id));
-                }
-            }
-        }
-        public int Number
-        {
-            get => number;
-            set
-            {
-                if (number != value)
-                {
-                    number = value;
-                    OnPropertyChanged(nameof(Number));
                 }
             }
         }
@@ -1257,6 +1295,56 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public string GroupId
+        {
+            get => groupId;
+            set
+            {
+                if (groupId != value)
+                {
+                    groupId = value;
+                    OnPropertyChanged(nameof(GroupId));
+                }
+            }
+        }
+
+        public string Description
+        {
+            get => sharedData.Description;
+            set
+            {
+                if (sharedData.Description != value)
+                {
+                    sharedData.Description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+
+        public int Number
+        {
+            get => sharedData.Number;
+            set
+            {
+                if (sharedData.Number != value)
+                {
+                    sharedData.Number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class SharedNoteData : INotifyPropertyChanged
+    {
+        private string description = "";
+        private int number;
+
         public string Description
         {
             get => description;
@@ -1269,12 +1357,26 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                if (number != value)
+                {
+                    number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
     public class Space : ElectricalComponent
     {
         public Space()

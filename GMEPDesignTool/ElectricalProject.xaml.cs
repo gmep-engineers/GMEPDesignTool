@@ -27,6 +27,7 @@ using Google.Protobuf.WellKnownTypes;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
+using Org.BouncyCastle.Utilities;
 
 namespace GMEPDesignTool
 {
@@ -38,6 +39,7 @@ namespace GMEPDesignTool
 
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
+        public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -69,6 +71,7 @@ namespace GMEPDesignTool
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             ElectricalLightings = new ObservableCollection<ElectricalLighting>();
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
+            PanelNotes = new ObservableCollection<Note>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
@@ -94,6 +97,7 @@ namespace GMEPDesignTool
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
             Owners = await ProjectView.database.getOwners();
 
             ParentNames.Add("", "");
@@ -114,6 +118,10 @@ namespace GMEPDesignTool
             foreach (var panel in ElectricalPanels)
             {
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                AssignPanelNotes(panel);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -186,15 +194,11 @@ namespace GMEPDesignTool
                 }
             }
         }
-    
-    private void LightingLocations_CollectionChanged1(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
+            var meow = PanelNotes;
             await ProjectView.database.UpdateProject(
                 ProjectId,
                 ElectricalServices,
@@ -202,7 +206,8 @@ namespace GMEPDesignTool
                 ElectricalEquipments,
                 ElectricalTransformers,
                 ElectricalLightings,
-                LightingLocations
+                LightingLocations,
+                PanelNotes
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
@@ -797,6 +802,10 @@ namespace GMEPDesignTool
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+            electricalPanel.notes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+
             ElectricalPanels.Add(electricalPanel);
             electricalPanel.fillInitialSpaces();
             GetNames();
@@ -832,7 +841,13 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
+            electricalPanel.notes.Clear();
+            electricalPanel.leftNodes.Clear();
+            electricalPanel.rightNodes.Clear();
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
+            electricalPanel.notes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.ParentId = "";
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
@@ -847,6 +862,39 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalPanel(electricalPanel);
+            }
+        }
+        public void AssignPanelNotes(ElectricalPanel panel)
+        {
+            var filteredNotes = PanelNotes.Where(note => note.PanelId == panel.Id).ToList();
+
+            var keyNotes = filteredNotes.Where(note => note.CircuitNo == 0).ToList();
+
+            var noteDictionary = new Dictionary<Note, List<Note>>();
+
+            foreach (var keyNote in keyNotes)
+            {
+                var matchingNotes = filteredNotes
+                    .Where(note => note.GroupId == keyNote.GroupId && note.CircuitNo != 0)
+                    .ToList();
+
+                noteDictionary[keyNote] = matchingNotes;
+            }
+            foreach (var key in noteDictionary.Keys)
+            {
+                panel.notes.Add(key);
+                foreach (var note in noteDictionary[key])
+                {
+                    note.SharedData = key.SharedData;
+                    if (note.CircuitNo % 2 == 0)
+                    {
+                        panel.rightNodes.Add(note);
+                    }
+                    else
+                    {
+                        panel.leftNodes.Add(note);
+                    }
+                }
             }
         }
 
@@ -1092,6 +1140,30 @@ namespace GMEPDesignTool
                     }
                 }
                 //StartTimer();
+            }
+        }
+        private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Note newNote in e.NewItems)
+                {
+                    if (!PanelNotes.Contains(newNote))
+                    {
+                        PanelNotes.Add(newNote);
+                    }
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Note oldNote in e.OldItems)
+                {
+                    PanelNotes.Remove(oldNote);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                PanelNotes.Clear();
             }
         }
 
