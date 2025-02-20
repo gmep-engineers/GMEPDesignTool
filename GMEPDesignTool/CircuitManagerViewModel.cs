@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Collections.Specialized;
 
 
 
@@ -192,7 +193,9 @@ namespace GMEPDesignTool
             phases = determinePhases(panel.Type);
             mounting = setMounting(panel.IsRecessed);
             Panel.PropertyChanged += Panel_PropertyChanged;
+            Notes.CollectionChanged += Notes_CollectionChanged;
         }
+
         public void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
           
@@ -535,6 +538,23 @@ namespace GMEPDesignTool
             else
             {
                 return ComponentsCollection;
+            }
+        }
+        private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Note removedItem in e.OldItems)
+                {
+                    if (LeftNodes.Contains(removedItem)){
+                        LeftNodes.Remove(removedItem);
+                    }
+                    if (RightNodes.Contains(removedItem))
+                    {
+                        RightNodes.Remove(removedItem);
+                    }
+                }
             }
         }
 
