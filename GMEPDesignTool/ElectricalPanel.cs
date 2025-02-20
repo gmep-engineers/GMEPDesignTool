@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Org.BouncyCastle.Tls.Crypto;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
@@ -102,6 +104,7 @@ namespace GMEPDesignTool
             this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
+            notes.CollectionChanged += Notes_CollectionChanged;
         }
         
         public string ParentName
@@ -529,6 +532,17 @@ namespace GMEPDesignTool
             if (e.PropertyName == nameof(ElectricalEquipment.Name) && sender is ElectricalComponent component)
             {
                ParentName = component.Name;
+            }
+        }
+        private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Note newNote in e.NewItems)
+                {
+                    newNote.PanelId = this.Id;
+                    newNote.ProjectId = this.ProjectId;
+                }
             }
         }
         public void AssignParentComponent(ElectricalComponent component)

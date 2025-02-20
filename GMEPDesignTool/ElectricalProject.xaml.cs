@@ -98,6 +98,7 @@ namespace GMEPDesignTool
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
             Owners = await ProjectView.database.getOwners();
 
             ParentNames.Add("", "");
@@ -121,6 +122,7 @@ namespace GMEPDesignTool
                 panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                AssignPanelNotes(panel);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -205,7 +207,8 @@ namespace GMEPDesignTool
                 ElectricalEquipments,
                 ElectricalTransformers,
                 ElectricalLightings,
-                LightingLocations
+                LightingLocations,
+                PanelNotes
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
@@ -860,6 +863,38 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalPanel(electricalPanel);
+            }
+        }
+        public void AssignPanelNotes(ElectricalPanel panel)
+        {
+            var filteredNotes = PanelNotes.Where(note => note.PanelId == panel.Id).ToList();
+
+            var keyNotes = filteredNotes.Where(note => note.CircuitNo == 0).ToList();
+
+            var noteDictionary = new Dictionary<Note, List<Note>>();
+
+            foreach (var keyNote in keyNotes)
+            {
+                var matchingNotes = filteredNotes
+                    .Where(note => note.GroupId == keyNote.GroupId && note.CircuitNo != 0)
+                    .ToList();
+
+                noteDictionary[keyNote] = matchingNotes;
+            }
+            foreach (var key in noteDictionary.Keys)
+            {
+                panel.notes.Add(key);
+                foreach (var note in noteDictionary[key])
+                {
+                    if (note.CircuitNo % 2 == 0)
+                    {
+                        panel.rightNodes.Add(note);
+                    }
+                    else
+                    {
+                        panel.leftNodes.Add(note);
+                    }
+                }
             }
         }
 
