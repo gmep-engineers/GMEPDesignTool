@@ -127,6 +127,8 @@ namespace GMEPDesignTool
                 }
                 foreach (var node in toRemove)
                 {
+                    node.CircuitNo = 0;
+                    node.Length = 0;
                     viewModel.LeftNodes.Remove(node);
                 }
             }
@@ -205,6 +207,8 @@ namespace GMEPDesignTool
                 }
                 foreach(var node in toRemove)
                 {
+                    node.CircuitNo = 0;
+                    node.Length = 0;
                     viewModel.RightNodes.Remove(node);
                 }
             }
