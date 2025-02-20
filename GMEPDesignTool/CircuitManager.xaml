@@ -1148,7 +1148,6 @@
                                         <Grid>
                                             <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="Black" Fill="White"/>
                                             <TextBox Foreground="Black" HorizontalAlignment="Center" Text="{Binding Number, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" BorderThickness="0" MaxLength="4" TextAlignment="Center"/>
-
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

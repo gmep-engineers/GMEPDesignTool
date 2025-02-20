@@ -1184,7 +1184,16 @@ namespace GMEPDesignTool
         {
             this.id = Guid.NewGuid().ToString();
         }
-
+        public Note(Note note)
+        {
+            this.description = note.Description;
+            this.circuitNo = note.CircuitNo;
+            this.length = note.Length;
+            this.number = note.Number;
+            this.panelId = note.PanelId;
+            this.projectId = note.ProjectId;
+            this.id = Guid.NewGuid().ToString();
+        }
         public string Id
         {
             get => id;

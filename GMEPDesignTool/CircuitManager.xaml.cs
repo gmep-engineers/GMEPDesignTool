@@ -61,21 +61,17 @@ namespace GMEPDesignTool
             {
                 if (selectedItems.Any())
                 {
-                    if (viewModel.RightNodes.Contains(selectedNote))
-                    {
-                        viewModel.RightNodes.Remove(selectedNote);
-                    }
                     var firstItem = selectedItems.First();
                     var lastItem = selectedItems.Last();
                     var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
 
-                    //Note newNote = new Note();
-                    selectedNote.CircuitNo = firstItem.Number;
-                    selectedNote.Length = range;
+                    var newNote = new Note(selectedNote);
+                    newNote.CircuitNo = firstItem.Number;
+                    newNote.Length = range;
 
                     List<Note> toRemove = new List<Note>();
-                    int startCircuit = selectedNote.CircuitNo;
-                    int endCircuit = selectedNote.CircuitNo + (selectedNote.Length - 1)*2;
+                    int startCircuit = newNote.CircuitNo;
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
                     foreach (var node in viewModel.LeftNodes)
                     {
@@ -95,11 +91,8 @@ namespace GMEPDesignTool
                         node.Length = 0;
                         viewModel.LeftNodes.Remove(node);
                     }
-
-                    if (!viewModel.LeftNodes.Contains(selectedNote))
-                    {
-                        viewModel.LeftNodes.Add(selectedNote);
-                    }
+                    viewModel.LeftNodes.Add(newNote);
+   
                 }
 
             }
@@ -138,22 +131,17 @@ namespace GMEPDesignTool
             {
                 if (selectedItems.Any())
                 {
-                    if (viewModel.LeftNodes.Contains(selectedNote))
-                    {
-                        viewModel.LeftNodes.Remove(selectedNote);
-                    }
                     var firstItem = selectedItems.First();
                     var lastItem = selectedItems.Last();
                     var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
 
-                    //Note newNote = new Note();
-                    selectedNote.CircuitNo = firstItem.Number;
-                    selectedNote.Length = range;
-
+                    var newNote = new Note(selectedNote);
+                    newNote.CircuitNo = firstItem.Number;
+                    newNote.Length = range;
 
                     List<Note> toRemove = new List<Note>();
-                    int startCircuit = selectedNote.CircuitNo;
-                    int endCircuit = selectedNote.CircuitNo + (selectedNote.Length - 1)*2;
+                    int startCircuit = newNote.CircuitNo;
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
                     foreach (var node in viewModel.RightNodes)
                     {
@@ -173,11 +161,8 @@ namespace GMEPDesignTool
                         node.Length = 0;
                         viewModel.RightNodes.Remove(node);
                     }
+                    viewModel.RightNodes.Add(newNote);
 
-                    if (!viewModel.RightNodes.Contains(selectedNote))
-                    {
-                        viewModel.RightNodes.Add(selectedNote);
-                    }
                 }
 
             }
