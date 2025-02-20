@@ -322,7 +322,7 @@ namespace GMEPDesignTool.Database
                 }
             }
 
-            await DeleteRemovedItems("electrical_panels", existingPanelIds);
+            await DeleteRemovedItems("panel_notes", existingPanelIds);
         }
 
         private async Task UpdateTransformers(

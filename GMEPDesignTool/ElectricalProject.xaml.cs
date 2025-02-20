@@ -39,7 +39,6 @@ namespace GMEPDesignTool
 
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
-
         public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
@@ -886,6 +885,7 @@ namespace GMEPDesignTool
                 panel.notes.Add(key);
                 foreach (var note in noteDictionary[key])
                 {
+                    note.SharedData = key.SharedData;
                     if (note.CircuitNo % 2 == 0)
                     {
                         panel.rightNodes.Add(note);
