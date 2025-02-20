@@ -135,16 +135,18 @@ namespace GMEPDesignTool
                     return;
                 }
             }
+
+            LoadingScreen loadingScreen = new LoadingScreen();
+            TabItem newTab = new TabItem
+            {
+                Header = projectNo,
+                Content = loadingScreen,
+                IsSelected = true,
+            };
+            Tabs.Add(newTab);
             var projectControl = new ProjectControl();
             await projectControl.InitializeProject(projectNo);
-            Tabs.Add(
-                new TabItem
-                {
-                    Header = projectNo,
-                    Content = projectControl,
-                    IsSelected = true,
-                }
-            );
+            newTab.Content = projectControl;
         }
 
         public void CloseProject(TabItem projectTab)
