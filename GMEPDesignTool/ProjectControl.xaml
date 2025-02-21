@@ -35,6 +35,18 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Rectangle Width="1"  Stroke="Black" Height="19" Margin="0 0 5 0"/>
                 <TextBlock x:Name="SaveText" Text="{Binding SaveText}" Height="22" HorizontalAlignment="Right" Margin="0 0 5 0"/>
+                <Image Width="20" gif:ImageBehavior.AnimatedSource="Loading.gif">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SaveText}" Value="*SAVING*">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
                 <Button Margin="10 0 0 0" Width="50" Height="20" Content="Copy" FontWeight="Bold" Click="CopyPopup_Click"/>
                 <Button Background="Crimson" Foreground="White" Margin="0 0 5 0" Width="50" Height="20" Content="Delete" FontWeight="Bold" Click="DeletePopup_Click"/>
                 <ComboBox x:Name="VersionComboBox" Grid.Column="0" Width="130" Height="20" ItemsSource="{Binding ProjectIds}" DisplayMemberPath="Key" SelectedValuePath="Key" SelectedValue="{Binding SelectedVersion}" SelectionChanged="Version_SelectionChanged"></ComboBox>

@@ -80,6 +80,8 @@ namespace GMEPDesignTool
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
+                var loadingScreen = new LoadingScreen();
+                ElectricalTab.Content = loadingScreen;
                 //Electrical Tab
                 string newprojectId = selectedPair.Value;
                 viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
