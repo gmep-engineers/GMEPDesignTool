@@ -1409,6 +1409,12 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
+                if (e.PropertyName == nameof(ElectricalEquipment.Va))
+                {
+                    equipment.Fla = (float)Math.Round(equipment.Va / idToVoltage(equipment.Voltage), 1,
+                            MidpointRounding.AwayFromZero);
+                }
+
 
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {

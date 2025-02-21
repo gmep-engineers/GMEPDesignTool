@@ -460,13 +460,13 @@
                                                             <Label Content="FLA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
                                                             <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Fla, Converter={StaticResource RoundToNearestDecimalConverter}}"></TextBox>
                                                             <Label  x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                            <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
+                                                            <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Va}"></TextBox>
                                                         </StackPanel>
                                                     </StackPanel>
                                                     </Grid>
 
 
-                                                <StackPanel Margin="20 0 0 0" >
+                                                <StackPanel Margin="20 0 100 0" >
                                                     <Label Content="Panel" FontWeight="Bold"/>
                                                     <ComboBox Height="30" Width="150" Margin="0 0 0 4" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                                     <Button Height="30" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
