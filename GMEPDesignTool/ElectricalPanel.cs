@@ -362,6 +362,32 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public override float Amp
+        {
+            get => amp;
+            set
+            {
+                if (amp != value)
+                {
+                    amp = value;
+                    OnPropertyChanged(nameof(Amp));
+                    SetCircuitVa();
+                }
+            }
+        }
+        public override string Name
+        {
+            get => name;
+            set
+            {
+                if (name != value)
+                {
+                    name = value;
+                    OnPropertyChanged(nameof(name));
+                    SetCircuitVa();
+                }
+            }
+        }
         public bool Powered
         {
             get => _powered;
@@ -470,12 +496,11 @@ namespace GMEPDesignTool
 
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalPanel.Lcl) || e.PropertyName == nameof(ElectricalPanel.Lml))
+            /*if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalPanel.Lcl) || e.PropertyName == nameof(ElectricalPanel.Lml))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
-            }
+            }*/
             if (e.PropertyName == nameof(ElectricalPanel.ParentId))
             {
                 if (sender is ElectricalPanel panel)
@@ -566,6 +591,14 @@ namespace GMEPDesignTool
                     break;
             }
         }
+        public void setParentCircuitVa()
+        {
+            if (ParentComponent is ElectricalPanel panel)
+            {
+                panel.SetCircuitNumbers();
+                panel.SetCircuitVa();
+            }
+        }
 
         public void AssignEquipment(ElectricalEquipment equipment)
         {
@@ -653,242 +686,247 @@ namespace GMEPDesignTool
 
         public void SetCircuitVa()
         {
-            foreach (var circuit in leftCircuits)
+            Task.Run(() =>
             {
-                circuit.Va = 0;
-                circuit.BreakerSize = 0;
-                circuit.Description = "";
-            }
-            foreach (var circuit in rightCircuits)
-            {
-                circuit.Va = 0;
-                circuit.BreakerSize = 0;
-                circuit.Description = "";
-            }
-            PhaseAVA = 0;
-            PhaseBVA = 0;
-            PhaseCVA = 0;
-            ALcl = 0;
-            BLcl = 0;
-            CLcl = 0;
-            ALml = 0;
-            BLml = 0;
-            CLml = 0;
-            Lml = 0;
-            Lcl = 0;
-            Kva = 0;
-            int phaseIndex = 0;
-            foreach (var component in leftComponents)
-            {
-                int circuitIndex = leftCircuits.IndexOf(
-                    leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-                );
-                if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
+                foreach (var circuit in leftCircuits)
                 {
-                    bool lmlIsLarger = false;
-                    if (component.Lml > Lml){
-                        lmlIsLarger = true;
-                    }
-
-                    for (int i = 0; i < component.Pole; i++)
+                    circuit.Va = 0;
+                    circuit.BreakerSize = 0;
+                    circuit.Description = "";
+                }
+                foreach (var circuit in rightCircuits)
+                {
+                    circuit.Va = 0;
+                    circuit.BreakerSize = 0;
+                    circuit.Description = "";
+                }
+                PhaseAVA = 0;
+                PhaseBVA = 0;
+                PhaseCVA = 0;
+                ALcl = 0;
+                BLcl = 0;
+                CLcl = 0;
+                ALml = 0;
+                BLml = 0;
+                CLml = 0;
+                Lml = 0;
+                Lcl = 0;
+                Kva = 0;
+                int phaseIndex = 0;
+                foreach (var component in leftComponents)
+                {
+                    int circuitIndex = leftCircuits.IndexOf(
+                        leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+                    );
+                    if (circuitIndex != -1 && circuitIndex + component.Pole <= leftCircuits.Count)
                     {
-                        var addedValue = 0;
-                        float lclValue = 0;
-                        float lmlValue = 0;
-                        switch(i)
+                        bool lmlIsLarger = false;
+                        if (component.Lml > Lml)
                         {
-                            case 0:
-                                addedValue = (int)component.PhaseAVA;
-                                lclValue = (int)component.ALcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.ALml;
-                                }
-                                break;
-                            case 1:
-                                addedValue = (int)component.PhaseBVA;
-                                lclValue = (int)component.BLcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.BLml;
-                                }
-                                break;
-                            case 2:
-                                addedValue = (int)component.PhaseCVA;
-                                lclValue = (int)component.CLcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.CLml;
-                                }
-                                break;
-                        }
-                        leftCircuits[circuitIndex + i].Va = addedValue;
-                        if (i == 0)
-                        {
-                            leftCircuits[circuitIndex + i].Description = component.Name;
-                        }
-                        else
-                        {
-                            leftCircuits[circuitIndex + i].Description = "---";
-                        }
-                        if (i == component.Pole - 1)
-                        {
-                            leftCircuits[circuitIndex + i].BreakerSize = i + 1;
-                        }
-                        if (i == 0)
-                        {
-                            leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            lmlIsLarger = true;
                         }
 
-                        leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
-                       
-                        switch (phaseIndex % Pole)
+                        for (int i = 0; i < component.Pole; i++)
                         {
-                            case 0:
-                                PhaseAVA += addedValue;
-                                Kva += (float)addedValue;
-                                ALcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    ALml = lmlValue;
-                                }
-                                break;
-                            case 1:
-                                PhaseBVA += addedValue;
-                                Kva += (float)addedValue;
-                                BLcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    BLml = lmlValue;
-                                }
-                                break;
-                            case 2:
-                                PhaseCVA += addedValue;
-                                Kva += (float)addedValue;
-                                CLcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    CLml = lmlValue;
-                                }
-                                break;
+                            var addedValue = 0;
+                            float lclValue = 0;
+                            float lmlValue = 0;
+                            switch (i)
+                            {
+                                case 0:
+                                    addedValue = (int)component.PhaseAVA;
+                                    lclValue = (int)component.ALcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.ALml;
+                                    }
+                                    break;
+                                case 1:
+                                    addedValue = (int)component.PhaseBVA;
+                                    lclValue = (int)component.BLcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.BLml;
+                                    }
+                                    break;
+                                case 2:
+                                    addedValue = (int)component.PhaseCVA;
+                                    lclValue = (int)component.CLcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.CLml;
+                                    }
+                                    break;
+                            }
+                            leftCircuits[circuitIndex + i].Va = addedValue;
+                            if (i == 0)
+                            {
+                                leftCircuits[circuitIndex + i].Description = component.Name;
+                            }
+                            else
+                            {
+                                leftCircuits[circuitIndex + i].Description = "---";
+                            }
+                            if (i == component.Pole - 1)
+                            {
+                                leftCircuits[circuitIndex + i].BreakerSize = i + 1;
+                            }
+                            if (i == 0)
+                            {
+                                leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            }
+
+                            leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
+
+                            switch (phaseIndex % Pole)
+                            {
+                                case 0:
+                                    PhaseAVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    ALcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        ALml = lmlValue;
+                                    }
+                                    break;
+                                case 1:
+                                    PhaseBVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    BLcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        BLml = lmlValue;
+                                    }
+                                    break;
+                                case 2:
+                                    PhaseCVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    CLcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        CLml = lmlValue;
+                                    }
+                                    break;
+                            }
+                            phaseIndex++;
                         }
-                        phaseIndex++;
-                    }
-                    Lcl += component.Lcl;
-                    if (lmlIsLarger)
-                    {
-                        Lml = component.Lml;
+                        Lcl += component.Lcl;
+                        if (lmlIsLarger)
+                        {
+                            Lml = component.Lml;
+                        }
                     }
                 }
-            }
-            phaseIndex = 0;
-            foreach (var component in rightComponents)
-            {
-                int circuitIndex = rightCircuits.IndexOf(
-                    rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
-                );
-                if (circuitIndex != -1 && circuitIndex + component.Pole <= rightCircuits.Count)
+                phaseIndex = 0;
+                foreach (var component in rightComponents)
                 {
-                    bool lmlIsLarger = false;
-                    if (component.Lml > Lml)
+                    int circuitIndex = rightCircuits.IndexOf(
+                        rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
+                    );
+                    if (circuitIndex != -1 && circuitIndex + component.Pole <= rightCircuits.Count)
                     {
-                        lmlIsLarger = true;
-                    }
-                    for (int i = 0; i < component.Pole; i++)
-                    {
-                        var addedValue = 0;
-                        var lclValue = 0;
-                        float lmlValue = 0;
-                        switch (i)
+                        bool lmlIsLarger = false;
+                        if (component.Lml > Lml)
                         {
-                            case 0:
-                                addedValue = (int)component.PhaseAVA;
-                                lclValue = (int)component.ALcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.ALml;
-                                }
-                                break;
-                            case 1:
-                                addedValue = (int)component.PhaseBVA;
-                                lclValue = (int)component.BLcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.BLml;
-                                }
-                                break;
-                            case 2:
-                                addedValue = (int)component.PhaseCVA;
-                                lclValue = (int)component.CLcl;
-                                if (lmlIsLarger)
-                                {
-                                    lmlValue = component.CLml;
-                                }
-                                break;
+                            lmlIsLarger = true;
                         }
-                        rightCircuits[circuitIndex + i].Va = addedValue;
-                        if (i == 0)
+                        for (int i = 0; i < component.Pole; i++)
                         {
-                            rightCircuits[circuitIndex + i].Description = component.Name;
-                        }
-                        else
-                        {
-                            rightCircuits[circuitIndex + i].Description = "---";
-                        }
-                        if (i == component.Pole - 1)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = i + 1;
-                        }
-                        if (i == 0)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
-                        }
+                            var addedValue = 0;
+                            var lclValue = 0;
+                            float lmlValue = 0;
+                            switch (i)
+                            {
+                                case 0:
+                                    addedValue = (int)component.PhaseAVA;
+                                    lclValue = (int)component.ALcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.ALml;
+                                    }
+                                    break;
+                                case 1:
+                                    addedValue = (int)component.PhaseBVA;
+                                    lclValue = (int)component.BLcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.BLml;
+                                    }
+                                    break;
+                                case 2:
+                                    addedValue = (int)component.PhaseCVA;
+                                    lclValue = (int)component.CLcl;
+                                    if (lmlIsLarger)
+                                    {
+                                        lmlValue = component.CLml;
+                                    }
+                                    break;
+                            }
+                            rightCircuits[circuitIndex + i].Va = addedValue;
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].Description = component.Name;
+                            }
+                            else
+                            {
+                                rightCircuits[circuitIndex + i].Description = "---";
+                            }
+                            if (i == component.Pole - 1)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = i + 1;
+                            }
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            }
 
-                        rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
-                        switch (phaseIndex % Pole)
-                        {
-                            case 0:
-                                PhaseAVA += addedValue;
-                                Kva += (float)addedValue;
-                                ALcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    ALml = lmlValue;
-                                }
-                                break;
-                            case 1:
-                                PhaseBVA += addedValue;
-                                Kva += (float)addedValue;
-                                BLcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    BLml = lmlValue;
-                                }
-                                break;
-                            case 2:
-                                PhaseCVA += addedValue;
-                                Kva += (float)addedValue;
-                                CLcl += lclValue;
-                                if (lmlIsLarger)
-                                {
-                                    CLml = lmlValue;
-                                }
-                                break;
+                            rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
+                            switch (phaseIndex % Pole)
+                            {
+                                case 0:
+                                    PhaseAVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    ALcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        ALml = lmlValue;
+                                    }
+                                    break;
+                                case 1:
+                                    PhaseBVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    BLcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        BLml = lmlValue;
+                                    }
+                                    break;
+                                case 2:
+                                    PhaseCVA += addedValue;
+                                    Kva += (float)addedValue;
+                                    CLcl += lclValue;
+                                    if (lmlIsLarger)
+                                    {
+                                        CLml = lmlValue;
+                                    }
+                                    break;
+                            }
+                            phaseIndex++;
                         }
-                        phaseIndex++;
-                    }
-                    Lcl += component.Lcl;
-                    if (lmlIsLarger)
-                    {
-                        Lml = component.Lml;
+                        Lcl += component.Lcl;
+                        if (lmlIsLarger)
+                        {
+                            Lml = component.Lml;
+                        }
                     }
                 }
-            }
-            //CalculateLcl();
-           // CalculateLml();
-            Va = Kva;
-            Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
-            Amp = (float)Math.Ceiling(SetAmp());
+                //CalculateLcl();
+                // CalculateLml();
+                Va = Kva;
+                Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
+                Amp = (float)Math.Ceiling(SetAmp());
+            });
+            setParentCircuitVa();
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
