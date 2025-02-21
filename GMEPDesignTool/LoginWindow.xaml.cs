@@ -101,5 +101,15 @@ namespace GMEPDesignTool
                 this.DragMove();
             }
         }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter)
+            {
+                return;
+            }
+
+            Login_Click(sender, e);
+        }
     }
 }
