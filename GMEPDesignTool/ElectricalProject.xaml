@@ -519,7 +519,19 @@
                                                         <Label Content="HP" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
                                                         <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" MaxLength="7"></TextBox>
                                                         <Label Content="MCA" FontWeight="Bold"/>
-                                                        <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag" IsEnabled="False" />
+                                                        <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag">
+                                                            <ComboBox.Style>
+                                                                <Style TargetType="ComboBox">
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                                    <Setter Property="SelectedIndex" Value="0"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Category}" Value="2">
+                                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ComboBox.Style>
+                                                        </ComboBox>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Vertical" Margin="20 0 0 10">
                                                         <Label Content="WxDxH" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
