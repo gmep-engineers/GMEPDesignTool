@@ -12,6 +12,7 @@
     <None Remove="gmep.ico" />
     <None Remove="GMEPE-LogoTransparent.png" />
 	<None Include="PowerIcon.gif" />
+	<None Include="Loading.gif" />
 	<None Include="Green_tick.png" />
 	<None Include="RedX.png" />
   </ItemGroup>
@@ -30,6 +31,7 @@
     <Resource Include="gmep.ico" />
     <Resource Include="GMEPE-LogoTransparent.png" />
 	<Resource Include="PowerIcon.gif" />
+	<Resource Include="Loading.gif" />
 	<Resource Include="Green_tick.png" />
 	<Resource Include="RedX.png" />
   </ItemGroup>

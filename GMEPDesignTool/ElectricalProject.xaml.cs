@@ -1384,11 +1384,9 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
                 {
-                    equipment.Va = (float)
-                        Math.Round(
-                            idToVoltage(equipment.Voltage) * equipment.Fla,
-                            0,
-                            MidpointRounding.AwayFromZero
+                    equipment.Va = (int)
+                        Math.Ceiling(
+                            idToVoltage(equipment.Voltage) * equipment.Fla
                         );
                 }
                 if (
@@ -1409,6 +1407,12 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
+                if (e.PropertyName == nameof(ElectricalEquipment.Va))
+                {
+                    equipment.Fla = (float)Math.Round(equipment.Va / idToVoltage(equipment.Voltage), 1,
+                            MidpointRounding.AwayFromZero);
+                }
+
 
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {

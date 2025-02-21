@@ -433,73 +433,68 @@
                                                 <Grid HorizontalAlignment="Left">
                                                         <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
                                                         <StackPanel Orientation="Horizontal">
-                                                            <StackPanel Margin="10 0 0 0" Orientation="Vertical">
-                                                                <Label Content="Owner"  FontWeight="Bold"/>
-                                                                <ComboBox Height="30" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                                                <Label Content="Equip #"  FontWeight="Bold"/>
-                                                                <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" Text="{Binding EquipNo}" MaxLength="15"></TextBox>
+                                                            <StackPanel Margin="10 25 0 0" Orientation="Vertical" >
+                                                                <Label Content="Description"  FontWeight="Bold"/>
+                                                                <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" Text="{Binding Description}" MaxLength="15"></TextBox>
                                                             </StackPanel>
-
-                                                            <StackPanel Margin="20 0 0 0">
-                                                                <Label Content="Voltage" FontWeight="Bold"/>
-                                                                <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
-                                                                    <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
-                                                                    <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                                                    <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                                                    <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                                                    <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                                                    <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
-                                                                    <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
-                                                                    <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
-                                                                </ComboBox>
-                                                                <Label Content="Phase"  FontWeight="Bold"/>
-                                                                <ComboBox x:Name="PhaseBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedIndex="{Binding Is3Ph}">
-                                                                    <ComboBoxItem Content="1" />
-                                                                    <ComboBoxItem Content="3" />
-                                                                </ComboBox>
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Vertical" Margin="20 0 0 0">
-                                                                <Label Content="FLA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Fla, Converter={StaticResource RoundToNearestDecimalConverter}}"></TextBox>
-                                                                <Label  x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Va}" Background="LightYellow" IsReadOnly="True"></TextBox>
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Vertical" Margin="20 0 0 0">
-                                                                <Label Content="HP" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" MaxLength="7"></TextBox>
-                                                                <Label Content="MCA" FontWeight="Bold"/>
-                                                                <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag" IsEnabled="False" />
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Vertical" Margin="20 0 0 0">
-                                                                <Label Content="WxDxH" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
-                                                                <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Width}" />
-
-                                                                <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Depth}" />
-                                                                <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Height}" />
-
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 20 10 0">
-                                                                <CheckBox Content="Has Plug"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" IsChecked="{Binding HasPlug}" FontWeight="Bold" />
-                                                                <CheckBox Content="Locking Connector"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" IsChecked="{Binding LockingConnector}" FontWeight="Bold" />
-                                                                <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="150" />
-                                                            </StackPanel>
+                                                        <StackPanel Margin="20 0 0 0">
+                                                            <Label Content="Voltage" FontWeight="Bold"/>
+                                                            <ComboBox x:Name="VoltageBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
+                                                                <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                                                <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                                                <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                                                <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                                                <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                                                <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                                                <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
+                                                                <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
+                                                            </ComboBox>
+                                                            <Label Content="Phase"  FontWeight="Bold"/>
+                                                            <ComboBox x:Name="PhaseBox" Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedIndex="{Binding Is3Ph}">
+                                                                <ComboBoxItem Content="1" />
+                                                                <ComboBoxItem Content="3" />
+                                                            </ComboBox>
                                                         </StackPanel>
+
+                                                        <StackPanel Orientation="Vertical" Margin="20 0 20 0">
+                                                            <Label Content="FLA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                            <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Fla, Converter={StaticResource RoundToNearestDecimalConverter}}"></TextBox>
+                                                            <Label  x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                            <TextBox x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Va}"></TextBox>
+                                                        </StackPanel>
+                                                    </StackPanel>
                                                     </Grid>
-                                                <StackPanel Orientation="Vertical" Margin="20 0 0 0" VerticalAlignment="Center">
-                                                    <Label Content="AIC Rating" FontWeight="Bold"/>
-                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
-                                                </StackPanel>
 
-                                                <StackPanel Margin="20 0 0 0">
+
+                                                <StackPanel Margin="20 0 100 0" >
                                                     <Label Content="Panel" FontWeight="Bold"/>
-                                                    <ComboBox Height="30" Width="150" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-
-                                                    <Label Content="Distance" FontWeight="Bold"/>
-                                                    <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
-                                                </StackPanel>
-
-                                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 15 110 0">
-                                                        <Button Height="30" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
+                                                    <ComboBox Height="30" Width="150" Margin="0 0 0 4" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    <Button Height="30" Width="150"  Content="View Spec" FontWeight="Bold" HorizontalAlignment="Stretch" Click="ViewSpec" CommandParameter="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                                        <Button Height="20" Width="100" FontWeight="Bold" HorizontalAlignment="Center" Click="UploadSpec" CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button">
+                                                                    <Setter Property="Content" Value="Change Spec"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
+                                                                            <Setter Property="Content" Value="Upload Spec"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+                                                        <Button Height="20" Width="50" FontSize="9" Content="Delete" Background="Crimson" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Click="DeleteSpec" CommandParameter="{Binding}">
                                                             <Button.Style>
                                                                 <Style TargetType="Button">
                                                                     <Setter Property="Visibility" Value="Visible"/>
@@ -511,39 +506,64 @@
                                                                 </Style>
                                                             </Button.Style>
                                                         </Button>
-                                                        <StackPanel Orientation="Horizontal" >
-                                                            <Button Height="20" Width="100" FontWeight="Bold" HorizontalAlignment="Center" Click="UploadSpec" CommandParameter="{Binding}">
-                                                                <Button.Style>
-                                                                    <Style TargetType="Button">
-                                                                        <Setter Property="Content" Value="Change Spec"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
-                                                                                <Setter Property="Content" Value="Upload Spec"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Button.Style>
-                                                            </Button>
-                                                            <Button Height="20" Width="50" FontSize="9" Content="Delete" Background="Crimson" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Click="DeleteSpec" CommandParameter="{Binding}">
-                                                                <Button.Style>
-                                                                    <Style TargetType="Button">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                        <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
-                                                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                                            </DataTrigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Button.Style>
-                                                            </Button>
-                                                        </StackPanel>
-                                                        <CheckBox Margin="0 5 0 0" IsChecked="{Binding SpecSheetFromClient}" HorizontalAlignment="Center"  Content="From Client" FontWeight="Bold" />
                                                     </StackPanel>
+                                                    <CheckBox Margin="0 5 0 0" IsChecked="{Binding SpecSheetFromClient}" HorizontalAlignment="Center"  Content="From Client" FontWeight="Bold" />
                                                 </StackPanel>
                                             </StackPanel>
-                                            <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Description" FontWeight="Bold">
-                                                <TextBox x:Name="DescriptionBox" Height="100" Width="400" Margin="2 2 2 5" Text="{Binding Description}" MaxLength="25" TextWrapping="Wrap" AcceptsReturn="True" />
-                                            </Expander>
+                                        </StackPanel>
+                                        <Expander Grid.Row="1" HorizontalAlignment="Left" Header="Extra" FontWeight="Bold">
+                                            <Grid>
+                                                <Rectangle Height="120" HorizontalAlignment="Stretch" Stroke="Gray" Margin="0 2 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top" />
+                                                <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                                                    <StackPanel Orientation="Vertical" Margin="20 0 0 0">
+                                                        <Label Content="HP" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                        <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Hp}" MaxLength="7"></TextBox>
+                                                        <Label Content="MCA" FontWeight="Bold"/>
+                                                        <ComboBox Height="30" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding McaId}" SelectedValuePath="Tag">
+                                                            <ComboBox.Style>
+                                                                <Style TargetType="ComboBox">
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                                    <Setter Property="SelectedIndex" Value="0"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Category}" Value="2">
+                                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ComboBox.Style>
+                                                        </ComboBox>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Vertical" Margin="20 0 0 10">
+                                                        <Label Content="WxDxH" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                                                        <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Width}" />
+
+                                                        <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Depth}" />
+                                                        <TextBox  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" Text="{Binding Height}" />
+
+                                                    </StackPanel>
+                                                    <StackPanel Margin="10 0 0 0">
+                                                        <Label Content="Equip #" FontWeight="Bold"/>
+                                                        <TextBox x:Name="DescriptionBox" Height="25" Width="130"  Text="{Binding EquipNo}" MaxLength="25" TextWrapping="Wrap" AcceptsReturn="True" />
+                                                        <Label Content="Owner"  FontWeight="Bold"/>
+                                                        <ComboBox Height="30" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" SelectedValue="{Binding Owner}" SelectedValuePath="Key"  ItemsSource="{Binding DataContext.Owners, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="20 20 0 0">
+                                                        <CheckBox Content="Has Plug"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="70" IsChecked="{Binding HasPlug}" FontWeight="Bold" />
+                                                        <CheckBox Content="Locking Connector"  Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="130" IsChecked="{Binding LockingConnector}" FontWeight="Bold" />
+                                                        <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="150" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Vertical"  VerticalAlignment="Center">
+                                                        <Label Content="AIC Rating" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" Width="70" Text="{Binding AicRating}" IsReadOnly="True" Background="LightYellow" MaxLength="10"></TextBox>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Vertical" Margin="30 0 30 0" VerticalAlignment="Center">
+                                                        <Label Content="Distance To Parent" FontWeight="Bold"/>
+                                                        <TextBox Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="150" Text="{Binding DistanceFromParent}" MaxLength="5"></TextBox>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Expander>
                                             <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Grid.RowSpan="2">
                                                 <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="Auto" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Stretch"/>
                                             <StackPanel Width="50" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" >
