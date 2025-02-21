@@ -147,10 +147,10 @@ namespace GMEPDesignTool
             );
             Name = loginResponse.FirstName + " " + loginResponse.LastName;
             EmailAddress = loginResponse.EmailAddress;
-            PhoneNumber = loginResponse.PhoneNumber;
-            if (!String.IsNullOrEmpty(loginResponse.Extension))
+            PhoneNumber = loginResponse.PhoneNumber.ToString();
+            if (loginResponse.Extension != null && loginResponse.Extension != 0)
             {
-                PhoneNumber += " ext. " + loginResponse.Extension;
+                PhoneNumber += " ext. " + loginResponse.Extension.ToString();
             }
             AdminMenuVisible = Visibility.Collapsed;
             if (loginResponse.AccessLevelId == 1)

@@ -38,5 +38,10 @@ namespace GMEPDesignTool
         {
             EmployeesViewModel.OpenUpdatePasswordWindow();
         }
+
+        public void SaveClick(object sender, RoutedEventArgs e)
+        {
+            EmployeesViewModel.Save();
+        }
     }
 }

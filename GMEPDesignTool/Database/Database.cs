@@ -58,14 +58,14 @@ namespace GMEPDesignTool.Database
             return string.Empty;
         }
 
-        string GetSafeDateString(MySqlDataReader reader, string fieldName)
+        DateTime GetSafeDate(MySqlDataReader reader, string fieldName)
         {
             int index = reader.GetOrdinal(fieldName);
             if (!reader.IsDBNull(index))
             {
-                return reader.GetDateTime(index).ToString();
+                return reader.GetDateTime(index);
             }
-            return string.Empty;
+            return DateTime.MinValue;
         }
 
         int GetSafeInt(MySqlDataReader reader, string fieldName)
@@ -76,6 +76,26 @@ namespace GMEPDesignTool.Database
                 return reader.GetInt32(index);
             }
             return 0;
+        }
+
+        uint? GetUnsafeUInt(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetUInt32(index);
+            }
+            return null;
+        }
+
+        ulong? GetUnsafeULong(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetUInt64(index);
+            }
+            return null;
         }
 
         float GetSafeFloat(MySqlDataReader reader, string fieldName)
@@ -128,6 +148,8 @@ namespace GMEPDesignTool.Database
                 @"
                 SELECT 
                 employees.id as employee_id,
+                contacts.id as contact_id,
+                entities.id as entity_id,
                 last_name,
                 first_name,
                 email_address,
@@ -147,8 +169,6 @@ namespace GMEPDesignTool.Database
                 LEFT JOIN email_addresses ON email_addr_entity_rel.email_address_id = email_addresses.id
                 LEFT JOIN phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
                 LEFT JOIN phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
-                WHERE email_addr_entity_rel.is_primary = 1
-                AND phone_number_entity_rel.is_primary = 1
                 ORDER BY last_name ASC
                 ";
             OpenConnection();
@@ -159,23 +179,153 @@ namespace GMEPDesignTool.Database
                 employees.Add(
                     new Employee(
                         GetSafeString(reader, "employee_id"),
+                        GetSafeString(reader, "contact_id"),
+                        GetSafeString(reader, "entity_id"),
                         GetSafeString(reader, "last_name"),
                         GetSafeString(reader, "first_name"),
                         GetSafeInt(reader, "employee_title_id"),
                         GetSafeInt(reader, "employee_department_id"),
                         GetSafeString(reader, "email_address"),
                         GetSafeString(reader, "email_address_id"),
-                        GetSafeString(reader, "phone_number"),
+                        GetUnsafeULong(reader, "phone_number"),
                         GetSafeString(reader, "phone_number_id"),
-                        GetSafeString(reader, "extension"),
-                        GetSafeDateString(reader, "hire_date"),
-                        GetSafeDateString(reader, "termination_date"),
+                        GetUnsafeUInt(reader, "extension"),
+                        GetSafeDate(reader, "hire_date"),
+                        GetSafeDate(reader, "termination_date"),
                         GetSafeString(reader, "username")
                     )
                 );
             }
             CloseConnection();
             return employees;
+        }
+
+        public void SaveEmployee(Employee employee)
+        {
+            Trace.WriteLine(employee.FirstName);
+            OpenConnection();
+            var query =
+                @"
+                    UPDATE employees SET
+                    employee_title_id = @titleId,
+                    employee_department_id = @departmentId,
+                    hire_date = @hireDate,
+                    termination_date = @terminationDate,
+                    username = @username
+                    WHERE id = @id
+                    ";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@titleId", employee.TitleId);
+            command.Parameters.AddWithValue("@departmentId", employee.DepartmentId);
+            command.Parameters.AddWithValue("@hireDate", employee.HireDate);
+            if (employee.TerminationDate == DateTime.MinValue)
+            {
+                command.Parameters.AddWithValue("@terminationDate", null);
+            }
+            else
+            {
+                command.Parameters.AddWithValue("@terminationDate", employee.TerminationDate);
+            }
+            command.Parameters.AddWithValue("@username", employee.Username);
+            command.Parameters.AddWithValue("@id", employee.Id);
+            command.ExecuteNonQuery();
+            if (employee.NewEmailAddress)
+            {
+                string emailAddressId = Guid.NewGuid().ToString();
+                string emailAddressRelId = Guid.NewGuid().ToString();
+                query =
+                    @"
+                    INSERT INTO email_addresses (id, email_address)
+                    VALUES (@id, @emailAddress)
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", emailAddressId);
+                command.Parameters.AddWithValue("@emailAddress", employee.EmailAddress);
+                command.ExecuteNonQuery();
+                query =
+                    @"
+                    INSERT INTO email_addresses_entity_rel (id, email_address_id, entity_id, is_primary)
+                    VALUES (@id, @emailAddressId, @entityId, 1)
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", emailAddressRelId);
+                command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
+                command.Parameters.AddWithValue("@entityId", employee.EntityId);
+                command.ExecuteNonQuery();
+                employee.EmailAddressId = emailAddressId;
+                employee.NewEmailAddress = false;
+            }
+            else
+            {
+                query =
+                    @"
+                    UPDATE email_addresses
+                    SET email_address = @emailAddress
+                    WHERE id = @emailAddressId
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@emailAddress", employee.EmailAddress);
+                command.Parameters.AddWithValue("@emailAddressId", employee.EmailAddressId);
+                command.ExecuteNonQuery();
+            }
+            if (employee.NewPhoneNumber)
+            {
+                string phoneNumberId = Guid.NewGuid().ToString();
+                string phoneNumberRelId = Guid.NewGuid().ToString();
+                query =
+                    @"
+                    INSERT INTO phone_numbers (id, phone_number, extension, calling_code)
+                    VALUES (@id, @phoneNumber, @extension, 1)
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", phoneNumberId);
+                command.Parameters.AddWithValue("@phoneNumber", employee.PhoneNumber);
+                command.Parameters.AddWithValue(
+                    "@extension",
+                    employee.Extension == 0 ? null : employee.Extension
+                );
+                command.ExecuteNonQuery();
+                query =
+                    @"
+                    INSERT INTO phone_number_entity_rel (id, phone_number_id, entity_id, is_primary)
+                    VALUES (@id, @phoneNumberId, @entityId, 1)
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", phoneNumberRelId);
+                command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
+                command.Parameters.AddWithValue("@entityId", employee.EntityId);
+                command.ExecuteNonQuery();
+                employee.PhoneNumberId = phoneNumberId;
+                employee.NewPhoneNumber = false;
+            }
+            else
+            {
+                query =
+                    @"
+                    UPDATE phone_numbers
+                    SET phone_number = @phoneNumber
+                    WHERE id = @phoneNumberId
+                    ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@phoneNumber", employee.PhoneNumber);
+                command.Parameters.AddWithValue("@phoneNumberId", employee.PhoneNumberId);
+                command.ExecuteNonQuery();
+            }
+            query =
+                @"
+                    UPDATE contacts
+                    SET
+                    first_name = @firstName,
+                    last_name = @lastName
+                    WHERE id = @contactId
+                    ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@firstName", employee.FirstName);
+            command.Parameters.AddWithValue("@lastName", employee.LastName);
+            command.Parameters.AddWithValue("@contactId", employee.ContactId);
+            command.ExecuteNonQuery();
+
+            CloseConnection();
         }
 
         public void SetEmployeePassword(string employeeId, string password)
