@@ -28,28 +28,27 @@ using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
-
 namespace GMEPDesignTool
 {
     /// <summary>
     /// Interaction logic for ProjectControl.xaml
-   public partial class ProjectControl : UserControl
+    public partial class ProjectControl : UserControl
     {
         //public string ProjectNo { get; set; }
 
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
+
         public ProjectControl()
         {
             InitializeComponent();
             //InitializeProject(projectNo);
         }
 
-        public async Task InitializeProject(string projectNo)
+        public async Task InitializeProject(string projectNo, LoginResponse loginResponse)
         {
-            
-            viewModel = new ProjectControlViewModel(projectNo);
+            viewModel = new ProjectControlViewModel(projectNo, loginResponse);
             await viewModel.InitializeProjectControlViewModel();
             this.DataContext = viewModel;
             string projectId = viewModel.ProjectIds.First().Value;
@@ -61,21 +60,29 @@ namespace GMEPDesignTool
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = await viewModel.database.AddProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = await viewModel.database.AddProjectVersions(
+                    viewModel.ProjectNo,
+                    projectId
+                );
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 CopyPopup.IsOpen = false;
             }
         }
+
         private async void DeleteVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = await viewModel.database.DeleteProjectVersions(viewModel.ProjectNo, projectId);
+                viewModel.ProjectIds = await viewModel.database.DeleteProjectVersions(
+                    viewModel.ProjectNo,
+                    projectId
+                );
                 VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
                 DeletePopup.IsOpen = false;
             }
         }
+
         private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
@@ -92,18 +99,22 @@ namespace GMEPDesignTool
                 AdminTab.Content = new Admin();
             }
         }
+
         private void CopyPopup_Click(object sender, RoutedEventArgs e)
         {
             CopyPopup.IsOpen = true;
         }
+
         private void CloseCopyPopup_Click(object sender, RoutedEventArgs e)
         {
             CopyPopup.IsOpen = false;
         }
+
         private void DeletePopup_Click(object sender, RoutedEventArgs e)
         {
             DeletePopup.IsOpen = true;
         }
+
         private void CloseDeletePopup_Click(object sender, RoutedEventArgs e)
         {
             DeletePopup.IsOpen = false;
