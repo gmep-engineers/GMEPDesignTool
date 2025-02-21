@@ -32,7 +32,7 @@ namespace GMEPDesignTool
         private bool powered;
         private bool hasPlug;
         private bool lockingConnector;
-        private float va;
+        private int va;
         private bool isHiddenOnPlan;
         private int loadType;
 
@@ -45,7 +45,7 @@ namespace GMEPDesignTool
             string parentId,
             int voltage,
             float fla,
-            float va,
+            int va,
             bool is3Ph,
             string specSheetId,
             int aicRating,
@@ -425,7 +425,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public float Va
+        public int Va
         {
             get => va;
             set

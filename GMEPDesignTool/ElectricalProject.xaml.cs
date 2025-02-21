@@ -1384,11 +1384,9 @@ namespace GMEPDesignTool
                     || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
                 {
-                    equipment.Va = (float)
-                        Math.Round(
-                            idToVoltage(equipment.Voltage) * equipment.Fla,
-                            0,
-                            MidpointRounding.AwayFromZero
+                    equipment.Va = (int)
+                        Math.Ceiling(
+                            idToVoltage(equipment.Voltage) * equipment.Fla
                         );
                 }
                 if (
