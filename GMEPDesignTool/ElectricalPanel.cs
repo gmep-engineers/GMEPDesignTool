@@ -139,7 +139,7 @@ namespace GMEPDesignTool
             {
                 if (this.parentId != value)
                 {
-                    this.parentId = value;
+                    this.parentId = value ?? "";
                     OnPropertyChanged(nameof(ParentId));
                     if (ParentComponent != null && string.IsNullOrEmpty(value))
                     {
