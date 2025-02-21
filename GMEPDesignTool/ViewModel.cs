@@ -186,7 +186,7 @@ namespace GMEPDesignTool
             return false;
         }
 
-        public void OpenProject(string projectNo)
+        public async void OpenProject(string projectNo)
         {
             foreach (TabItem tab in Tabs)
             {
@@ -195,11 +195,13 @@ namespace GMEPDesignTool
                     return;
                 }
             }
+            var projectControl = new ProjectControl();
+            await projectControl.InitializeProject(projectNo, loginResponse);
             Tabs.Add(
                 new TabItem
                 {
                     Header = projectNo,
-                    Content = new ProjectControl(projectNo, loginResponse),
+                    Content = new ProjectControl(),
                     IsSelected = true,
                 }
             );

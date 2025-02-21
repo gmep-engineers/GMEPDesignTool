@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Mysqlx.Crud;
 
 namespace GMEPDesignTool
 {
@@ -15,8 +17,13 @@ namespace GMEPDesignTool
         public ProjectControlViewModel(string projectNo, LoginResponse loginResponse)
         {
             database = new Database.Database(loginResponse.SqlConnectionString);
-            projectIds = database.GetProjectIds(projectNo);
             _projectNo = projectNo;
+            //InitializeProjectControlViewModel(projectNo);
+        }
+
+        public async Task InitializeProjectControlViewModel()
+        {
+            projectIds = await database.GetProjectIds(ProjectNo);
         }
 
         private string saveText;

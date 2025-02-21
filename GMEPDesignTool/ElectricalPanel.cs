@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Org.BouncyCastle.Tls.Crypto;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.RightsManagement;
 namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
@@ -20,7 +23,6 @@ namespace GMEPDesignTool
         private bool _powered;
         private bool _isHiddenOnPlan;
         private string _location;
-        private string _notes;
         private string _parentName;
         private string _parentType;
         // private bool _isLcl;
@@ -32,18 +34,15 @@ namespace GMEPDesignTool
 
         public ElectricalComponent ParentComponent { get; set; }
 
-        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
-           new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } = new ObservableCollection<ElectricalComponent>();
 
-        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } =
-            new ObservableCollection<ElectricalComponent>();
-        public ObservableCollection<Circuit> leftCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
-
-        public ObservableCollection<Circuit> rightCircuits { get; set; } =
-            new ObservableCollection<Circuit>();
+        public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalComponent> rightComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<Circuit> leftCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<Circuit> rightCircuits { get; set; } = new ObservableCollection<Circuit>();
+        public ObservableCollection<Note> notes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> leftNodes { get; set; } = new ObservableCollection<Note>();
+        public ObservableCollection<Note> rightNodes { get; set; } = new ObservableCollection<Note>();
 
         private bool _isRecessed;
 
@@ -66,8 +65,7 @@ namespace GMEPDesignTool
             bool isRecessed,
             int circuitNo,
             bool isHiddenOnPlan,
-            string location,
-            string notes
+            string location
         )
             : base()
         {
@@ -102,11 +100,11 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
-            this._notes = notes;
             this._location = location;
             this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
+            notes.CollectionChanged += Notes_CollectionChanged;
         }
         
         public string ParentName
@@ -388,18 +386,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string Notes
-        {
-            get => _notes;
-            set
-            {
-                if (_notes != value)
-                {
-                    _notes = value;
-                    OnPropertyChanged(nameof(Notes));
-                }
-            }
-        }
+      
 
         public void SetPole()
         {
@@ -547,6 +534,17 @@ namespace GMEPDesignTool
                ParentName = component.Name;
             }
         }
+        private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Note newNote in e.NewItems)
+                {
+                    newNote.PanelId = this.Id;
+                    newNote.ProjectId = this.ProjectId;
+                }
+            }
+        }
         public void AssignParentComponent(ElectricalComponent component)
         {
             ParentComponent = component;
@@ -680,7 +678,6 @@ namespace GMEPDesignTool
             Lcl = 0;
             Kva = 0;
             int phaseIndex = 0;
-            //float lmlTemp = 0;
             foreach (var component in leftComponents)
             {
                 int circuitIndex = leftCircuits.IndexOf(
@@ -778,7 +775,7 @@ namespace GMEPDesignTool
                         phaseIndex++;
                     }
                     Lcl += component.Lcl;
-                    if (component.Lml > Lml)
+                    if (lmlIsLarger)
                     {
                         Lml = component.Lml;
                     }
@@ -881,7 +878,7 @@ namespace GMEPDesignTool
                         phaseIndex++;
                     }
                     Lcl += component.Lcl;
-                    if (component.Lml > Lml)
+                    if (lmlIsLarger)
                     {
                         Lml = component.Lml;
                     }
@@ -1184,6 +1181,202 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+    public class Note: INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string id;
+        //public int number;
+        public string panelId;
+        public string projectId;
+        public int circuitNo;
+        public int length;
+        //public string description;
+        public string groupId;
+        public SharedNoteData sharedData;
+
+        public Note()
+        {
+            this.id = Guid.NewGuid().ToString();
+            this.groupId = Guid.NewGuid().ToString();
+            this.circuitNo = 0;
+            this.length = 0;
+            this.sharedData = new SharedNoteData();
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
+
+        }
+        public Note(Note note)
+        {
+            this.circuitNo = note.CircuitNo;
+            this.length = note.Length;
+            this.panelId = note.PanelId;
+            this.projectId = note.ProjectId;
+            this.id = Guid.NewGuid().ToString();
+            this.groupId = note.GroupId;
+            this.sharedData = note.sharedData;
+            sharedData.PropertyChanged += SharedData_PropertyChanged;
+        }
+        private void SharedData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(e.PropertyName);
+        }
+        public SharedNoteData SharedData
+        {
+            get => sharedData;
+            set
+            {
+                if (sharedData != value)
+                {
+                    sharedData.PropertyChanged -= SharedData_PropertyChanged;
+                    sharedData = value;
+                    sharedData.PropertyChanged += SharedData_PropertyChanged;
+                    OnPropertyChanged(nameof(SharedData));
+                }
+            }
+        }
+        public string Id
+        {
+            get => id;
+            set
+            {
+                if (id != value)
+                {
+                    id = value;
+                    OnPropertyChanged(nameof(Id));
+                }
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                if (panelId != value)
+                {
+                    panelId = value;
+                    OnPropertyChanged(nameof(PanelId));
+                }
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                if (projectId != value)
+                {
+                    projectId = value;
+                    OnPropertyChanged(nameof(ProjectId));
+                }
+            }
+        }
+        public int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+        public int Length
+        {
+            get => length;
+            set
+            {
+                if (length != value)
+                {
+                    length = value;
+                    OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+        public string GroupId
+        {
+            get => groupId;
+            set
+            {
+                if (groupId != value)
+                {
+                    groupId = value;
+                    OnPropertyChanged(nameof(GroupId));
+                }
+            }
+        }
+
+        public string Description
+        {
+            get => sharedData.Description;
+            set
+            {
+                if (sharedData.Description != value)
+                {
+                    sharedData.Description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+
+        public int Number
+        {
+            get => sharedData.Number;
+            set
+            {
+                if (sharedData.Number != value)
+                {
+                    sharedData.Number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class SharedNoteData : INotifyPropertyChanged
+    {
+        private string description = "";
+        private int number;
+
+        public string Description
+        {
+            get => description;
+            set
+            {
+                if (description != value)
+                {
+                    description = value;
+                    OnPropertyChanged(nameof(Description));
+                }
+            }
+        }
+        public int Number
+        {
+            get => number;
+            set
+            {
+                if (number != value)
+                {
+                    number = value;
+                    OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     public class Space : ElectricalComponent
     {
         public Space()

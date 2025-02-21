@@ -22,19 +22,23 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
+using GongSolutions.Wpf.DragDrop;
 using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
+using Org.BouncyCastle.Utilities;
 
 namespace GMEPDesignTool
 {
     /// <summary>
     /// Interaction logic for ElectricalProject.xaml
     /// </summary>
-    public partial class ElectricalProject : UserControl
+    public partial class ElectricalProject : UserControl, IDropTarget
     {
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
+        public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -57,26 +61,51 @@ namespace GMEPDesignTool
         public ElectricalProject(string projectId, ProjectControlViewModel projectView)
         {
             InitializeComponent();
-            ProjectView = projectView;
-            ProjectId = projectId;
-            ElectricalPanels = ProjectView.database.GetProjectPanels(ProjectId);
-            ElectricalServices = ProjectView.database.GetProjectServices(ProjectId);
-            ElectricalEquipments = ProjectView.database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = ProjectView.database.GetProjectTransformers(ProjectId);
-            ElectricalLightings = ProjectView.database.GetProjectLighting(ProjectId);
-            LightingLocations = new ObservableCollection<Location>();
-            LightingLocations = ProjectView.database.GetLightingLocations(ProjectId);
+            ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
+            ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
+
+            // Initialize collections to avoid null references
+            ElectricalPanels = new ObservableCollection<ElectricalPanel>();
+            ElectricalServices = new ObservableCollection<ElectricalService>();
+            ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
+            ElectricalLightings = new ObservableCollection<ElectricalLighting>();
+            ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
+            PanelNotes = new ObservableCollection<Note>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            ImagePaths = new ObservableCollection<string>();
+            LightingLocations = new ObservableCollection<Location>();
+            Owners = new Dictionary<string, string>();
+
+            // Initialize ViewSources
+            EquipmentViewSource =
+                (CollectionViewSource)FindResource("EquipmentViewSource")
+                ?? throw new InvalidOperationException("EquipmentViewSource resource not found.");
+            EquipmentViewSource.Filter += EquipmentViewSource_Filter;
+            LightingViewSource =
+                (CollectionViewSource)FindResource("LightingViewSource")
+                ?? throw new InvalidOperationException("LightingViewSource resource not found.");
+            LightingViewSource.Filter += LightingViewSource_Filter;
+
+            // Initialize other properties and event handlers
+            //InitializeAsync(projectId, projectView).ConfigureAwait(false);
+        }
+
+        public async Task InitializeAsync()
+        {
+            ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+            ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+            ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
+            ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+            ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+            LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
+            Owners = await ProjectView.database.getOwners();
+
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
-            Owners = ProjectView.database.getOwners();
-            EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource");
-            EquipmentViewSource.Filter += EquipmentViewSource_Filter;
-            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource");
-            LightingViewSource.Filter += LightingViewSource_Filter;
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
@@ -92,6 +121,10 @@ namespace GMEPDesignTool
             foreach (var panel in ElectricalPanels)
             {
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                AssignPanelNotes(panel);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -113,8 +146,8 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            //timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(30);
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(15);
             timer.Tick += Timer_Tick;
             timer.Start();
             ProjectView.SaveText = "";
@@ -170,17 +203,10 @@ namespace GMEPDesignTool
             }
         }
 
-        private void LightingLocations_CollectionChanged1(
-            object? sender,
-            NotifyCollectionChangedEventArgs e
-        )
-        {
-            throw new NotImplementedException();
-        }
-
         private async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
+            var meow = PanelNotes;
             await ProjectView.database.UpdateProject(
                 ProjectId,
                 ElectricalServices,
@@ -188,7 +214,8 @@ namespace GMEPDesignTool
                 ElectricalEquipments,
                 ElectricalTransformers,
                 ElectricalLightings,
-                LightingLocations
+                LightingLocations,
+                PanelNotes
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
@@ -783,6 +810,10 @@ namespace GMEPDesignTool
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+            electricalPanel.notes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+
             ElectricalPanels.Add(electricalPanel);
             electricalPanel.fillInitialSpaces();
             GetNames();
@@ -811,7 +842,6 @@ namespace GMEPDesignTool
                 false,
                 0,
                 false,
-                "",
                 ""
             );
             AddElectricalPanel(electricalPanel);
@@ -819,7 +849,13 @@ namespace GMEPDesignTool
 
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
+            electricalPanel.notes.Clear();
+            electricalPanel.leftNodes.Clear();
+            electricalPanel.rightNodes.Clear();
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
+            electricalPanel.notes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.ParentId = "";
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
@@ -834,6 +870,40 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalPanel(electricalPanel);
+            }
+        }
+
+        public void AssignPanelNotes(ElectricalPanel panel)
+        {
+            var filteredNotes = PanelNotes.Where(note => note.PanelId == panel.Id).ToList();
+
+            var keyNotes = filteredNotes.Where(note => note.CircuitNo == 0).ToList();
+
+            var noteDictionary = new Dictionary<Note, List<Note>>();
+
+            foreach (var keyNote in keyNotes)
+            {
+                var matchingNotes = filteredNotes
+                    .Where(note => note.GroupId == keyNote.GroupId && note.CircuitNo != 0)
+                    .ToList();
+
+                noteDictionary[keyNote] = matchingNotes;
+            }
+            foreach (var key in noteDictionary.Keys)
+            {
+                panel.notes.Add(key);
+                foreach (var note in noteDictionary[key])
+                {
+                    note.SharedData = key.SharedData;
+                    if (note.CircuitNo % 2 == 0)
+                    {
+                        panel.rightNodes.Add(note);
+                    }
+                    else
+                    {
+                        panel.leftNodes.Add(note);
+                    }
+                }
             }
         }
 
@@ -1088,6 +1158,31 @@ namespace GMEPDesignTool
             }
         }
 
+        private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Note newNote in e.NewItems)
+                {
+                    if (!PanelNotes.Contains(newNote))
+                    {
+                        PanelNotes.Add(newNote);
+                    }
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Note oldNote in e.OldItems)
+                {
+                    PanelNotes.Remove(oldNote);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                PanelNotes.Clear();
+            }
+        }
+
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.CommandParameter is ElectricalPanel panel)
@@ -1221,7 +1316,8 @@ namespace GMEPDesignTool
                 0,
                 0,
                 false,
-                1
+                1,
+                ElectricalEquipments.Count + 1
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -1246,6 +1342,52 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalEquipment(electricalEquipment);
+            }
+        }
+
+        public void CopySelectedElectricalEquipment(object sender, EventArgs e)
+        {
+            if (
+                sender is Button button
+                && button.CommandParameter is ElectricalEquipment electricalEquipment
+            )
+            {
+                ElectricalEquipment equipment = new ElectricalEquipment(
+                    Guid.NewGuid().ToString(),
+                    ProjectId,
+                    electricalEquipment.Owner,
+                    electricalEquipment.EquipNo,
+                    electricalEquipment.Qty,
+                    "",
+                    electricalEquipment.Voltage,
+                    electricalEquipment.Fla,
+                    electricalEquipment.Va,
+                    electricalEquipment.Is3Ph,
+                    "",
+                    0,
+                    false,
+                    0,
+                    electricalEquipment.Category,
+                    electricalEquipment.ColorCode,
+                    false,
+                    electricalEquipment.Connection,
+                    electricalEquipment.Description,
+                    electricalEquipment.McaId,
+                    electricalEquipment.Hp,
+                    electricalEquipment.HasPlug,
+                    electricalEquipment.LockingConnector,
+                    electricalEquipment.Width,
+                    electricalEquipment.Depth,
+                    electricalEquipment.Height,
+                    0,
+                    electricalEquipment.IsHiddenOnPlan,
+                    electricalEquipment.LoadType,
+                    0
+                );
+                equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
+                ElectricalEquipments.Insert(newOrder, equipment);
+                OrderEquipment(ElectricalEquipments);
             }
         }
 
@@ -1767,6 +1909,11 @@ namespace GMEPDesignTool
                         }
                     }
                 }
+                if (timer != null)
+                {
+                    timer.Stop();
+                    timer.Tick -= Timer_Tick;
+                }
             });
         }
 
@@ -1868,6 +2015,41 @@ namespace GMEPDesignTool
             {
                 s3.DeleteFileAsync(equipment.SpecSheetId);
                 equipment.SpecSheetId = "";
+            }
+        }
+
+        void IDropTarget.DragOver(IDropInfo dropInfo)
+        {
+            dropInfo.Effects = DragDropEffects.Move;
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+        }
+
+        void IDropTarget.Drop(IDropInfo dropInfo)
+        {
+            if (dropInfo.Data is ElectricalEquipment sourceItem)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalEquipments.IndexOf(sourceItem);
+
+                if (sourceIndex != targetIndex)
+                {
+                    if (targetIndex > ElectricalEquipments.Count - 1)
+                    {
+                        targetIndex = ElectricalEquipments.Count - 1;
+                    }
+                    ElectricalEquipments.Move(sourceIndex, targetIndex);
+                    OrderEquipment(ElectricalEquipments);
+                }
+            }
+        }
+
+        void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
+        {
+            int index = 0;
+            foreach (var equipment in equipments)
+            {
+                equipment.OrderNo = index;
+                index++;
             }
         }
     }

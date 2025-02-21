@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         public float cLml;
         public int loadCategory;
         public string componentType;
+        public int orderNo;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -269,7 +270,18 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        public virtual int OrderNo
+        {
+            get => orderNo;
+            set
+            {
+                if (orderNo != value)
+                {
+                    orderNo = value;
+                    OnPropertyChanged(nameof(OrderNo));
+                }
+            }
+        }
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

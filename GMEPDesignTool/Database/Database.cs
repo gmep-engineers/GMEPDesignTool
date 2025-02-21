@@ -118,6 +118,22 @@ namespace GMEPDesignTool.Database
             return false;
         }
 
+        public async Task OpenConnectionAsync()
+        {
+            if (Connection.State == System.Data.ConnectionState.Closed)
+            {
+                await Connection.OpenAsync();
+            }
+        }
+
+        public async Task CloseConnectionAsync()
+        {
+            if (Connection.State == System.Data.ConnectionState.Open)
+            {
+                await Connection.CloseAsync();
+            }
+        }
+
         public bool LoginUser(string userName, string password)
         {
             string query =
@@ -341,20 +357,20 @@ namespace GMEPDesignTool.Database
             CloseConnection();
         }
 
-        public Dictionary<int, string> GetProjectIds(string projectNo)
+        public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
 
             Dictionary<int, string> projectIds = new Dictionary<int, string>();
             while (reader.Read())
             {
                 projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
-            reader.Close();
+            await reader.CloseAsync();
 
             if (!projectIds.Any())
             {
@@ -365,29 +381,32 @@ namespace GMEPDesignTool.Database
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                insertCommand.ExecuteNonQuery();
+                await insertCommand.ExecuteNonQueryAsync();
                 projectIds.Add(1, id);
             }
 
-            CloseConnection();
+            await CloseConnectionAsync();
             projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             return projectIds;
         }
 
-        public Dictionary<int, string> AddProjectVersions(string projectNo, string projectId)
+        public async Task<Dictionary<int, string>> AddProjectVersions(
+            string projectNo,
+            string projectId
+        )
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
 
             Dictionary<int, string> projectIds = new Dictionary<int, string>();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
-            reader.Close();
+            await reader.CloseAsync();
 
             if (!projectIds.Any())
             {
@@ -398,7 +417,7 @@ namespace GMEPDesignTool.Database
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                insertCommand.ExecuteNonQuery();
+                await insertCommand.ExecuteNonQueryAsync();
                 projectIds.Add(1, id);
             }
             else
@@ -411,8 +430,8 @@ namespace GMEPDesignTool.Database
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
                 insertCommand.Parameters.AddWithValue("@version", projectIds.Last().Key + 1);
-                insertCommand.ExecuteNonQuery();
-                CloneElectricalProject(projectId, id);
+                await insertCommand.ExecuteNonQueryAsync();
+                await CloneElectricalProject(projectId, id);
                 projectIds.Add(projectIds.Last().Key + 1, id);
             }
 
@@ -420,9 +439,12 @@ namespace GMEPDesignTool.Database
             return projectIds;
         }
 
-        public Dictionary<int, string> DeleteProjectVersions(string projectNo, string projectId)
+        public async Task<Dictionary<int, string>> DeleteProjectVersions(
+            string projectNo,
+            string projectId
+        )
         {
-            OpenConnection();
+            await OpenConnectionAsync();
             string[] tables = new string[]
             {
                 "electrical_panels",
@@ -431,6 +453,7 @@ namespace GMEPDesignTool.Database
                 "electrical_lighting_locations",
                 "electrical_lighting",
                 "electrical_services",
+                "panel_notes",
             };
             string query;
             MySqlCommand command;
@@ -439,24 +462,24 @@ namespace GMEPDesignTool.Database
                 query = $"DELETE FROM {table} WHERE project_id = @projectId";
                 command = new MySqlCommand(query, Connection);
                 command.Parameters.AddWithValue("@projectId", projectId);
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
 
             query = "DELETE FROM projects WHERE id = @projectId";
             command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
 
             query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
             command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
             Dictionary<int, string> projectIds = new Dictionary<int, string>();
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
             while (reader.Read())
             {
                 projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
-            reader.Close();
+            await reader.CloseAsync();
 
             if (!projectIds.Any())
             {
@@ -467,28 +490,28 @@ namespace GMEPDesignTool.Database
                 MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
                 insertCommand.Parameters.AddWithValue("@id", id);
                 insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                insertCommand.ExecuteNonQuery();
+                await insertCommand.ExecuteNonQueryAsync();
                 projectIds.Add(1, id);
             }
-            CloseConnection();
+            await CloseConnectionAsync();
             return projectIds;
         }
 
-        public Dictionary<string, string> getOwners()
+        public async Task<Dictionary<string, string>> getOwners()
         {
             var owners = new Dictionary<string, string>();
 
             try
             {
-                OpenConnection();
+                await OpenConnectionAsync();
 
                 string query = "SELECT id, name FROM owners";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, Connection))
                 {
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    using (MySqlDataReader reader = (MySqlDataReader)await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             string id = reader.GetString("id");
                             string name = reader.GetString("name");
@@ -503,7 +526,7 @@ namespace GMEPDesignTool.Database
             }
             finally
             {
-                CloseConnection();
+                await CloseConnectionAsync();
             }
 
             return owners;
@@ -517,70 +540,105 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalEquipment> equipments,
             ObservableCollection<ElectricalTransformer> transformers,
             ObservableCollection<ElectricalLighting> lightings,
-            ObservableCollection<Location> locations
+            ObservableCollection<Location> locations,
+            ObservableCollection<Note> panelNotes
         )
         {
-            OpenConnection();
+            await OpenConnectionAsync();
 
-            UpdateServices(projectId, services);
-            UpdatePanels(projectId, panels);
-            UpdateEquipments(projectId, equipments);
-            UpdateTransformers(projectId, transformers);
-            UpdateLightings(projectId, lightings);
-            UpdateLightingLocations(projectId, locations);
+            await UpdateServices(projectId, services);
+            await UpdatePanels(projectId, panels);
+            await UpdateEquipments(projectId, equipments);
+            await UpdateTransformers(projectId, transformers);
+            await UpdateLightings(projectId, lightings);
+            await UpdateLightingLocations(projectId, locations);
+            await UpdatePanelNotes(projectId, panelNotes);
 
-            CloseConnection();
+            await CloseConnectionAsync();
         }
 
-        private void UpdateServices(
+        private async Task UpdateServices(
             string projectId,
             ObservableCollection<ElectricalService> services
         )
         {
-            var existingServiceIds = GetExistingIds("electrical_services", "project_id", projectId);
+            var existingServiceIds = await GetExistingIds(
+                "electrical_services",
+                "project_id",
+                projectId
+            );
 
             foreach (var service in services)
             {
                 if (existingServiceIds.Contains(service.Id))
                 {
-                    UpdateService(service);
+                    await UpdateService(service);
                     existingServiceIds.Remove(service.Id);
                 }
                 else
                 {
-                    InsertService(projectId, service);
+                    await InsertService(projectId, service);
                 }
             }
 
-            DeleteRemovedItems("electrical_services", existingServiceIds);
+            await DeleteRemovedItems("electrical_services", existingServiceIds);
         }
 
-        private void UpdatePanels(string projectId, ObservableCollection<ElectricalPanel> panels)
+        private async Task UpdatePanels(
+            string projectId,
+            ObservableCollection<ElectricalPanel> panels
+        )
         {
-            var existingPanelIds = GetExistingIds("electrical_panels", "project_id", projectId);
+            var existingPanelIds = await GetExistingIds(
+                "electrical_panels",
+                "project_id",
+                projectId
+            );
 
             foreach (var panel in panels)
             {
                 if (existingPanelIds.Contains(panel.Id))
                 {
-                    UpdatePanel(panel);
+                    await UpdatePanel(panel);
                     existingPanelIds.Remove(panel.Id);
                 }
                 else
                 {
-                    InsertPanel(projectId, panel);
+                    await InsertPanel(projectId, panel);
                 }
             }
 
-            DeleteRemovedItems("electrical_panels", existingPanelIds);
+            await DeleteRemovedItems("electrical_panels", existingPanelIds);
         }
 
-        private void UpdateTransformers(
+        private async Task UpdatePanelNotes(string projectId, ObservableCollection<Note> panelNotes)
+        {
+            var existingPanelIds = await GetExistingIds("panel_notes", "project_id", projectId);
+
+            var panelNotesCopy = panelNotes.ToList(); // Create a copy of the collection
+
+            foreach (var note in panelNotesCopy)
+            {
+                if (existingPanelIds.Contains(note.Id))
+                {
+                    await UpdatePanelNote(note);
+                    existingPanelIds.Remove(note.Id);
+                }
+                else
+                {
+                    await InsertPanelNote(projectId, note);
+                }
+            }
+
+            await DeleteRemovedItems("panel_notes", existingPanelIds);
+        }
+
+        private async Task UpdateTransformers(
             string projectId,
             ObservableCollection<ElectricalTransformer> transformers
         )
         {
-            var existingTransformerIds = GetExistingIds(
+            var existingTransformerIds = await GetExistingIds(
                 "electrical_transformers",
                 "project_id",
                 projectId
@@ -590,24 +648,24 @@ namespace GMEPDesignTool.Database
             {
                 if (existingTransformerIds.Contains(transformer.Id))
                 {
-                    UpdateTransformer(transformer);
+                    await UpdateTransformer(transformer);
                     existingTransformerIds.Remove(transformer.Id);
                 }
                 else
                 {
-                    InsertTransformer(projectId, transformer);
+                    await InsertTransformer(projectId, transformer);
                 }
             }
 
-            DeleteRemovedItems("electrical_transformers", existingTransformerIds);
+            await DeleteRemovedItems("electrical_transformers", existingTransformerIds);
         }
 
-        private void UpdateEquipments(
+        private async Task UpdateEquipments(
             string projectId,
             ObservableCollection<ElectricalEquipment> equipments
         )
         {
-            var existingEquipmentIds = GetExistingIds(
+            var existingEquipmentIds = await GetExistingIds(
                 "electrical_equipment",
                 "project_id",
                 projectId
@@ -617,24 +675,24 @@ namespace GMEPDesignTool.Database
             {
                 if (existingEquipmentIds.Contains(equipment.Id))
                 {
-                    UpdateEquipment(equipment);
+                    await UpdateEquipment(equipment);
                     existingEquipmentIds.Remove(equipment.Id);
                 }
                 else
                 {
-                    InsertEquipment(projectId, equipment);
+                    await InsertEquipment(projectId, equipment);
                 }
             }
 
-            DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
+            await DeleteRemovedItems("electrical_equipment", existingEquipmentIds);
         }
 
-        private void UpdateLightings(
+        private async Task UpdateLightings(
             string projectId,
             ObservableCollection<ElectricalLighting> lightings
         )
         {
-            var existingLightingIds = GetExistingIds(
+            var existingLightingIds = await GetExistingIds(
                 "electrical_lighting",
                 "project_id",
                 projectId
@@ -644,24 +702,24 @@ namespace GMEPDesignTool.Database
             {
                 if (existingLightingIds.Contains(lighting.Id))
                 {
-                    UpdateLighting(lighting);
+                    await UpdateLighting(lighting);
                     existingLightingIds.Remove(lighting.Id);
                 }
                 else
                 {
-                    InsertLighting(projectId, lighting);
+                    await InsertLighting(projectId, lighting);
                 }
             }
 
-            DeleteRemovedItems("electrical_lighting", existingLightingIds);
+            await DeleteRemovedItems("electrical_lighting", existingLightingIds);
         }
 
-        private void UpdateLightingLocations(
+        private async Task UpdateLightingLocations(
             string projectId,
             ObservableCollection<Location> locations
         )
         {
-            var existingLocationIds = GetExistingIds(
+            var existingLocationIds = await GetExistingIds(
                 "electrical_lighting_locations",
                 "project_id",
                 projectId
@@ -671,19 +729,19 @@ namespace GMEPDesignTool.Database
             {
                 if (existingLocationIds.Contains(location.Id))
                 {
-                    UpdateLocation(location);
+                    await UpdateLocation(location);
                     existingLocationIds.Remove(location.Id);
                 }
                 else
                 {
-                    InsertLocation(projectId, location);
+                    await InsertLocation(projectId, location);
                 }
             }
 
-            DeleteRemovedItems("electrical_lighting_locations", existingLocationIds);
+            await DeleteRemovedItems("electrical_lighting_locations", existingLocationIds);
         }
 
-        private HashSet<string> GetExistingIds(
+        private async Task<HashSet<string>> GetExistingIds(
             string tableName,
             string columnName,
             string projectId
@@ -694,17 +752,17 @@ namespace GMEPDesignTool.Database
             string query = $"SELECT {idType} FROM {tableName} WHERE {columnName} = @projectId";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
             HashSet<string> ids = new HashSet<string>();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 ids.Add(reader.GetString($"{idType}"));
             }
-            reader.Close();
+            await reader.CloseAsync();
             return ids;
         }
 
-        private void UpdateService(ElectricalService service)
+        private async Task UpdateService(ElectricalService service)
         {
             string query =
                 "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating WHERE id = @id";
@@ -716,10 +774,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertService(string projectId, ElectricalService service)
+        private async Task InsertService(string projectId, ElectricalService service)
         {
             string query =
                 "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating)";
@@ -732,13 +790,13 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void UpdatePanel(ElectricalPanel panel)
+        private async Task UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, notes = @notes WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -756,14 +814,13 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
-            command.Parameters.AddWithValue("@notes", panel.Notes);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertPanel(string projectId, ElectricalPanel panel)
+        private async Task InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no, is_hidden_on_plan, location, notes) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no, @is_hidden_on_plan, @location, @notes)";
+                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no, is_hidden_on_plan, location) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no, @is_hidden_on_plan, @location)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -782,14 +839,44 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
-            command.Parameters.AddWithValue("@notes", panel.Notes);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void UpdateEquipment(ElectricalEquipment equipment)
+        private async Task UpdatePanelNote(Note panelNotes)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType WHERE id = @id";
+                "UPDATE panel_notes SET number = @number, circuit_no = @circuitNo, length = @length, description = @description  WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+
+            command.Parameters.AddWithValue("@id", panelNotes.Id);
+            command.Parameters.AddWithValue("@number", panelNotes.Number);
+            command.Parameters.AddWithValue("@circuitNo", panelNotes.CircuitNo);
+            command.Parameters.AddWithValue("@length", panelNotes.Length);
+            command.Parameters.AddWithValue("@description", panelNotes.Description);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task InsertPanelNote(string projectId, Note panelNotes)
+        {
+            string query =
+                "INSERT INTO panel_notes (id, number, panel_id, project_id, circuit_no, length, description, group_id) VALUES (@id, @number, @panelId, @projectId, @circuitNo, @length, @description, @groupId)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", panelNotes.Id);
+            command.Parameters.AddWithValue("@number", panelNotes.Number);
+            command.Parameters.AddWithValue("@panelId", panelNotes.PanelId);
+            command.Parameters.AddWithValue("@projectId", panelNotes.ProjectId);
+            command.Parameters.AddWithValue("@circuitNo", panelNotes.CircuitNo);
+            command.Parameters.AddWithValue("@length", panelNotes.Length);
+            command.Parameters.AddWithValue("@description", panelNotes.Description);
+            command.Parameters.AddWithValue("@groupId", panelNotes.GroupId);
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task UpdateEquipment(ElectricalEquipment equipment)
+        {
+            string query =
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -819,13 +906,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", equipment.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", equipment.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@loadType", equipment.LoadType);
-            command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("@order_no", equipment.OrderNo);
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertEquipment(string projectId, ElectricalEquipment equipment)
+        private async Task InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -856,10 +944,11 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", equipment.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", equipment.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@loadType", equipment.LoadType);
-            command.ExecuteNonQuery();
+            command.Parameters.AddWithValue("@order_no", equipment.OrderNo);
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void UpdateLighting(ElectricalLighting lighting)
+        private async Task UpdateLighting(ElectricalLighting lighting)
         {
             string query =
                 "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty, has_photocell = @hasPhotoCell, location_id = @locationId WHERE id = @id";
@@ -885,10 +974,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
             command.Parameters.AddWithValue("@locationId", lighting.LocationId);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertLighting(string projectId, ElectricalLighting lighting)
+        private async Task InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
                 "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty, has_photocell, location_id) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty, @hasPhotoCell, @locationId)";
@@ -914,10 +1003,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@qty", lighting.Qty);
             command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
             command.Parameters.AddWithValue("@locationId", lighting.LocationId);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void UpdateTransformer(ElectricalTransformer transformer)
+        private async Task UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
                 "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
@@ -934,10 +1023,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_hidden_on_plan", transformer.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertTransformer(string projectId, ElectricalTransformer transformer)
+        private async Task InsertTransformer(string projectId, ElectricalTransformer transformer)
         {
             string query =
                 "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan, is_wall_mounted, aic_rating) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan, @isWallMounted, @aicRating)";
@@ -954,10 +1043,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void UpdateLocation(Location location)
+        private async Task UpdateLocation(Location location)
         {
             string query =
                 "UPDATE electrical_lighting_locations SET location = @locationDescription, outdoor = @isOutside WHERE id = @id";
@@ -966,10 +1055,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void InsertLocation(string projectId, Location location)
+        private async Task InsertLocation(string projectId, Location location)
         {
             string query =
                 "INSERT INTO electrical_lighting_locations (id, project_id, location, outdoor) VALUES (@id, @projectId, @locationDescription, @isOutside)";
@@ -979,10 +1068,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
 
-            command.ExecuteNonQuery();
+            await command.ExecuteNonQueryAsync();
         }
 
-        private void DeleteRemovedItems(string tableName, HashSet<string> ids)
+        private async Task DeleteRemovedItems(string tableName, HashSet<string> ids)
         {
             var idType = "id";
 
@@ -991,20 +1080,22 @@ namespace GMEPDesignTool.Database
                 string query = $"DELETE FROM {tableName} WHERE {idType} = @id";
                 MySqlCommand command = new MySqlCommand(query, Connection);
                 command.Parameters.AddWithValue("@id", id);
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
         }
 
-        public ObservableCollection<ElectricalService> GetProjectServices(string projectId)
+        public async Task<ObservableCollection<ElectricalService>> GetProjectServices(
+            string projectId
+        )
         {
             ObservableCollection<ElectricalService> services =
                 new ObservableCollection<ElectricalService>();
             string query = "SELECT * FROM electrical_services WHERE project_id = @projectId";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 services.Add(
                     new ElectricalService(
@@ -1019,21 +1110,21 @@ namespace GMEPDesignTool.Database
                     )
                 );
             }
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return services;
         }
 
-        public ObservableCollection<ElectricalPanel> GetProjectPanels(string projectId)
+        public async Task<ObservableCollection<ElectricalPanel>> GetProjectPanels(string projectId)
         {
             ObservableCollection<ElectricalPanel> panels =
                 new ObservableCollection<ElectricalPanel>();
             string query = "SELECT * FROM electrical_panels WHERE project_id = @projectId";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 panels.Add(
                     new ElectricalPanel(
@@ -1069,26 +1160,54 @@ namespace GMEPDesignTool.Database
                             ? 0
                             : reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
-                        reader.GetString("location"),
-                        reader.GetString("notes")
+                        reader.GetString("location")
                     )
                 );
             }
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return panels;
         }
 
-        public ObservableCollection<ElectricalEquipment> GetProjectEquipment(string projectId)
+        public async Task<ObservableCollection<Note>> GetProjectPanelNotes(string projectId)
+        {
+            ObservableCollection<Note> panelNotes = new ObservableCollection<Note>();
+            string query = "SELECT * FROM panel_notes WHERE project_id = @projectId";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                Note note = new Note();
+                note.Id = reader.GetString("id");
+                note.Number = reader.GetInt32("number");
+                note.PanelId = reader.GetString("panel_id");
+                note.ProjectId = reader.GetString("project_id");
+                note.circuitNo = reader.GetInt32("circuit_no");
+                note.length = reader.GetInt32("length");
+                note.Description = reader.GetString("description");
+                note.GroupId = reader.GetString("group_id");
+                panelNotes.Add(note);
+            }
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
+            return panelNotes;
+        }
+
+        public async Task<ObservableCollection<ElectricalEquipment>> GetProjectEquipment(
+            string projectId
+        )
         {
             ObservableCollection<ElectricalEquipment> equipments =
                 new ObservableCollection<ElectricalEquipment>();
-            string query = "SELECT * FROM electrical_equipment WHERE project_id = @projectId";
-            OpenConnection();
+            string query =
+                "SELECT * FROM electrical_equipment WHERE project_id = @projectId ORDER BY order_no";
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
                 equipments.Add(
                     new ElectricalEquipment(
                         reader.GetString("id"),
@@ -1119,12 +1238,13 @@ namespace GMEPDesignTool.Database
                         reader.GetFloat("height"),
                         reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
-                        reader.GetInt32("load_type")
+                        reader.GetInt32("load_type"),
+                        reader.GetInt32("order_no")
                     )
                 );
 
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return equipments;
 
             float idToVoltage(int voltageId)
@@ -1161,17 +1281,19 @@ namespace GMEPDesignTool.Database
             }
         }
 
-        public ObservableCollection<ElectricalLighting> GetProjectLighting(string projectId)
+        public async Task<ObservableCollection<ElectricalLighting>> GetProjectLighting(
+            string projectId
+        )
         {
             ObservableCollection<ElectricalLighting> lightings =
                 new ObservableCollection<ElectricalLighting>();
             string query = "SELECT * FROM electrical_lighting WHERE project_id = @projectId";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
 
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 lightings.Add(
                     new ElectricalLighting(
@@ -1219,21 +1341,23 @@ namespace GMEPDesignTool.Database
                 );
             }
 
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return lightings;
         }
 
-        public ObservableCollection<ElectricalTransformer> GetProjectTransformers(string projectId)
+        public async Task<ObservableCollection<ElectricalTransformer>> GetProjectTransformers(
+            string projectId
+        )
         {
             ObservableCollection<ElectricalTransformer> transformers =
                 new ObservableCollection<ElectricalTransformer>();
             string query = "SELECT * FROM electrical_transformers WHERE project_id = @projectId";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 transformers.Add(
                     new ElectricalTransformer(
@@ -1253,21 +1377,21 @@ namespace GMEPDesignTool.Database
                     )
                 );
             }
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return transformers;
         }
 
-        public ObservableCollection<Location> GetLightingLocations(string projectId)
+        public async Task<ObservableCollection<Location>> GetLightingLocations(string projectId)
         {
             ObservableCollection<Location> locations = new ObservableCollection<Location>();
             string query =
                 "SELECT * FROM electrical_lighting_locations WHERE project_id = @projectId";
-            OpenConnection();
+            await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
                 var location = new Location();
                 location.Id = reader.GetString("id");
@@ -1275,22 +1399,24 @@ namespace GMEPDesignTool.Database
                 location.LocationDescription = reader.GetString("location");
                 locations.Add(location);
             }
-            reader.Close();
-            CloseConnection();
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
             return locations;
         }
 
-        public void CloneElectricalProject(string projectId, string newProjectId)
+        public async Task CloneElectricalProject(string projectId, string newProjectId)
         {
-            var services = GetProjectServices(projectId);
-            var panels = GetProjectPanels(projectId);
-            var equipments = GetProjectEquipment(projectId);
-            var lightings = GetProjectLighting(projectId);
-            var transformers = GetProjectTransformers(projectId);
-            var locations = GetLightingLocations(projectId);
+            var services = await GetProjectServices(projectId);
+            var panels = await GetProjectPanels(projectId);
+            var equipments = await GetProjectEquipment(projectId);
+            var lightings = await GetProjectLighting(projectId);
+            var transformers = await GetProjectTransformers(projectId);
+            var locations = await GetLightingLocations(projectId);
+            var panelNotes = await GetProjectPanelNotes(projectId);
 
             Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
             Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
+            Dictionary<string, string> panelNoteIdSwitch = new Dictionary<string, string>();
 
             foreach (var service in services)
             {
@@ -1335,6 +1461,14 @@ namespace GMEPDesignTool.Database
                     lighting.LocationId = locationIdSwitch[lighting.LocationId];
                 }
             }
+            foreach (var note in panelNotes)
+            {
+                string Id = Guid.NewGuid().ToString();
+                note.Id = Id;
+                note.projectId = newProjectId;
+                note.PanelId = parentIdSwitch[note.PanelId];
+            }
+
             foreach (var panel in panels)
             {
                 if (!string.IsNullOrEmpty(panel.parentId))
@@ -1356,14 +1490,15 @@ namespace GMEPDesignTool.Database
                     equipment.ParentId = parentIdSwitch[equipment.ParentId];
                 }
             }
-            UpdateProject(
+            await UpdateProject(
                 newProjectId,
                 services,
                 panels,
                 equipments,
                 transformers,
                 lightings,
-                locations
+                locations,
+                panelNotes
             );
         }
     }

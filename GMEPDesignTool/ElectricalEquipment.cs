@@ -65,7 +65,8 @@ namespace GMEPDesignTool
             float height,
             int circuitNo,
             bool isHiddenOnPlan,
-            int loadType
+            int loadType,
+            int orderNo
         )
         {
             this.id = id;
@@ -110,6 +111,7 @@ namespace GMEPDesignTool
             this.BLcl = 0;
             this.CLcl = 0;
             this.componentType = "Equipment";
+            this.orderNo = orderNo;
             DetermineLoadCategory();
             //DetermineLoadTypes();
             determineEquipmentPole();
@@ -535,6 +537,7 @@ namespace GMEPDesignTool
             }
             this.Pole = pole;
         }
+
         /*public void DetermineLoadTypes()
         {
             switch (LoadType)

@@ -24,6 +24,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
 using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
 using Org.BouncyCastle.Pqc.Crypto.Lms;
 
@@ -39,29 +40,26 @@ namespace GMEPDesignTool
 
         ProjectControlViewModel viewModel;
 
-        public ProjectControl(string projectNo, LoginResponse loginResponse)
+        public ProjectControl()
         {
             InitializeComponent();
-            viewModel = new ProjectControlViewModel(projectNo, loginResponse);
-            this.DataContext = viewModel;
-
-            //Dictionary<int, string> projectIds = viewModel.database.GetProjectIds(projectNo);
-
-            string projectId = viewModel.ProjectIds.First().Value;
-            viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
-
-            viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel);
-
-            ElectricalTab.Content = viewModel.ActiveElectricalProject;
-            AdminTab.Content = new Admin();
         }
 
-        private void AddVersion_Click(object sender, RoutedEventArgs e)
+        public async Task InitializeProject(string projectNo, LoginResponse loginResponse)
+        {
+            viewModel = new ProjectControlViewModel(projectNo, loginResponse);
+            await viewModel.InitializeProjectControlViewModel();
+            this.DataContext = viewModel;
+            string projectId = viewModel.ProjectIds.First().Value;
+            viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
+        }
+
+        private async void AddVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.AddProjectVersions(
+                viewModel.ProjectIds = await viewModel.database.AddProjectVersions(
                     viewModel.ProjectNo,
                     projectId
                 );
@@ -70,12 +68,12 @@ namespace GMEPDesignTool
             }
         }
 
-        private void DeleteVersion_Click(object sender, RoutedEventArgs e)
+        private async void DeleteVersion_Click(object sender, RoutedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
                 string projectId = selectedPair.Value;
-                viewModel.ProjectIds = viewModel.database.DeleteProjectVersions(
+                viewModel.ProjectIds = await viewModel.database.DeleteProjectVersions(
                     viewModel.ProjectNo,
                     projectId
                 );
@@ -84,13 +82,18 @@ namespace GMEPDesignTool
             }
         }
 
-        private void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
             {
+                //Electrical Tab
                 string newprojectId = selectedPair.Value;
                 viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
+                await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
+
+                //Admin Tab
+                AdminTab.Content = new Admin();
             }
         }
 
