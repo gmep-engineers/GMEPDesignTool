@@ -194,88 +194,29 @@ namespace GMEPDesignTool
 
                 }
             }
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))
+            if (e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
             {
                 if (sender is ElectricalPanel panel)
                 {
                     PhaseAVA = panel.PhaseAVA;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
-            {
-                if (sender is ElectricalPanel panel)
-                {
                     PhaseBVA = panel.PhaseBVA;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
-            {
-                if (sender is ElectricalPanel panel)
-                {
                     PhaseCVA = panel.PhaseCVA;
+                    Lcl = panel.Lcl;
+                    Lml = panel.Lml;
+                    ALml = panel.ALml;
+                    BLml = panel.BLml;
+                    CLml = panel.CLml;
+                    ALcl = panel.ALcl;
+                    BLcl = panel.BLcl;
+                    CLcl = panel.CLcl;
                 }
             }
+      
             if (e.PropertyName == nameof(ElectricalPanel.Amp))
             {
                 if (sender is ElectricalPanel panel)
                 {
                     Amp = panel.Amp;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    Lcl = panel.Lcl;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.Lml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    Lml = panel.Lml;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.ALml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    ALml = panel.ALml;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.BLml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    BLml = panel.BLml;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.CLml))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CLml = panel.CLml;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.ALcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    ALcl = panel.ALcl;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.BLcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    BLcl = panel.BLcl;
-                }
-            }
-            if (e.PropertyName == nameof(ElectricalPanel.CLcl))
-            {
-                if (sender is ElectricalPanel panel)
-                {
-                    CLcl = panel.CLcl;
                 }
             }
 
