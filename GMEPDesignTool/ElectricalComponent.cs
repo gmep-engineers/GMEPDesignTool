@@ -33,6 +33,7 @@ namespace GMEPDesignTool
         public int loadCategory;
         public string componentType;
         public int orderNo;
+        public bool updateFlag;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -44,6 +45,18 @@ namespace GMEPDesignTool
             {
                 lcl = value;
                 OnPropertyChanged(nameof(Lcl));
+            }
+        }
+        public bool UpdateFlag
+        {
+            get => updateFlag;
+            set
+            {
+                if (updateFlag != value)
+                {
+                    updateFlag = value;
+                    OnPropertyChanged(nameof(UpdateFlag));
+                }
             }
         }
 

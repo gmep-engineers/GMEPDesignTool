@@ -18,19 +18,13 @@ namespace GMEPDesignTool
         private int _aicRating;
         private float _kva;
         private float _va;
-       // private float _amp;
         private int _type;
         private bool _powered;
         private bool _isHiddenOnPlan;
         private string _location;
         private string _parentName;
         private string _parentType;
-        // private bool _isLcl;
-        // private float _lcl;
 
-        //private int _phaseAVa;
-        // private int _phaseBVa;
-        //private int _phaseCVa;
 
         public ElectricalComponent ParentComponent { get; set; }
 
@@ -104,9 +98,12 @@ namespace GMEPDesignTool
             this.componentType = "Panel";
             SetPole();
             PopulateCircuits();
+            updateFlag = false;
             notes.CollectionChanged += Notes_CollectionChanged;
         }
+
         
+
         public string ParentName
         {
             get => _parentName;
@@ -131,7 +128,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
         public override string ParentId
         {
             get => this.parentId;
@@ -471,7 +467,7 @@ namespace GMEPDesignTool
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
-            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA) || e.PropertyName == nameof(ElectricalPanel.PhaseBVA) || e.PropertyName == nameof(ElectricalPanel.PhaseCVA) || e.PropertyName == nameof(ElectricalPanel.Amp) || e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalPanel.Lcl) || e.PropertyName == nameof(ElectricalPanel.Lml))
+            if (e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalPanel.Name) ||e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -500,7 +496,7 @@ namespace GMEPDesignTool
         }
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ElectricalTransformer.PhaseAVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseBVA) || e.PropertyName == nameof(ElectricalTransformer.PhaseCVA) || e.PropertyName == nameof(ElectricalTransformer.Amp)  || e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name) || e.PropertyName == nameof(ElectricalTransformer.Lcl) || e.PropertyName == nameof(ElectricalTransformer.Lml))
+            if (e.PropertyName == nameof(ElectricalTransformer.Pole) || e.PropertyName == nameof(ElectricalEquipment.Name)  || e.PropertyName == nameof(ElectricalTransformer.UpdateFlag))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
@@ -889,6 +885,7 @@ namespace GMEPDesignTool
             Va = Kva;
             Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
             Amp = (float)Math.Ceiling(SetAmp());
+            UpdateFlag = !UpdateFlag;
         }
 
         public int DetermineBreakerSize(ElectricalComponent component)
