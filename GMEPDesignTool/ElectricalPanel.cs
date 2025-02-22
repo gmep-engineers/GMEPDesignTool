@@ -467,7 +467,7 @@ namespace GMEPDesignTool
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
-            if (e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalPanel.Name) ||e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
+            if (e.PropertyName == nameof(ElectricalPanel.Pole) || e.PropertyName == nameof(ElectricalPanel.Name) || e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
             {
                 SetCircuitNumbers();
                 SetCircuitVa();
