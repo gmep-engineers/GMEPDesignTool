@@ -1191,6 +1191,7 @@ namespace GMEPDesignTool
         public int length;
         //public string description;
         public string groupId;
+        public int stack;
         public SharedNoteData sharedData;
 
         public Note()
@@ -1199,6 +1200,7 @@ namespace GMEPDesignTool
             this.groupId = Guid.NewGuid().ToString();
             this.circuitNo = 0;
             this.length = 0;
+            this.stack = 0;
             this.sharedData = new SharedNoteData();
             sharedData.PropertyChanged += SharedData_PropertyChanged;
 
@@ -1207,6 +1209,7 @@ namespace GMEPDesignTool
         {
             this.circuitNo = note.CircuitNo;
             this.length = note.Length;
+            this.stack = note.stack;
             this.panelId = note.PanelId;
             this.projectId = note.ProjectId;
             this.id = Guid.NewGuid().ToString();
@@ -1327,6 +1330,18 @@ namespace GMEPDesignTool
                 {
                     sharedData.Number = value;
                     OnPropertyChanged(nameof(Number));
+                }
+            }
+        }
+        public int Stack
+        {
+            get => stack;
+            set
+            {
+                if (stack != value)
+                {
+                    stack = value;
+                    OnPropertyChanged(nameof(Stack));
                 }
             }
         }

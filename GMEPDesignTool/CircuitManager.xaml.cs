@@ -143,7 +143,7 @@ namespace GMEPDesignTool
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
-                    foreach (var node in viewModel.RightNodes)
+                    /*foreach (var node in viewModel.RightNodes)
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
@@ -160,7 +160,7 @@ namespace GMEPDesignTool
                         node.CircuitNo = 0;
                         node.Length = 0;
                         viewModel.RightNodes.Remove(node);
-                    }
+                    }*/
                     viewModel.RightNodes.Add(newNote);
 
                 }
@@ -195,20 +195,41 @@ namespace GMEPDesignTool
             }
         }
     }
-    public class CircuitToMarginConverter : IValueConverter
+
+    public class LeftMarginConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is int CircuitNo)
+            if (values[0] is int CircuitNo && values[1] is int stack)
             {
                 var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
                 // Adjust the margin based on the number of notes
-                return new Thickness(0, NewCircuitNo * 28, 0, 0);
+
+                return new Thickness(0, NewCircuitNo * 28, stack * 30, 0);
             }
             return new Thickness(0);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class RightMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is int CircuitNo && values[1] is int stack)
+            {
+                var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
+                // Adjust the margin based on the number of notes
+              
+                return new Thickness(stack * 30, NewCircuitNo * 28, 0, 0);
+            }
+            return new Thickness(0);
+        }
+
+        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -230,5 +251,6 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
     }
+    
 }
 

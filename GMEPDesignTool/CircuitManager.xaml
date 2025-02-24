@@ -6,13 +6,15 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="CircuitManager" Height="450" Width="800">
     <Window.Resources>
         <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
         <local:LclConverter x:Key="LclConverter"/>
         <local:ValueRounder x:Key="ValueRounder"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
-        <local:CircuitToMarginConverter x:Key="CircuitToMarginConverter"/>
+        <local:LeftMarginConverter x:Key="LeftMarginConverter"/>
+        <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
     </Window.Resources>
     <Grid>
@@ -99,7 +101,13 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" >
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource LeftMarginConverter}">
+                                            <Binding Path="CircuitNo"/>
+                                            <Binding Path="Stack"/>
+                                        </MultiBinding>
+                                    </Grid.Margin>
                                     <Grid HorizontalAlignment="Right" Width="30">
                                         <Grid>
                                             <Grid.Style>
@@ -1025,7 +1033,13 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}">
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource RightMarginConverter}">
+                                            <Binding Path="CircuitNo"/>
+                                            <Binding Path="Stack"/>
+                                        </MultiBinding>
+                                    </Grid.Margin>
                                     <Grid HorizontalAlignment="Left" Width="30">
                                         <Grid>
                                             <Grid.Style>

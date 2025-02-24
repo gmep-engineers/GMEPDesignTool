@@ -543,7 +543,6 @@ namespace GMEPDesignTool
         }
         private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (Note removedItem in e.OldItems)
