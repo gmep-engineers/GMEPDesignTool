@@ -139,23 +139,26 @@ namespace GMEPDesignTool
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> toRemove = new List<Note>();
+                    List<Note> existingNodes = new List<Note>();
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
-                    /*foreach (var node in viewModel.RightNodes)
+                    foreach (var node in viewModel.RightNodes)
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
                         if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
                         {
-                            if (!node.Equals(selectedNote))
-                            {
-                                toRemove.Add(node);
-                            }
+                            existingNodes.Add(node);
                         }
                     }
-                    foreach (var node in toRemove)
+
+                    existingNodes.OrderBy(note => note.Stack);
+                    if (existingNodes.Count > 0)
+                    {
+                        newNote.Stack = existingNodes.Last().Stack + 1;
+                    }
+                    /*foreach (var node in toRemove)
                     {
                         node.CircuitNo = 0;
                         node.Length = 0;
