@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
 using Mysqlx.Crud;
 
 namespace GMEPDesignTool
 {
     public class ProjectControlViewModel : INotifyPropertyChanged
     {
-       
-        public Database.Database database = new Database.Database();
+        public Database.Database database;
 
-        public ProjectControlViewModel(string projectNo)
+        public ProjectControlViewModel(string projectNo, LoginResponse loginResponse)
         {
             _projectNo = projectNo;
+            database = new Database.Database(loginResponse.SqlConnectionString);
             //InitializeProjectControlViewModel(projectNo);
         }
+
         public async Task InitializeProjectControlViewModel()
         {
             projectIds = await database.GetProjectIds(ProjectNo);
@@ -94,8 +95,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

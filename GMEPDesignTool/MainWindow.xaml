@@ -30,8 +30,8 @@
                     <MenuItem Header="_Copy"/>
                     <MenuItem Header="_Paste"/>
                 </MenuItem>
-                <MenuItem Header="_User">
-                    <MenuItem Header="_Logout"/>
+                <MenuItem Header="_Admin" Visibility="{Binding AdminMenuVisible}">
+                    <MenuItem Header="_Users" Command="{Binding OpenEmployeesWindowCommand}"/>
                 </MenuItem>
                 <MenuItem Header="_Help">
                     <MenuItem Header="_About"/>
@@ -63,8 +63,11 @@
                 <Rectangle HorizontalAlignment="Stretch" Height="65" Margin="10,0,10,15" Stroke="White" VerticalAlignment="Bottom"/>
                 <Image HorizontalAlignment="Left" Height="55" Margin="15,0,15,20" VerticalAlignment="Bottom" Width="60" RenderTransformOrigin="0.518,0.74" Source="/GMEPE-LogoTransparent.png" Stretch="Fill" Cursor="Hand" />
                 <Label Content="{Binding Path=Name}" HorizontalAlignment="Left" Margin="80,0,10,52" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="useremail@gmepe.com" HorizontalAlignment="Left" Margin="80,0,10,36" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="+1 (949) 555-5555" HorizontalAlignment="Left" Margin="80,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=EmailAddress}" HorizontalAlignment="Left" Margin="80,0,10,36" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=PhoneNumber, TargetNullValue={}}" ContentStringFormat="{}{0:(###) ###-####}"  HorizontalAlignment="Left" Margin="80,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=ExtensionLabel, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="168,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=Extension, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="190,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+
 
             </Grid>
 

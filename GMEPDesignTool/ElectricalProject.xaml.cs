@@ -36,7 +36,6 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl, IDropTarget
     {
-
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Note> PanelNotes { get; set; }
@@ -80,9 +79,13 @@ namespace GMEPDesignTool
             Owners = new Dictionary<string, string>();
 
             // Initialize ViewSources
-            EquipmentViewSource = (CollectionViewSource)FindResource("EquipmentViewSource") ?? throw new InvalidOperationException("EquipmentViewSource resource not found.");
+            EquipmentViewSource =
+                (CollectionViewSource)FindResource("EquipmentViewSource")
+                ?? throw new InvalidOperationException("EquipmentViewSource resource not found.");
             EquipmentViewSource.Filter += EquipmentViewSource_Filter;
-            LightingViewSource = (CollectionViewSource)FindResource("LightingViewSource") ?? throw new InvalidOperationException("LightingViewSource resource not found.");
+            LightingViewSource =
+                (CollectionViewSource)FindResource("LightingViewSource")
+                ?? throw new InvalidOperationException("LightingViewSource resource not found.");
             LightingViewSource.Filter += LightingViewSource_Filter;
 
             // Initialize other properties and event handlers
@@ -152,11 +155,16 @@ namespace GMEPDesignTool
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
-            List<Tuple<string, ElectricalPanel>> panelParentIds = new List<Tuple<string, ElectricalPanel>>();
+            List<Tuple<string, ElectricalPanel>> panelParentIds =
+                new List<Tuple<string, ElectricalPanel>>();
 
             foreach (var panel in ElectricalPanels)
             {
-                panel.DownloadComponents(ElectricalEquipments, ElectricalPanels, ElectricalTransformers);
+                panel.DownloadComponents(
+                    ElectricalEquipments,
+                    ElectricalPanels,
+                    ElectricalTransformers
+                );
                 if (!string.IsNullOrEmpty(panel.ParentId))
                 {
                     panelParentIds.Add(new Tuple<string, ElectricalPanel>(panel.ParentId, panel));
@@ -864,6 +872,7 @@ namespace GMEPDesignTool
                 RemoveElectricalPanel(electricalPanel);
             }
         }
+
         public void AssignPanelNotes(ElectricalPanel panel)
         {
             var filteredNotes = PanelNotes.Where(note => note.PanelId == panel.Id).ToList();
@@ -1102,9 +1111,15 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalPanel.ParentId))
                 {
-                    var transformer = ElectricalTransformers.FirstOrDefault(transformer => transformer.Id == panel.ParentId);
-                    var panel2 = ElectricalPanels.FirstOrDefault(panel2 => panel2.Id == panel.ParentId);
-                    var service = ElectricalServices.FirstOrDefault(service => service.Id == panel.ParentId);
+                    var transformer = ElectricalTransformers.FirstOrDefault(transformer =>
+                        transformer.Id == panel.ParentId
+                    );
+                    var panel2 = ElectricalPanels.FirstOrDefault(panel2 =>
+                        panel2.Id == panel.ParentId
+                    );
+                    var service = ElectricalServices.FirstOrDefault(service =>
+                        service.Id == panel.ParentId
+                    );
                     if (transformer != null)
                     {
                         transformer.AddChildPanel(panel);
@@ -1142,6 +1157,7 @@ namespace GMEPDesignTool
                 //StartTimer();
             }
         }
+
         private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -1328,6 +1344,7 @@ namespace GMEPDesignTool
                 RemoveElectricalEquipment(electricalEquipment);
             }
         }
+
         public void CopySelectedElectricalEquipment(object sender, EventArgs e)
         {
             if (
@@ -1336,45 +1353,44 @@ namespace GMEPDesignTool
             )
             {
                 ElectricalEquipment equipment = new ElectricalEquipment(
-               Guid.NewGuid().ToString(),
-               ProjectId,
-               electricalEquipment.Owner,
-               electricalEquipment.EquipNo,
-               electricalEquipment.Qty,
-               "",
-               electricalEquipment.Voltage,
-               electricalEquipment.Fla,
-               electricalEquipment.Va,
-               electricalEquipment.Is3Ph,
-               "",
-               0,
-               false,
-               0,
-               electricalEquipment.Category,
-               electricalEquipment.ColorCode,
-               false,
-               electricalEquipment.Connection,
-               electricalEquipment.Description,
-               electricalEquipment.McaId,
-               electricalEquipment.Hp,
-               electricalEquipment.HasPlug,
-               electricalEquipment.LockingConnector,
-               electricalEquipment.Width,
-               electricalEquipment.Depth,
-               electricalEquipment.Height,
-               0,
-               electricalEquipment.IsHiddenOnPlan,
-               electricalEquipment.LoadType,
-               0
-               );
+                    Guid.NewGuid().ToString(),
+                    ProjectId,
+                    electricalEquipment.Owner,
+                    electricalEquipment.EquipNo,
+                    electricalEquipment.Qty,
+                    "",
+                    electricalEquipment.Voltage,
+                    electricalEquipment.Fla,
+                    electricalEquipment.Va,
+                    electricalEquipment.Is3Ph,
+                    "",
+                    0,
+                    false,
+                    0,
+                    electricalEquipment.Category,
+                    electricalEquipment.ColorCode,
+                    false,
+                    electricalEquipment.Connection,
+                    electricalEquipment.Description,
+                    electricalEquipment.McaId,
+                    electricalEquipment.Hp,
+                    electricalEquipment.HasPlug,
+                    electricalEquipment.LockingConnector,
+                    electricalEquipment.Width,
+                    electricalEquipment.Depth,
+                    electricalEquipment.Height,
+                    0,
+                    electricalEquipment.IsHiddenOnPlan,
+                    electricalEquipment.LoadType,
+                    0
+                );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
                 ElectricalEquipments.Insert(newOrder, equipment);
                 OrderEquipment(ElectricalEquipments);
             }
-
-            
         }
+
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalEquipment equipment)
@@ -1385,9 +1401,7 @@ namespace GMEPDesignTool
                 )
                 {
                     equipment.Va = (int)
-                        Math.Ceiling(
-                            idToVoltage(equipment.Voltage) * equipment.Fla
-                        );
+                        Math.Ceiling(idToVoltage(equipment.Voltage) * equipment.Fla);
                 }
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
@@ -1409,10 +1423,13 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalEquipment.Va))
                 {
-                    equipment.Fla = (float)Math.Round(equipment.Va / idToVoltage(equipment.Voltage), 1,
-                            MidpointRounding.AwayFromZero);
+                    equipment.Fla = (float)
+                        Math.Round(
+                            equipment.Va / idToVoltage(equipment.Voltage),
+                            1,
+                            MidpointRounding.AwayFromZero
+                        );
                 }
-
 
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {
@@ -1450,7 +1467,6 @@ namespace GMEPDesignTool
 
                 if (PanelFilter.SelectedValue is string selectedPanel)
                 {
-
                     if (
                         !string.IsNullOrEmpty(selectedPanel)
                         && (equipment.ParentId == null || equipment.ParentId != selectedPanel)
@@ -1513,8 +1529,7 @@ namespace GMEPDesignTool
         private void ClrPcker_Background_SelectedColorChanged(
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
-        )
-        { }
+        ) { }
 
         //Lighting Functions
 
@@ -1656,9 +1671,7 @@ namespace GMEPDesignTool
                         isAccepted = false;
                     }
                 }
-                if (
-                    LightingLocationFilter.SelectedValue is string selectedLocationString
-                )
+                if (LightingLocationFilter.SelectedValue is string selectedLocationString)
                 {
                     if (lighting.LocationId != selectedLocationString)
                     {
@@ -1698,6 +1711,7 @@ namespace GMEPDesignTool
             LightingLocationFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
+
         public void OpenLocations_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -1714,17 +1728,23 @@ namespace GMEPDesignTool
                     }
                 }*/
                 if (
-                 sender is Button button
-                 && button.CommandParameter is ElectricalLighting lighting)
+                    sender is Button button
+                    && button.CommandParameter is ElectricalLighting lighting
+                )
                 {
-                    LightingLocations locations = new LightingLocations(LightingLocations);
+                    LightingLocations locations = new LightingLocations(
+                        LightingLocations,
+                        ProjectView.database
+                    );
                     locations.Show();
                 }
-
-
             });
         }
-        private void LightingLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+
+        private void LightingLocations_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
@@ -1743,11 +1763,11 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void LightingLocations_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //StartTimer();
         }
-
 
         //Transformer Functions
         public void AddElectricalTransformer(ElectricalTransformer electricalTransformer)
@@ -1755,7 +1775,7 @@ namespace GMEPDesignTool
             electricalTransformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
             ElectricalTransformers.Add(electricalTransformer);
             GetNames();
-           // StartTimer();
+            // StartTimer();
         }
 
         public void AddNewElectricalTransformer(object sender, EventArgs e)
@@ -1848,10 +1868,9 @@ namespace GMEPDesignTool
                 {
                     GetNames();
                 }
-               // StartTimer();
+                // StartTimer();
             }
         }
-
 
         private void Calculate_Click(object sender, RoutedEventArgs e)
         {
@@ -2003,6 +2022,7 @@ namespace GMEPDesignTool
                 equipment.SpecSheetId = "";
             }
         }
+
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             dropInfo.Effects = DragDropEffects.Move;
@@ -2018,7 +2038,8 @@ namespace GMEPDesignTool
 
                 if (sourceIndex != targetIndex)
                 {
-                    if (targetIndex > ElectricalEquipments.Count - 1) {
+                    if (targetIndex > ElectricalEquipments.Count - 1)
+                    {
                         targetIndex = ElectricalEquipments.Count - 1;
                     }
                     ElectricalEquipments.Move(sourceIndex, targetIndex);
@@ -2026,18 +2047,17 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
         {
             int index = 0;
-            foreach(var equipment in equipments)
+            foreach (var equipment in equipments)
             {
                 equipment.OrderNo = index;
                 index++;
             }
         }
-
     }
-
 
     public class MinimumValueValidationRule : ValidationRule
     {
@@ -2286,5 +2306,3 @@ namespace GMEPDesignTool
         #endregion
     }
 }
-
-

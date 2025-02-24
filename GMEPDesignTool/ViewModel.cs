@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Data;
@@ -14,6 +16,7 @@ namespace GMEPDesignTool
 {
     public class ViewModel : ViewModelBase
     {
+        private LoginResponse loginResponse;
         private List<Project> _projects = new List<Project>();
         public List<Project> Projects
         {
@@ -69,6 +72,34 @@ namespace GMEPDesignTool
             set => SetProperty(ref _name, value);
         }
 
+        private string _emailAddress = "";
+        public string EmailAddress
+        {
+            get => _emailAddress;
+            set => SetProperty(ref _emailAddress, value);
+        }
+
+        private ulong? _phoneNumber = null;
+        public ulong? PhoneNumber
+        {
+            get => _phoneNumber;
+            set => SetProperty(ref _phoneNumber, value);
+        }
+
+        private uint? _extension = null;
+        public uint? Extension
+        {
+            get => _extension;
+            set => SetProperty(ref _extension, value);
+        }
+
+        private string? _extensionLabel = null;
+        public string? ExtensionLabel
+        {
+            get => _extensionLabel;
+            set => SetProperty(ref _extensionLabel, value);
+        }
+
         private List<Dictionary<string, string>> _searchResults =
             new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> SearchResults
@@ -82,6 +113,19 @@ namespace GMEPDesignTool
         {
             get => _searchResultKeys;
             set => SetProperty(ref _searchResultKeys, value);
+        }
+
+        private Visibility _AdminMenuVisible;
+        public Visibility AdminMenuVisible
+        {
+            get => _AdminMenuVisible;
+            set
+            {
+                if (_AdminMenuVisible != value)
+                {
+                    _AdminMenuVisible = value;
+                }
+            }
         }
 
         private string _searchText = "";
@@ -102,28 +146,61 @@ namespace GMEPDesignTool
 
         private readonly DelegateCommand _getSearchResultsCommand;
         public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
+
+        private readonly DelegateCommand _openEmployeesWindowCommand;
+        public ICommand OpenEmployeesWindowCommand => _openEmployeesWindowCommand;
         public ObservableCollection<TabItem> Tabs { get; set; }
 
-        public ViewModel()
+        public ViewModel(LoginResponse loginResponse)
         {
+            this.loginResponse = loginResponse;
             Tabs = new ObservableCollection<TabItem>();
             _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
-            Name = "My Name";
+            _openEmployeesWindowCommand = new DelegateCommand(
+                OpenEmployeesWindow,
+                CanOpenEmployeesWindow
+            );
+            Name = loginResponse.FirstName + " " + loginResponse.LastName;
+            EmailAddress = loginResponse.EmailAddress;
+            PhoneNumber = loginResponse.PhoneNumber;
+            Extension = loginResponse.Extension;
+            if (Extension != null)
+            {
+                ExtensionLabel = "ext.";
+            }
+
+            AdminMenuVisible = Visibility.Collapsed;
+            if (loginResponse.AccessLevelId == 1)
+            {
+                AdminMenuVisible = Visibility.Visible;
+            }
         }
 
         private void GetSearchResults(object commandParameter)
         {
             SearchResults = new List<Dictionary<string, string>>();
             SearchResultKeys = new List<string>();
-            Dictionary<string, string> thing = new Dictionary<string, string>();
-            thing["24-100"] = "Z:\\lskdjfksljf";
-            SearchResults.Add(thing);
             SearchResultKeys.Add(SearchText);
         }
 
         private bool CanGetSearchResults(object commandParameter)
         {
             return true;
+        }
+
+        private void OpenEmployeesWindow(object commandParameter)
+        {
+            EmployeesWindow employeesWindow = new EmployeesWindow(loginResponse);
+            employeesWindow.Show();
+        }
+
+        private bool CanOpenEmployeesWindow(object commandParameter)
+        {
+            if (loginResponse.AccessLevelId == 1)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async void OpenProject(string projectNo)
@@ -145,7 +222,7 @@ namespace GMEPDesignTool
             };
             Tabs.Add(newTab);
             var projectControl = new ProjectControl();
-            await projectControl.InitializeProject(projectNo);
+            await projectControl.InitializeProject(projectNo, loginResponse);
             newTab.Content = projectControl;
         }
 

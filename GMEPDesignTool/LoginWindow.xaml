@@ -13,9 +13,10 @@
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <TextBlock Text="GMEP Design Tool" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="25" FontWeight="Bold" Margin="0,26,0,0" Foreground="DodgerBlue" FontFamily="Roboto"/>
                     <Label Content="Username" Margin="0,26,0,0" FontWeight="Bold"/>
-                    <TextBox x:Name="EmailBox" Width="228" Height="40" FontSize="20" Text="" HorizontalAlignment="Center" />
+                    <TextBox x:Name="UsernameBox" Width="228" Height="40" FontSize="20" Text="" HorizontalAlignment="Center" KeyUp="TextBox_KeyUp"/>
                     <Label Content="Password" Margin="0,26,0,0" FontWeight="Bold"/>
-                    <PasswordBox x:Name="PasswordBox" Width="228" Height="40" FontSize="20" HorizontalAlignment="Center" Password="" />
+                    <PasswordBox x:Name="PasswordBox" Width="228" Height="40" FontSize="20" HorizontalAlignment="Center" Password="" KeyUp="TextBox_KeyUp"/>
+                    <Label x:Name="IncorrectPasswordLabel" Content="Incorrect Password" Margin="0,26,0,0" Foreground="Crimson" Visibility="Hidden"/>
                     <Button Content="Log In" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,26,0,0" Click="Login_Click"/>
                     <Button Content="Exit" HorizontalAlignment="Center" FontWeight="Bold" Background="SlateGray" Foreground="White"  VerticalAlignment="Top" Width="100" Height="24" Margin="0,26,0,0" Click="Exit_Click"/>
                 </StackPanel>

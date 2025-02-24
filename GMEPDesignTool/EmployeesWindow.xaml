@@ -1,0 +1,85 @@
+﻿<Window x:Class="GMEPDesignTool.EmployeesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Employees" Height="720" Width="1200">
+    <Grid>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Click="SaveClick"/>
+                <MenuItem Header="_Close" />
+            </MenuItem>
+        </Menu>
+        <DataGrid Name="EmployeesDataGrid" ItemsSource="{Binding Employees,Mode=TwoWay}" SelectedItem="{Binding Path=SelectedEmployee,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 20 0 0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridComboBoxColumn Header="Department"  SelectedValueBinding="{Binding DepartmentId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Engineer" Tag="1"/>
+                            <ComboBoxItem Content="Manager" Tag="2"/>
+                            <ComboBoxItem Content="Engineer" Tag="3"/>
+                            <ComboBoxItem Content="Engineer" Tag="4"/>
+                            <ComboBoxItem Content="Engineer" Tag="5"/>
+                            <ComboBoxItem Content="Engineer" Tag="6"/>
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridComboBoxColumn Header="Title"  SelectedValueBinding="{Binding TitleId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Engineer" Tag="1"/>
+                            <ComboBoxItem Content="Engineer" Tag="2"/>
+                            <ComboBoxItem Content="Engineer" Tag="3"/>
+                            <ComboBoxItem Content="Engineer" Tag="4"/>
+                            <ComboBoxItem Content="Engineer" Tag="5"/>
+                            <ComboBoxItem Content="Engineer" Tag="6"/>
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridTextColumn Header="Email Address" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridTextColumn Header="Phone Number">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="PhoneNumber" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:(###) ###-####}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:PhoneNumberConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Extension" Binding="{Binding Extension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
+                <DataGridTextColumn>
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="HireDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Termination Date" >
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="TerminationDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Username" Binding="{Binding Username, UpdateSourceTrigger=LostFocus}"/>
+                <DataGridTemplateColumn Header="Password">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="UpdatePasswordClick">Update Password</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
