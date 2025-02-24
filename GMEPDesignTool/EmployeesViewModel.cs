@@ -51,6 +51,57 @@ namespace GMEPDesignTool
         }
     }
 
+    public class DateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
+        {
+            if (value != null)
+            {
+                string month;
+                string day;
+                string year;
+
+                string str = value.ToString();
+                string[] strArr = str.Split('-');
+                if (str.Contains('/'))
+                {
+                    strArr = str.Split("/");
+                }
+                month = strArr[0];
+                day = strArr[1];
+                year = strArr[2];
+                if (month.Length == 1)
+                {
+                    month = "0" + month;
+                }
+                if (day.Length == 1)
+                {
+                    day = "0" + day;
+                }
+                if (year.Length == 2)
+                {
+                    year = "20" + year;
+                }
+                if (!DateTime.TryParse(year + "-" + month + "-" + day, out DateTime parsedDate))
+                {
+                    return Binding.DoNothing;
+                }
+                return parsedDate;
+            }
+            return null;
+        }
+    }
+
     public class Employee : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -218,8 +269,8 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private DateTime _HireDate = DateTime.MinValue;
-        public DateTime HireDate
+        private DateTime? _HireDate = null;
+        public DateTime? HireDate
         {
             get => _HireDate;
             set
@@ -232,8 +283,8 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private DateTime _TerminationDate = DateTime.MinValue;
-        public DateTime TerminationDate
+        private DateTime? _TerminationDate = null;
+        public DateTime? TerminationDate
         {
             get => _TerminationDate;
             set
@@ -274,8 +325,8 @@ namespace GMEPDesignTool
             ulong? phoneNumber,
             string phoneNumberId,
             uint? extension,
-            DateTime hireDate,
-            DateTime terminationDate,
+            DateTime? hireDate,
+            DateTime? terminationDate,
             string username
         )
         {

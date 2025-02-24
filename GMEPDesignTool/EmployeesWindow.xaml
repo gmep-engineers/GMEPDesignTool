@@ -53,18 +53,23 @@
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Extension" Binding="{Binding Extension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
-                <DataGridTextColumn Header="Hire Date" Binding="{Binding HireDate, StringFormat=\{0:MM.dd.yyyy\}, UpdateSourceTrigger=LostFocus}" />
+                <DataGridTextColumn>
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="HireDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Termination Date" >
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Content" Value="{Binding Path=TerminationDate, StringFormat=\{0:MM.dd.yyyy\}, UpdateSourceTrigger=LostFocus}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding TerminationDate, UpdateSourceTrigger=LostFocus}" Value="{x:Static sys:DateTime.MinValue}">
-                                    <Setter Property="Content" Value=""/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="TerminationDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Username" Binding="{Binding Username, UpdateSourceTrigger=LostFocus}"/>
                 <DataGridTemplateColumn Header="Password">

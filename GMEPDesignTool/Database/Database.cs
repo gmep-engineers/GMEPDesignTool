@@ -74,14 +74,14 @@ namespace GMEPDesignTool.Database
             return string.Empty;
         }
 
-        DateTime GetSafeDate(MySqlDataReader reader, string fieldName)
+        DateTime? GetUnsafeDate(MySqlDataReader reader, string fieldName)
         {
             int index = reader.GetOrdinal(fieldName);
             if (!reader.IsDBNull(index))
             {
                 return reader.GetDateTime(index);
             }
-            return DateTime.MinValue;
+            return null;
         }
 
         int GetSafeInt(MySqlDataReader reader, string fieldName)
@@ -206,8 +206,8 @@ namespace GMEPDesignTool.Database
                         GetUnsafeULong(reader, "phone_number"),
                         GetSafeString(reader, "phone_number_id"),
                         GetUnsafeUInt(reader, "extension"),
-                        GetSafeDate(reader, "hire_date"),
-                        GetSafeDate(reader, "termination_date"),
+                        GetUnsafeDate(reader, "hire_date"),
+                        GetUnsafeDate(reader, "termination_date"),
                         GetSafeString(reader, "username")
                     )
                 );
