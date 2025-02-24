@@ -40,8 +40,8 @@ namespace GMEPDesignTool
         public int AccessLevelId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public long PhoneNumber { get; set; }
-        public int? Extension { get; set; }
+        public ulong? PhoneNumber { get; set; }
+        public uint? Extension { get; set; }
         public string EmailAddress { get; set; }
     }
 

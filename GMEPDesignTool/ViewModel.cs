@@ -79,11 +79,25 @@ namespace GMEPDesignTool
             set => SetProperty(ref _emailAddress, value);
         }
 
-        private string _phoneNumber = "";
-        public string PhoneNumber
+        private ulong? _phoneNumber = null;
+        public ulong? PhoneNumber
         {
             get => _phoneNumber;
             set => SetProperty(ref _phoneNumber, value);
+        }
+
+        private uint? _extension = null;
+        public uint? Extension
+        {
+            get => _extension;
+            set => SetProperty(ref _extension, value);
+        }
+
+        private string? _extensionLabel = null;
+        public string? ExtensionLabel
+        {
+            get => _extensionLabel;
+            set => SetProperty(ref _extensionLabel, value);
         }
 
         private List<Dictionary<string, string>> _searchResults =
@@ -148,11 +162,13 @@ namespace GMEPDesignTool
             );
             Name = loginResponse.FirstName + " " + loginResponse.LastName;
             EmailAddress = loginResponse.EmailAddress;
-            PhoneNumber = loginResponse.PhoneNumber.ToString();
-            if (loginResponse.Extension != null && loginResponse.Extension != 0)
+            PhoneNumber = loginResponse.PhoneNumber;
+            Extension = loginResponse.Extension;
+            if (Extension != null)
             {
-                PhoneNumber += " ext. " + loginResponse.Extension.ToString();
+                ExtensionLabel = "ext.";
             }
+
             AdminMenuVisible = Visibility.Collapsed;
             if (loginResponse.AccessLevelId == 1)
             {
