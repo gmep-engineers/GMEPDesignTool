@@ -77,26 +77,33 @@ namespace GMEPDesignTool
                 {
                     strArr = str.Split("/");
                 }
-                month = strArr[0];
-                day = strArr[1];
-                year = strArr[2];
-                if (month.Length == 1)
+                if (strArr.Length == 3)
                 {
-                    month = "0" + month;
+                    month = strArr[0];
+                    day = strArr[1];
+                    year = strArr[2];
+                    if (month.Length == 1)
+                    {
+                        month = "0" + month;
+                    }
+                    if (day.Length == 1)
+                    {
+                        day = "0" + day;
+                    }
+                    if (year.Length == 2)
+                    {
+                        year = "20" + year;
+                    }
+                    if (!DateTime.TryParse(year + "-" + month + "-" + day, out DateTime parsedDate))
+                    {
+                        return Binding.DoNothing;
+                    }
+                    return parsedDate;
                 }
-                if (day.Length == 1)
-                {
-                    day = "0" + day;
-                }
-                if (year.Length == 2)
-                {
-                    year = "20" + year;
-                }
-                if (!DateTime.TryParse(year + "-" + month + "-" + day, out DateTime parsedDate))
+                else
                 {
                     return Binding.DoNothing;
                 }
-                return parsedDate;
             }
             return null;
         }
