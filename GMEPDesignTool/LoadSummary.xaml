@@ -6,7 +6,16 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="LoadSummary" Height="450" Width="800">
-    <Grid>
-        
+    <Grid Background="AliceBlue">
+        <ListBox ItemsSource="{Binding components}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="{Binding Name}"/>
+                        <TextBox Text="{Binding RootKva}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
