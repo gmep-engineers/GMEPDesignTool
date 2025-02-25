@@ -94,8 +94,9 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <GridSplitter Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch"/>
-                <Grid Grid.Column="2" Margin="0 101 0 0">
+                <GridSplitter Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" Margin="0 101 0 30"/>
+                <Grid Grid.Column="2" Margin="0 101 0 30">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding LeftNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -108,7 +109,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Grid.Row="0" VerticalAlignment="Top" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" >
+                                <Grid Grid.Row="0" VerticalAlignment="Top" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter}}">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource LeftMarginConverter}">
                                             <Binding Path="CircuitNo"/>
@@ -143,6 +144,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
                 <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2" Margin="0 0 0 30">
                     <Grid>
