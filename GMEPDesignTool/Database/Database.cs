@@ -845,7 +845,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdatePanelNote(Note panelNotes)
         {
             string query =
-                "UPDATE panel_notes SET number = @number, circuit_no = @circuitNo, length = @length, description = @description  WHERE id = @id";
+                "UPDATE panel_notes SET number = @number, circuit_no = @circuitNo, length = @length, description = @description, stack = @stack WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@id", panelNotes.Id);
@@ -853,6 +853,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuitNo", panelNotes.CircuitNo);
             command.Parameters.AddWithValue("@length", panelNotes.Length);
             command.Parameters.AddWithValue("@description", panelNotes.Description);
+            command.Parameters.AddWithValue("@stack", panelNotes.Stack);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -860,7 +861,7 @@ namespace GMEPDesignTool.Database
         private async Task InsertPanelNote(string projectId, Note panelNotes)
         {
             string query =
-                "INSERT INTO panel_notes (id, number, panel_id, project_id, circuit_no, length, description, group_id) VALUES (@id, @number, @panelId, @projectId, @circuitNo, @length, @description, @groupId)";
+                "INSERT INTO panel_notes (id, number, panel_id, project_id, circuit_no, length, description, group_id, stack) VALUES (@id, @number, @panelId, @projectId, @circuitNo, @length, @description, @groupId, @stack)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panelNotes.Id);
             command.Parameters.AddWithValue("@number", panelNotes.Number);
@@ -870,6 +871,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@length", panelNotes.Length);
             command.Parameters.AddWithValue("@description", panelNotes.Description);
             command.Parameters.AddWithValue("@groupId", panelNotes.GroupId);
+            command.Parameters.AddWithValue("@stack", panelNotes.Stack);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1190,6 +1192,7 @@ namespace GMEPDesignTool.Database
                 note.length = reader.GetInt32("length");
                 note.Description = reader.GetString("description");
                 note.GroupId = reader.GetString("group_id");
+                note.Stack = reader.GetInt32("stack");
                 panelNotes.Add(note);
             }
             await reader.CloseAsync();

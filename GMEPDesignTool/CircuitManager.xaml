@@ -6,13 +6,15 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="CircuitManager" Height="450" Width="800">
     <Window.Resources>
         <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
         <local:LclConverter x:Key="LclConverter"/>
         <local:ValueRounder x:Key="ValueRounder"/>
         <local:BindingProxy x:Key="PoleBindingProxy" Data="{Binding Pole}"/>
-        <local:CircuitToMarginConverter x:Key="CircuitToMarginConverter"/>
+        <local:LeftMarginConverter x:Key="LeftMarginConverter"/>
+        <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
     </Window.Resources>
     <Grid>
@@ -60,9 +62,11 @@
             <Grid Margin="0 20 0 20" MinWidth="1080"  MaxWidth="1950" Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width=".7*"/>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width=".3*"/>
                     <ColumnDefinition Width="8*"/>
                     <ColumnDefinition Width=".3*"/>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width=".7*"/>
                 </Grid.ColumnDefinitions>
                 <ListBox ItemsSource="{Binding LeftComponents}" 
@@ -90,16 +94,28 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Grid Grid.Column="1" Margin="0 101 0 0">
+                <GridSplitter Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" Margin="0 101 0 30"/>
+                <Grid Grid.Column="2" Margin="0 101 0 30">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding LeftNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas  />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                </Grid>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                <Grid Grid.Row="0" VerticalAlignment="Top" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter}}">
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource LeftMarginConverter}">
+                                            <Binding Path="CircuitNo"/>
+                                            <Binding Path="Stack"/>
+                                        </MultiBinding>
+                                    </Grid.Margin>
                                     <Grid HorizontalAlignment="Right" Width="30">
                                         <Grid>
                                             <Grid.Style>
@@ -128,8 +144,9 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
-                <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2" Margin="0 0 0 30">
+                <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2" Margin="0 0 0 30">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>
@@ -1016,16 +1033,27 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <Grid Grid.Column="3" Margin="0 101 0 0">
+                <Grid Grid.Column="4" Margin="0 101 0 30">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding RightNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas  />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                </Grid>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Margin="{Binding CircuitNo, Converter={StaticResource CircuitToMarginConverter}}">
+                                <Grid VerticalAlignment="Top" Grid.Row="0" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter}}" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}">
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource RightMarginConverter}">
+                                            <Binding Path="CircuitNo"/>
+                                            <Binding Path="Stack"/>
+                                        </MultiBinding>
+                                    </Grid.Margin>
                                     <Grid HorizontalAlignment="Left" Width="30">
                                         <Grid>
                                             <Grid.Style>
@@ -1054,8 +1082,10 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
-                <StackPanel Orientation="Vertical" Grid.Column="4" Margin="0 100 20 0">
+                <GridSplitter Grid.Column="5" Margin="0 101 0 30" HorizontalAlignment="Stretch" />
+                <StackPanel MinWidth="100" Orientation="Vertical" Grid.Column="6" Margin="0 100 20 0">
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"
                        dd:DragDrop.IsDropTarget="True"
