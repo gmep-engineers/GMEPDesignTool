@@ -96,7 +96,7 @@
                 </ListBox>
                 <GridSplitter Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" Margin="0 101 0 30"/>
                 <Grid Grid.Column="2" Margin="0 101 0 30">
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding LeftNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -1033,7 +1033,8 @@
                         </Grid>
                     </Grid>
                 </Border>
-                <Grid Grid.Column="4" Margin="0 101 0 0">
+                <Grid Grid.Column="4" Margin="0 101 0 30">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding RightNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -1081,8 +1082,9 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    </ScrollViewer>
                 </Grid>
-                <GridSplitter Grid.Column="5" HorizontalAlignment="Stretch" />
+                <GridSplitter Grid.Column="5" Margin="0 101 0 30" HorizontalAlignment="Stretch" />
                 <StackPanel MinWidth="100" Orientation="Vertical" Grid.Column="6" Margin="0 100 20 0">
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"
