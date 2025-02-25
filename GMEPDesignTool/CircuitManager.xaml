@@ -99,12 +99,16 @@
                     <ItemsControl ItemsSource="{Binding LeftNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas  />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                </Grid>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" >
+                                <Grid Grid.Row="0" VerticalAlignment="Top" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" >
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource LeftMarginConverter}">
                                             <Binding Path="CircuitNo"/>
@@ -1031,12 +1035,16 @@
                     <ItemsControl ItemsSource="{Binding RightNodes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Canvas  />
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                </Grid>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Height="{Binding Length, Converter={StaticResource LengthToHeightConverter} }" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}">
+                                <Grid VerticalAlignment="Top" Grid.Row="0" Height="{Binding Length, Converter={StaticResource LengthToHeightConverter}}" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource RightMarginConverter}">
                                             <Binding Path="CircuitNo"/>
