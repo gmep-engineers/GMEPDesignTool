@@ -19,9 +19,12 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class LoadSummary : Window
     {
-        public LoadSummary()
+        LoadSummaryViewModel viewModel { get; set; }
+        public LoadSummary(ElectricalService service)
         {
             InitializeComponent();
+            viewModel = new LoadSummaryViewModel(service);
+            this.DataContext = viewModel;
         }
     }
 }

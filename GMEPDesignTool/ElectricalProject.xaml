@@ -86,7 +86,8 @@
                                             <ComboBoxItem Content="4000" Tag="12"/>
                                         </ComboBox>
                                         <Label Content="AIC Rating" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="340 27 0 0"/>
-                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="340,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="340,50,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                        <Button Content="Load Summary" FontWeight="Bold" Margin="440,50,150,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="20" Click="LoadSummary_Click" CommandParameter="{Binding}"/>
                                         <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right">
                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
                                             <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalService" CommandParameter="{Binding}"/>

@@ -1277,6 +1277,25 @@ namespace GMEPDesignTool
                 //StartTimer();
             }
         }
+        private void LoadSummary_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is ElectricalService service)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is LoadSummary loadSummary)
+                        {
+                            loadSummary.Close();
+                            break;
+                        }
+                    }
+                    LoadSummary summary = new LoadSummary(service);
+                    summary.Show();
+                });
+            }
+        }
 
         //Equipment Functions
         public void AddElectricalEquipment(ElectricalEquipment electricalEquipment)
