@@ -16,7 +16,7 @@ namespace GMEPDesignTool
         private int _type;
         private int _config;
         private int _aicRating;
-        public ObservableCollection<ElectricalPanel> childPanels { get; set; } = new ObservableCollection<ElectricalPanel>();
+        public ObservableCollection<ElectricalComponent> childComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
         public ElectricalService(
             string id,
             string projectId,
@@ -78,11 +78,57 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private void ParentComponent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void AssignPanel(ElectricalPanel panel)
         {
-            
+            childComponents.Add(panel);
+            panel.PropertyChanged += Panel_PropertyChanged;
         }
-
+        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.ParentId))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    panel.PropertyChanged -= Panel_PropertyChanged;
+                    childComponents.Remove(panel);
+                }
+            }
+        }
+        public void AssignTransformer(ElectricalTransformer transformer)
+        {
+            childComponents.Add(transformer);
+            transformer.PropertyChanged += Transformer_PropertyChanged;
+        }
+        private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    transformer.PropertyChanged -= Transformer_PropertyChanged;
+                    childComponents.Remove(transformer);
+                }
+            }
+        }
+        public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
+        {
+            foreach (var panel in panels)
+            {
+                if (panel.ParentId == Id)
+                {
+                    childComponents.Add(panel);
+                    panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (transformer.ParentId == Id)
+                {
+                    childComponents.Add(transformer);
+                    transformer.PropertyChanged += Transformer_PropertyChanged;
+                }
+            }
+        }
 
 
         public bool Verify()

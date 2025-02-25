@@ -673,6 +673,7 @@ namespace GMEPDesignTool
             Lml = 0;
             Lcl = 0;
             Kva = 0;
+            RootKva = 0;
             int phaseIndex = 0;
             foreach (var component in leftComponents)
             {
@@ -883,7 +884,8 @@ namespace GMEPDesignTool
             //CalculateLcl();
            // CalculateLml();
             Va = Kva;
-            Kva = (float)Math.Ceiling((Kva + (Lml/4) + (Lcl/4)) / 1000);
+            RootKva = (Kva + (Lml/4) + (Lcl/4)) / 1000;
+            Kva = (float)Math.Ceiling(RootKva);
             Amp = (float)Math.Ceiling(SetAmp());
             UpdateFlag = !UpdateFlag;
         }

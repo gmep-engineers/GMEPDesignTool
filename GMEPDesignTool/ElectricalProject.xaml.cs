@@ -193,6 +193,7 @@ namespace GMEPDesignTool
             }
             foreach (var service in ElectricalServices)
             {
+                service.DownloadComponents(ElectricalPanels, ElectricalTransformers);
                 foreach (var panelParentId in panelParentIds)
                 {
                     if (panelParentId.Item1 == service.Id)
@@ -1132,6 +1133,7 @@ namespace GMEPDesignTool
                     if (service != null)
                     {
                         panel.AssignParentComponent(service);
+                        service.AssignPanel(panel);
                     }
                 }
 
@@ -1856,6 +1858,13 @@ namespace GMEPDesignTool
                         if (panel.Id == transformer.ParentId)
                         {
                             panel.AssignTransformer(transformer);
+                        }
+                    }
+                    foreach(var service in ElectricalServices)
+                    {
+                        if (service.Id == transformer.ParentId)
+                        {
+                            service.AssignTransformer(transformer);
                         }
                     }
                 }
