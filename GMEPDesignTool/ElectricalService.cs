@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto.Modes.Gcm;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,7 +16,7 @@ namespace GMEPDesignTool
         private int _type;
         private int _config;
         private int _aicRating;
-
+        public ObservableCollection<ElectricalPanel> childPanels { get; set; } = new ObservableCollection<ElectricalPanel>();
         public ElectricalService(
             string id,
             string projectId,
@@ -75,6 +77,10 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(AicRating));
                 }
             }
+        }
+        private void ParentComponent_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            
         }
 
 
