@@ -154,7 +154,7 @@ namespace GMEPDesignTool
                         }
                     }
 
-                   //existingNodes.OrderBy(note => note.Stack);
+                   existingNodes.OrderBy(note => note.Stack);
 
                     if (existingNodes.Count > 0)
                     {
@@ -164,6 +164,7 @@ namespace GMEPDesignTool
                             if (node == null)
                             {
                                 newNote.Stack = i;
+                                break;
                             }
                         }
                     }
