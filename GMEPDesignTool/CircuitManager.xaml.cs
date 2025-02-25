@@ -69,7 +69,7 @@ namespace GMEPDesignTool
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> toRemove = new List<Note>();
+                    List<Note> existingNodes = new List<Note>();
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
@@ -77,22 +77,28 @@ namespace GMEPDesignTool
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
                         {
-                            if (!node.Equals(selectedNote))
+                            existingNodes.Add(node);
+                        }
+                    }
+
+                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+
+                    if (existingNodes2.Count > 0)
+                    {
+                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
+                        {
+                            var node = existingNodes2.Find(note => note.Stack == i);
+                            if (node == null)
                             {
-                                toRemove.Add(node);
+                                newNote.Stack = i;
+                                break;
                             }
                         }
                     }
-                    foreach (var node in toRemove)
-                    {
-                        node.CircuitNo = 0;
-                        node.Length = 0;
-                        viewModel.LeftNodes.Remove(node);
-                    }
                     viewModel.LeftNodes.Add(newNote);
-   
+
                 }
 
             }
@@ -148,19 +154,19 @@ namespace GMEPDesignTool
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
                         {
                             existingNodes.Add(node);
                         }
                     }
 
-                   existingNodes.OrderBy(note => note.Stack);
+                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
 
-                    if (existingNodes.Count > 0)
+                    if (existingNodes2.Count > 0)
                     {
-                        for (int i = 0; i <= existingNodes.Last().Stack + 1; i++)
+                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
                         {
-                            var node = existingNodes.Find(note => note.Stack == i);
+                            var node = existingNodes2.Find(note => note.Stack == i);
                             if (node == null)
                             {
                                 newNote.Stack = i;
@@ -168,17 +174,7 @@ namespace GMEPDesignTool
                             }
                         }
                     }
-                
 
-                    
-
-
-                    /*foreach (var node in toRemove)
-                    {
-                        node.CircuitNo = 0;
-                        node.Length = 0;
-                        viewModel.RightNodes.Remove(node);
-                    }*/
                     viewModel.RightNodes.Add(newNote);
 
                 }
