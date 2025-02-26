@@ -39,6 +39,12 @@ namespace GMEPDesignTool
             get => totalAmp;
             set => SetProperty(ref totalAmp, value);
         }
+        public float amp;
+        public float Amp
+        {
+            get => amp;
+            set => SetProperty(ref amp, value);
+        }
         public ObservableCollection<ElectricalComponent> components { get; set; }
         public LoadSummaryViewModel(ElectricalService service)
         {
@@ -48,6 +54,7 @@ namespace GMEPDesignTool
             this.rootKva = service.RootKva;
             this.totalAmp = service.TotalAmp;
             this.configuration = SetConfiguration(service.Type);
+            this.Amp = SetAmp(service.Amp);
             service.PropertyChanged += Service_PropertyChanged;
         }
 
@@ -74,6 +81,11 @@ namespace GMEPDesignTool
                 TotalAmp = service.TotalAmp;
                 OnPropertyChanged(nameof(Type));
             }
+            if (e.PropertyName == nameof(ElectricalService.Amp))
+            {
+                Amp = SetAmp(service.Amp);
+                OnPropertyChanged(nameof(Type));
+            }
         }
         public string SetConfiguration(int type)
         {
@@ -93,7 +105,38 @@ namespace GMEPDesignTool
                     return "";
             }
         }
-        
+        public float SetAmp(float amp)
+        {
+            switch (amp)
+            {
+                case 1:
+                    return 100;
+                case 2:
+                    return 200;
+                case 3:
+                    return 400;
+                case 4:
+                    return 600;
+                case 5:
+                    return 800;
+                case 6:
+                    return 1000;
+                case 7:
+                    return 1200;
+                case 8:
+                    return 1600;
+                case 9:
+                    return 2000;
+                case 10:
+                    return 2200;
+                case 11:
+                    return 3000;
+                case 12:
+                    return 4000;
+                default:
+                    return 1;
+            }
+        }         
         
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

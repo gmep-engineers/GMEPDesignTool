@@ -14,10 +14,10 @@
         <Border Background="LightSlateGray" BorderBrush="Black" BorderThickness="2">
             <Grid Background="White" Margin="10">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="5*"/>
                     <RowDefinition Height="5"/>
-                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height=".5*"/>
                 </Grid.RowDefinitions>
                 <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0">
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">
@@ -120,7 +120,9 @@
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="CONCLUSION"/>
                         </Border>
-                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding Amp}"/>
+                        </Border>
                     </Grid>
                 </Grid>
             </Grid>
