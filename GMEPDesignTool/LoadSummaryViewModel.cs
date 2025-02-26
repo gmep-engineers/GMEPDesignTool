@@ -25,6 +25,13 @@ namespace GMEPDesignTool
             get => rootKva;
             set => SetProperty(ref rootKva, value);
         }
+        public string configuration;
+
+        public string Configuration
+        {
+            get => configuration;
+            set => SetProperty(ref configuration, value);
+        }
         public ObservableCollection<ElectricalComponent> components { get; set; }
         public LoadSummaryViewModel(ElectricalService service)
         {
@@ -32,6 +39,7 @@ namespace GMEPDesignTool
             this.components = service.childComponents;
             this.name = service.Name;
             this.rootKva = service.RootKva;
+            //this.configuration = SetConfiguration(service.Type);
             service.PropertyChanged += Service_PropertyChanged;
         }
 
@@ -49,6 +57,27 @@ namespace GMEPDesignTool
                 OnPropertyChanged(nameof(RootKva));
             }
         }
+        public string SetConfiguration(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return "120/208V-3P-4W";
+
+                case 2:
+                    return "120/240V-1P-3W";
+                case 3:
+                    return "277/480V-3P-4W";
+                case 4:
+                    return "120/240V-3P-4W";
+                case 5:
+                    return "120/208V-1P-3W";
+                default:
+                    return "";
+            }
+        }
+        
+        
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

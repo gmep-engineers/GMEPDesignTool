@@ -97,7 +97,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="TOTAL AMP @"/>
+                        </Border>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
                     </Grid>
                     <Grid Grid.Row="2" MinHeight="100">
@@ -105,7 +107,9 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="CONCLUSION"/>
+                        </Border>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
                     </Grid>
                 </Grid>
