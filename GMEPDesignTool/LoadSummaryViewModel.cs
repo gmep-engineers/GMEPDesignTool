@@ -45,6 +45,13 @@ namespace GMEPDesignTool
             get => amp;
             set => SetProperty(ref amp, value);
         }
+
+        public bool canHandleLoad;
+        public bool CanHandleLoad
+        {
+            get => canHandleLoad;
+            set => SetProperty(ref canHandleLoad, value);
+        }
         public ObservableCollection<ElectricalComponent> components { get; set; }
         public LoadSummaryViewModel(ElectricalService service)
         {
@@ -55,6 +62,7 @@ namespace GMEPDesignTool
             this.totalAmp = service.TotalAmp;
             this.configuration = SetConfiguration(service.Type);
             this.Amp = SetAmp(service.Amp);
+            this.CanHandleLoad = DetermineCanHandleLoad();
             service.PropertyChanged += Service_PropertyChanged;
         }
 
@@ -79,11 +87,13 @@ namespace GMEPDesignTool
             if (e.PropertyName == nameof(ElectricalService.TotalAmp))
             {
                 TotalAmp = service.TotalAmp;
+                CanHandleLoad = DetermineCanHandleLoad();
                 OnPropertyChanged(nameof(Type));
             }
             if (e.PropertyName == nameof(ElectricalService.Amp))
             {
                 Amp = SetAmp(service.Amp);
+                CanHandleLoad = DetermineCanHandleLoad();
                 OnPropertyChanged(nameof(Type));
             }
         }
@@ -136,7 +146,15 @@ namespace GMEPDesignTool
                 default:
                     return 1;
             }
-        }         
+        }
+        public bool DetermineCanHandleLoad()
+        {
+            if (TotalAmp <= Amp)
+            {
+               return true;
+            }
+            return false;
+        }
         
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
