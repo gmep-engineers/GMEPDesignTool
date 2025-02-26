@@ -695,7 +695,7 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
-                            <DataGrid x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
+                            <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Place Note">
@@ -724,24 +724,21 @@
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock>
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Text" Value="{Binding BreakerSize}"/>
+                                                <TextBox BorderThickness="0">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox">
+                                                            <Setter Property="Text" Value="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                                    <Setter Property="Text" Value=""/>
-                                                                </DataTrigger>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="2">
-                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                                    <Setter Property="TextAlignment" Value="Right"/>
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="3">
-                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                                                    <Setter Property="TextAlignment" Value="Right"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
+                                                    </TextBox.Style>
+                                                </TextBox>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
