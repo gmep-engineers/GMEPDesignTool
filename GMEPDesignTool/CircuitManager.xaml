@@ -16,6 +16,7 @@
         <local:LeftMarginConverter x:Key="LeftMarginConverter"/>
         <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
+        <local:BreakerSizeVisibilityConverter x:Key="BreakerSizeVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -587,14 +588,14 @@
                                     <DataGridTemplateColumn Width=".5*" Header="BKR">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBox BorderThickness="0">
+                                                <TextBox BorderThickness="0" >
                                                     <TextBox.Style>
                                                         <Style TargetType="TextBox">
-                                                            <Setter Property="Text" Value="{Binding BreakerSize}"/>
+                                                            <Setter Property="Text" Value="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="0">
+                                                                <!--<DataTrigger Binding="{Binding BreakerSize}" Value="0">
                                                                     <Setter Property="Text" Value=""/>
-                                                                </DataTrigger>
+                                                                </DataTrigger>-->
                                                                 <DataTrigger Binding="{Binding BreakerSize}" Value="2">
                                                                     <Setter Property="TextAlignment" Value="Right"/>
                                                                 </DataTrigger>
