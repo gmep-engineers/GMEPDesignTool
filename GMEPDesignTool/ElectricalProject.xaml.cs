@@ -1213,7 +1213,6 @@ namespace GMEPDesignTool
         }
         private void PanelCircuits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var panelCircuits = PanelCircuits;
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (Circuit newCircuit in e.NewItems)
