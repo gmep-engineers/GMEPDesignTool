@@ -6,16 +6,71 @@
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="LoadSummary" Height="450" Width="800">
-    <Grid Background="AliceBlue">
-        <ListBox ItemsSource="{Binding components}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding Name}"/>
-                        <TextBox Text="{Binding RootKva}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+    <Window.Resources>
+        <local:IndexConverter x:Key="IndexConverter"/>
+    </Window.Resources>
+    <Grid Margin="10">
+
+        <Border Background="LightSlateGray" BorderBrush="Black" BorderThickness="2">
+            <Grid Background="White" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="3*"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="'{0}' Load Summary">
+                                <Binding Path="Name"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </Border>
+                <DataGrid RowHeight="100" AlternationCount="{Binding components.Count}" HorizontalContentAlignment="Stretch" IsEnabled="False" HeadersVisibility="None" VerticalAlignment="Top" Grid.Row="1" Background="AliceBlue" AutoGenerateColumns="False" ItemsSource="{Binding components}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="100" Binding="{Binding AlternationIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource IndexConverter}}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center" />
+                                    <Setter Property="FontSize" Value="40"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding StringFormat=" {0} '{1}'">
+                                    <Binding Path="ComponentType"/>
+                                    <Binding Path="Name"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center" />
+                                    <Setter Property="FontSize" Value="40"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Width="*">
+                            <DataGridTextColumn.Binding>
+                                <MultiBinding StringFormat=" {0} KVA">
+                                    <Binding Path="RootKva"/>
+                                </MultiBinding>
+                            </DataGridTextColumn.Binding>
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center" />
+                                    <Setter Property="FontSize" Value="40"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Grid Grid.Row="2"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
