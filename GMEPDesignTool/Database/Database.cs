@@ -454,6 +454,7 @@ namespace GMEPDesignTool.Database
                 "electrical_lighting",
                 "electrical_services",
                 "panel_notes",
+                "panel_circuits",
             };
             string query;
             MySqlCommand command;
@@ -907,7 +908,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@id", panelCircuit.Id);
             command.Parameters.AddWithValue("@number", panelCircuit.Number);
             command.Parameters.AddWithValue("@breakerSize", panelCircuit.BreakerSize);
-            command.Parameters.AddWithValue("@load_category", panelCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@loadCategory", panelCircuit.LoadCategory);
             command.Parameters.AddWithValue("@description", panelCircuit.Description);
             command.Parameters.AddWithValue("@va", panelCircuit.Va);
 
@@ -917,14 +918,14 @@ namespace GMEPDesignTool.Database
         private async Task InsertPanelCircuit(string projectId, Circuit panelCircuit)
         {
             string query =
-                "INSERT INTO panel_notes (id, panel_id, project_id, number, breaker_size, description, load_category, va) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va)";
+                "INSERT INTO panel_circuits (id, panel_id, project_id, number, breaker_size, description, load_category, va) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panelCircuit.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@panelId", panelCircuit.PanelId);
             command.Parameters.AddWithValue("@number", panelCircuit.Number);
             command.Parameters.AddWithValue("@breakerSize", panelCircuit.BreakerSize);
-            command.Parameters.AddWithValue("@load_category", panelCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@loadCategory", panelCircuit.LoadCategory);
             command.Parameters.AddWithValue("@description", panelCircuit.Description);
             command.Parameters.AddWithValue("@va", panelCircuit.Va);
             await command.ExecuteNonQueryAsync();
@@ -1498,6 +1499,7 @@ namespace GMEPDesignTool.Database
             var transformers = await GetProjectTransformers(projectId);
             var locations = await GetLightingLocations(projectId);
             var panelNotes = await GetProjectPanelNotes(projectId);
+            var panelCircuits = await GetProjectPanelCircuits(projectId);
 
             Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
             Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
@@ -1553,6 +1555,13 @@ namespace GMEPDesignTool.Database
                 note.projectId = newProjectId;
                 note.PanelId = parentIdSwitch[note.PanelId];
             }
+            foreach (var circuit in panelCircuits)
+            {
+                string Id = Guid.NewGuid().ToString();
+                circuit.Id = Id;
+                circuit.projectId = newProjectId;
+               circuit.PanelId = parentIdSwitch[circuit.PanelId];
+            }
 
             foreach (var panel in panels)
             {
@@ -1583,7 +1592,8 @@ namespace GMEPDesignTool.Database
                 transformers,
                 lightings,
                 locations,
-                panelNotes
+                panelNotes,
+                panelCircuits
             );
         }
     }

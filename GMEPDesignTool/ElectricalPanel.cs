@@ -1072,8 +1072,8 @@ namespace GMEPDesignTool
                 AssignSpace(false);
                 CurrentRightCircuit += 2;
             }
-            SetCircuitNumbers();
-            SetCircuitVa();
+            //SetCircuitNumbers();
+            //SetCircuitVa();
         }
 
         public void fillInitialSpaces()
