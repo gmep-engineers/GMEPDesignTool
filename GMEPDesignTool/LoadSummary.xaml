@@ -8,6 +8,7 @@
         Title="LoadSummary" Height="450" Width="800">
     <Window.Resources>
         <local:IndexConverter x:Key="IndexConverter"/>
+        <local:RoundToFirstDecimalConverter x:Key="RoundToFirstDecimalConverter"/>
     </Window.Resources>
     <Grid Margin="10">
 
@@ -63,7 +64,7 @@
                             <DataGridTextColumn Width="*">
                                 <DataGridTextColumn.Binding>
                                     <MultiBinding StringFormat=" {0} KVA">
-                                        <Binding Path="RootKva"/>
+                                        <Binding Path="RootKva" Converter="{StaticResource RoundToFirstDecimalConverter}"/>
                                     </MultiBinding>
                                 </DataGridTextColumn.Binding>
                                 <DataGridTextColumn.ElementStyle>
@@ -93,7 +94,7 @@
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="TOTAL KVA"/>
                         </Border>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding RootKva}"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding RootKva, Converter={StaticResource RoundToFirstDecimalConverter}}"/>
                         </Border>
                     </Grid>
                     <Grid Grid.Row="1" MinHeight="100">
@@ -111,7 +112,7 @@
                             </TextBlock>
                         </Border>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding TotalAmp}"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding TotalAmp, Converter={StaticResource RoundToFirstDecimalConverter}}"/>
                         </Border>
                     </Grid>
                     <Grid Grid.Row="2" MinHeight="100">
@@ -130,7 +131,7 @@
                                             <Setter.Value>
                                                 <MultiBinding StringFormat=" {0}A SERVICE CAN HANDLE {1}A LOAD ">
                                                     <Binding Path="Amp" />
-                                                    <Binding Path="TotalAmp" />
+                                                    <Binding Path="TotalAmp" Converter="{StaticResource RoundToFirstDecimalConverter}" />
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
@@ -140,7 +141,7 @@
                                                     <Setter.Value>
                                                         <MultiBinding StringFormat=" {0}A SERVICE CAN NOT HANDLE {1}A LOAD ">
                                                             <Binding Path="Amp" />
-                                                            <Binding Path="TotalAmp" />
+                                                            <Binding Path="TotalAmp" Converter="{StaticResource RoundToFirstDecimalConverter}" />
                                                         </MultiBinding>
                                                     </Setter.Value>
                                                 </Setter>
