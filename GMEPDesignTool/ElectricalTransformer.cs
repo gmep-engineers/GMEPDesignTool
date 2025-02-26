@@ -54,6 +54,7 @@ namespace GMEPDesignTool
             _distanceFromParent = distanceFromParent;
             _voltage = voltage;
             _kva = kva;
+            this.rootKva = 0;
             _powered = powered;
             Lcl = lcl;
             Lml = lml;
@@ -192,6 +193,7 @@ namespace GMEPDesignTool
                     ALml = 0;
                     BLml = 0;
                     CLml = 0;
+                    RootKva = 0;
                     UpdateFlag = !UpdateFlag;
 
                 }
@@ -219,7 +221,8 @@ namespace GMEPDesignTool
         }
         public int SetKva()
         {
-            var kva = (float)Math.Ceiling((PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000);
+            RootKva = (PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000;
+            var kva = (float)Math.Ceiling(RootKva);
 
             switch (kva)
             {

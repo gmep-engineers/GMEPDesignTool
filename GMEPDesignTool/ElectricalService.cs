@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto.Modes.Gcm;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,7 +16,8 @@ namespace GMEPDesignTool
         private int _type;
         private int _config;
         private int _aicRating;
-
+        private float _totalAmp;
+        public ObservableCollection<ElectricalComponent> childComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
         public ElectricalService(
             string id,
             string projectId,
@@ -46,6 +49,7 @@ namespace GMEPDesignTool
                 {
                     _type = value;
                     OnPropertyChanged(nameof(Type));
+                    calculateRootKva();
                 }
             }
         }
@@ -76,8 +80,114 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public float TotalAmp
+        {
+            get => _totalAmp;
+            set
+            {
+                if (_totalAmp != value)
+                {
+                    _totalAmp = value;
+                    OnPropertyChanged(nameof(TotalAmp));
+                }
+            }
+        }
+        public void AssignPanel(ElectricalPanel panel)
+        {
+            childComponents.Add(panel);
+            panel.PropertyChanged += Panel_PropertyChanged;
+        }
+        private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalPanel.ParentId))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    panel.PropertyChanged -= Panel_PropertyChanged;
+                    childComponents.Remove(panel);
+                    calculateRootKva();
+                }
+                
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.RootKva))
+            {
+                calculateRootKva();
+            }
+        }
+        public void AssignTransformer(ElectricalTransformer transformer)
+        {
+            childComponents.Add(transformer);
+            transformer.PropertyChanged += Transformer_PropertyChanged;
+        }
+        private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
+            {
+                if (sender is ElectricalTransformer transformer)
+                {
+                    transformer.PropertyChanged -= Transformer_PropertyChanged;
+                    childComponents.Remove(transformer);
+                    calculateRootKva();
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.RootKva))
+            {
+                calculateRootKva();
+            }
+        }
+        public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
+        {
+            foreach (var panel in panels)
+            {
+                if (panel.ParentId == Id)
+                {
+                    childComponents.Add(panel);
+                    panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            foreach (var transformer in transformers)
+            {
+                if (transformer.ParentId == Id)
+                {
+                    childComponents.Add(transformer);
+                    transformer.PropertyChanged += Transformer_PropertyChanged;
+                }
+            }
+            calculateRootKva();
+        }
+        public void calculateRootKva()
+        {
+            RootKva = 0;
+            TotalAmp = 0;
+            foreach(var component in childComponents)
+            {
+                RootKva += component.RootKva;
+            }
+            TotalAmp = (float)((RootKva*1000)/(typeToVoltage(Type)));
+            if (Type == 1 || Type == 3 || Type == 4)
+            {
+                TotalAmp = (float)(TotalAmp / 1.732);
+            }
+        }
+        public int typeToVoltage(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return 208;
+                case 2:
+                    return 240;
+                case 3:
+                    return 480;
+                case 4:
+                    return 240;
+                case 5:
+                    return 208;
+                default:
+                    return 1;
 
-
+            }
+        }
 
         public bool Verify()
         {

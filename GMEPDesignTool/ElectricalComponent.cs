@@ -30,6 +30,7 @@ namespace GMEPDesignTool
         public float aLml;
         public float bLml;
         public float cLml;
+        public float rootKva;
         public int loadCategory;
         public string componentType;
         public int orderNo;
@@ -292,6 +293,19 @@ namespace GMEPDesignTool
                 {
                     orderNo = value;
                     OnPropertyChanged(nameof(OrderNo));
+                }
+            }
+        }
+
+        public virtual float RootKva
+        {
+            get => rootKva;
+            set
+            {
+                if (rootKva != value)
+                {
+                    rootKva = value;
+                    OnPropertyChanged(nameof(RootKva));
                 }
             }
         }
