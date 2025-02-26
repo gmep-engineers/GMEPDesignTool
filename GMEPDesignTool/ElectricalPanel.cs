@@ -97,7 +97,7 @@ namespace GMEPDesignTool
             this._location = location;
             this.componentType = "Panel";
             SetPole();
-            PopulateCircuits();
+            //PopulateCircuits(Id, ProjectId);
             updateFlag = false;
             notes.CollectionChanged += Notes_CollectionChanged;
         }
@@ -296,7 +296,7 @@ namespace GMEPDesignTool
                 {
                     _numBreakers = value;
                     OnPropertyChanged(nameof(NumBreakers));
-                    PopulateCircuits();
+                    PopulateCircuits(Id, ProjectId);
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
@@ -403,7 +403,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public void PopulateCircuits()
+        public void PopulateCircuits(string panelId, string projectId)
         {
             int totalCircuits = leftCircuits.Count + rightCircuits.Count;
 
@@ -411,11 +411,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, "", 0));
+                    leftCircuits.Add(new Circuit(Guid.NewGuid().ToString(), leftCircuits.Count * 2 + 1, 0, 0, "", 0, panelId, projectId));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, "", 0));
+                    rightCircuits.Add(new Circuit(Guid.NewGuid().ToString(), rightCircuits.Count * 2 + 2, 0, 0, "", 0, panelId, projectId));
                 }
                 totalCircuits++;
             }
@@ -1112,6 +1112,7 @@ namespace GMEPDesignTool
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public string id;
         public int number;
         public int va;
         public int breakerSize;
@@ -1119,14 +1120,19 @@ namespace GMEPDesignTool
         public string description;
         public string name;
         public int loadCategory;
+        public string panelId;
+        public string projectId;
 
-        public Circuit(int _number, int _va, int _breakerSize, string _description, int _loadCategory)
+        public Circuit(string _id, int _number, int _va, int _breakerSize, string _description, int _loadCategory, string _panelId, string _projectId)
         {
+            id = _id;
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
             description = _description;
             loadCategory = _loadCategory;
+            panelId = _panelId;
+            projectId = _projectId;
         }
         public int BreakerSize
         {
@@ -1171,6 +1177,33 @@ namespace GMEPDesignTool
             set
             {
                 loadCategory = value;
+                OnPropertyChanged();
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                panelId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Id
+        {
+            get => id;
+            set
+            {
+                id = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                projectId = value;
                 OnPropertyChanged();
             }
         }

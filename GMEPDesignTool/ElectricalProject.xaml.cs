@@ -39,6 +39,7 @@ namespace GMEPDesignTool
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Note> PanelNotes { get; set; }
+        public ObservableCollection<Circuit> PanelCircuits { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -124,7 +125,11 @@ namespace GMEPDesignTool
                 panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
                 AssignPanelNotes(panel);
+                AssignPanelCircuits(panel);
+                panel.PopulateCircuits(panel.Id, panel.ProjectId);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -814,6 +819,7 @@ namespace GMEPDesignTool
             electricalPanel.notes.CollectionChanged += PanelNotes_CollectionChanged;
             electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
             electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.PopulateCircuits(electricalPanel.Id, electricalPanel.ProjectId);
 
             ElectricalPanels.Add(electricalPanel);
             electricalPanel.fillInitialSpaces();
@@ -907,7 +913,23 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public void AssignPanelCircuits(ElectricalPanel panel)
+        {
+            var filteredCircuits = PanelCircuits.Where(circuit => circuit.PanelId == panel.Id).OrderBy(circuit => circuit.Number).ToList();
 
+            foreach (var circuit in filteredCircuits)
+            {
+                if (circuit.Number % 2 == 0)
+                {
+                    panel.rightCircuits.Add(circuit);
+                }
+                else
+                {
+                    panel.leftCircuits.Add(circuit);
+                }
+            }
+        }
+        
         private float idToVoltage(int voltageId)
         {
             int voltage = 0;
@@ -1182,6 +1204,30 @@ namespace GMEPDesignTool
             else if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 PanelNotes.Clear();
+            }
+        }
+        private void PanelCircuits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (Circuit newCircuit in e.NewItems)
+                {
+                    if (!PanelCircuits.Contains(newCircuit))
+                    {
+                        PanelCircuits.Add(newCircuit);
+                    }
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Circuit oldCircuit in e.OldItems)
+                {
+                    PanelCircuits.Remove(oldCircuit);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                PanelCircuits.Clear();
             }
         }
 
