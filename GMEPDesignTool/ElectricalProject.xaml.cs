@@ -1210,10 +1210,7 @@ namespace GMEPDesignTool
                     PanelNotes.Remove(oldNote);
                 }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                PanelNotes.Clear();
-            }
+          
         }
         private void PanelCircuits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -1233,10 +1230,6 @@ namespace GMEPDesignTool
                 {
                     PanelCircuits.Remove(oldCircuit);
                 }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                PanelCircuits.Clear();
             }
         }
 
