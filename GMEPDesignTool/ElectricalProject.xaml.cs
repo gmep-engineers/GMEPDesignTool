@@ -820,6 +820,8 @@ namespace GMEPDesignTool
             electricalPanel.notes.CollectionChanged += PanelNotes_CollectionChanged;
             electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
             electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+            electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
             electricalPanel.PopulateCircuits(electricalPanel.Id, electricalPanel.ProjectId);
 
             ElectricalPanels.Add(electricalPanel);
@@ -864,6 +866,8 @@ namespace GMEPDesignTool
             electricalPanel.notes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.leftCircuits.CollectionChanged -= PanelCircuits_CollectionChanged;
+            electricalPanel.rightCircuits.CollectionChanged -= PanelCircuits_CollectionChanged;
             electricalPanel.ParentId = "";
             ElectricalPanels.Remove(electricalPanel);
             GetNames();
@@ -1209,6 +1213,7 @@ namespace GMEPDesignTool
         }
         private void PanelCircuits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            var panelCircuits = PanelCircuits;
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (Circuit newCircuit in e.NewItems)
