@@ -862,6 +862,8 @@ namespace GMEPDesignTool
             electricalPanel.notes.Clear();
             electricalPanel.leftNodes.Clear();
             electricalPanel.rightNodes.Clear();
+            electricalPanel.leftCircuits.Clear();
+            electricalPanel.rightCircuits.Clear();
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             electricalPanel.notes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;

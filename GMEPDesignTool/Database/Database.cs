@@ -1199,6 +1199,31 @@ namespace GMEPDesignTool.Database
             await CloseConnectionAsync();
             return panelNotes;
         }
+        public async Task<ObservableCollection<Circuit>> GetProjectPanelCircuits(string projectId)
+        {
+            ObservableCollection<Circuit> panelCircuits = new ObservableCollection<Circuit>();
+            string query = "SELECT * FROM panel_circuits WHERE project_id = @projectId";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+                panelCircuits.Add(
+                    new Circuit(
+                     reader.GetString("id"),
+                     reader.GetInt32("number"),
+                     reader.GetInt32("va"),
+                     reader.GetInt32("breaker_size"),
+                     reader.GetString("description"),
+                     reader.GetInt32("load_category"),
+                     reader.GetString("panel_id"),
+                     reader.GetString("project_id")
+                    )
+                );
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
+            return panelCircuits;
+        }
 
         public async Task<ObservableCollection<ElectricalEquipment>> GetProjectEquipment(
             string projectId
