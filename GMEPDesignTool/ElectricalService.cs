@@ -91,7 +91,13 @@ namespace GMEPDesignTool
                 {
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     childComponents.Remove(panel);
+                    calculateRootKva();
                 }
+                
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.RootKva))
+            {
+                calculateRootKva();
             }
         }
         public void AssignTransformer(ElectricalTransformer transformer)
@@ -107,7 +113,12 @@ namespace GMEPDesignTool
                 {
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     childComponents.Remove(transformer);
+                    calculateRootKva();
                 }
+            }
+            if (e.PropertyName == nameof(ElectricalTransformer.RootKva))
+            {
+                calculateRootKva();
             }
         }
         public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
@@ -127,6 +138,15 @@ namespace GMEPDesignTool
                     childComponents.Add(transformer);
                     transformer.PropertyChanged += Transformer_PropertyChanged;
                 }
+            }
+            calculateRootKva();
+        }
+        public void calculateRootKva()
+        {
+            RootKva = 0;
+            foreach(var component in childComponents)
+            {
+                RootKva += component.RootKva;
             }
         }
 

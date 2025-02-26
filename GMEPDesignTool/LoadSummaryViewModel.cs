@@ -19,12 +19,19 @@ namespace GMEPDesignTool
             get => name;
             set => SetProperty(ref name, value);
         }
+        public float rootKva;
+        public float RootKva
+        {
+            get => rootKva;
+            set => SetProperty(ref rootKva, value);
+        }
         public ObservableCollection<ElectricalComponent> components { get; set; }
         public LoadSummaryViewModel(ElectricalService service)
         {
             this.service=service;
             this.components = service.childComponents;
             this.name = service.Name;
+            this.rootKva = service.RootKva;
             service.PropertyChanged += Service_PropertyChanged;
         }
 
@@ -35,6 +42,11 @@ namespace GMEPDesignTool
             {
                 Name = service.Name;
                 OnPropertyChanged(nameof(Name));
+            }
+            if (e.PropertyName == nameof(ElectricalService.RootKva))
+            {
+                RootKva = service.RootKva;
+                OnPropertyChanged(nameof(RootKva));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

@@ -27,9 +27,14 @@
                         </TextBlock.Text>
                     </TextBlock>
                 </Border>
-                <DataGrid RowHeight="100" AlternationCount="{Binding components.Count}" HorizontalContentAlignment="Stretch" IsEnabled="False" HeadersVisibility="None" VerticalAlignment="Top" Grid.Row="1" Background="AliceBlue" AutoGenerateColumns="False" ItemsSource="{Binding components}">
+                <DataGrid RowHeight="100" AlternationCount="{Binding components.Count}" HorizontalContentAlignment="Stretch" IsReadOnly="True" HeadersVisibility="None" ScrollViewer.CanContentScroll="False" VerticalAlignment="Top" Grid.Row="1" Background="AliceBlue" AutoGenerateColumns="False" ItemsSource="{Binding components}">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="{Binding ColorCode}" />
+                        </Style>
+                    </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Width="100" Binding="{Binding AlternationIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource IndexConverter}}">
+                        <DataGridTextColumn Width=".1*" Binding="{Binding AlternationIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource IndexConverter}}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="TextAlignment" Value="Center" />
@@ -69,7 +74,41 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Grid Grid.Row="2"/>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" MinHeight="100">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="TOTAL KVA"/>
+                        </Border>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding RootKva}"/>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Row="1" MinHeight="100">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
+                    </Grid>
+                    <Grid Grid.Row="2" MinHeight="100">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
+                    </Grid>
+                </Grid>
             </Grid>
         </Border>
     </Grid>
