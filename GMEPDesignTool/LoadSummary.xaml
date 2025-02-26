@@ -16,6 +16,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="5*"/>
+                    <RowDefinition Height="5"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
                 <Border BorderBrush="Black" BorderThickness="1" Grid.Row="0">
@@ -74,10 +75,11 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Grid Grid.Row="2">
+                <GridSplitter HorizontalAlignment="Stretch" Background="LightGray" Grid.Row="2"/>
+                <Grid Grid.Row="3">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="100"/>
+                        <RowDefinition Height="100"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" MinHeight="100">
@@ -98,9 +100,17 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="TOTAL AMP @"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="TOTAL AMP @{0}">
+                                        <Binding Path="Configuration"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </Border>
-                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1"/>
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Text="{Binding TotalAmp}"/>
+                        </Border>
                     </Grid>
                     <Grid Grid.Row="2" MinHeight="100">
                         <Grid.ColumnDefinitions>

@@ -16,6 +16,7 @@ namespace GMEPDesignTool
         private int _type;
         private int _config;
         private int _aicRating;
+        private float _totalAmp;
         public ObservableCollection<ElectricalComponent> childComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
         public ElectricalService(
             string id,
@@ -48,6 +49,7 @@ namespace GMEPDesignTool
                 {
                     _type = value;
                     OnPropertyChanged(nameof(Type));
+                    calculateRootKva();
                 }
             }
         }
@@ -75,6 +77,18 @@ namespace GMEPDesignTool
                 {
                     _aicRating = value;
                     OnPropertyChanged(nameof(AicRating));
+                }
+            }
+        }
+        public float TotalAmp
+        {
+            get => _totalAmp;
+            set
+            {
+                if (_totalAmp != value)
+                {
+                    _totalAmp = value;
+                    OnPropertyChanged(nameof(TotalAmp));
                 }
             }
         }
@@ -144,12 +158,36 @@ namespace GMEPDesignTool
         public void calculateRootKva()
         {
             RootKva = 0;
+            TotalAmp = 0;
             foreach(var component in childComponents)
             {
                 RootKva += component.RootKva;
             }
+            TotalAmp = (float)((RootKva*1000)/(typeToVoltage(Type)));
+            if (Type == 1 || Type == 3 || Type == 4)
+            {
+                TotalAmp = (float)(TotalAmp / 1.732);
+            }
         }
+        public int typeToVoltage(int type)
+        {
+            switch (type)
+            {
+                case 1:
+                    return 208;
+                case 2:
+                    return 240;
+                case 3:
+                    return 480;
+                case 4:
+                    return 240;
+                case 5:
+                    return 208;
+                default:
+                    return 1;
 
+            }
+        }
 
         public bool Verify()
         {
