@@ -541,7 +541,8 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalTransformer> transformers,
             ObservableCollection<ElectricalLighting> lightings,
             ObservableCollection<Location> locations,
-            ObservableCollection<Note> panelNotes
+            ObservableCollection<Note> panelNotes,
+            ObservableCollection<Circuit> panelCircuits
         )
         {
             await OpenConnectionAsync();
@@ -553,6 +554,7 @@ namespace GMEPDesignTool.Database
             await UpdateLightings(projectId, lightings);
             await UpdateLightingLocations(projectId, locations);
             await UpdatePanelNotes(projectId, panelNotes);
+            await UpdatePanelCircuits(projectId, panelCircuits);
 
             await CloseConnectionAsync();
         }
@@ -631,6 +633,27 @@ namespace GMEPDesignTool.Database
             }
 
             await DeleteRemovedItems("panel_notes", existingPanelIds);
+        }
+        private async Task UpdatePanelCircuits(string projectId, ObservableCollection<Circuit> panelCircuits)
+        {
+            var existingPanelIds = await GetExistingIds("panel_circuits", "project_id", projectId);
+
+            var panelCircuitsCopy = panelCircuits.ToList(); // Create a copy of the collection
+
+            foreach (var circuit in panelCircuitsCopy)
+            {
+                if (existingPanelIds.Contains(circuit.Id))
+                {
+                    await UpdatePanelCircuit(circuit);
+                    existingPanelIds.Remove(circuit.Id);
+                }
+                else
+                {
+                    await InsertPanelCircuit(projectId, circuit);
+                }
+            }
+
+            await DeleteRemovedItems("panel_circuits", existingPanelIds);
         }
 
         private async Task UpdateTransformers(
@@ -872,6 +895,38 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@description", panelNotes.Description);
             command.Parameters.AddWithValue("@groupId", panelNotes.GroupId);
             command.Parameters.AddWithValue("@stack", panelNotes.Stack);
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task UpdatePanelCircuit(Circuit panelCircuit)
+        {
+            string query =
+                "UPDATE panel_circuits SET number = @number, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+
+            command.Parameters.AddWithValue("@id", panelCircuit.Id);
+            command.Parameters.AddWithValue("@number", panelCircuit.Number);
+            command.Parameters.AddWithValue("@breakerSize", panelCircuit.BreakerSize);
+            command.Parameters.AddWithValue("@load_category", panelCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@description", panelCircuit.Description);
+            command.Parameters.AddWithValue("@va", panelCircuit.Va);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task InsertPanelCircuit(string projectId, Circuit panelCircuit)
+        {
+            string query =
+                "INSERT INTO panel_notes (id, panel_id, project_id, number, breaker_size, description, load_category, va) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", panelCircuit.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@panelId", panelCircuit.PanelId);
+            command.Parameters.AddWithValue("@number", panelCircuit.Number);
+            command.Parameters.AddWithValue("@breakerSize", panelCircuit.BreakerSize);
+            command.Parameters.AddWithValue("@load_category", panelCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@description", panelCircuit.Description);
+            command.Parameters.AddWithValue("@va", panelCircuit.Va);
             await command.ExecuteNonQueryAsync();
         }
 

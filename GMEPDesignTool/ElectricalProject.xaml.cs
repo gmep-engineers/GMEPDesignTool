@@ -103,6 +103,7 @@ namespace GMEPDesignTool
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
             PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
+            PanelCircuits = await ProjectView.database.GetProjectPanelCircuits(ProjectId);
             Owners = await ProjectView.database.getOwners();
 
             ParentNames.Add("", "");
@@ -222,7 +223,8 @@ namespace GMEPDesignTool
                 ElectricalTransformers,
                 ElectricalLightings,
                 LightingLocations,
-                PanelNotes
+                PanelNotes,
+                PanelCircuits
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
