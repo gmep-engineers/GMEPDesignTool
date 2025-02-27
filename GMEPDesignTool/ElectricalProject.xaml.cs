@@ -126,8 +126,8 @@ namespace GMEPDesignTool
                 panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                panel.leftCircuits.CollectionChanged += PanelNotes_CollectionChanged;
-                panel.rightCircuits.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
                 foreach (var circuit in panel.leftCircuits)
                 {
                     circuit.PropertyChanged += PanelCircuits_PropertyChanged;
