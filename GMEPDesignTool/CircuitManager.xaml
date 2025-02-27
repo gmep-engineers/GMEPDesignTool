@@ -721,6 +721,7 @@
                             <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Toggle Custom" Click="RightCircuitGrid_ToggleCustom"/>
                                         <MenuItem Header="Place Note">
                                             <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
@@ -740,31 +741,45 @@
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Width=".5*" Header="BKR">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBox BorderThickness="0">
-                                                    <TextBox.Style>
-                                                        <Style TargetType="TextBox">
-                                                            <Setter Property="Text" Value="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}"/>
+                                                <TextBlock Text="{Binding Number}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Background" Value="LightBlue"/>
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="2">
-                                                                    <Setter Property="TextAlignment" Value="Right"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="3">
-                                                                    <Setter Property="TextAlignment" Value="Right"/>
+                                                                <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                                    <Setter Property="Background" Value="LightGreen"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
-                                                    </TextBox.Style>
-                                                </TextBox>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
+                                    <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="2">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="3">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                        <Setter Property="IsReadOnly" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTemplateColumn Width=".4*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -888,7 +903,18 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width="3*"  Binding="{Binding Description}"/>
+                                    <DataGridTextColumn Width="3*"  Binding="{Binding Description}">
+                                        <DataGridTextColumn.EditingElementStyle>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="IsReadOnly" Value="True"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                    <Setter Property="IsReadOnly" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
