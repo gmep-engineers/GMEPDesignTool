@@ -454,6 +454,7 @@ namespace GMEPDesignTool.Database
                 "electrical_lighting",
                 "electrical_services",
                 "panel_notes",
+                "custom_circuits",
             };
             string query;
             MySqlCommand command;
@@ -541,7 +542,8 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalTransformer> transformers,
             ObservableCollection<ElectricalLighting> lightings,
             ObservableCollection<Location> locations,
-            ObservableCollection<Note> panelNotes
+            ObservableCollection<Note> panelNotes,
+            ObservableCollection<Circuit> customCircuits
         )
         {
             await OpenConnectionAsync();
@@ -553,6 +555,7 @@ namespace GMEPDesignTool.Database
             await UpdateLightings(projectId, lightings);
             await UpdateLightingLocations(projectId, locations);
             await UpdatePanelNotes(projectId, panelNotes);
+            await UpdateCustomCircuits(projectId, customCircuits);
 
             await CloseConnectionAsync();
         }
@@ -632,6 +635,28 @@ namespace GMEPDesignTool.Database
 
             await DeleteRemovedItems("panel_notes", existingPanelIds);
         }
+        private async Task UpdateCustomCircuits(string projectId, ObservableCollection<Circuit> customCircuits)
+        {
+            var existingPanelIds = await GetExistingIds("custom_circuits", "project_id", projectId);
+
+            var customCircuitsCopy = customCircuits.ToList(); // Create a copy of the collection
+
+            foreach (var circuit in customCircuitsCopy)
+            {
+                if (existingPanelIds.Contains(circuit.Id))
+                {
+                    await UpdateCustomCircuit(circuit);
+                    existingPanelIds.Remove(circuit.Id);
+                }
+                else
+                {
+                    await InsertCustomCircuit(projectId, circuit);
+                }
+            }
+
+            await DeleteRemovedItems("custom_circuits", existingPanelIds);
+        }
+
 
         private async Task UpdateTransformers(
             string projectId,
@@ -874,6 +899,43 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@stack", panelNotes.Stack);
             await command.ExecuteNonQueryAsync();
         }
+
+        private async Task UpdateCustomCircuit(Circuit customCircuit)
+        {
+            string query =
+                "UPDATE custom_circuits SET number = @number, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va, custom_breaker_size = @customBreakerSize, custom_description = @customDescription WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+
+            command.Parameters.AddWithValue("@id", customCircuit.Id);
+            command.Parameters.AddWithValue("@number", customCircuit.Number);
+            command.Parameters.AddWithValue("@breakerSize", customCircuit.BreakerSize);
+            command.Parameters.AddWithValue("@loadCategory", customCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@description", customCircuit.Description);
+            command.Parameters.AddWithValue("@va", customCircuit.Va);
+            command.Parameters.AddWithValue("@customBreakerSize", customCircuit.CustomBreakerSize);
+            command.Parameters.AddWithValue("@customDescription", customCircuit.CustomDescription);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task InsertCustomCircuit(string projectId, Circuit customCircuit)
+        {
+            string query =
+                "INSERT INTO custom_circuits (id, panel_id, project_id, number, breaker_size, description, load_category, va, custom_breaker_size, custom_description) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va, @customBreakerSize, @customDescription)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", customCircuit.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@panelId", customCircuit.PanelId);
+            command.Parameters.AddWithValue("@number", customCircuit.Number);
+            command.Parameters.AddWithValue("@breakerSize", customCircuit.BreakerSize);
+            command.Parameters.AddWithValue("@loadCategory", customCircuit.LoadCategory);
+            command.Parameters.AddWithValue("@description", customCircuit.Description);
+            command.Parameters.AddWithValue("@va", customCircuit.Va);
+            command.Parameters.AddWithValue("@customBreakerSize", customCircuit.CustomBreakerSize);
+            command.Parameters.AddWithValue("@customDescription", customCircuit.CustomDescription);
+            await command.ExecuteNonQueryAsync();
+        }
+
 
         private async Task UpdateEquipment(ElectricalEquipment equipment)
         {
@@ -1199,6 +1261,33 @@ namespace GMEPDesignTool.Database
             await CloseConnectionAsync();
             return panelNotes;
         }
+        public async Task<ObservableCollection<Circuit>> GetProjectCustomCircuits(string projectId)
+        {
+            ObservableCollection<Circuit> customCircuits = new ObservableCollection<Circuit>();
+            string query = "SELECT * FROM custom_circuits WHERE project_id = @projectId";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+                customCircuits.Add(
+                    new Circuit(
+                     reader.GetString("id"),
+                     reader.GetString("panel_id"),
+                     reader.GetString("project_id"),
+                     reader.GetInt32("number"),
+                     reader.GetInt32("va"),
+                     reader.GetInt32("breaker_size"),
+                     reader.GetString("description"),
+                     reader.GetInt32("load_category"),
+                     reader.GetBoolean("custom_breaker_size"),
+                     reader.GetBoolean("custom_description")
+                    )
+                );
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
+            return customCircuits;
+        }
 
         public async Task<ObservableCollection<ElectricalEquipment>> GetProjectEquipment(
             string projectId
@@ -1418,6 +1507,7 @@ namespace GMEPDesignTool.Database
             var transformers = await GetProjectTransformers(projectId);
             var locations = await GetLightingLocations(projectId);
             var panelNotes = await GetProjectPanelNotes(projectId);
+            var customCircuits = await GetProjectCustomCircuits(projectId);
 
             Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
             Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
@@ -1473,6 +1563,13 @@ namespace GMEPDesignTool.Database
                 note.projectId = newProjectId;
                 note.PanelId = parentIdSwitch[note.PanelId];
             }
+            foreach (var circuit in customCircuits)
+            {
+                string Id = Guid.NewGuid().ToString();
+                circuit.Id = Id;
+                circuit.projectId = newProjectId;
+                circuit.PanelId = parentIdSwitch[circuit.PanelId];
+            }
 
             foreach (var panel in panels)
             {
@@ -1503,7 +1600,8 @@ namespace GMEPDesignTool.Database
                 transformers,
                 lightings,
                 locations,
-                panelNotes
+                panelNotes,
+                customCircuits
             );
         }
     }
