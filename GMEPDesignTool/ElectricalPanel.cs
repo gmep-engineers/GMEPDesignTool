@@ -410,13 +410,13 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0);
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0, false, false);
                     leftCircuits.Add(newCircuit);
                     newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
                 else
                 {
-                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0);
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0, false, false);
                     rightCircuits.Add(newCircuit);
                     newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
@@ -1170,7 +1170,7 @@ namespace GMEPDesignTool
         public bool customBreakerSize;
         public bool customDescription;
 
-        public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory)
+        public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory, bool _customBreakerSize, bool _customDescription)
         {
             number = _number;
             va = _va;
@@ -1180,8 +1180,8 @@ namespace GMEPDesignTool
             id = _id;
             panelId = _panelId;
             projectId = _projectId;
-            customBreakerSize = false;
-            customDescription = false;
+            customBreakerSize = _customBreakerSize;
+            customDescription = _customDescription;
         }
 
         public string Id
