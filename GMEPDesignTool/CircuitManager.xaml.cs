@@ -54,6 +54,50 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LeftCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void LeftCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
+                }
+            }
+        }
+
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
@@ -127,6 +171,48 @@ namespace GMEPDesignTool
                 foreach (var node in toRemove)
                 {
                     viewModel.LeftNodes.Remove(node);
+                }
+            }
+        }
+        private void RIghtCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void RightCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
                 }
             }
         }

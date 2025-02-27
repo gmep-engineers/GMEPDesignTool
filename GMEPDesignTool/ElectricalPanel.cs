@@ -27,7 +27,6 @@ namespace GMEPDesignTool
 
 
         public ElectricalComponent ParentComponent { get; set; }
-
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } = new ObservableCollection<ElectricalComponent>();
 
         public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
@@ -97,7 +96,7 @@ namespace GMEPDesignTool
             this._location = location;
             this.componentType = "Panel";
             SetPole();
-            PopulateCircuits();
+            PopulateCircuits(Id, ProjectId);
             updateFlag = false;
             notes.CollectionChanged += Notes_CollectionChanged;
         }
@@ -296,7 +295,7 @@ namespace GMEPDesignTool
                 {
                     _numBreakers = value;
                     OnPropertyChanged(nameof(NumBreakers));
-                    PopulateCircuits();
+                    PopulateCircuits(Id, ProjectId);
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
@@ -403,7 +402,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public void PopulateCircuits()
+        public void PopulateCircuits(string id, string projectId)
         {
             int totalCircuits = leftCircuits.Count + rightCircuits.Count;
 
@@ -411,11 +410,11 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, "", 0));
+                    leftCircuits.Add(new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0));
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, "", 0));
+                    rightCircuits.Add(new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0));
                 }
                 totalCircuits++;
             }
@@ -1112,6 +1111,9 @@ namespace GMEPDesignTool
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public string id;
+        public string panelId;
+        public string projectId;
         public int number;
         public int va;
         public int breakerSize;
@@ -1119,14 +1121,67 @@ namespace GMEPDesignTool
         public string description;
         public string name;
         public int loadCategory;
+        public bool customBreakerSize;
+        public bool customDescription;
 
-        public Circuit(int _number, int _va, int _breakerSize, string _description, int _loadCategory)
+        public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
             description = _description;
             loadCategory = _loadCategory;
+            id = _id;
+            panelId = _panelId;
+            projectId = _projectId;
+            customBreakerSize = false;
+            customDescription = false;
+        }
+
+        public string Id
+        {
+            get => id;
+            set
+            {
+                id = value;
+                OnPropertyChanged();
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                panelId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                projectId = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool CustomBreakerSize
+        {
+            get => customBreakerSize;
+            set
+            {
+                customBreakerSize = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool CustomDescription
+        {
+            get => customDescription;
+            set
+            {
+                customDescription = value;
+                OnPropertyChanged();
+            }
         }
         public int BreakerSize
         {
