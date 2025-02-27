@@ -885,11 +885,11 @@ namespace GMEPDesignTool
             electricalPanel.rightCircuits.CollectionChanged -= PanelCircuits_CollectionChanged;
             foreach (var circuit in electricalPanel.leftCircuits)
             {
-                circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                circuit.PropertyChanged -= PanelCircuits_PropertyChanged;
             }
             foreach (var circuit in electricalPanel.rightCircuits)
             {
-                circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                circuit.PropertyChanged -= PanelCircuits_PropertyChanged;
             }
 
             electricalPanel.ParentId = "";
