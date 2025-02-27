@@ -131,7 +131,6 @@ namespace GMEPDesignTool
                 panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
                 AssignPanelNotes(panel);
                 AssignPanelCircuits(panel);
-                panel.PopulateCircuits(panel.Id, panel.ProjectId);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -939,6 +938,7 @@ namespace GMEPDesignTool
                     circuit.PropertyChanged += panel.Circuit_PropertyChanged;
                 }
             }
+            panel.PopulateCircuits(panel.Id, panel.ProjectId);
         }
         
         private float idToVoltage(int voltageId)
