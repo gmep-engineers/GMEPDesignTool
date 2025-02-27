@@ -445,6 +445,7 @@
                             <DataGrid CanUserAddRows="False" CanUserDeleteRows="False" x:Name="LeftCircuitGrid" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" IsReadOnly="False" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Toggle Custom" Click="LeftCircuitGrid_ToggleCustom"/>
                                         <MenuItem Header="Place Note">
                                             <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
@@ -612,7 +613,18 @@
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
+                                                <TextBlock Text="{Binding Number}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Background" Value="LightBlue"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                                    <Setter Property="Background" Value="LightGreen"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

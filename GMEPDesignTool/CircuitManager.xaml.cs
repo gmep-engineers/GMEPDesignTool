@@ -54,6 +54,33 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LeftCircuitGrid_ToggleCustom(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = true; 
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.Custom = true;
+                }
+                foreach (Circuit circuit in LeftCircuitGrid.Items.Cast<Circuit>())
+                {
+                    if (!circuit.Custom)
+                    {
+                        allCustom = false;
+                        break;
+                    }
+                }
+                if (allCustom)
+                {
+                    foreach (Circuit circuit in LeftCircuitGrid.Items.Cast<Circuit>())
+                    {
+                        circuit.Custom = false;
+                    }
+                }
+            }
+        }
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();

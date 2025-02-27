@@ -902,7 +902,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdatePanelCircuit(Circuit panelCircuit)
         {
             string query =
-                "UPDATE panel_circuits SET number = @number, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va WHERE id = @id";
+                "UPDATE panel_circuits SET number = @number, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va, custom = @custom WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@id", panelCircuit.Id);
@@ -911,6 +911,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@loadCategory", panelCircuit.LoadCategory);
             command.Parameters.AddWithValue("@description", panelCircuit.Description);
             command.Parameters.AddWithValue("@va", panelCircuit.Va);
+            command.Parameters.AddWithValue("@custom", panelCircuit.Custom);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -918,7 +919,7 @@ namespace GMEPDesignTool.Database
         private async Task InsertPanelCircuit(string projectId, Circuit panelCircuit)
         {
             string query =
-                "INSERT INTO panel_circuits (id, panel_id, project_id, number, breaker_size, description, load_category, va) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va)";
+                "INSERT INTO panel_circuits (id, panel_id, project_id, number, breaker_size, description, load_category, va, custom) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va, @custom)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panelCircuit.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -928,6 +929,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@loadCategory", panelCircuit.LoadCategory);
             command.Parameters.AddWithValue("@description", panelCircuit.Description);
             command.Parameters.AddWithValue("@va", panelCircuit.Va);
+            command.Parameters.AddWithValue("@custom", panelCircuit.Custom);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1273,7 +1275,8 @@ namespace GMEPDesignTool.Database
                      reader.GetString("description"),
                      reader.GetInt32("load_category"),
                      reader.GetString("panel_id"),
-                     reader.GetString("project_id")
+                     reader.GetString("project_id"),
+                     reader.GetBoolean("custom")
                     )
                 );
             await reader.CloseAsync();
