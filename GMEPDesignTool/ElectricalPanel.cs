@@ -410,11 +410,15 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0));
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0);
+                    leftCircuits.Add(newCircuit);
+                    newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0));
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0);
+                    rightCircuits.Add(newCircuit);
+                    newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
                 totalCircuits++;
             }
@@ -423,10 +427,12 @@ namespace GMEPDesignTool
             {
                 if (rightCircuits.Count >= leftCircuits.Count)
                 {
+                    rightCircuits.ElementAt(rightCircuits.Count - 1).PropertyChanged -= Circuit_PropertyChanged;
                     rightCircuits.RemoveAt(rightCircuits.Count - 1);
                 }
                 else
                 {
+                    leftCircuits.ElementAt(leftCircuits.Count - 1).PropertyChanged -= Circuit_PropertyChanged;
                     leftCircuits.RemoveAt(leftCircuits.Count - 1);
                 }
                 totalCircuits--;
@@ -537,6 +543,23 @@ namespace GMEPDesignTool
                 {
                     newNote.PanelId = this.Id;
                     newNote.ProjectId = this.ProjectId;
+                }
+            }
+        }
+        public void Circuit_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Circuit.CustomBreakerSize) && sender is Circuit circuit)
+            {
+                if (!circuit.CustomBreakerSize)
+                {
+                    SetCircuitVa();
+                }
+            }
+            if (e.PropertyName == nameof(Circuit.CustomDescription) && sender is Circuit circuit2)
+            {
+                if (!circuit2.CustomDescription)
+                {
+                    SetCircuitVa();
                 }
             }
         }
@@ -841,23 +864,28 @@ namespace GMEPDesignTool
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
-                        if (i == 0)
+                        if (!rightCircuits[circuitIndex + i].CustomDescription)
                         {
-                            rightCircuits[circuitIndex + i].Description = component.Name;
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].Description = component.Name;
+                            }
+                            else
+                            {
+                                rightCircuits[circuitIndex + i].Description = "---";
+                            }
                         }
-                        else
+                        if (!rightCircuits[circuitIndex + i].CustomBreakerSize)
                         {
-                            rightCircuits[circuitIndex + i].Description = "---";
+                            if (i == component.Pole - 1)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = i + 1;
+                            }
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            }
                         }
-                        if (i == component.Pole - 1)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = i + 1;
-                        }
-                        if (i == 0)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
-                        }
-
                         rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
                         switch (phaseIndex % Pole)
                         {
