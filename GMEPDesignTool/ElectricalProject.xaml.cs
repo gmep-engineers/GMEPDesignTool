@@ -931,10 +931,12 @@ namespace GMEPDesignTool
                 if (circuit.Number % 2 == 0)
                 {
                     panel.rightCircuits.Add(circuit);
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
                 }
                 else
                 {
                     panel.leftCircuits.Add(circuit);
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
                 }
             }
         }
