@@ -39,6 +39,7 @@ namespace GMEPDesignTool
         private DispatcherTimer timer = new DispatcherTimer();
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Note> PanelNotes { get; set; }
+        public ObservableCollection<Circuit> CustomCircuits { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -71,6 +72,7 @@ namespace GMEPDesignTool
             ElectricalLightings = new ObservableCollection<ElectricalLighting>();
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             PanelNotes = new ObservableCollection<Note>();
+            CustomCircuits = new ObservableCollection<Circuit>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
@@ -124,6 +126,16 @@ namespace GMEPDesignTool
                 panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftCircuits.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.rightCircuits.CollectionChanged += PanelNotes_CollectionChanged;
+                foreach (var circuit in panel.leftCircuits)
+                {
+                    circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                }
+                foreach (var circuit in panel.rightCircuits)
+                {
+                    circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                }
                 AssignPanelNotes(panel);
             }
             foreach (var equipment in ElectricalEquipments)
@@ -1159,6 +1171,30 @@ namespace GMEPDesignTool
                 //StartTimer();
             }
         }
+        private void PanelCircuits_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is Circuit circuit)
+            {
+                if (e.PropertyName == nameof(Circuit.CustomBreakerSize) || e.PropertyName == nameof(Circuit.CustomDescription))
+                {
+                    if (!circuit.CustomBreakerSize && !circuit.CustomDescription)
+                    {
+                        if (CustomCircuits.Contains(circuit))
+                        {
+                            CustomCircuits.Remove(circuit);
+                        }
+                    }
+                    if (circuit.CustomBreakerSize || circuit.CustomDescription)
+                    {
+                        if (!CustomCircuits.Contains(circuit))
+                        {
+                            CustomCircuits.Add(circuit);
+                        }
+                    }
+                }
+            }
+        }
+
 
         private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -1184,6 +1220,21 @@ namespace GMEPDesignTool
                 PanelNotes.Clear();
             }
         }
+        private void PanelCircuits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (Circuit oldCircuit in e.OldItems)
+                {
+                    if (CustomCircuits.Contains(oldCircuit))
+                    {
+                        CustomCircuits.Remove(oldCircuit);
+                    }
+                }
+            }
+        
+        }
+
 
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
