@@ -59,25 +59,20 @@ namespace GMEPDesignTool
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
             {
-                bool allCustom = true; 
+                bool allCustom = false; 
                 foreach (var circuit in selectedItems)
-                {
-                    circuit.Custom = true;
-                }
-                foreach (Circuit circuit in LeftCircuitGrid.Items.Cast<Circuit>())
                 {
                     if (!circuit.Custom)
                     {
-                        allCustom = false;
+                        allCustom = true;
                         break;
                     }
                 }
-                if (allCustom)
+           
+ 
+                foreach (var circuit in selectedItems)
                 {
-                    foreach (Circuit circuit in LeftCircuitGrid.Items.Cast<Circuit>())
-                    {
-                        circuit.Custom = false;
-                    }
+                    circuit.Custom = allCustom;
                 }
             }
         }
