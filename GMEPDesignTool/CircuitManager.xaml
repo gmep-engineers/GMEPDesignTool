@@ -16,6 +16,7 @@
         <local:LeftMarginConverter x:Key="LeftMarginConverter"/>
         <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
+        <local:BreakerSizeVisibilityConverter x:Key="BreakerSizeVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -441,11 +442,11 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="7*"/>
                             </Grid.ColumnDefinitions>
-                            <DataGrid x:Name="LeftCircuitGrid" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
+                            <DataGrid x:Name="LeftCircuitGrid" IsReadOnly="False" CanUserAddRows="False" CanUserDeleteRows="False" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Toggle Custom Description"/>
-                                        <MenuItem Header="Toggle Custom Breaker Size"/>
+                                        <MenuItem Header="Toggle Custom Description" Click="LeftCircuitGrid_ToggleCustomDescription"/>
+                                        <MenuItem Header="Toggle Custom Breaker Size" Click="LeftCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
                                             <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
@@ -462,7 +463,28 @@
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}"/>
+                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                        <DataGridTextColumn.CellStyle>
+                                            <Style TargetType="DataGridCell">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CustomDescription}" Value="True">
+                                                        <Setter Property="BorderBrush" Value="LightBlue"/>
+                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.CellStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CustomDescription}" Value="True">
+                                                        <Setter Property="IsReadOnly" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -586,30 +608,40 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Width=".5*" Header="BKR">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock>
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Text" Value="{Binding BreakerSize}"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                                    <Setter Property="Text" Value=""/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="2">
-                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="3">
-                                                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
+                                        <DataGridTextColumn.CellStyle>
+                                            <Style TargetType="DataGridCell">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CustomBreakerSize}" Value="True">
+                                                        <Setter Property="BorderBrush" Value="LightBlue"/>
+                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.CellStyle>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="2">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="3">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CustomBreakerSize}" Value="True">
+                                                        <Setter Property="IsReadOnly" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -699,8 +731,8 @@
                             <DataGrid x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="True" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Toggle Custom Description"/>
-                                        <MenuItem Header="Toggle Custom Breaker Size"/>
+                                        <MenuItem Header="Toggle Custom Description" Click="RightCircuitGrid_ToggleCustomDescription"/>
+                                        <MenuItem Header="Toggle Custom Breaker Size" Click="RightCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
                                             <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>

@@ -174,7 +174,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private void RIghtCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        private void RightCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
         {
             var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
@@ -351,6 +351,30 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
     }
-    
+    public class BreakerSizeVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int breakerSize)
+            {
+                if (breakerSize == 0)
+                {
+                    return "";
+                }
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Implement ConvertBack if you need two way binding
+            if (value is string strValue && int.TryParse(strValue, out int result))
+            {
+                return result;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
 }
 
