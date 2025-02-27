@@ -462,7 +462,18 @@
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}"/>
+                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                        <Setter Property="IsReadOnly" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -586,30 +597,30 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTemplateColumn Width=".5*" Header="BKR">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBox BorderThickness="0" >
-                                                    <TextBox.Style>
-                                                        <Style TargetType="TextBox">
-                                                            <Setter Property="Text" Value="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}"/>
-                                                            <Style.Triggers>
-                                                                <!--<DataTrigger Binding="{Binding BreakerSize}" Value="0">
-                                                                    <Setter Property="Text" Value=""/>
-                                                                </DataTrigger>-->
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="2">
-                                                                    <Setter Property="TextAlignment" Value="Right"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding BreakerSize}" Value="3">
-                                                                    <Setter Property="TextAlignment" Value="Right"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBox.Style>
-                                                </TextBox>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="2">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding BreakerSize}" Value="3">
+                                                        <Setter Property="TextAlignment" Value="Right"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="IsReadOnly" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Custom}" Value="True">
+                                                        <Setter Property="IsReadOnly" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>

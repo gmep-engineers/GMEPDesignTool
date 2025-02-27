@@ -152,6 +152,7 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
