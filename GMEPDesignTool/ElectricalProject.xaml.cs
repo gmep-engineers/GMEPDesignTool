@@ -121,6 +121,9 @@ namespace GMEPDesignTool
             {
                 service.PropertyChanged += ElectricalService_PropertyChanged;
             }
+            foreach (var circuit in CustomCircuits) {
+                circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+            }
             foreach (var panel in ElectricalPanels)
             {
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
@@ -138,6 +141,7 @@ namespace GMEPDesignTool
                     circuit.PropertyChanged += PanelCircuits_PropertyChanged;
                 }
                 AssignPanelNotes(panel);
+                AssignCustomCircuits(panel);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -944,7 +948,26 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public void AssignCustomCircuits(ElectricalPanel panel)
+        {
+            var filteredCircuits = CustomCircuits.Where(note => note.PanelId == panel.Id).ToList();
 
+            foreach (var circuit in filteredCircuits)
+            {
+                if (circuit.Number % 2 == 0)
+                {
+                    panel.rightCircuits[(circuit.Number - 2) / 2].PropertyChanged -= PanelCircuits_PropertyChanged;
+                    panel.rightCircuits[(circuit.Number - 2) / 2] = circuit;
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                }
+                else
+                {
+                    panel.rightCircuits[(circuit.Number - 1) / 2].PropertyChanged -= PanelCircuits_PropertyChanged;
+                    panel.leftCircuits[(circuit.Number - 1) / 2] = circuit;
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                }
+            }
+        }
         private float idToVoltage(int voltageId)
         {
             int voltage = 0;
