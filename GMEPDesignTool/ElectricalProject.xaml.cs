@@ -959,15 +959,32 @@ namespace GMEPDesignTool
                     panel.rightCircuits[(circuit.Number - 2) / 2].PropertyChanged -= PanelCircuits_PropertyChanged;
                     panel.rightCircuits[(circuit.Number - 2) / 2] = circuit;
                     circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                    panel.rightCircuits.CollectionChanged += RightCircuits_CollectionChanged;
                 }
                 else
                 {
                     panel.rightCircuits[(circuit.Number - 1) / 2].PropertyChanged -= PanelCircuits_PropertyChanged;
                     panel.leftCircuits[(circuit.Number - 1) / 2] = circuit;
                     circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                    panel.leftCircuits.CollectionChanged += RightCircuits_CollectionChanged;
                 }
             }
         }
+
+        private void RightCircuits_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (sender is Circuit circuit && circuit.Id != "")
+            {
+                circuit.ProjectId = Guid.NewGuid().ToString();
+                circuit.number = circuit.Number;
+                circuit.PanelId = Guid.NewGuid().ToString();
+                if (circuit.PanelId != ElectricalPanels[circuit.Number % 2].Id)
+                {
+                    return;
+                }
+            }
+        }
+
         private float idToVoltage(int voltageId)
         {
             int voltage = 0;
@@ -1242,7 +1259,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
 
         private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
