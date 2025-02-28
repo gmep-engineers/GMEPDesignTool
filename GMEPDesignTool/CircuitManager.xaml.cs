@@ -243,11 +243,12 @@ namespace GMEPDesignTool
                         if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
                         {
                             existingNodes.Add(node);
+                            node.CircuitNo = startCircuit2;
+                            node.Length = endCircuit2 - startCircuit2 + 1;
                         }
                     }
 
                     List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
-
                     if (existingNodes2.Count > 0)
                     {
                         for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
