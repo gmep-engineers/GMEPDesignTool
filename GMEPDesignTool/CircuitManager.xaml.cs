@@ -375,6 +375,20 @@ namespace GMEPDesignTool
             return DependencyProperty.UnsetValue;
         }
     }
-
+    public class BoolToReadOnlyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool custom)
+            {
+                return !custom;
+            }
+            return true;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
 

@@ -17,6 +17,7 @@
         <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
         <local:BreakerSizeVisibilityConverter x:Key="BreakerSizeVisibilityConverter"/>
+        <local:BoolToReadOnlyConverter x:Key="BoolToReadOnlyConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -463,7 +464,7 @@
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                    <DataGridTextColumn IsReadOnly="{Binding CustomDescription}" Width="3*" Binding="{Binding Description}">
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
@@ -608,7 +609,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
+                                    <DataGridTextColumn Width=".5*" Header="BKR" IsReadOnly="{Binding CustomBreakerSize, Converter={StaticResource BoolToReadOnlyConverter}}" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
@@ -756,7 +757,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
+                                    <DataGridTextColumn IsReadOnly="{Binding CustomBreakerSize, Converter={StaticResource BoolToReadOnlyConverter}}" Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
@@ -913,7 +914,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                    <DataGridTextColumn IsReadOnly="{Binding CustomDescription, Converter={StaticResource BoolToReadOnlyConverter}}" Width="3*" Binding="{Binding Description}">
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
