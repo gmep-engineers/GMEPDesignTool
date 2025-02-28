@@ -18,6 +18,7 @@ namespace GMEPDesignTool
         private int _aicRating;
         private float _totalAmp;
         public ObservableCollection<ElectricalComponent> childComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
+        public ObservableCollection<ElectricalTransformer> childTransformers { get; set; } = new ObservableCollection<ElectricalTransformer>();
         public ElectricalService(
             string id,
             string projectId,
@@ -96,6 +97,7 @@ namespace GMEPDesignTool
         {
             childComponents.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
+            calculateRootKva();
         }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -116,23 +118,41 @@ namespace GMEPDesignTool
         }
         public void AssignTransformer(ElectricalTransformer transformer)
         {
-            childComponents.Add(transformer);
+            childTransformers.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
+            if (transformer.ChildPanel != null)
+            {
+                childComponents.Add(transformer.ChildPanel);
+                transformer.ChildPanel.PropertyChanged += Panel_PropertyChanged;
+            }
+            calculateRootKva();
         }
+
         private void Transformer_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ElectricalTransformer.ParentId))
             {
                 if (sender is ElectricalTransformer transformer)
                 {
-                    transformer.PropertyChanged -= Transformer_PropertyChanged;
-                    childComponents.Remove(transformer);
+                    transformer.PropertyChanged -= Transformer_PropertyChanged;                   
+                    childTransformers.Remove(transformer);
+                    if (transformer.ChildPanel != null)
+                    {
+                        childComponents.Remove(transformer.ChildPanel);
+                        transformer.ChildPanel.PropertyChanged -= Panel_PropertyChanged;
+                    }
                     calculateRootKva();
                 }
             }
-            if (e.PropertyName == nameof(ElectricalTransformer.RootKva))
+            
+            if (e.PropertyName == nameof(ElectricalTransformer.ChildPanel))
             {
-                calculateRootKva();
+                if (sender is ElectricalTransformer transformer)
+                {
+                    transformer.ChildPanel.PropertyChanged += Panel_PropertyChanged;
+                    childComponents.Add(transformer.ChildPanel);
+                    calculateRootKva();
+                }
             }
         }
         public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
@@ -149,8 +169,14 @@ namespace GMEPDesignTool
             {
                 if (transformer.ParentId == Id)
                 {
-                    childComponents.Add(transformer);
+                    childTransformers.Add(transformer);
                     transformer.PropertyChanged += Transformer_PropertyChanged;
+
+                    if (transformer.ChildPanel != null)
+                    {
+                        childComponents.Add(transformer.ChildPanel);
+                        transformer.ChildPanel.PropertyChanged += Panel_PropertyChanged;
+                    }
                 }
             }
             calculateRootKva();

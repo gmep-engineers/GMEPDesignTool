@@ -168,6 +168,7 @@ namespace GMEPDesignTool
             BLml = panel.BLml;
             CLml = panel.CLml;
             UpdateFlag = !UpdateFlag;
+            OnPropertyChanged(nameof(ChildPanel));
         }
 
 
