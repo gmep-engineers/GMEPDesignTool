@@ -27,7 +27,6 @@ namespace GMEPDesignTool
 
 
         public ElectricalComponent ParentComponent { get; set; }
-
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } = new ObservableCollection<ElectricalComponent>();
 
         public ObservableCollection<ElectricalComponent> leftComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
@@ -97,7 +96,7 @@ namespace GMEPDesignTool
             this._location = location;
             this.componentType = "Panel";
             SetPole();
-            PopulateCircuits();
+            PopulateCircuits(Id, ProjectId);
             updateFlag = false;
             notes.CollectionChanged += Notes_CollectionChanged;
         }
@@ -296,7 +295,7 @@ namespace GMEPDesignTool
                 {
                     _numBreakers = value;
                     OnPropertyChanged(nameof(NumBreakers));
-                    PopulateCircuits();
+                    PopulateCircuits(Id, ProjectId);
                     SetCircuitNumbers();
                     SetCircuitVa();
                 }
@@ -403,7 +402,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public void PopulateCircuits()
+        public void PopulateCircuits(string id, string projectId)
         {
             int totalCircuits = leftCircuits.Count + rightCircuits.Count;
 
@@ -411,11 +410,15 @@ namespace GMEPDesignTool
             {
                 if (totalCircuits % 2 == 0)
                 {
-                    leftCircuits.Add(new Circuit(leftCircuits.Count * 2 + 1, 0, 0, "", 0));
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, leftCircuits.Count * 2 + 1, 0, 0, "", 0, false, false);
+                    leftCircuits.Add(newCircuit);
+                    newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
                 else
                 {
-                    rightCircuits.Add(new Circuit(rightCircuits.Count * 2 + 2, 0, 0, "", 0));
+                    Circuit newCircuit = new Circuit(Guid.NewGuid().ToString(), id, projectId, rightCircuits.Count * 2 + 2, 0, 0, "", 0, false, false);
+                    rightCircuits.Add(newCircuit);
+                    newCircuit.PropertyChanged += Circuit_PropertyChanged;
                 }
                 totalCircuits++;
             }
@@ -424,10 +427,12 @@ namespace GMEPDesignTool
             {
                 if (rightCircuits.Count >= leftCircuits.Count)
                 {
+                    rightCircuits.ElementAt(rightCircuits.Count - 1).PropertyChanged -= Circuit_PropertyChanged;
                     rightCircuits.RemoveAt(rightCircuits.Count - 1);
                 }
                 else
                 {
+                    leftCircuits.ElementAt(leftCircuits.Count - 1).PropertyChanged -= Circuit_PropertyChanged;
                     leftCircuits.RemoveAt(leftCircuits.Count - 1);
                 }
                 totalCircuits--;
@@ -538,6 +543,23 @@ namespace GMEPDesignTool
                 {
                     newNote.PanelId = this.Id;
                     newNote.ProjectId = this.ProjectId;
+                }
+            }
+        }
+        public void Circuit_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Circuit.CustomBreakerSize) && sender is Circuit circuit)
+            {
+                if (!circuit.CustomBreakerSize)
+                {
+                    SetCircuitVa();
+                }
+            }
+            if (e.PropertyName == nameof(Circuit.CustomDescription) && sender is Circuit circuit2)
+            {
+                if (!circuit2.CustomDescription)
+                {
+                    SetCircuitVa();
                 }
             }
         }
@@ -652,14 +674,26 @@ namespace GMEPDesignTool
             foreach (var circuit in leftCircuits)
             {
                 circuit.Va = 0;
-                circuit.BreakerSize = 0;
-                circuit.Description = "";
+                if (!circuit.CustomBreakerSize)
+                {
+                    circuit.BreakerSize = 0;
+                }
+                if (!circuit.CustomDescription)
+                {
+                    circuit.Description = "";
+                }
             }
             foreach (var circuit in rightCircuits)
             {
                 circuit.Va = 0;
-                circuit.BreakerSize = 0;
-                circuit.Description = "";
+                if (!circuit.CustomBreakerSize)
+                {
+                    circuit.BreakerSize = 0;
+                }
+                if (!circuit.CustomDescription)
+                {
+                    circuit.Description = "";
+                }
             }
             PhaseAVA = 0;
             PhaseBVA = 0;
@@ -720,21 +754,27 @@ namespace GMEPDesignTool
                                 break;
                         }
                         leftCircuits[circuitIndex + i].Va = addedValue;
-                        if (i == 0)
+                        if (!leftCircuits[circuitIndex + i].CustomDescription)
                         {
-                            leftCircuits[circuitIndex + i].Description = component.Name;
+                            if (i == 0)
+                            {
+                                leftCircuits[circuitIndex + i].Description = component.Name;
+                            }
+                            else
+                            {
+                                leftCircuits[circuitIndex + i].Description = "---";
+                            }
                         }
-                        else
+                        if (!leftCircuits[circuitIndex + i].CustomBreakerSize)
                         {
-                            leftCircuits[circuitIndex + i].Description = "---";
-                        }
-                        if (i == component.Pole - 1)
-                        {
-                            leftCircuits[circuitIndex + i].BreakerSize = i + 1;
-                        }
-                        if (i == 0)
-                        {
-                            leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            if (i == component.Pole - 1)
+                            {
+                                leftCircuits[circuitIndex + i].BreakerSize = i + 1;
+                            }
+                            if (i == 0)
+                            {
+                                leftCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            }
                         }
 
                         leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
@@ -824,23 +864,28 @@ namespace GMEPDesignTool
                                 break;
                         }
                         rightCircuits[circuitIndex + i].Va = addedValue;
-                        if (i == 0)
+                        if (!rightCircuits[circuitIndex + i].CustomDescription)
                         {
-                            rightCircuits[circuitIndex + i].Description = component.Name;
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].Description = component.Name;
+                            }
+                            else
+                            {
+                                rightCircuits[circuitIndex + i].Description = "---";
+                            }
                         }
-                        else
+                        if (!rightCircuits[circuitIndex + i].CustomBreakerSize)
                         {
-                            rightCircuits[circuitIndex + i].Description = "---";
+                            if (i == component.Pole - 1)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = i + 1;
+                            }
+                            if (i == 0)
+                            {
+                                rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
+                            }
                         }
-                        if (i == component.Pole - 1)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = i + 1;
-                        }
-                        if (i == 0)
-                        {
-                            rightCircuits[circuitIndex + i].BreakerSize = DetermineBreakerSize(component);
-                        }
-
                         rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
                         switch (phaseIndex % Pole)
                         {
@@ -1112,6 +1157,9 @@ namespace GMEPDesignTool
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public string id;
+        public string panelId;
+        public string projectId;
         public int number;
         public int va;
         public int breakerSize;
@@ -1119,14 +1167,67 @@ namespace GMEPDesignTool
         public string description;
         public string name;
         public int loadCategory;
+        public bool customBreakerSize;
+        public bool customDescription;
 
-        public Circuit(int _number, int _va, int _breakerSize, string _description, int _loadCategory)
+        public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory, bool _customBreakerSize, bool _customDescription)
         {
             number = _number;
             va = _va;
             breakerSize = _breakerSize;
             description = _description;
             loadCategory = _loadCategory;
+            id = _id;
+            panelId = _panelId;
+            projectId = _projectId;
+            customBreakerSize = _customBreakerSize;
+            customDescription = _customDescription;
+        }
+
+        public string Id
+        {
+            get => id;
+            set
+            {
+                id = value;
+                OnPropertyChanged();
+            }
+        }
+        public string PanelId
+        {
+            get => panelId;
+            set
+            {
+                panelId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ProjectId
+        {
+            get => projectId;
+            set
+            {
+                projectId = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool CustomBreakerSize
+        {
+            get => customBreakerSize;
+            set
+            {
+                customBreakerSize = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool CustomDescription
+        {
+            get => customDescription;
+            set
+            {
+                customDescription = value;
+                OnPropertyChanged();
+            }
         }
         public int BreakerSize
         {

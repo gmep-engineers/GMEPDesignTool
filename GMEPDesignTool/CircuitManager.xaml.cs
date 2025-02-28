@@ -54,6 +54,50 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LeftCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void LeftCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
+                }
+            }
+        }
+
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
@@ -127,6 +171,48 @@ namespace GMEPDesignTool
                 foreach (var node in toRemove)
                 {
                     viewModel.LeftNodes.Remove(node);
+                }
+            }
+        }
+        private void RightCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void RightCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
                 }
             }
         }
@@ -265,6 +351,30 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
     }
-    
+    public class BreakerSizeVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int breakerSize)
+            {
+                if (breakerSize == 0)
+                {
+                    return "";
+                }
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Implement ConvertBack if you need two way binding
+            if (value is string strValue && int.TryParse(strValue, out int result))
+            {
+                return result;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
 }
 
