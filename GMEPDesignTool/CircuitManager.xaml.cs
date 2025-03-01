@@ -114,6 +114,8 @@ namespace GMEPDesignTool
                     newNote.Length = range;
 
                     List<Note> existingNodes = new List<Note>();
+                    List<Note> sameNodes = new List<Note>();
+                    sameNodes.Add(newNote);
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
@@ -125,9 +127,26 @@ namespace GMEPDesignTool
                         {
                             existingNodes.Add(node);
                         }
+                        if (node.SharedData == newNote.SharedData && ((startCircuit <= endCircuit2 + 2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit + 2 && endCircuit2 >= startCircuit))){
+                            sameNodes.Add(node);
+                        }
                     }
-
+                    viewModel.LeftNodes.Add(newNote);
                     List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+                    List<Note> sameNodes2 = sameNodes.OrderBy(note => note.CircuitNo).ToList();
+                    if (sameNodes.Count > 1)
+                    {
+                        int newStart = sameNodes2.First().CircuitNo;
+                        int newEnd = sameNodes2.Last().CircuitNo + (sameNodes2.Last().Length - 1)*2;
+                        int newLength = ((newEnd - newStart) / 2) + 1;
+                        sameNodes2.First().Length = newLength;
+                   
+                        for (int i = 1; i < sameNodes2.Count; i++)
+                        {
+                            viewModel.LeftNodes.Remove(sameNodes2[i]);
+                        }
+                        
+                    }
 
                     if (existingNodes2.Count > 0)
                     {
@@ -141,7 +160,7 @@ namespace GMEPDesignTool
                             }
                         }
                     }
-                    viewModel.LeftNodes.Add(newNote);
+                    
 
                 }
 
