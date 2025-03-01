@@ -139,13 +139,11 @@ namespace GMEPDesignTool
                         int newStart = sameNodes2.First().CircuitNo;
                         int newEnd = sameNodes2.Last().CircuitNo + (sameNodes2.Last().Length - 1)*2;
                         int newLength = ((newEnd - newStart) / 2) + 1;
-                        sameNodes2.First().Length = newLength;
-                   
+                        sameNodes2.First().Length = newLength;                   
                         for (int i = 1; i < sameNodes2.Count; i++)
                         {
                             viewModel.LeftNodes.Remove(sameNodes2[i]);
-                        }
-                        
+                        }      
                     }
 
                     if (existingNodes2.Count > 0)
