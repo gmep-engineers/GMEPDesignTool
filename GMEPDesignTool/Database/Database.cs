@@ -790,7 +790,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateService(ElectricalService service)
         {
             string query =
-                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating WHERE id = @id";
+                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating, parent_id = @parentId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@name", service.Name);
             command.Parameters.AddWithValue("@amp", service.Amp);
@@ -799,13 +799,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
+            command.Parameters.AddWithValue("@parentId", service.ParentId);
             await command.ExecuteNonQueryAsync();
         }
 
         private async Task InsertService(string projectId, ElectricalService service)
         {
             string query =
-                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating)";
+                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating, parent_id) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating, @parentId)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", service.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -815,6 +816,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
+            command.Parameters.AddWithValue("@parentId", service.ParentId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1172,7 +1174,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("electrical_service_amp_rating_id"),
                         reader.GetInt32("electrical_service_meter_config_id"),
                         reader.GetString("color_code"),
-                        reader.GetInt32("aic_rating")
+                        reader.GetInt32("aic_rating"),
+                        reader.GetString("parent_id")
                     )
                 );
             }
@@ -1576,6 +1579,13 @@ namespace GMEPDesignTool.Database
                 if (!string.IsNullOrEmpty(panel.parentId))
                 {
                     panel.ParentId = parentIdSwitch[panel.ParentId];
+                }
+            }
+            foreach (var service in services)
+            {
+                if (!string.IsNullOrEmpty(service.parentId))
+                {
+                    service.ParentId = parentIdSwitch[service.ParentId];
                 }
             }
             foreach (var transformer in transformers)

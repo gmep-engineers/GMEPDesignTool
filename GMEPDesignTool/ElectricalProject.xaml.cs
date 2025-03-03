@@ -47,6 +47,7 @@ namespace GMEPDesignTool
         public ObservableDictionary<string, string> ParentNames { get; set; }
         public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
         public ObservableDictionary<string, string> PanelNames { get; set; }
+        public ObservableDictionary<string, string> ServiceNames { get; set; }
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public ObservableCollection<Location> LightingLocations { get; set; }
@@ -76,6 +77,7 @@ namespace GMEPDesignTool
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            ServiceNames = new ObservableDictionary<string, string>();
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
             Owners = new Dictionary<string, string>();
@@ -109,6 +111,7 @@ namespace GMEPDesignTool
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
+            ServiceNames.Add("", "");
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
@@ -210,7 +213,7 @@ namespace GMEPDesignTool
             }
             foreach (var service in ElectricalServices)
             {
-                service.DownloadComponents(ElectricalPanels, ElectricalTransformers);
+                service.DownloadComponents(ElectricalPanels, ElectricalTransformers, ElectricalServices);
                 foreach (var panelParentId in panelParentIds)
                 {
                     if (panelParentId.Item1 == service.Id)
@@ -820,6 +823,14 @@ namespace GMEPDesignTool
                     return true;
                 }
             }
+            var service = ElectricalServices.FirstOrDefault(s => s.Id == Id);
+            if (service != null && !string.IsNullOrEmpty(service.ParentId))
+            {
+                if (HasCycle(service.ParentId, visited, stack))
+                {
+                    return true;
+                }
+            }
 
             stack.Remove(Id);
             return false;
@@ -1010,6 +1021,7 @@ namespace GMEPDesignTool
                     service.Name
                 );
                 AddToParentNames(value);
+                AddToServiceNames(value);
             }
             foreach (ElectricalPanel panel in ElectricalPanels)
             {
@@ -1078,6 +1090,30 @@ namespace GMEPDesignTool
                     if (!string.IsNullOrEmpty(value.Value))
                     {
                         ParentNames.Add(value.Key, value.Value);
+                    }
+                }
+            }
+            void AddToServiceNames(KeyValuePair<string, string> value)
+            {
+                if (ServiceNames.ContainsKey(value.Key))
+                {
+                    if (ServiceNames[value.Key] != value.Value)
+                    {
+                        if (!string.IsNullOrEmpty(value.Value))
+                        {
+                            ServiceNames[value.Key] = value.Value;
+                        }
+                        else
+                        {
+                            ServiceNames.Remove(value.Key);
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value.Value))
+                    {
+                        ServiceNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -1334,7 +1370,8 @@ namespace GMEPDesignTool
                 1,
                 1,
                 "White",
-                0
+                0,
+                ""
             );
             AddElectricalService(electricalService);
         }
@@ -1342,6 +1379,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalService(ElectricalService electricalService)
         {
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
+            electricalService.ParentId = "";
             ElectricalServices.Remove(electricalService);
             GetNames();
             //StartTimer();
@@ -1364,10 +1402,25 @@ namespace GMEPDesignTool
             {
                 if (
                     e.PropertyName == nameof(ElectricalService.Type)
-                    || e.PropertyName == nameof(ElectricalService.Name)
+                    || e.PropertyName == nameof(ElectricalService.Name) || e.PropertyName == nameof(ElectricalService.ParentId)
                 )
                 {
-                    setPower();
+                    if (checkCycles(service.Id))
+                    {
+                        MessageBox.Show(
+                            $"Cycle detected in the panel hierarchy involving service {service.Id}.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+                        //Task.Run(() => panel.ParentId = "");
+                        Dispatcher.BeginInvoke(() => service.ParentId = "");
+                        return;
+                    }
+                    else
+                    {
+                        setPower();
+                    }
                 }
                 if (e.PropertyName == nameof(ElectricalService.Name))
                 {
@@ -1381,6 +1434,16 @@ namespace GMEPDesignTool
                 if (e.PropertyName == nameof(ElectricalService.Type))
                 {
                     //setAmps();
+                }
+                if (e.PropertyName == nameof(ElectricalService.ParentId))
+                {
+                    foreach (var service2 in ElectricalServices)
+                    {
+                        if (service2.Id == service.ParentId)
+                        {
+                            service2.AssignService(service);
+                        }
+                    }
                 }
 
                 //StartTimer();
