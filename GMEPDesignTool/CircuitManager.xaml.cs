@@ -304,18 +304,24 @@ namespace GMEPDesignTool
                 {
                     PanelPopup.DataContext = panel;
                     PanelPopup.IsOpen = true;
+                    TransformerPopup.IsOpen = false;
+                    EquipmentPopup.IsOpen = false;
                     e.Handled = true;
                 }
                 else if (item.DataContext is ElectricalTransformer transformer)
                 {
                     TransformerPopup.DataContext = transformer;
                     TransformerPopup.IsOpen = true;
+                    EquipmentPopup.IsOpen = false;
+                    PanelPopup.IsOpen = false;
                     e.Handled = true;
                 }
                 else if (item.DataContext is ElectricalEquipment equipment)
                 {
                     EquipmentPopup.DataContext = equipment;
                     EquipmentPopup.IsOpen = true;
+                    PanelPopup.IsOpen = false;
+                    TransformerPopup.IsOpen = false;
                     e.Handled = true;
                 }
             }
