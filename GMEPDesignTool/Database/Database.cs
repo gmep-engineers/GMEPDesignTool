@@ -817,6 +817,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.Parameters.AddWithValue("@parentId", service.ParentId);
+            await command.ExecuteNonQueryAsync();
         }
 
         private async Task UpdatePanel(ElectricalPanel panel)
