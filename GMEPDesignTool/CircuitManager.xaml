@@ -1337,9 +1337,20 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <Popup x:Name="PanelPopup" Width="100" Height="200" Placement="MousePoint" IsOpen="False" StaysOpen="False">
+        <Popup x:Name="PanelPopup" Width="150" Height="150" Placement="MousePoint" IsOpen="False" StaysOpen="False">
             <Border Background="White" BorderBrush="Black" BorderThickness="2" Padding="10">
-                <TextBox Height="20" Text="{Binding Name}" FontSize="20"/>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Name" FontSize="15" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Height="25" VerticalAlignment="Top" TextAlignment="Center" CharacterCasing="Upper" FontSize="15" Text="{Binding Name}" MaxLength="7"/>
+                    <Label FontSize="15" HorizontalAlignment="Center" Content="Voltage" FontWeight="Bold"/>
+                    <ComboBox Height="25" VerticalAlignment="Top" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
+                        <ComboBoxItem Content="120/208V 3-Φ" Tag="1" />
+                        <ComboBoxItem Content="120/240V 1-Φ" Tag="2"/>
+                        <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
+                        <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
+                        <ComboBoxItem Content="120/208V 1-Φ" Tag="5" />
+                    </ComboBox>
+                </StackPanel>
             </Border>
         </Popup>
         <Popup x:Name="TransformerPopup" Placement="MousePoint" Width="150" Height="150" IsOpen="False" StaysOpen="False">
@@ -1348,7 +1359,7 @@
                     <Label Content="Name" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <TextBox Height="25" Text="{Binding Name}" TextAlignment="Center" FontSize="15"/>
                     <Label Content="Voltage" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <ComboBox Height="20" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                    <ComboBox Height="25" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
                         <ComboBoxItem Content="480V-120/208V-3" Tag="1" />
                         <ComboBoxItem Content="208V-277/480V-3" Tag="2" />
                         <ComboBoxItem Content="480V-120/240V-3" Tag="3" />
