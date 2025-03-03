@@ -26,6 +26,7 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <ScrollViewer Grid.Row="0">
             <ListBox ItemsSource="{Binding ComponentsCollection}" 
              dd:DragDrop.IsDragSource="True"
@@ -73,7 +74,12 @@
                 <ListBox ItemsSource="{Binding LeftComponents}" 
                      dd:DragDrop.IsDragSource="True"
                      dd:DragDrop.IsDropTarget="True"
-                     dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Margin="20 100 0 0">
+                     dd:DragDrop.DropHandler="{Binding}"  HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Margin="20 100 0 0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="Component_MouseDoubleClick" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -123,7 +129,9 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
                                 </Border>
                             </Grid>
                         </DataTemplate>
@@ -1190,7 +1198,12 @@
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"
                        dd:DragDrop.IsDropTarget="True"
-                       dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">    
+                       dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="Component_MouseDoubleClick" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -1323,5 +1336,20 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+        <Popup x:Name="PanelPopup" Placement="MousePoint" IsOpen="False" StaysOpen="True">
+            <Border Background="White" BorderBrush="Black" BorderThickness="2" Padding="10">
+                <TextBox Text="{Binding Name}" FontSize="20"/>
+            </Border>
+        </Popup>
+        <Popup x:Name="TransformerPopup" Placement="MousePoint" IsOpen="False" StaysOpen="True">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <TextBlock Text="Transformer" FontSize="20"/>
+            </Border>
+        </Popup>
+        <Popup x:Name="EquipmentPopup" Placement="MousePoint" IsOpen="False" StaysOpen="True">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <TextBlock Text="Equipment" FontSize="20"/>
+            </Border>
+        </Popup>
     </Grid>
 </Window>
