@@ -76,22 +76,45 @@
                      dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Margin="20 100 0 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Height" Value="80"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                <Setter Property="Height" Value="24"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                <Setter Property="Height" Value="53"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="5 0 5 0" Grid.Column="0" Text="[x]" HorizontalAlignment="Center" FontSize="20" Foreground="Crimson" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Description}"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Height" Value="80"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                    <Setter Property="Height" Value="24"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                    <Setter Property="Height" Value="53"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -968,7 +968,7 @@ namespace GMEPDesignTool
             transformer.ErrorMessages.Clear();
             if (Type != findTransformerInputVoltage(transformer))
             {
-                transformer.ErrorMessages.Add("Transformer Input Voltage is not Panel Voltage")
+                transformer.ErrorMessages.Add("Transformer Input Voltage is not Panel Voltage");
             }
             int findTransformerInputVoltage(ElectricalTransformer transformer)
             {
