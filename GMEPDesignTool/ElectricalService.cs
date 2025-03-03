@@ -118,6 +118,29 @@ namespace GMEPDesignTool
                 calculateRootKva();
             }
         }
+        public void AssignService(ElectricalService service)
+        {
+            childComponents.Add(service);
+            service.PropertyChanged += Service_PropertyChanged;
+            calculateRootKva();
+        }
+        private void Service_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ElectricalService.ParentId))
+            {
+                if (sender is ElectricalService service)
+                {
+                    service.PropertyChanged -= Service_PropertyChanged;
+                    childComponents.Remove(service);
+                    calculateRootKva();
+                }
+
+            }
+            if (e.PropertyName == nameof(ElectricalService.RootKva))
+            {
+                calculateRootKva();
+            }
+        }
         public void AssignTransformer(ElectricalTransformer transformer)
         {
             childTransformers.Add(transformer);
@@ -157,7 +180,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers)
+        public void DownloadComponents(ObservableCollection<ElectricalPanel> panels, ObservableCollection<ElectricalTransformer> transformers, ObservableCollection<ElectricalService> services)
         {
             foreach (var panel in panels)
             {
@@ -165,6 +188,14 @@ namespace GMEPDesignTool
                 {
                     childComponents.Add(panel);
                     panel.PropertyChanged += Panel_PropertyChanged;
+                }
+            }
+            foreach (var service in services)
+            {
+                if (service.ParentId == Id)
+                {
+                    childComponents.Add(service);
+                    service.PropertyChanged += Service_PropertyChanged;
                 }
             }
             foreach (var transformer in transformers)

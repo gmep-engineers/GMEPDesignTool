@@ -213,7 +213,7 @@ namespace GMEPDesignTool
             }
             foreach (var service in ElectricalServices)
             {
-                service.DownloadComponents(ElectricalPanels, ElectricalTransformers);
+                service.DownloadComponents(ElectricalPanels, ElectricalTransformers, ElectricalServices);
                 foreach (var panelParentId in panelParentIds)
                 {
                     if (panelParentId.Item1 == service.Id)
@@ -1379,6 +1379,7 @@ namespace GMEPDesignTool
         public void RemoveElectricalService(ElectricalService electricalService)
         {
             electricalService.PropertyChanged -= ElectricalService_PropertyChanged;
+            electricalService.ParentId = "";
             ElectricalServices.Remove(electricalService);
             GetNames();
             //StartTimer();
@@ -1433,6 +1434,16 @@ namespace GMEPDesignTool
                 if (e.PropertyName == nameof(ElectricalService.Type))
                 {
                     //setAmps();
+                }
+                if (e.PropertyName == nameof(ElectricalService.ParentId))
+                {
+                    foreach (var service2 in ElectricalServices)
+                    {
+                        if (service2.Id == service.ParentId)
+                        {
+                            service2.AssignService(service);
+                        }
+                    }
                 }
 
                 //StartTimer();
