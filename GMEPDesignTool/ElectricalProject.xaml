@@ -150,7 +150,7 @@
                                             <TextBox Text="{Binding Name}" Height="20" Width="80" Margin="10,30,0,0" HorizontalAlignment="Left" MaxLength="7"/>
 
                                             <Label Content="Voltage" Margin="110 27 0 0" FontWeight="Bold"/>
-                                            <ComboBox Height="20" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                                            <ComboBox Height="25" Width="130" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110 50 0 0" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
                                                 <ComboBoxItem Content="480V-120/208V-3" Tag="1" />
                                                 <ComboBoxItem Content="208V-277/480V-3" Tag="2" />
                                                 <ComboBoxItem Content="480V-120/240V-3" Tag="3" />

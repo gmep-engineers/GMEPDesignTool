@@ -17,6 +17,7 @@
         <local:RightMarginConverter x:Key="RightMarginConverter"/>
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
         <local:BreakerSizeVisibilityConverter x:Key="BreakerSizeVisibilityConverter"/>
+        <local:RoundToNearestDecimalConverter x:Key="RoundToNearestDecimalConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -26,6 +27,7 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <ScrollViewer Grid.Row="0">
             <ListBox ItemsSource="{Binding ComponentsCollection}" 
              dd:DragDrop.IsDragSource="True"
@@ -73,25 +75,66 @@
                 <ListBox ItemsSource="{Binding LeftComponents}" 
                      dd:DragDrop.IsDragSource="True"
                      dd:DragDrop.IsDropTarget="True"
-                     dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Margin="20 100 0 0">
+                     dd:DragDrop.DropHandler="{Binding}"  HorizontalContentAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Margin="20 100 0 0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="Component_MouseDoubleClick" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Height" Value="80"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                <Setter Property="Height" Value="24"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                <Setter Property="Height" Value="53"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width=".2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Margin="5 0 5 0" Grid.Column="0" Text="[x]" HorizontalAlignment="Center" FontSize="20" Foreground="Crimson" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <TextBlock.ToolTip>
+                                        <ToolTip>
+                                            <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Vertical"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Foreground="Crimson" Text="{Binding}"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ToolTip>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Background="{Binding ColorCode}">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Height" Value="80"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                    <Setter Property="Height" Value="24"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                    <Setter Property="Height" Value="53"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -1156,25 +1199,64 @@
                     <ListBox ItemsSource="{Binding RightComponents}" 
                        dd:DragDrop.IsDragSource="True"
                        dd:DragDrop.IsDropTarget="True"
-                       dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">    
+                       dd:DragDrop.DropHandler="{Binding}" HorizontalContentAlignment="Stretch" VerticalAlignment="Top">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="Component_MouseDoubleClick" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Height" Value="80"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Pole}" Value="1">
-                                                    <Setter Property="Height" Value="24"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Pole}" Value="2">
-                                                    <Setter Property="Height" Value="53"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                                </Border>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width=".2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="5" Margin="0" Background="{Binding ColorCode}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Height" Value="80"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="1">
+                                                        <Setter Property="Height" Value="24"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                        <Setter Property="Height" Value="53"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Margin="5 0 5 0" Text="[x]" HorizontalAlignment="Center" FontSize="20" Foreground="Crimson" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <TextBlock.ToolTip>
+                                            <ToolTip>
+                                                <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <StackPanel Orientation="Vertical"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Foreground="Crimson" Text="{Binding}"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ToolTip>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -1255,5 +1337,82 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+        <Popup x:Name="PanelPopup" Width="150" Height="150" Placement="MousePoint" IsOpen="False" StaysOpen="False">
+            <Border Background="White" BorderBrush="Black" BorderThickness="2" Padding="10">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Name" FontSize="15" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Height="25" VerticalAlignment="Top" TextAlignment="Center" CharacterCasing="Upper" FontSize="15" Text="{Binding Name}" MaxLength="7"/>
+                    <Label FontSize="15" HorizontalAlignment="Center" Content="Voltage" FontWeight="Bold"/>
+                    <ComboBox Height="25" VerticalAlignment="Top" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
+                        <ComboBoxItem Content="120/208V 3-Φ" Tag="1" />
+                        <ComboBoxItem Content="120/240V 1-Φ" Tag="2"/>
+                        <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
+                        <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
+                        <ComboBoxItem Content="120/208V 1-Φ" Tag="5" />
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+        </Popup>
+        <Popup x:Name="TransformerPopup" Placement="MousePoint" Width="150" Height="150" IsOpen="False" StaysOpen="False">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Name" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBox Height="25" Text="{Binding Name}" TextAlignment="Center" FontSize="15"/>
+                    <Label Content="Voltage" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <ComboBox Height="25" SelectedValue="{Binding Voltage}" SelectedValuePath="Tag">
+                        <ComboBoxItem Content="480V-120/208V-3" Tag="1" />
+                        <ComboBoxItem Content="208V-277/480V-3" Tag="2" />
+                        <ComboBoxItem Content="480V-120/240V-3" Tag="3" />
+                        <ComboBoxItem Content="240V-277/480V-3" Tag="4" />
+                        <ComboBoxItem Content="240V-120/208V-3" Tag="5" />
+                        <ComboBoxItem Content="208V-120/240V-3" Tag="6" />
+                        <ComboBoxItem Content="240V-120/208V-1" Tag="7" />
+                        <ComboBoxItem Content="208V-120/240V-1" Tag="8" />
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+        </Popup>
+        <Popup x:Name="EquipmentPopup" Width="150" Height="200" Placement="MousePoint" IsOpen="False" StaysOpen="False">
+            <Border Background="White" BorderBrush="Black" BorderThickness="1" Padding="10">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
+                        <Label Content="Description"  FontWeight="Bold"/>
+                        <TextBox TextAlignment="Center" Height="25" VerticalAlignment="Top"  Width="100" Text="{Binding Description}" MaxLength="15"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Label Content="Voltage" FontWeight="Bold"/>
+                            <ComboBox x:Name="VoltageBox" Height="25" Width="50" Margin="0 25 20 0" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedValuePath="Tag" SelectedValue="{Binding Voltage}">
+                                <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                <ComboBoxItem Content="277" Background="SkyBlue" Tag="6"/>
+                                <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
+                                <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
+                            </ComboBox>
+                        </Grid>
+                        <Grid>
+                            <Label Content="Phase" FontWeight="Bold"/>
+                            <ComboBox x:Name="PhaseBox" Margin="0 25 0 0" Height="25" Width="50" VerticalAlignment="Top" HorizontalAlignment="Left"  SelectedIndex="{Binding Is3Ph}">
+                                <ComboBoxItem Content="1" />
+                                <ComboBoxItem Content="3" />
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Label Content="FLA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                            <TextBox Margin="0 25 5 0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="60" Text="{Binding Fla, Converter={StaticResource RoundToNearestDecimalConverter}}"></TextBox>
+                        </Grid>
+                        <Grid>
+                            <Label x:Name="VALabel" Content="VA" VerticalAlignment="Top" HorizontalAlignment="Left"  FontWeight="Bold"/>
+                            <TextBox Margin="0 25 0 0" x:Name="VABox" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left"  Width="60" Text="{Binding Va}"></TextBox>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

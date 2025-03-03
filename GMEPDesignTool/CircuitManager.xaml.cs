@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -142,7 +144,6 @@ namespace GMEPDesignTool
                         }
                     }
                     viewModel.LeftNodes.Add(newNote);
-
                 }
 
             }
@@ -294,6 +295,38 @@ namespace GMEPDesignTool
                 }
             }
         }
+
+        private void Component_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is ListBoxItem item)
+            {
+                if (item.DataContext is ElectricalPanel panel)
+                {
+                    PanelPopup.DataContext = panel;
+                    PanelPopup.IsOpen = true;
+                    TransformerPopup.IsOpen = false;
+                    EquipmentPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+                else if (item.DataContext is ElectricalTransformer transformer)
+                {
+                    TransformerPopup.DataContext = transformer;
+                    TransformerPopup.IsOpen = true;
+                    EquipmentPopup.IsOpen = false;
+                    PanelPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+                else if (item.DataContext is ElectricalEquipment equipment)
+                {
+                    EquipmentPopup.DataContext = equipment;
+                    EquipmentPopup.IsOpen = true;
+                    PanelPopup.IsOpen = false;
+                    TransformerPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+            }
+        }
+       
     }
 
     public class LeftMarginConverter : IMultiValueConverter
