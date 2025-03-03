@@ -711,6 +711,7 @@ namespace GMEPDesignTool
             int phaseIndex = 0;
             foreach (var component in leftComponents)
             {
+                DetermineComponentErrors(component);
                 int circuitIndex = leftCircuits.IndexOf(
                     leftCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
                 );
@@ -821,6 +822,7 @@ namespace GMEPDesignTool
             phaseIndex = 0;
             foreach (var component in rightComponents)
             {
+                DetermineComponentErrors(component);
                 int circuitIndex = rightCircuits.IndexOf(
                     rightCircuits.FirstOrDefault(c => c.Number == component.CircuitNo)
                 );
@@ -934,6 +936,21 @@ namespace GMEPDesignTool
             Amp = (float)Math.Ceiling(SetAmp());
             UpdateFlag = !UpdateFlag;
         }
+        public void DetermineComponentErrors(ElectricalComponent component)
+        {
+            if (component is ElectricalPanel panel)
+            {
+                DeterminePanelErrors(panel);
+            }
+            if (component is ElectricalTransformer transformer)
+            {
+                DetermineTransformerErrors(transformer);
+            }
+            if (component is ElectricalEquipment equipment)
+            {
+                DetermineEquipmentErrors(equipment);
+            }
+        }
         public void DeterminePanelErrors(ElectricalPanel panel)
         {
             panel.ErrorMessages.Clear();
@@ -948,6 +965,7 @@ namespace GMEPDesignTool
         }
         public void DetermineTransformerErrors(ElectricalTransformer transformer)
         {
+            transformer.ErrorMessages.Clear();
             if (Type != findTransformerInputVoltage(transformer))
             {
                 transformer.ErrorMessages.Add("Transformer Input Voltage is not Panel Voltage")
