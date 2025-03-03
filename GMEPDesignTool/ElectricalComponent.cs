@@ -1,6 +1,7 @@
 ﻿using Mysqlx.Crud;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,8 @@ namespace GMEPDesignTool
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ObservableCollection<string> ErrorMessages { get; set; }
 
         public virtual float Lcl
         {
@@ -309,6 +312,7 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

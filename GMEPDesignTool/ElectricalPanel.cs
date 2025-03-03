@@ -934,6 +934,107 @@ namespace GMEPDesignTool
             Amp = (float)Math.Ceiling(SetAmp());
             UpdateFlag = !UpdateFlag;
         }
+        public void DeterminePanelErrors(ElectricalPanel panel)
+        {
+            panel.ErrorMessages.Clear();
+            if (panel.Pole == 3 && Pole == 2)
+            {
+                panel.ErrorMessages.Add("3-pole panel is on a 2-pole panel.");
+            }
+            if (panel.Type != Type)
+            {
+                panel.ErrorMessages.Add("Panel voltage is not the same as parent voltage.");
+            }
+        }
+        public void DetermineTransformerErrors(ElectricalTransformer transformer)
+        {
+            if (Type != findTransformerInputVoltage(transformer))
+            {
+                transformer.ErrorMessages.Add("Transformer Input Voltage is not Panel Voltage")
+            }
+            int findTransformerInputVoltage(ElectricalTransformer transformer)
+            {
+                var transformerVoltageType = 5;
+                switch (transformer.Voltage)
+                {
+                    case (1):
+                        transformerVoltageType = 3;
+                        break;
+                    case (2):
+                        transformerVoltageType = 1;
+                        break;
+                    case (3):
+                        transformerVoltageType = 3;
+                        break;
+                    case (4):
+                        transformerVoltageType = 4;
+                        break;
+                    case (5):
+                        transformerVoltageType = 4;
+                        break;
+                    case (6):
+                        transformerVoltageType = 1;
+                        break;
+                    case (7):
+                        transformerVoltageType = 2;
+                        break;
+                    case (8):
+                        transformerVoltageType = 5;
+                        break;
+                    default:
+                        transformerVoltageType = 5;
+                        break;
+                }
+                return transformerVoltageType;
+            }
+        }
+        public void DetermineEquipmentErrors(ElectricalEquipment equipment)
+        {
+            equipment.ErrorMessages.Clear();
+
+            List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);
+            
+            foreach(var voltage in compatibleVoltages)
+            {
+                if (Type == voltage)
+                {
+                    return;
+                }
+            }
+            equipment.ErrorMessages.Add("Equipment and panel voltages are incompatible.");
+
+            List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
+            {
+                List<int> compatibleVoltages = new List<int>();
+                if ((Is3Ph && Voltage == 3) || (!Is3Ph && (Voltage >= 1 && Voltage <= 3)))
+                {
+                    compatibleVoltages.Add(1);
+                }
+                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 4 || Voltage == 5))
+                {
+                    compatibleVoltages.Add(2);
+                }
+                if (
+                    (Is3Ph && (Voltage == 7 || Voltage == 8))
+                    || (!Is3Ph && (Voltage == 6 || Voltage == 8 || Voltage == 7))
+                )
+                {
+                    compatibleVoltages.Add(3);
+                }
+                if (
+                    (Is3Ph && (Voltage == 4 || Voltage == 5))
+                    || (!Is3Ph && (Voltage == 2 || Voltage == 4 || Voltage == 5))
+                )
+                {
+                    compatibleVoltages.Add(4);
+                }
+                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 3))
+                {
+                    compatibleVoltages.Add(5);
+                }
+                return compatibleVoltages;
+            }
+        }
 
         public int DetermineBreakerSize(ElectricalComponent component)
         {

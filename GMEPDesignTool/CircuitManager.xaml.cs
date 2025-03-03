@@ -142,7 +142,6 @@ namespace GMEPDesignTool
                         }
                     }
                     viewModel.LeftNodes.Add(newNote);
-
                 }
 
             }
