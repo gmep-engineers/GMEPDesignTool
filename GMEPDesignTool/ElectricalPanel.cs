@@ -956,11 +956,11 @@ namespace GMEPDesignTool
             panel.ErrorMessages.Clear();
             if (panel.Pole == 3 && Pole == 2)
             {
-                panel.ErrorMessages.Add("3-pole panel is on a 2-pole panel.");
+                panel.ErrorMessages.Add("3-pole panel is being fed from a 2-pole panel.");
             }
             if (panel.Type != Type)
             {
-                panel.ErrorMessages.Add("Panel voltage is not the same as parent voltage.");
+                panel.ErrorMessages.Add("the panels voltage is not the same as its parent panel's voltage.");
             }
         }
         public void DetermineTransformerErrors(ElectricalTransformer transformer)
@@ -968,7 +968,7 @@ namespace GMEPDesignTool
             transformer.ErrorMessages.Clear();
             if (Type != findTransformerInputVoltage(transformer))
             {
-                transformer.ErrorMessages.Add("Transformer Input Voltage is not Panel Voltage");
+                transformer.ErrorMessages.Add("The transformer input voltage does not match its parent panel's voltage");
             }
             int findTransformerInputVoltage(ElectricalTransformer transformer)
             {
@@ -1019,7 +1019,7 @@ namespace GMEPDesignTool
                     return;
                 }
             }
-            equipment.ErrorMessages.Add("Equipment and panel voltages are incompatible.");
+            equipment.ErrorMessages.Add("The equipment's voltage and phases are not compatible with its parent panel's settings.");
 
             List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
             {
