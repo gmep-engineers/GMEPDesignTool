@@ -953,64 +953,74 @@ namespace GMEPDesignTool
         }
         public void DeterminePanelErrors(ElectricalPanel panel)
         {
-            panel.ErrorMessages.Clear();
             if (panel.Pole == 3 && Pole == 2)
             {
                 panel.ErrorMessages.Add("3-pole panel is being fed from a 2-pole panel.");
+            }
+            else
+            {
+                panel.ErrorMessages.Remove("3-pole panel is being fed from a 2-pole panel.");
             }
             if (panel.Type != Type)
             {
                 panel.ErrorMessages.Add("the panels voltage is not the same as its parent panel's voltage.");
             }
+            else
+            {
+                panel.ErrorMessages.Remove("the panels voltage is not the same as its parent panel's voltage.");
+            }
         }
         public void DetermineTransformerErrors(ElectricalTransformer transformer)
         {
-            transformer.ErrorMessages.Clear();
             if (Type != findTransformerInputVoltage(transformer))
             {
                 transformer.ErrorMessages.Add("The transformer input voltage does not match its parent panel's voltage");
             }
-            int findTransformerInputVoltage(ElectricalTransformer transformer)
+            else
             {
-                var transformerVoltageType = 5;
-                switch (transformer.Voltage)
-                {
-                    case (1):
-                        transformerVoltageType = 3;
-                        break;
-                    case (2):
-                        transformerVoltageType = 1;
-                        break;
-                    case (3):
-                        transformerVoltageType = 3;
-                        break;
-                    case (4):
-                        transformerVoltageType = 4;
-                        break;
-                    case (5):
-                        transformerVoltageType = 4;
-                        break;
-                    case (6):
-                        transformerVoltageType = 1;
-                        break;
-                    case (7):
-                        transformerVoltageType = 2;
-                        break;
-                    case (8):
-                        transformerVoltageType = 5;
-                        break;
-                    default:
-                        transformerVoltageType = 5;
-                        break;
-                }
-                return transformerVoltageType;
+                transformer.ErrorMessages.Remove("The transformer input voltage does not match its parent panel's voltage");
             }
+                int findTransformerInputVoltage(ElectricalTransformer transformer)
+                {
+                    var transformerVoltageType = 5;
+                    switch (transformer.Voltage)
+                    {
+                        case (1):
+                            transformerVoltageType = 3;
+                            break;
+                        case (2):
+                            transformerVoltageType = 1;
+                            break;
+                        case (3):
+                            transformerVoltageType = 3;
+                            break;
+                        case (4):
+                            transformerVoltageType = 4;
+                            break;
+                        case (5):
+                            transformerVoltageType = 4;
+                            break;
+                        case (6):
+                            transformerVoltageType = 1;
+                            break;
+                        case (7):
+                            transformerVoltageType = 2;
+                            break;
+                        case (8):
+                            transformerVoltageType = 5;
+                            break;
+                        default:
+                            transformerVoltageType = 5;
+                            break;
+                    }
+                    return transformerVoltageType;
+                }
         }
         public void DetermineEquipmentErrors(ElectricalEquipment equipment)
         {
-            equipment.ErrorMessages.Clear();
-            List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);           
-            foreach(var voltage in compatibleVoltages)
+            List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);
+            equipment.ErrorMessages.Remove("The equipment's voltage and phases are not compatible with its parent panel's settings.");
+            foreach (var voltage in compatibleVoltages)
             {
                 if (Type == voltage)
                 {
