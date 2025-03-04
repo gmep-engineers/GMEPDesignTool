@@ -1009,9 +1009,7 @@ namespace GMEPDesignTool
         public void DetermineEquipmentErrors(ElectricalEquipment equipment)
         {
             equipment.ErrorMessages.Clear();
-
-            List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);
-            
+            List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);           
             foreach(var voltage in compatibleVoltages)
             {
                 if (Type == voltage)
