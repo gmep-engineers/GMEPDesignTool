@@ -18,6 +18,7 @@
         <local:LengthToHeightConverter x:Key="LengthToHeightConverter" />
         <local:BreakerSizeVisibilityConverter x:Key="BreakerSizeVisibilityConverter"/>
         <local:RoundToNearestDecimalConverter x:Key="RoundToNearestDecimalConverter"/>
+        <local:NotEmptyStringToBooleanConverter x:Key="NotEmptyStringToBooleanConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -654,14 +655,13 @@
                                     <DataGridTextColumn Width=".5*" Header="BKR" Binding="{Binding BreakerSize, UpdateSourceTrigger=LostFocus, Converter={StaticResource BreakerSizeVisibilityConverter}}">
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
-                                                <Setter Property="Background" Value="Red"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding CustomBreakerSize}" Value="True">
                                                         <Setter Property="BorderBrush" Value="LightBlue"/>
                                                         <Setter Property="BorderThickness" Value="2"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ErrorMessage}" Value="">
-                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    <DataTrigger Binding="{Binding ErrorMessage, Converter={StaticResource NotEmptyStringToBooleanConverter}}" Value="True">
+                                                        <Setter Property="Background" Value="Crimson"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

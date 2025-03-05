@@ -579,6 +579,13 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(Circuit.BreakerSize) && sender is Circuit circuit3)
+            {
+                if (circuit3.CustomBreakerSize)
+                {
+                    checkCircuitErrors();
+                }
+            }
         }
         public void AssignParentComponent(ElectricalComponent component)
         {
@@ -1307,7 +1314,7 @@ namespace GMEPDesignTool
                 leftCircuits[i].ErrorMessage = "";
                 if (HighLegPhase == activePhase && leftCircuits[i].BreakerSize != 2 && leftCircuits[i].BreakerSize != 3 && leftCircuits[i].BreakerSize != 0)
                 {
-                    if (!((leftCircuits[i+1] != null && leftCircuits[i+1].BreakerSize == 2) || (leftCircuits[i+2] != null && leftCircuits[i+2].BreakerSize == 3)))
+                    if (!((i + 1 < leftCircuits.Count && leftCircuits[i+1].BreakerSize == 2) || (i + 2 < leftCircuits.Count && leftCircuits[i+2].BreakerSize == 3)))
                     {
                         leftCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
                     }      
@@ -1418,7 +1425,7 @@ namespace GMEPDesignTool
             set
             {
                 customBreakerSize = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CustomBreakerSize));
             }
         }
         public bool CustomDescription
@@ -1427,7 +1434,7 @@ namespace GMEPDesignTool
             set
             {
                 customDescription = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CustomDescription));
             }
         }
         public int BreakerSize
@@ -1436,7 +1443,7 @@ namespace GMEPDesignTool
             set
             {
                 breakerSize = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(BreakerSize));
             }
         }
 
@@ -1464,7 +1471,7 @@ namespace GMEPDesignTool
             set
             {
                 description = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Description));
             }
         }
         public int LoadCategory
