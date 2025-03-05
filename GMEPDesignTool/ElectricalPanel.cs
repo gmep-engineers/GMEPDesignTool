@@ -1297,6 +1297,24 @@ namespace GMEPDesignTool
             SetCircuitNumbers();
             SetCircuitVa();
         }
+        public void checkCircuitErrors()
+        {
+
+            int index = 0;
+
+            for (int i = 0; i < leftCircuits.Count; i++)
+            {
+                if (leftCircuits[i].BreakerSize != 2 && leftCircuits[i].BreakerSize != 3 && leftCircuits[i].BreakerSize != 0)
+                {
+                    if (!((leftCircuits[i+1] != null && leftCircuits[i+1].BreakerSize == 2) || (leftCircuits[i+2] != null && leftCircuits[i+2].BreakerSize == 3)))
+                    {
+                        //raise error at [i]
+                    }      
+                }    
+            }
+          
+
+        }
 
         public bool Verify()
         {
