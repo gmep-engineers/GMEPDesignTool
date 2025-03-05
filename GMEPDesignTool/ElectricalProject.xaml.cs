@@ -882,7 +882,8 @@ namespace GMEPDesignTool
                 false,
                 0,
                 false,
-                ""
+                "",
+                'B'
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -1250,6 +1251,13 @@ namespace GMEPDesignTool
                         {
                             panel2.AssignPanel(panel);
                         }
+                    }
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.Pole))
+                {
+                    if (panel.Pole == 2 && panel.HighLegPhase == 'C')
+                    {
+                        panel.HighLegPhase = 'B';
                     }
                 }
                 //StartTimer();

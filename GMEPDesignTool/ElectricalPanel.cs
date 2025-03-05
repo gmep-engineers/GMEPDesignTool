@@ -24,6 +24,7 @@ namespace GMEPDesignTool
         private string _location;
         private string _parentName;
         private string _parentType;
+        private char _highLegPhase;
 
 
         public ElectricalComponent ParentComponent { get; set; }
@@ -58,7 +59,8 @@ namespace GMEPDesignTool
             bool isRecessed,
             int circuitNo,
             bool isHiddenOnPlan,
-            string location
+            string location,
+            char highLegPhase
         )
             : base()
         {
@@ -93,6 +95,7 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
+            _highLegPhase = highLegPhase;
             this._location = location;
             this.componentType = "Panel";
             SetPole();
@@ -160,6 +163,20 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public char HighLegPhase
+        {
+            get => _highLegPhase;
+            set
+            {
+                if (_highLegPhase != value)
+                {
+                    _highLegPhase = value;
+                    OnPropertyChanged(nameof(HighLegPhase));
+                    SetCircuitVa();
+                }
+            }
+        }
+
 
         public bool IsRecessed
         {
@@ -562,6 +579,13 @@ namespace GMEPDesignTool
                     SetCircuitVa();
                 }
             }
+            if (e.PropertyName == nameof(Circuit.BreakerSize) && sender is Circuit circuit3)
+            {
+                if (circuit3.CustomBreakerSize)
+                {
+                    checkCircuitErrors();
+                }
+            }
         }
         public void AssignParentComponent(ElectricalComponent component)
         {
@@ -934,6 +958,7 @@ namespace GMEPDesignTool
             RootKva = (Kva + (Lml/4) + (Lcl/4)) / 1000;
             Kva = (float)Math.Ceiling(RootKva);
             Amp = (float)Math.Ceiling(SetAmp());
+            checkCircuitErrors();
             UpdateFlag = !UpdateFlag;
         }
         public void DetermineComponentErrors(ElectricalComponent component)
@@ -1139,19 +1164,46 @@ namespace GMEPDesignTool
                     Amp = (float)Math.Round(((double)largestPhase) / 277, 10);
                     break;
                 case 4:
-                    double l1 = PhaseAVA;
-                    double l2 = PhaseBVA;
+                    double l1 = PhaseBVA;
+                    double l2 = PhaseAVA;
                     double l3 = PhaseCVA;
+
+                    if (HighLegPhase == 'A')
+                    {
+                        l1 = PhaseAVA;
+                        l2 = PhaseCVA;
+                        l3 =  PhaseBVA;
+                    }
+                    if (HighLegPhase == 'C')
+                    {
+                        l1 = PhaseCVA;
+                        l2 = PhaseBVA;
+                        l3 =  PhaseAVA;
+                    }
                     double fA = Math.Abs(l3 - l1);
                     double fB = Math.Abs(l1 - l2);
                     double fC = Math.Abs(l2 - l3);
                     double l3N = l3;
                     double l2N = l2;
+
+                    //Adjust ifx depending on high leg phase
                     double iFa = (fA + (0.25 * ALml)) / 240;
                     double iFb = (fB + (0.25 * BLml)) / 240;
                     double iFc = (fC + (0.25 * CLml)) / 240;
-                    double iL2N = (l2N + (0.25 * Lcl) + (0.25 * BLml)) / 120;
-                    double iL3N = (l3N + (0.25 * Lcl) + (0.25 * CLml)) / 120;
+
+                    double iL2N = (l2N + (0.25 * ALcl) + (0.25 * ALml)) / 120;
+                    double iL3N = (l3N + (0.25 * CLcl) + (0.25 * CLml)) / 120;
+
+                    if (HighLegPhase == 'A')
+                    {
+                        iL2N = (l2N + (0.25 * CLcl) + (0.25 * CLml)) / 120;
+                        iL3N = (l3N + (0.25 * BLcl) + (0.25 * BLml)) / 120;
+                    }
+                    if (HighLegPhase == 'C')
+                    {
+                        iL2N = (l2N + (0.25 * BLcl) + (0.25 * BLml)) / 120;
+                        iL3N = (l3N + (0.25 * ALcl) + (0.25 * ALml)) / 120;
+                    }
                     double iL1 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow(iFb, 2) + (iFa * iFb));
                     double iL2 = Math.Sqrt(Math.Pow(iFb, 2) + Math.Pow((iL2N + iFc), 2) + (iFb * (iL2N + iFc)));
                     double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
@@ -1253,6 +1305,78 @@ namespace GMEPDesignTool
             SetCircuitNumbers();
             SetCircuitVa();
         }
+        public void checkCircuitErrors()
+        {
+           char activePhase = 'A';
+
+            for (int i = 0; i < leftCircuits.Count; i++)
+            {
+                leftCircuits[i].ErrorMessage = "";
+                if (HighLegPhase == activePhase && leftCircuits[i].BreakerSize != 2 && leftCircuits[i].BreakerSize != 3 && leftCircuits[i].BreakerSize != 0)
+                {
+                    if (!((i + 1 < leftCircuits.Count && leftCircuits[i+1].BreakerSize == 2) || (i + 2 < leftCircuits.Count && leftCircuits[i+2].BreakerSize == 3)))
+                    {
+                        leftCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
+                    }      
+                }
+
+                if (activePhase == 'A')
+                {
+                    activePhase = 'B';
+                }
+                else if (activePhase == 'B')
+                {
+                    if (Pole == 3)
+                    {
+                        activePhase = 'C';
+                    }
+                    else
+                    {
+                        activePhase = 'A';
+                    }
+                }
+                else if (activePhase == 'C')
+                {
+                    activePhase = 'A';
+                }
+            }
+            activePhase = 'A';
+            for (int i = 0; i < rightCircuits.Count; i++)
+            {
+                rightCircuits[i].ErrorMessage = "";
+                if (HighLegPhase == activePhase && rightCircuits[i].BreakerSize != 2 && rightCircuits[i].BreakerSize != 3 && rightCircuits[i].BreakerSize != 0)
+                {
+                    if (!((i + 1 < rightCircuits.Count && rightCircuits[i+1].BreakerSize == 2) || (i + 2 < rightCircuits.Count && rightCircuits[i+2].BreakerSize == 3)))
+                    {
+                        rightCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
+                    }
+                }
+
+                if (activePhase == 'A')
+                {
+                    activePhase = 'B';
+                }
+                else if (activePhase == 'B')
+                {
+                    if (Pole == 3)
+                    {
+                        activePhase = 'C';
+                    }
+                    else
+                    {
+                        activePhase = 'A';
+                    }
+                }
+                else if (activePhase == 'C')
+                {
+                    activePhase = 'A';
+                }
+
+
+            }
+
+
+        }
 
         public bool Verify()
         {
@@ -1288,6 +1412,9 @@ namespace GMEPDesignTool
         public int loadCategory;
         public bool customBreakerSize;
         public bool customDescription;
+        public string errorMessage;
+
+
 
         public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory, bool _customBreakerSize, bool _customDescription)
         {
@@ -1301,6 +1428,7 @@ namespace GMEPDesignTool
             projectId = _projectId;
             customBreakerSize = _customBreakerSize;
             customDescription = _customDescription;
+            errorMessage = "";
         }
 
         public string Id
@@ -1336,7 +1464,7 @@ namespace GMEPDesignTool
             set
             {
                 customBreakerSize = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CustomBreakerSize));
             }
         }
         public bool CustomDescription
@@ -1345,7 +1473,7 @@ namespace GMEPDesignTool
             set
             {
                 customDescription = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CustomDescription));
             }
         }
         public int BreakerSize
@@ -1354,7 +1482,7 @@ namespace GMEPDesignTool
             set
             {
                 breakerSize = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(BreakerSize));
             }
         }
 
@@ -1382,7 +1510,7 @@ namespace GMEPDesignTool
             set
             {
                 description = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Description));
             }
         }
         public int LoadCategory
@@ -1392,6 +1520,15 @@ namespace GMEPDesignTool
             {
                 loadCategory = value;
                 OnPropertyChanged();
+            }
+        }
+        public string ErrorMessage
+        {
+            get => errorMessage;
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
