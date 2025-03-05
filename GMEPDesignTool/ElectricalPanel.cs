@@ -172,6 +172,7 @@ namespace GMEPDesignTool
                 {
                     _highLegPhase = value;
                     OnPropertyChanged(nameof(HighLegPhase));
+                    SetCircuitVa();
                 }
             }
         }
@@ -1155,19 +1156,46 @@ namespace GMEPDesignTool
                     Amp = (float)Math.Round(((double)largestPhase) / 277, 10);
                     break;
                 case 4:
-                    double l1 = PhaseAVA;
-                    double l2 = PhaseBVA;
+                    double l1 = PhaseBVA;
+                    double l2 = PhaseAVA;
                     double l3 = PhaseCVA;
+
+                    if (HighLegPhase == 'A')
+                    {
+                        l1 = PhaseAVA;
+                        l2 = PhaseCVA;
+                        l3 =  PhaseBVA;
+                    }
+                    if (HighLegPhase == 'C')
+                    {
+                        l1 = PhaseCVA;
+                        l2 = PhaseBVA;
+                        l3 =  PhaseAVA;
+                    }
                     double fA = Math.Abs(l3 - l1);
                     double fB = Math.Abs(l1 - l2);
                     double fC = Math.Abs(l2 - l3);
                     double l3N = l3;
                     double l2N = l2;
+
+                    //Adjust ifx depending on high leg phase
                     double iFa = (fA + (0.25 * ALml)) / 240;
                     double iFb = (fB + (0.25 * BLml)) / 240;
                     double iFc = (fC + (0.25 * CLml)) / 240;
-                    double iL2N = (l2N + (0.25 * Lcl) + (0.25 * BLml)) / 120;
-                    double iL3N = (l3N + (0.25 * Lcl) + (0.25 * CLml)) / 120;
+
+                    double iL2N = (l2N + (0.25 * ALcl) + (0.25 * ALml)) / 120;
+                    double iL3N = (l3N + (0.25 * CLcl) + (0.25 * CLml)) / 120;
+
+                    if (HighLegPhase == 'A')
+                    {
+                        iL2N = (l2N + (0.25 * CLcl) + (0.25 * CLml)) / 120;
+                        iL3N = (l3N + (0.25 * BLcl) + (0.25 * BLml)) / 120;
+                    }
+                    if (HighLegPhase == 'C')
+                    {
+                        iL2N = (l2N + (0.25 * BLcl) + (0.25 * BLml)) / 120;
+                        iL3N = (l3N + (0.25 * ALcl) + (0.25 * ALml)) / 120;
+                    }
                     double iL1 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow(iFb, 2) + (iFa * iFb));
                     double iL2 = Math.Sqrt(Math.Pow(iFb, 2) + Math.Pow((iL2N + iFc), 2) + (iFb * (iL2N + iFc)));
                     double iL3 = Math.Sqrt(Math.Pow(iFa, 2) + Math.Pow((iL3N + iFc), 2) + (iFa * (iL3N + iFc)));
