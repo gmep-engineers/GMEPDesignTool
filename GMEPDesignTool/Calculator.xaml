@@ -145,7 +145,7 @@
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <TextBlock Foreground="Crimson" Text="{Binding}"/>
+                                                                            <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
@@ -238,7 +238,7 @@
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <TextBlock Foreground="Crimson" Text="{Binding}"/>
+                                                                            <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>

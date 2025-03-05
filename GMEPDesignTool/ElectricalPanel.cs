@@ -978,23 +978,23 @@ namespace GMEPDesignTool
         }
         public void DeterminePanelErrors(ElectricalPanel panel)
         {
-            panel.ErrorMessages.Remove("the panels voltage is not the same as its parent panel's voltage.");
-            panel.ErrorMessages.Remove("3-pole panel is being fed from a 2-pole panel.");
+            panel.ErrorMessages.Remove("panel-pole-error");
+            panel.ErrorMessages.Remove("panel-voltage-error");
             if (panel.Pole == 3 && Pole == 2)
             {
-                panel.ErrorMessages.Add("3-pole panel is being fed from a 2-pole panel.");
+                panel.ErrorMessages.Add("panel-pole-error","3-pole panel is being fed from a 2-pole panel.");
             }
             if (panel.Type != Type)
             {
-                panel.ErrorMessages.Add("the panels voltage is not the same as its parent panel's voltage.");
+                panel.ErrorMessages.Add("panel-voltage-error", "the panels voltage is not the same as its parent panel's voltage.");
             }
         }
         public void DetermineTransformerErrors(ElectricalTransformer transformer)
         {
-            transformer.ErrorMessages.Remove("The transformer input voltage does not match its parent panel's voltage");
+            transformer.ErrorMessages.Remove("transformer-voltage-error");
             if (Type != findTransformerInputVoltage(transformer))
             {
-                transformer.ErrorMessages.Add("The transformer input voltage does not match its parent panel's voltage");
+                transformer.ErrorMessages.Add("transformer-voltage-error", "The transformer input voltage does not match its parent panel's voltage");
             }
      
             int findTransformerInputVoltage(ElectricalTransformer transformer)
@@ -1036,7 +1036,7 @@ namespace GMEPDesignTool
         public void DetermineEquipmentErrors(ElectricalEquipment equipment)
         {
             List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);
-            equipment.ErrorMessages.Remove("The equipment's voltage and phases are not compatible with its parent panel's settings.");
+            equipment.ErrorMessages.Remove("equipment-voltage-error");
             foreach (var voltage in compatibleVoltages)
             {
                 if (Type == voltage)
@@ -1044,7 +1044,7 @@ namespace GMEPDesignTool
                     return;
                 }
             }
-            equipment.ErrorMessages.Add("The equipment's voltage and phases are not compatible with its parent panel's settings.");
+            equipment.ErrorMessages.Add("equipment-voltage-error", "The equipment's voltage and phases are not compatible with its parent panel's settings.");
 
             List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
             {
