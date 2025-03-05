@@ -541,6 +541,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="A"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
@@ -564,6 +572,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="B"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
@@ -587,6 +603,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="C"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
@@ -908,6 +932,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="0"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="A"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
@@ -931,6 +963,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="1"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="B"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
@@ -954,6 +994,14 @@
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                     <Setter Property="Background" Value="LightGray"/>
                                                                 </DataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=(ItemsControl.AlternationIndex)}" Value="2"/>
+                                                                        <Condition Binding="{Binding DataContext.HighLegPhase, RelativeSource={RelativeSource AncestorType=Window}}" Value="C"/>
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Setter Property="Background" Value="LightBlue"/>
+                                                                </MultiDataTrigger>
                                                                 <DataTrigger Binding="{Binding Va}" Value="0">
                                                                     <Setter Property="Foreground" Value="White"/>
                                                                     <Setter Property="Background" Value="White"/>
