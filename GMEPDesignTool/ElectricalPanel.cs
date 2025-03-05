@@ -1300,7 +1300,6 @@ namespace GMEPDesignTool
         }
         public void checkCircuitErrors()
         {
-
            char activePhase = 'A';
 
             for (int i = 0; i < leftCircuits.Count; i++)
@@ -1318,11 +1317,11 @@ namespace GMEPDesignTool
                 {
                     activePhase = 'B';
                 }
-                if (activePhase == 'B')
+                else if (activePhase == 'B')
                 {
                     activePhase = 'C';
                 }
-                if (activePhase == 'C')
+                else if (activePhase == 'C')
                 {
                     activePhase = 'A';
                 }
