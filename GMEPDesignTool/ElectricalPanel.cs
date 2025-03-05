@@ -24,6 +24,7 @@ namespace GMEPDesignTool
         private string _location;
         private string _parentName;
         private string _parentType;
+        private char _highLegPhase;
 
 
         public ElectricalComponent ParentComponent { get; set; }
@@ -58,7 +59,8 @@ namespace GMEPDesignTool
             bool isRecessed,
             int circuitNo,
             bool isHiddenOnPlan,
-            string location
+            string location,
+            char highLegPhase
         )
             : base()
         {
@@ -93,6 +95,7 @@ namespace GMEPDesignTool
             lcl = 0;
             lml = 0;
             _va = 0;
+            _highLegPhase = highLegPhase;
             this._location = location;
             this.componentType = "Panel";
             SetPole();
@@ -160,6 +163,19 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public char HighLegPhase
+        {
+            get => _highLegPhase;
+            set
+            {
+                if (_highLegPhase != value)
+                {
+                    _highLegPhase = value;
+                    OnPropertyChanged(nameof(HighLegPhase));
+                }
+            }
+        }
+
 
         public bool IsRecessed
         {
