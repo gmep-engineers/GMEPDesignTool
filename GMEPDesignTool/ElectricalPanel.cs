@@ -1326,7 +1326,14 @@ namespace GMEPDesignTool
                 }
                 else if (activePhase == 'B')
                 {
-                    activePhase = 'C';
+                    if (Pole == 3)
+                    {
+                        activePhase = 'C';
+                    }
+                    else
+                    {
+                        activePhase = 'A';
+                    }
                 }
                 else if (activePhase == 'C')
                 {
@@ -1351,7 +1358,14 @@ namespace GMEPDesignTool
                 }
                 else if (activePhase == 'B')
                 {
-                    activePhase = 'C';
+                    if (Pole == 3)
+                    {
+                        activePhase = 'C';
+                    }
+                    else
+                    {
+                        activePhase = 'A';
+                    }
                 }
                 else if (activePhase == 'C')
                 {
