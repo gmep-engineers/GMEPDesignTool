@@ -1332,10 +1332,35 @@ namespace GMEPDesignTool
                 {
                     activePhase = 'A';
                 }
+            }
+            activePhase = 'A';
+            for (int i = 0; i < rightCircuits.Count; i++)
+            {
+                rightCircuits[i].ErrorMessage = "";
+                if (HighLegPhase == activePhase && rightCircuits[i].BreakerSize != 2 && rightCircuits[i].BreakerSize != 3 && rightCircuits[i].BreakerSize != 0)
+                {
+                    if (!((i + 1 < rightCircuits.Count && rightCircuits[i+1].BreakerSize == 2) || (i + 2 < rightCircuits.Count && rightCircuits[i+2].BreakerSize == 3)))
+                    {
+                        rightCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
+                    }
+                }
+
+                if (activePhase == 'A')
+                {
+                    activePhase = 'B';
+                }
+                else if (activePhase == 'B')
+                {
+                    activePhase = 'C';
+                }
+                else if (activePhase == 'C')
+                {
+                    activePhase = 'A';
+                }
 
 
             }
-          
+
 
         }
 

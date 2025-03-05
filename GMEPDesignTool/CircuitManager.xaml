@@ -840,6 +840,14 @@
                                                         <Setter Property="BorderBrush" Value="LightBlue"/>
                                                         <Setter Property="BorderThickness" Value="2"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ErrorMessage, Converter={StaticResource NotEmptyStringToBooleanConverter}}" Value="True">
+                                                        <Setter Property="Background" Value="Crimson"/>
+                                                        <Setter Property="ToolTip">
+                                                            <Setter.Value>
+                                                                <TextBlock Text="{Binding ErrorMessage}" Foreground="Crimson"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGridTextColumn.CellStyle>
