@@ -42,6 +42,8 @@ namespace GMEPDesignTool
 
         public ObservableDictionary<string, string> ErrorMessages { get; set; } = new ObservableDictionary<string, string>();
 
+        public ObservableDictionary<string, string> BaseErrorMessages { get; set; } = new ObservableDictionary<string, string>();
+
         public virtual float Lcl
         {
             get => lcl;

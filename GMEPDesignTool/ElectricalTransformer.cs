@@ -224,7 +224,7 @@ namespace GMEPDesignTool
         {
             RootKva = (PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000;
             var kva = (float)Math.Ceiling(RootKva);
-            ErrorMessages.Remove("transformer-kva-error");
+            BaseErrorMessages.Remove("kva-error");
             switch (kva)
             {
                 case var _ when kva <= 45:
@@ -252,7 +252,7 @@ namespace GMEPDesignTool
                 case var _ when kva <= 2500:
                     return 12;
                 case var _ when kva > 2500:
-                    ErrorMessages.Add("transformer-kva-error","KVA of transformer is too high!");
+                    BaseErrorMessages.Add("kva-error","KVA of transformer is too high!");
                     return 13;
                 default:
                     return 1;
