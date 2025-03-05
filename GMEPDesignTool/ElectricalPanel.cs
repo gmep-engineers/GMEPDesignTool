@@ -951,6 +951,7 @@ namespace GMEPDesignTool
             RootKva = (Kva + (Lml/4) + (Lcl/4)) / 1000;
             Kva = (float)Math.Ceiling(RootKva);
             Amp = (float)Math.Ceiling(SetAmp());
+            checkCircuitErrors();
             UpdateFlag = !UpdateFlag;
         }
         public void DetermineComponentErrors(ElectricalComponent component)
@@ -1300,17 +1301,33 @@ namespace GMEPDesignTool
         public void checkCircuitErrors()
         {
 
-            int index = 0;
+           char activePhase = 'A';
 
             for (int i = 0; i < leftCircuits.Count; i++)
             {
-                if (leftCircuits[i].BreakerSize != 2 && leftCircuits[i].BreakerSize != 3 && leftCircuits[i].BreakerSize != 0)
+                leftCircuits[i].ErrorMessage = "";
+                if (HighLegPhase == activePhase && leftCircuits[i].BreakerSize != 2 && leftCircuits[i].BreakerSize != 3 && leftCircuits[i].BreakerSize != 0)
                 {
                     if (!((leftCircuits[i+1] != null && leftCircuits[i+1].BreakerSize == 2) || (leftCircuits[i+2] != null && leftCircuits[i+2].BreakerSize == 3)))
                     {
-                        //raise error at [i]
+                        leftCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
                     }      
-                }    
+                }
+
+                if (activePhase == 'A')
+                {
+                    activePhase = 'B';
+                }
+                if (activePhase == 'B')
+                {
+                    activePhase = 'C';
+                }
+                if (activePhase == 'C')
+                {
+                    activePhase = 'A';
+                }
+
+
             }
           
 
@@ -1350,6 +1367,9 @@ namespace GMEPDesignTool
         public int loadCategory;
         public bool customBreakerSize;
         public bool customDescription;
+        public string errorMessage;
+
+
 
         public Circuit(string _id, string _panelId, string _projectId, int _number, int _va, int _breakerSize, string _description, int _loadCategory, bool _customBreakerSize, bool _customDescription)
         {
@@ -1363,6 +1383,7 @@ namespace GMEPDesignTool
             projectId = _projectId;
             customBreakerSize = _customBreakerSize;
             customDescription = _customDescription;
+            errorMessage = "";
         }
 
         public string Id
@@ -1454,6 +1475,15 @@ namespace GMEPDesignTool
             {
                 loadCategory = value;
                 OnPropertyChanged();
+            }
+        }
+        public string ErrorMessage
+        {
+            get => errorMessage;
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
             }
         }
 
