@@ -291,7 +291,6 @@
                                             </ComboBox>
                                             <Label VerticalAlignment="Top" Margin="300,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
                                             <ComboBox SelectedValue="{Binding BusSize}" SelectedValuePath="Tag" Height="20" VerticalAlignment="Top" Margin="300,50,0,0" HorizontalAlignment="Left" Width="50" >
-
                                                 <ComboBoxItem Content="60" Tag="1"/>
                                                 <ComboBoxItem Content="100" Tag="2"/>
                                                 <ComboBoxItem Content="125" Tag="3"/>
@@ -319,7 +318,18 @@
                                             <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="720 50 0 0" SelectedValue="{Binding HighLegPhase}" SelectedValuePath="Tag">
                                                 <ComboBoxItem Content="A" Tag="A" />
                                                 <ComboBoxItem Content="B" Tag="B"/>
-                                                <ComboBoxItem Content="C" Tag="C" />
+                                                <ComboBoxItem Content="C" Tag="C">
+                                                    <ComboBoxItem.Style>
+                                                        <Style TargetType="ComboBoxItem">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ComboBoxItem.Style>
+                                                </ComboBoxItem>
                                             </ComboBox>
                                             
                                             <Label VerticalAlignment="Top" Margin="860,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>

@@ -1253,6 +1253,13 @@ namespace GMEPDesignTool
                         }
                     }
                 }
+                if (e.PropertyName == nameof(ElectricalPanel.Pole))
+                {
+                    if (panel.Pole == 2 && panel.HighLegPhase == 'C')
+                    {
+                        panel.HighLegPhase = 'B';
+                    }
+                }
                 //StartTimer();
             }
         }
