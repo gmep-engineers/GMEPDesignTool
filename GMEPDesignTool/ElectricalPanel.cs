@@ -1329,7 +1329,8 @@ namespace GMEPDesignTool
         }
         public void checkCircuitErrors()
         {
-           char activePhase = 'A';
+            ErrorMessages.Remove("circuit-errors");
+            char activePhase = 'A';
 
             for (int i = 0; i < leftCircuits.Count; i++)
             {
@@ -1339,6 +1340,10 @@ namespace GMEPDesignTool
                     if (!((i + 1 < leftCircuits.Count && leftCircuits[i+1].BreakerSize == 2) || (i + 2 < leftCircuits.Count && leftCircuits[i+2].BreakerSize == 3)))
                     {
                         leftCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
+                        if (!ErrorMessages.ContainsKey("circuit-errors"))
+                        {
+                            ErrorMessages.Add("circuit-errors", "This panel has issues with its circuits.");
+                        }
                     }      
                 }
 
@@ -1371,6 +1376,10 @@ namespace GMEPDesignTool
                     if (!((i + 1 < rightCircuits.Count && rightCircuits[i+1].BreakerSize == 2) || (i + 2 < rightCircuits.Count && rightCircuits[i+2].BreakerSize == 3)))
                     {
                         rightCircuits[i].ErrorMessage = "Cannot have a single phase breaker on a highleg phase.";
+                        if (!ErrorMessages.ContainsKey("circuit-errors"))
+                        {
+                            ErrorMessages.Add("circuit-errors", "This panel has issues with its circuits.");
+                        }
                     }
                 }
 
