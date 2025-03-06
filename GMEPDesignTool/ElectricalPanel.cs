@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
+using System.Windows.Controls;
 namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
@@ -695,7 +696,7 @@ namespace GMEPDesignTool
 
         public void SetCircuitVa()
         {
-            BaseErrorMessages.Remove("child-errors");
+            ErrorMessages.Remove("child-errors");
             foreach (var circuit in leftCircuits)
             {
                 circuit.Va = 0;
@@ -981,41 +982,32 @@ namespace GMEPDesignTool
         {
             panel.ErrorMessages.Remove("panel-pole-error");
             panel.ErrorMessages.Remove("panel-voltage-error");
-            panel.BaseErrorMessages.Remove("panel-pole-error");
-            panel.BaseErrorMessages.Remove("panel-voltage-error");
+
             if (panel.Pole == 3 && Pole == 2)
             {
                 panel.ErrorMessages.Add("panel-pole-error","3-pole panel is being fed from a 2-pole panel.");
-                panel.BaseErrorMessages.Add("panel-pole-error", "This 3-pole panel is being fed from a 2-pole panel.");
-                if (!BaseErrorMessages.ContainsKey("child-errors"))
-                {
-                    BaseErrorMessages.Add("child-errors", "There are issues with the components being fed to this panel.");
-                }
             }
             if (panel.Type != Type)
             {
                 panel.ErrorMessages.Add("panel-voltage-error", "the panels voltage is not the same as its parent panel's voltage.");
-                panel.BaseErrorMessages.Add("panel-voltage-error", "the panels voltage is not the same as its parent panel's voltage.");
-                if (!BaseErrorMessages.ContainsKey("child-errors"))
-                {
-                    BaseErrorMessages.Add("child-errors", "There are issues with the components being fed to this panel.");
-                }
+            }
+            if (panel.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
+            {
+                ErrorMessages.Add("child-errors", "There are issues with the children being fed to this panel.");
             }
         }
         public void DetermineTransformerErrors(ElectricalTransformer transformer)
         {
             transformer.ErrorMessages.Remove("transformer-voltage-error");
-            transformer.BaseErrorMessages.Remove("transformer-voltage-error");
             if (Type != findTransformerInputVoltage(transformer))
             {
                 transformer.ErrorMessages.Add("transformer-voltage-error", "The transformer input voltage does not match its parent panel's voltage");
-                transformer.BaseErrorMessages.Add("transformer-voltage-error", "The transformer input voltage does not match its parent panel's voltage");
-                if (!BaseErrorMessages.ContainsKey("child-errors"))
-                {
-                    BaseErrorMessages.Add("child-errors", "There are issues with the components being fed to this panel.");
-                }
             }
-     
+
+            if (transformer.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
+            {
+                ErrorMessages.Add("child-errors", "There are issues with the children being fed to this panel.");
+            }
             int findTransformerInputVoltage(ElectricalTransformer transformer)
             {
                 var transformerVoltageType = 5;
@@ -1056,7 +1048,11 @@ namespace GMEPDesignTool
         {
             List<int> compatibleVoltages = determineCompatibleVoltage(equipment.Is3Ph, equipment.Voltage);
             equipment.ErrorMessages.Remove("equipment-voltage-error");
-            equipment.BaseErrorMessages.Remove("equipment-voltage-error");
+            if (equipment.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
+            {
+                ErrorMessages.Add("child-errors", "There are issues with the children being fed to this panel.");
+            }
+
             foreach (var voltage in compatibleVoltages)
             {
                 if (Type == voltage)
@@ -1065,11 +1061,12 @@ namespace GMEPDesignTool
                 }
             }
             equipment.ErrorMessages.Add("equipment-voltage-error", "The equipment's voltage and phases are not compatible with its parent panel's settings.");
-            equipment.BaseErrorMessages.Add("equipment-voltage-error", "The equipment's voltage and phases are not compatible with its parent panel's settings.");
-            if (!BaseErrorMessages.ContainsKey("child-errors"))
+
+            if (equipment.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
             {
-                BaseErrorMessages.Add("child-errors", "There are issues with the components being fed to this panel.");
+                ErrorMessages.Add("child-errors", "There are issues with the children being fed to this panel.");
             }
+
 
             List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
             {
