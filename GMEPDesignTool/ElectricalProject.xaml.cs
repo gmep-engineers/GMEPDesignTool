@@ -287,7 +287,7 @@ namespace GMEPDesignTool
             }
 
             // Recursive function to set power for panels and transformers
-            bool SetPowerRecursive(string id, int requiredVoltage)
+            bool SetPowerRecursive(string id)
             {
                 if (string.IsNullOrEmpty(id))
                 {
@@ -295,270 +295,90 @@ namespace GMEPDesignTool
                 }
                 if (panels.TryGetValue(id, out var panel))
                 {
-                    if (panel.Type == requiredVoltage)
-                    {
-                        panel.Powered = SetPowerRecursive(panel.ParentId, panel.Type);
-                        return panel.Powered;
-                    }
+                    panel.Powered = SetPowerRecursive(panel.ParentId);
+                    return panel.Powered;
                 }
                 else if (transformers.TryGetValue(id, out var transformer))
                 {
-                    if (findTransformerOutputVoltage(transformer) == requiredVoltage)
-                    {
-                        transformer.Powered = SetPowerRecursive(
-                            transformer.ParentId,
-                            findTransformerInputVoltage(transformer)
-                        );
-                        return transformer.Powered;
-                    }
+                    transformer.Powered = SetPowerRecursive(transformer.ParentId);
+                    return transformer.Powered;
                 }
                 else if (equipments.TryGetValue(id, out var equipment))
                 {
-                    foreach (
-                        var voltage in determineCompatibleVoltage(
-                            equipment.Is3Ph,
-                            equipment.Voltage
-                        )
-                    )
+                    if (panels.TryGetValue(equipment.ParentId, out var panel2))
                     {
-                        if (panels.TryGetValue(equipment.ParentId, out var panel2))
-                        {
-                            if (panel2.Type == voltage)
-                            {
-                                equipment.Powered = SetPowerRecursive(equipment.ParentId, voltage);
-                                return equipment.Powered;
-                            }
-                        }
-                        if (transformers.TryGetValue(equipment.ParentId, out var transformer2))
-                        {
-                            if (findTransformerOutputVoltage(transformer2) == voltage)
-                            {
-                                equipment.Powered = SetPowerRecursive(
-                                    transformer2.ParentId,
-                                    findTransformerInputVoltage(transformer2)
-                                );
-                                return equipment.Powered;
-                            }
-                        }
+                        equipment.Powered = SetPowerRecursive(equipment.ParentId);
+                        return equipment.Powered;
+                    }
+                    if (transformers.TryGetValue(equipment.ParentId, out var transformer2))
+                    {
+                        equipment.Powered = SetPowerRecursive(transformer2.ParentId);
+                        return equipment.Powered;
                     }
                 }
                 else if (lightings.TryGetValue(id, out var lighting))
                 {
-                    foreach (var voltage in determineCompatibleVoltage(false, lighting.VoltageId))
+                    if (panels.TryGetValue(lighting.ParentId, out var panel2))
                     {
-                        if (panels.TryGetValue(lighting.ParentId, out var panel2))
-                        {
-                            if (panel2.Type == voltage)
-                            {
-                                lighting.Powered = SetPowerRecursive(lighting.ParentId, voltage);
-                                return equipment.Powered;
-                            }
-                        }
-                        if (transformers.TryGetValue(lighting.ParentId, out var transformer2))
-                        {
-                            if (findTransformerOutputVoltage(transformer2) == voltage)
-                            {
-                                lighting.Powered = SetPowerRecursive(
-                                    transformer2.ParentId,
-                                    findTransformerInputVoltage(transformer2)
-                                );
-                                return lighting.Powered;
-                            }
-                        }
+                        lighting.Powered = SetPowerRecursive(lighting.ParentId);
+                        return equipment.Powered;
+                    }
+                    if (transformers.TryGetValue(lighting.ParentId, out var transformer2))
+                    {
+                        lighting.Powered = SetPowerRecursive(transformer2.ParentId);
+                        return lighting.Powered;
                     }
                 }
                 else if (services.TryGetValue(id, out var service))
                 {
-                    if (service.Type == requiredVoltage)
-                    {
-                        return true;
-                    }
+                     return true;
                 }
 
                 return false;
             }
-            int findTransformerInputVoltage(ElectricalTransformer transformer)
-            {
-                var transformerVoltageType = 5;
-                switch (transformer.Voltage)
-                {
-                    case (1):
-                        transformerVoltageType = 3;
-                        break;
-                    case (2):
-                        transformerVoltageType = 1;
-                        break;
-                    case (3):
-                        transformerVoltageType = 3;
-                        break;
-                    case (4):
-                        transformerVoltageType = 4;
-                        break;
-                    case (5):
-                        transformerVoltageType = 4;
-                        break;
-                    case (6):
-                        transformerVoltageType = 1;
-                        break;
-                    case (7):
-                        transformerVoltageType = 2;
-                        break;
-                    case (8):
-                        transformerVoltageType = 5;
-                        break;
-                    default:
-                        transformerVoltageType = 5;
-                        break;
-                }
-                return transformerVoltageType;
-            }
-            int findTransformerOutputVoltage(ElectricalTransformer transformer)
-            {
-                var transformerVoltageType = 5;
-                switch (transformer.Voltage)
-                {
-                    case (1):
-                        transformerVoltageType = 1;
-                        break;
-                    case (2):
-                        transformerVoltageType = 3;
-                        break;
-                    case (3):
-                        transformerVoltageType = 4;
-                        break;
-                    case (4):
-                        transformerVoltageType = 3;
-                        break;
-                    case (5):
-                        transformerVoltageType = 1;
-                        break;
-                    case (6):
-                        transformerVoltageType = 4;
-                        break;
-                    case (7):
-                        transformerVoltageType = 2;
-                        break;
-                    case (8):
-                        transformerVoltageType = 2;
-                        break;
-                    default:
-                        transformerVoltageType = 5;
-                        break;
-                }
-                return transformerVoltageType;
-            }
-            List<int> determineCompatibleVoltage(bool Is3Ph, int Voltage)
-            {
-                List<int> compatibleVoltages = new List<int>();
-                if ((Is3Ph && Voltage == 3) || (!Is3Ph && (Voltage >= 1 && Voltage <= 3)))
-                {
-                    compatibleVoltages.Add(1);
-                }
-                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 4 || Voltage == 5))
-                {
-                    compatibleVoltages.Add(2);
-                }
-                if (
-                    (Is3Ph && (Voltage == 7 || Voltage == 8))
-                    || (!Is3Ph && (Voltage == 6 || Voltage == 8 || Voltage == 7))
-                )
-                {
-                    compatibleVoltages.Add(3);
-                }
-                if (
-                    (Is3Ph && (Voltage == 4 || Voltage == 5))
-                    || (!Is3Ph && (Voltage == 2 || Voltage == 4 || Voltage == 5))
-                )
-                {
-                    compatibleVoltages.Add(4);
-                }
-                if (!Is3Ph && (Voltage == 1 || Voltage == 2 || Voltage == 3))
-                {
-                    compatibleVoltages.Add(5);
-                }
-                return compatibleVoltages;
-            }
-
+           
             // Start the recursion from services
             foreach (var panel in panels)
             {
-                panel.Value.Powered = SetPowerRecursive(panel.Value.ParentId, panel.Value.Type);
+                panel.Value.Powered = SetPowerRecursive(panel.Value.ParentId);
             }
             foreach (var transformer in transformers)
             {
-                transformer.Value.Powered = SetPowerRecursive(
-                    transformer.Value.ParentId,
-                    findTransformerInputVoltage(transformer.Value)
-                );
+                transformer.Value.Powered = SetPowerRecursive(transformer.Value.ParentId);
             }
             foreach (var equipment in equipments)
             {
-                foreach (
-                    var voltage in determineCompatibleVoltage(
-                        equipment.Value.Is3Ph,
-                        equipment.Value.Voltage
-                    )
+                if (
+                    !string.IsNullOrEmpty(equipment.Value.ParentId)
+                    && (panels.TryGetValue(equipment.Value.ParentId, out var panel))
                 )
                 {
-                    if (
-                        !string.IsNullOrEmpty(equipment.Value.ParentId)
-                        && (panels.TryGetValue(equipment.Value.ParentId, out var panel))
-                    )
-                    {
-                        if (panel.Type == voltage)
-                        {
-                            equipment.Value.Powered = SetPowerRecursive(
-                                equipment.Value.ParentId,
-                                voltage
-                            );
-                        }
-                    }
-                    if (
-                        !string.IsNullOrEmpty(equipment.Value.ParentId)
-                        && transformers.TryGetValue(equipment.Value.ParentId, out var transformer)
-                    )
-                    {
-                        if (findTransformerOutputVoltage(transformer) == voltage)
-                        {
-                            equipment.Value.Powered = SetPowerRecursive(
-                                transformer.ParentId,
-                                findTransformerInputVoltage(transformer)
-                            );
-                        }
-                    }
+                        equipment.Value.Powered = SetPowerRecursive(equipment.Value.ParentId);
+                }
+                if (
+                    !string.IsNullOrEmpty(equipment.Value.ParentId)
+                    && transformers.TryGetValue(equipment.Value.ParentId, out var transformer)
+                )
+                {
+                        equipment.Value.Powered = SetPowerRecursive(transformer.ParentId);
                 }
             }
             foreach (var lighting in lightings)
             {
-                foreach (var voltage in determineCompatibleVoltage(false, lighting.Value.VoltageId))
-                {
                     if (
                         !string.IsNullOrEmpty(lighting.Value.ParentId)
                         && (panels.TryGetValue(lighting.Value.ParentId, out var panel))
                     )
                     {
-                        if (panel.Type == voltage)
-                        {
-                            lighting.Value.Powered = SetPowerRecursive(
-                                lighting.Value.ParentId,
-                                voltage
-                            );
-                        }
+                        lighting.Value.Powered = SetPowerRecursive(lighting.Value.ParentId);
                     }
                     if (
                         !string.IsNullOrEmpty(lighting.Value.ParentId)
                         && transformers.TryGetValue(lighting.Value.ParentId, out var transformer)
                     )
                     {
-                        if (findTransformerOutputVoltage(transformer) == voltage)
-                        {
-                            lighting.Value.Powered = SetPowerRecursive(
-                                transformer.ParentId,
-                                findTransformerInputVoltage(transformer)
-                            );
-                        }
+                        lighting.Value.Powered = SetPowerRecursive(transformer.ParentId);
                     }
-                }
             }
         }
 
