@@ -40,7 +40,9 @@ namespace GMEPDesignTool
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableCollection<string> ErrorMessages { get; set; } = new ObservableCollection<string>();
+        public ObservableDictionary<string, string> ErrorMessages { get; set; } = new ObservableDictionary<string, string>();
+
+        //public ObservableDictionary<string, string> BaseErrorMessages { get; set; } = new ObservableDictionary<string, string>();
 
         public virtual float Lcl
         {
