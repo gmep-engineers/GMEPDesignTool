@@ -89,6 +89,10 @@ namespace GMEPDesignTool
                     _voltage = value;
                     OnPropertyChanged(nameof(Voltage));
                     SetPole();
+                    if (ChildPanel != null)
+                    {
+                        DetermineCompatible(ChildPanel);
+                    }
                 }
             }
         }
@@ -169,10 +173,34 @@ namespace GMEPDesignTool
             CLml = panel.CLml;
             UpdateFlag = !UpdateFlag;
             OnPropertyChanged(nameof(ChildPanel));
+            DetermineCompatible(panel);
         }
 
 
-
+        private void DetermineCompatible(ElectricalPanel panel)
+        {
+            panel.ErrorMessages.Remove("transformer-voltage-error");
+            if (panel.Type == 1 && Voltage != 1 && Voltage != 5)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 2 && Voltage != 8)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 3 && Voltage != 2 && Voltage != 4)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 4 && Voltage != 3 && Voltage != 6)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
+            {
+                ErrorMessages.Add("child-errors", "There are issues with the child of this transformer.");
+            }
+        }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ElectricalPanel.ParentId))
@@ -196,7 +224,8 @@ namespace GMEPDesignTool
                     CLml = 0;
                     RootKva = 0;
                     UpdateFlag = !UpdateFlag;
-
+                    panel.ErrorMessages.Remove("transformer-voltage-error");
+                    ErrorMessages.Remove("child-errors");
                 }
             }
             if (e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
@@ -216,6 +245,13 @@ namespace GMEPDesignTool
                     BLcl = panel.BLcl;
                     CLcl = panel.CLcl;
                     UpdateFlag = !UpdateFlag;
+                }
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Type))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    DetermineCompatible(panel);
                 }
             }
             Kva = SetKva();
