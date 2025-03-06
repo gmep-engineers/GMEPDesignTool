@@ -180,6 +180,7 @@ namespace GMEPDesignTool
         private void DetermineCompatible(ElectricalPanel panel)
         {
             panel.ErrorMessages.Remove("transformer-voltage-error");
+            ErrorMessages.Remove("child-errors");
             if (panel.Type == 1 && Voltage != 1 && Voltage != 5)
             {
                 panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
@@ -196,7 +197,7 @@ namespace GMEPDesignTool
             {
                 panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
             }
-            if (panel.ErrorMessages.Count > 0 && !ErrorMessages.ContainsKey("child-errors"))
+            if (panel.ErrorMessages.Count > 0)
             {
                 ErrorMessages.Add("child-errors", "There are issues with the child of this transformer.");
             }

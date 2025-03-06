@@ -138,7 +138,48 @@
                                                 <ComboBoxItem Content="Floor"/>
                                                 <ComboBoxItem Content="Wall"/>
                                             </ComboBox>
-                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                            <Image Source="/Green_tick.png" Margin="190 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="ToolTip" Value="Okay!"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Source="/RedX.png" Margin="190 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="ToolTip">
+                                                            <Setter.Value>
+                                                                <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Orientation="Vertical"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="212,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                 <Image.ToolTip>
                                                     <ToolTip>
                                                         <TextBlock Text="Powered" />
