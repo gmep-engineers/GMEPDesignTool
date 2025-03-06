@@ -197,6 +197,10 @@ namespace GMEPDesignTool
             {
                 panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
             }
+            if (panel.Type == 5 && Voltage != 7)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
             if (panel.ErrorMessages.Count > 0)
             {
                 ErrorMessages.Add("child-errors", "There are issues with the child of this transformer.");
