@@ -55,6 +55,7 @@ namespace GMEPDesignTool
             int distanceFromParent,
             int aicRating,
             float amp,
+            float kva,
             int type,
             bool powered,
             bool isRecessed,
@@ -80,6 +81,7 @@ namespace GMEPDesignTool
             _distanceFromParent = distanceFromParent;
             _aicRating = aicRating;
             this.amp = amp;
+            this._kva = kva;
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;

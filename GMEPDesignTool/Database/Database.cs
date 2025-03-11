@@ -823,7 +823,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, high_leg_phase = @highLegPhase WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, high_leg_phase = @highLegPhase, load_amperage = @amp, kva = @kva WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -842,13 +842,15 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
             command.Parameters.AddWithValue("@highLegPhase", panel.HighLegPhase);
+            command.Parameters.AddWithValue("@amp", panel.Amp);
+            command.Parameters.AddWithValue("@kva", panel.Kva);
             await command.ExecuteNonQueryAsync();
         }
 
         private async Task InsertPanel(string projectId, ElectricalPanel panel)
         {
             string query =
-                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no, is_hidden_on_plan, location, high_leg_phase) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no, @is_hidden_on_plan, @location, @highLegPhase)";
+                "INSERT INTO electrical_panels (id, project_id, bus_amp_rating_id, main_amp_rating_id, is_distribution, name, color_code, parent_id, num_breakers, parent_distance, aic_rating, voltage_id, is_recessed, is_mlo, circuit_no, is_hidden_on_plan, location, high_leg_phase, load_amperage, kva) VALUES (@id, @projectId, @bus, @main, @is_distribution, @name, @color_code, @parent_id, @numBreakers, @distanceFromParent, @AicRating, @type, @is_recessed, @is_mlo, @circuit_no, @is_hidden_on_plan, @location, @highLegPhase, @amp, @kva)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", panel.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -868,6 +870,8 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
             command.Parameters.AddWithValue("@highLegPhase", panel.Location);
+            command.Parameters.AddWithValue("@amp", panel.Amp);
+            command.Parameters.AddWithValue("@kva", panel.Kva);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1221,7 +1225,8 @@ namespace GMEPDesignTool.Database
                         reader.IsDBNull(reader.GetOrdinal("aic_rating"))
                             ? 0
                             : reader.GetInt32("aic_rating"),
-                        0,
+                        reader.GetFloat("load_amperage"),
+                        reader.GetFloat("kva"),
                         reader.IsDBNull(reader.GetOrdinal("voltage_id"))
                             ? 0
                             : reader.GetInt32("voltage_id"),
