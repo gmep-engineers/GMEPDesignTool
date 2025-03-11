@@ -461,10 +461,11 @@
                                 <Label Content="Category" Margin="0 3 0 0"/>
                                 <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Tag">
                                     <ComboBoxItem Content="" Tag="" />
-                                    <ComboBoxItem Content="General" Tag="1" />
-                                    <ComboBoxItem Content="Mechanical" Tag="2" />
-                                    <ComboBoxItem Content="Plumbing" Tag="3" />
-                                    <ComboBoxItem Content="Kitchen" Tag="4" />
+                                    <ComboBoxItem Content="General" Tag="1"/>
+                                    <ComboBoxItem Content="Mechanical" Tag="2"/>
+                                    <ComboBoxItem Content="Plumbing" Tag="3"/>
+                                    <ComboBoxItem Content="Kitchen" Tag="4"/>
+                                    <ComboBoxItem Content="Lighting" Tag="5"/>
                                 </ComboBox>
                                 <Label Content="Panel" Margin="150 3 0 0"/>
                                 <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value" SelectedValuePath="Key"/>
@@ -515,6 +516,7 @@
                                                         <ComboBoxItem Content="Mechanical" Tag="2" />
                                                         <ComboBoxItem Content="Plumbing"  Tag="3"/>
                                                         <ComboBoxItem Content="Kitchen"  Tag="4"/>
+                                                        <ComboBoxItem Content="Lighting" Tag="5" Visibility="Collapsed"/>
                                                     </ComboBox>
                                                     <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding LoadType}" SelectedValuePath="Tag">
                                                         <ComboBoxItem Content="Standard" Tag="1"/>
