@@ -2117,25 +2117,9 @@ namespace GMEPDesignTool
                     {
                         process.StartInfo = startInfo;
                         Task.Run(() => process.Start());
-
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
-
                         process.WaitForExit();
-
                         Console.WriteLine($"Process exited with code: {process.ExitCode}");
 
-                        if (!string.IsNullOrEmpty(output))
-                        {
-                            Console.WriteLine("Output:");
-                            Console.WriteLine(output);
-                        }
-
-                        if (!string.IsNullOrEmpty(error))
-                        {
-                            Console.WriteLine("Error:");
-                            Console.WriteLine(error);
-                        }
                     }
                 }
                 catch (Exception ex)
