@@ -2086,6 +2086,64 @@ namespace GMEPDesignTool
                 index++;
             }
         }
+
+        private void SingleLine_Click(object sender, RoutedEventArgs e)
+        {
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string relativePath = System.IO.Path.Combine("Documents", "Scripts", "GMEPNodeGraph", "bin", "Debug", "net6.0-windows", "GMEPNodeGraph.exe");
+            string filePath = System.IO.Path.Combine(userProfile, relativePath);
+            string arguments =  ProjectView.ProjectNo.ToString() + " 1";
+
+            if (File.Exists(filePath))
+            {
+                LaunchProcess(filePath, arguments);
+            }
+
+            static void LaunchProcess(string executablePath, string commandLineArguments)
+            {
+                try
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = executablePath,
+                        Arguments = commandLineArguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = false
+                    };
+
+                    using (Process process = new Process())
+                    {
+                        process.StartInfo = startInfo;
+                        Task.Run(() => process.Start());
+
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+
+                        process.WaitForExit();
+
+                        Console.WriteLine($"Process exited with code: {process.ExitCode}");
+
+                        if (!string.IsNullOrEmpty(output))
+                        {
+                            Console.WriteLine("Output:");
+                            Console.WriteLine(output);
+                        }
+
+                        if (!string.IsNullOrEmpty(error))
+                        {
+                            Console.WriteLine("Error:");
+                            Console.WriteLine(error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error launching process: {ex.Message}");
+                }
+            }
+        }
     }
 
     public class MinimumValueValidationRule : ValidationRule
