@@ -163,6 +163,14 @@ namespace GMEPDesignTool
             set => SetProperty(ref parentType, value);
         }
 
+        private char highLegPhase;
+
+        public char HighLegPhase
+        {
+            get => highLegPhase;
+            set => SetProperty(ref highLegPhase, value);
+        }
+
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
             RightComponents = panel.rightComponents;
@@ -184,6 +192,7 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
+            highLegPhase = panel.HighLegPhase;
             parentName = panel.ParentName;
             parentType = panel.ParentType;
             _location = panel.Location;
@@ -286,6 +295,11 @@ namespace GMEPDesignTool
                 {
                     ParentType = Panel.ParentType;
                     OnPropertyChanged(nameof(ParentType));
+                }
+                if (e.PropertyName == nameof(ElectricalPanel.HighLegPhase))
+                {
+                    HighLegPhase = Panel.HighLegPhase;
+                    OnPropertyChanged(nameof(HighLegPhase));
                 }
         }
         public string setBusRating(int bus)
@@ -543,7 +557,6 @@ namespace GMEPDesignTool
         }
         private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (Note removedItem in e.OldItems)

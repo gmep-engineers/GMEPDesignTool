@@ -54,6 +54,7 @@ namespace GMEPDesignTool
             _distanceFromParent = distanceFromParent;
             _voltage = voltage;
             _kva = kva;
+            this.rootKva = 0;
             _powered = powered;
             Lcl = lcl;
             Lml = lml;
@@ -88,6 +89,10 @@ namespace GMEPDesignTool
                     _voltage = value;
                     OnPropertyChanged(nameof(Voltage));
                     SetPole();
+                    if (ChildPanel != null)
+                    {
+                        DetermineCompatible(ChildPanel);
+                    }
                 }
             }
         }
@@ -167,10 +172,40 @@ namespace GMEPDesignTool
             BLml = panel.BLml;
             CLml = panel.CLml;
             UpdateFlag = !UpdateFlag;
+            OnPropertyChanged(nameof(ChildPanel));
+            DetermineCompatible(panel);
         }
 
 
-
+        private void DetermineCompatible(ElectricalPanel panel)
+        {
+            panel.ErrorMessages.Remove("transformer-voltage-error");
+            ErrorMessages.Remove("child-errors");
+            if (panel.Type == 1 && Voltage != 1 && Voltage != 5)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 2 && Voltage != 8)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 3 && Voltage != 2 && Voltage != 4)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 4 && Voltage != 3 && Voltage != 6)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.Type == 5 && Voltage != 7)
+            {
+                panel.ErrorMessages.Add("transformer-voltage-error", "This panel has a different voltage/phase than the output of its parent transformer.");
+            }
+            if (panel.ErrorMessages.Count > 0)
+            {
+                ErrorMessages.Add("child-errors", "There are issues with the child of this transformer.");
+            }
+        }
         private void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ElectricalPanel.ParentId))
@@ -192,8 +227,10 @@ namespace GMEPDesignTool
                     ALml = 0;
                     BLml = 0;
                     CLml = 0;
+                    RootKva = 0;
                     UpdateFlag = !UpdateFlag;
-
+                    panel.ErrorMessages.Remove("transformer-voltage-error");
+                    ErrorMessages.Remove("child-errors");
                 }
             }
             if (e.PropertyName == nameof(ElectricalPanel.UpdateFlag))
@@ -215,12 +252,20 @@ namespace GMEPDesignTool
                     UpdateFlag = !UpdateFlag;
                 }
             }
+            if (e.PropertyName == nameof(ElectricalPanel.Type))
+            {
+                if (sender is ElectricalPanel panel)
+                {
+                    DetermineCompatible(panel);
+                }
+            }
             Kva = SetKva();
         }
         public int SetKva()
         {
-            var kva = (float)Math.Ceiling((PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000);
-
+            RootKva = (PhaseAVA + PhaseBVA + PhaseCVA + (Lcl/4) + (Lml/4)) / 1000;
+            var kva = (float)Math.Ceiling(RootKva);
+            ErrorMessages.Remove("kva-error");
             switch (kva)
             {
                 case var _ when kva <= 45:
@@ -248,6 +293,7 @@ namespace GMEPDesignTool
                 case var _ when kva <= 2500:
                     return 12;
                 case var _ when kva > 2500:
+                    ErrorMessages.Add("kva-error","KVA of transformer is too high!");
                     return 13;
                 default:
                     return 1;

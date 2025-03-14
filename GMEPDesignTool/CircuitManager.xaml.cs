@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -54,6 +56,50 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LeftCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void LeftCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
+                }
+            }
+        }
+
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
@@ -69,7 +115,7 @@ namespace GMEPDesignTool
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> toRemove = new List<Note>();
+                    List<Note> existingNodes = new List<Note>();
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
 
@@ -77,22 +123,27 @@ namespace GMEPDesignTool
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
                         {
-                            if (!node.Equals(selectedNote))
+                            existingNodes.Add(node);
+                        }
+                    }
+
+                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+
+                    if (existingNodes2.Count > 0)
+                    {
+                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
+                        {
+                            var node = existingNodes2.Find(note => note.Stack == i);
+                            if (node == null)
                             {
-                                toRemove.Add(node);
+                                newNote.Stack = i;
+                                break;
                             }
                         }
                     }
-                    foreach (var node in toRemove)
-                    {
-                        node.CircuitNo = 0;
-                        node.Length = 0;
-                        viewModel.LeftNodes.Remove(node);
-                    }
                     viewModel.LeftNodes.Add(newNote);
-   
                 }
 
             }
@@ -124,6 +175,48 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private void RightCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomDescription)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomDescription = allCustom;
+                }
+            }
+        }
+        private void RightCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            if (sender is MenuItem menuItem && selectedItems.Any())
+            {
+                bool allCustom = false;
+                foreach (var circuit in selectedItems)
+                {
+                    if (!circuit.CustomBreakerSize)
+                    {
+                        allCustom = true;
+                        break;
+                    }
+                }
+
+                foreach (var circuit in selectedItems)
+                {
+                    circuit.CustomBreakerSize = allCustom;
+                }
+            }
+        }
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
@@ -139,28 +232,36 @@ namespace GMEPDesignTool
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> toRemove = new List<Note>();
+                    List<Note> existingNodes = new List<Note>();
                     int startCircuit = newNote.CircuitNo;
                     int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
+                   
 
                     foreach (var node in viewModel.RightNodes)
                     {
                         int startCircuit2 = node.CircuitNo;
                         int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit > startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 > startCircuit))
+                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
                         {
-                            if (!node.Equals(selectedNote))
+                            existingNodes.Add(node);
+                        }
+                    }
+
+                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+
+                    if (existingNodes2.Count > 0)
+                    {
+                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
+                        {
+                            var node = existingNodes2.Find(note => note.Stack == i);
+                            if (node == null)
                             {
-                                toRemove.Add(node);
+                                newNote.Stack = i;
+                                break;
                             }
                         }
                     }
-                    foreach (var node in toRemove)
-                    {
-                        node.CircuitNo = 0;
-                        node.Length = 0;
-                        viewModel.RightNodes.Remove(node);
-                    }
+
                     viewModel.RightNodes.Add(newNote);
 
                 }
@@ -194,21 +295,74 @@ namespace GMEPDesignTool
                 }
             }
         }
-    }
-    public class CircuitToMarginConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+
+        private void Component_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (value is int CircuitNo)
+            if (sender is ListBoxItem item)
+            {
+                if (item.DataContext is ElectricalPanel panel)
+                {
+                    PanelPopup.DataContext = panel;
+                    PanelPopup.IsOpen = true;
+                    TransformerPopup.IsOpen = false;
+                    EquipmentPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+                else if (item.DataContext is ElectricalTransformer transformer)
+                {
+                    TransformerPopup.DataContext = transformer;
+                    TransformerPopup.IsOpen = true;
+                    EquipmentPopup.IsOpen = false;
+                    PanelPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+                else if (item.DataContext is ElectricalEquipment equipment)
+                {
+                    EquipmentPopup.DataContext = equipment;
+                    EquipmentPopup.IsOpen = true;
+                    PanelPopup.IsOpen = false;
+                    TransformerPopup.IsOpen = false;
+                    e.Handled = true;
+                }
+            }
+        }
+       
+    }
+
+    public class LeftMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is int CircuitNo && values[1] is int stack)
             {
                 var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
                 // Adjust the margin based on the number of notes
-                return new Thickness(0, NewCircuitNo * 28, 0, 0);
+
+                return new Thickness(0, NewCircuitNo * 28, stack * 30, 0);
             }
             return new Thickness(0);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class RightMarginConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is int CircuitNo && values[1] is int stack)
+            {
+                var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
+                // Adjust the margin based on the number of notes
+              
+                return new Thickness(stack * 30, NewCircuitNo * 28, 0, 0);
+            }
+            return new Thickness(0);
+        }
+
+        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -230,5 +384,46 @@ namespace GMEPDesignTool
             throw new NotImplementedException();
         }
     }
+    public class BreakerSizeVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int breakerSize)
+            {
+                if (breakerSize == 0)
+                {
+                    return "";
+                }
+            }
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Implement ConvertBack if you need two way binding
+            if (value is string strValue && int.TryParse(strValue, out int result))
+            {
+                return result;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+    }
+    public class NotEmptyStringToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string length && length != "")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
 

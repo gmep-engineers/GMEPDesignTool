@@ -321,6 +321,7 @@ namespace GMEPDesignTool
                 if (category != value)
                 {
                     category = value;
+                    DetermineLoadCategory();
                     OnPropertyChanged(nameof(Category));
                 }
             }
@@ -558,7 +559,11 @@ namespace GMEPDesignTool
         }*/
         public void DetermineLoadCategory()
         {
-            if (hasPlug)
+            if (Category == 5)
+            {
+                LoadCategory = 1;
+            }
+            else if (hasPlug)
             {
                 LoadCategory = 2;
             }

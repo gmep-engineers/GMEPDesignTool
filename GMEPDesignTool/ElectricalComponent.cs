@@ -1,6 +1,7 @@
 ﻿using Mysqlx.Crud;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,7 @@ namespace GMEPDesignTool
         public float aLml;
         public float bLml;
         public float cLml;
+        public float rootKva;
         public int loadCategory;
         public string componentType;
         public int orderNo;
@@ -37,6 +39,10 @@ namespace GMEPDesignTool
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public ObservableDictionary<string, string> ErrorMessages { get; set; } = new ObservableDictionary<string, string>();
+
+        //public ObservableDictionary<string, string> BaseErrorMessages { get; set; } = new ObservableDictionary<string, string>();
 
         public virtual float Lcl
         {
@@ -295,6 +301,20 @@ namespace GMEPDesignTool
                 }
             }
         }
+
+        public virtual float RootKva
+        {
+            get => rootKva;
+            set
+            {
+                if (rootKva != value)
+                {
+                    rootKva = value;
+                    OnPropertyChanged(nameof(RootKva));
+                }
+            }
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

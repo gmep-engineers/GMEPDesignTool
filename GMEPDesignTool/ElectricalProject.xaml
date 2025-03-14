@@ -85,8 +85,11 @@
                                             <ComboBoxItem Content="3000" Tag="11"/>
                                             <ComboBoxItem Content="4000" Tag="12"/>
                                         </ComboBox>
-                                        <Label Content="AIC Rating" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="340 27 0 0"/>
-                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="340,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                        <Label VerticalAlignment="Top" Margin="340,27,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                        <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="340 50 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                        <Label Content="AIC Rating" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left"  Margin="440 27 0 0"/>
+                                        <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="440,50,0,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10"/>
+                                        <Button Content="Load Summary" FontWeight="Bold" Margin="540,50,150,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Height="20" Click="LoadSummary_Click" CommandParameter="{Binding}"/>
                                         <Grid Margin="0, 0, 0, 0" HorizontalAlignment="Right">
                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
                                             <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalService" CommandParameter="{Binding}"/>
@@ -135,7 +138,48 @@
                                                 <ComboBoxItem Content="Floor"/>
                                                 <ComboBoxItem Content="Wall"/>
                                             </ComboBox>
-                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="190,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                            <Image Source="/Green_tick.png" Margin="190 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="ToolTip" Value="Okay!"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Source="/RedX.png" Margin="190 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="ToolTip">
+                                                            <Setter.Value>
+                                                                <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Orientation="Vertical"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="212,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                 <Image.ToolTip>
                                                     <ToolTip>
                                                         <TextBlock Text="Powered" />
@@ -237,16 +281,56 @@
                                                 <ComboBoxItem Content="Surface" HorizontalContentAlignment="Left"/>
                                                 <ComboBoxItem Content="Recessed" HorizontalContentAlignment="Left" />
                                             </ComboBox>
-                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="280,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                            <Image Source="/Green_tick.png" Margin="280 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="ToolTip" Value="Okay!"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image Source="/RedX.png" Margin="280 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="ToolTip">
+                                                            <Setter.Value>
+                                                                <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Orientation="Vertical"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="302,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                 <Image.ToolTip>
                                                     <ToolTip>
                                                         <TextBlock Text="Powered" />
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <Rectangle Width="710" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
-
-
+                                            <Rectangle Width="840" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
+                                            
                                             <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
                                             <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}" MaxLength="7"/>
 
@@ -289,7 +373,6 @@
                                             </ComboBox>
                                             <Label VerticalAlignment="Top" Margin="300,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
                                             <ComboBox SelectedValue="{Binding BusSize}" SelectedValuePath="Tag" Height="20" VerticalAlignment="Top" Margin="300,50,0,0" HorizontalAlignment="Left" Width="50" >
-
                                                 <ComboBoxItem Content="60" Tag="1"/>
                                                 <ComboBoxItem Content="100" Tag="2"/>
                                                 <ComboBoxItem Content="125" Tag="3"/>
@@ -313,15 +396,33 @@
                                             <Label VerticalAlignment="Top" Margin="530,28,0,0" HorizontalAlignment="Left" Content="Location" FontWeight="Bold"/>
                                             <TextBox Text="{Binding Location}" Height="20" VerticalAlignment="Top" Margin="530,50,0,0" HorizontalAlignment="Left" Width="170"/>
 
-                                            <Label VerticalAlignment="Top" Margin="730,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                            <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="730 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
-                                            <Label VerticalAlignment="Top" Margin="730,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                            <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="730,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
+                                            <Label VerticalAlignment="Top" Margin="720,28,0,0" HorizontalAlignment="Left" Content="High Leg Phase" FontWeight="Bold"/>
+                                            <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="720 50 0 0" SelectedValue="{Binding HighLegPhase}" SelectedValuePath="Tag">
+                                                <ComboBoxItem Content="A" Tag="A" />
+                                                <ComboBoxItem Content="B" Tag="B"/>
+                                                <ComboBoxItem Content="C" Tag="C">
+                                                    <ComboBoxItem.Style>
+                                                        <Style TargetType="ComboBoxItem">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ComboBoxItem.Style>
+                                                </ComboBoxItem>
+                                            </ComboBox>
+                                            
+                                            <Label VerticalAlignment="Top" Margin="860,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
+                                            <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="860 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                            <Label VerticalAlignment="Top" Margin="860,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
+                                            <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="860,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
 
-                                            <Label VerticalAlignment="Top" Margin="830,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
-                                            <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="830,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
-                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="930,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
-                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="1030,50,150,0" HorizontalAlignment="Left" Width="150" />
+                                            <Label VerticalAlignment="Top" Margin="960,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
+                                            <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="960,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
+                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="1060,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
+                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="1160,50,150,0" HorizontalAlignment="Left" Width="150" />
                                         </Grid>
                                         <Grid Margin="20 0" HorizontalAlignment="Right"  >
                                             <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
@@ -360,10 +461,11 @@
                                 <Label Content="Category" Margin="0 3 0 0"/>
                                 <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Tag">
                                     <ComboBoxItem Content="" Tag="" />
-                                    <ComboBoxItem Content="General" Tag="1" />
-                                    <ComboBoxItem Content="Mechanical" Tag="2" />
-                                    <ComboBoxItem Content="Plumbing" Tag="3" />
-                                    <ComboBoxItem Content="Kitchen" Tag="4" />
+                                    <ComboBoxItem Content="General" Tag="1"/>
+                                    <ComboBoxItem Content="Mechanical" Tag="2"/>
+                                    <ComboBoxItem Content="Plumbing" Tag="3"/>
+                                    <ComboBoxItem Content="Kitchen" Tag="4"/>
+                                    <ComboBoxItem Content="Lighting" Tag="5"/>
                                 </ComboBox>
                                 <Label Content="Panel" Margin="150 3 0 0"/>
                                 <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value" SelectedValuePath="Key"/>
@@ -414,14 +516,55 @@
                                                         <ComboBoxItem Content="Mechanical" Tag="2" />
                                                         <ComboBoxItem Content="Plumbing"  Tag="3"/>
                                                         <ComboBoxItem Content="Kitchen"  Tag="4"/>
+                                                        <ComboBoxItem Content="Lighting" Tag="5" Visibility="Collapsed"/>
                                                     </ComboBox>
                                                     <ComboBox Height="22" Width="100" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10 2 0 0" SelectedValue="{Binding LoadType}" SelectedValuePath="Tag">
                                                         <ComboBoxItem Content="Standard" Tag="1"/>
                                                         <ComboBoxItem Content="LML" Tag="2" />
                                                         <ComboBoxItem Content="LCL"  Tag="3"/>
                                                     </ComboBox>
-
-                                                    <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
+                                                <Image Source="/Green_tick.png" Margin="10 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Setter Property="ToolTip" Value="Okay!"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                                <Image Source="/RedX.png" Margin="10 5 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="15">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Setter Property="ToolTip">
+                                                                <Setter.Value>
+                                                                    <ItemsControl ItemsSource="{Binding ErrorMessages}">
+                                                                        <ItemsControl.ItemsPanel>
+                                                                            <ItemsPanelTemplate>
+                                                                                <StackPanel Orientation="Vertical"/>
+                                                                            </ItemsPanelTemplate>
+                                                                        </ItemsControl.ItemsPanel>
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <TextBlock Foreground="Crimson" Text="{Binding Path=Value}"/>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ErrorMessages.Count}" Value="0">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                                <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Visibility="{Binding Powered, Converter={StaticResource BoolToVisConverter}}">
                                                         <Image.ToolTip>
                                                             <ToolTip>
                                                                 <TextBlock Text="Powered" />
