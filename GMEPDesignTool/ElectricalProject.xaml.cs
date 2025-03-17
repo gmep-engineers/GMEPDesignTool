@@ -2122,31 +2122,42 @@ namespace GMEPDesignTool
                         EnableRaisingEvents = true
                     };
 
-
-                    process.Exited += async (s, e) =>
-                    {
-                        await Task.Run(async () => {
-                            //ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
-                            ElectricalPanels.Clear();
-                            //ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
-                            //ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                foreach (Window window in Application.Current.Windows)
-                                {
-                                    window.Show();
-                                }
-                                timer.Start();
-                            });
-                        });
-                    };
-
                     foreach (Window window in Application.Current.Windows)
                     {
                         window.Hide();
                     }
                     timer.Stop();  
                     process.Start();
+
+                    process.WaitForExit();
+                    ElectricalPanels.Clear();
+                    ElectricalTransformers.Clear();
+                    ElectricalServices.Clear();
+                    var panels = await ProjectView.database.GetProjectPanels(ProjectId);
+                    var transformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+                    var services = await ProjectView.database.GetProjectServices(ProjectId);
+
+                    foreach (var panel in panels)
+                    {
+                        ElectricalPanels.Add(panel);
+                    }
+                    foreach (var transformer in transformers)
+                    {
+                        ElectricalTransformers.Add(transformer);
+                    }
+                    foreach (var service in services)
+                    {
+                        ElectricalServices.Add(service);
+                    }
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            window.Show();
+                        }
+                        timer.Start();
+                    });
                 }
                 catch (Exception ex)
                 {
