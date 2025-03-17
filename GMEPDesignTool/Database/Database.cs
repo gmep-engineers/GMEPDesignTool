@@ -559,7 +559,31 @@ namespace GMEPDesignTool.Database
 
             await CloseConnectionAsync();
         }
+        public async Task UploadProject(
+            string projectId,
+            ObservableCollection<ElectricalService> services,
+            ObservableCollection<ElectricalPanel> panels,
+            ObservableCollection<ElectricalEquipment> equipments,
+            ObservableCollection<ElectricalTransformer> transformers,
+            ObservableCollection<ElectricalLighting> lightings,
+            ObservableCollection<Location> locations,
+            ObservableCollection<Note> panelNotes,
+            ObservableCollection<Circuit> customCircuits
+        )
+        {
+            await OpenConnectionAsync();
 
+            await UpdateServices(projectId, services);
+            await UploadPanels(projectId, panels);
+            await UpdateEquipments(projectId, equipments);
+            await UpdateTransformers(projectId, transformers);
+            await UpdateLightings(projectId, lightings);
+            await UpdateLightingLocations(projectId, locations);
+            await UpdatePanelNotes(projectId, panelNotes);
+            await UpdateCustomCircuits(projectId, customCircuits);
+
+            await CloseConnectionAsync();
+        }
         private async Task UpdateServices(
             string projectId,
             ObservableCollection<ElectricalService> services
@@ -605,13 +629,26 @@ namespace GMEPDesignTool.Database
                     await UpdatePanel(panel);
                     existingPanelIds.Remove(panel.Id);
                 }
-                else
+            }
+        }
+        private async Task UploadPanels(
+           string projectId,
+           ObservableCollection<ElectricalPanel> panels
+       )
+        {
+            var existingPanelIds = await GetExistingIds(
+                "electrical_panels",
+                "project_id",
+                projectId
+            );
+
+            foreach (var panel in panels)
+            {
+                if (!existingPanelIds.Contains(panel.Id))
                 {
                     await InsertPanel(projectId, panel);
                 }
             }
-
-            await DeleteRemovedItems("electrical_panels", existingPanelIds);
         }
 
         private async Task UpdatePanelNotes(string projectId, ObservableCollection<Note> panelNotes)
@@ -823,23 +860,13 @@ namespace GMEPDesignTool.Database
         private async Task UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, high_leg_phase = @highLegPhase, load_amperage = @amp, kva = @kva WHERE id = @id";
+                "UPDATE electrical_panels SET num_breakers = @numBreakers, circuit_no = @circuit_no, location = @location, high_leg_phase = @highLegPhase, load_amperage = @amp, kva = @kva WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@bus", panel.BusSize);
-            command.Parameters.AddWithValue("@main", panel.MainSize);
-            command.Parameters.AddWithValue("@is_distribution", panel.IsDistribution);
-            command.Parameters.AddWithValue("@name", panel.Name);
+
             command.Parameters.AddWithValue("@color_code", panel.ColorCode);
-            command.Parameters.AddWithValue("@parent_id", panel.ParentId);
             command.Parameters.AddWithValue("@id", panel.Id);
-            command.Parameters.AddWithValue("@aicRating", panel.AicRating);
-            command.Parameters.AddWithValue("@distanceFromParent", panel.DistanceFromParent);
             command.Parameters.AddWithValue("@numBreakers", panel.NumBreakers);
-            command.Parameters.AddWithValue("@type", panel.Type);
-            command.Parameters.AddWithValue("@is_recessed", panel.IsRecessed);
-            command.Parameters.AddWithValue("@is_mlo", panel.IsMlo);
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
-            command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
             command.Parameters.AddWithValue("@highLegPhase", panel.HighLegPhase);
             command.Parameters.AddWithValue("@amp", panel.Amp);
@@ -1610,7 +1637,7 @@ namespace GMEPDesignTool.Database
                     equipment.ParentId = parentIdSwitch[equipment.ParentId];
                 }
             }
-            await UpdateProject(
+            await UploadProject(
                 newProjectId,
                 services,
                 panels,

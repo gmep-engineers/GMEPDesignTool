@@ -274,11 +274,11 @@
                                     <Grid x:Name="PanelGrid" Height="90" Margin="0 0 0 0" VerticalAlignment="Top">
                                         <Grid Width="Auto">
                                             <xctk:ColorPicker Name="ClrPcker_Background" Margin="2,2,0,0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedColor="{Binding ColorCode}"></xctk:ColorPicker>
-                                            <ComboBox Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
+                                            <ComboBox IsEnabled="False" Height="20" Width="70" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="110,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsDistribution}">
                                                 <ComboBoxItem Content="Panel" HorizontalContentAlignment="Left"/>
                                                 <ComboBoxItem Content="Distrib." HorizontalContentAlignment="Left" />
                                             </ComboBox>
-                                            <ComboBox Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsRecessed}">
+                                            <ComboBox IsEnabled="False"  Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190,2,0,0" HorizontalContentAlignment="Right" SelectedIndex="{Binding IsRecessed}">
                                                 <ComboBoxItem Content="Surface" HorizontalContentAlignment="Left"/>
                                                 <ComboBoxItem Content="Recessed" HorizontalContentAlignment="Left" />
                                             </ComboBox>
@@ -333,10 +333,10 @@
                                             <Rectangle Width="840" Height="45" Stroke="Gray" HorizontalAlignment="Left" Margin="0 30 0 0" Fill="{Binding ColorCode}" VerticalAlignment="Top"/>
                                             
                                             <Label VerticalAlignment="Top" Margin="10,27,0,0" HorizontalAlignment="Left" Content="Name" FontWeight="Bold"/>
-                                            <TextBox Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}" MaxLength="7"/>
+                                            <TextBox IsReadOnly="True" Height="20" VerticalAlignment="Top" Margin="10,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Center" CharacterCasing="Upper" Text="{Binding Name}" MaxLength="7"/>
 
                                             <Label Content="Voltage" Margin="100 27 0 0" FontWeight="Bold"/>
-                                            <ComboBox Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
+                                            <ComboBox IsEnabled="False" Height="20" Width="105" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100 50 0 0" SelectedValue="{Binding Type}" SelectedValuePath="Tag">
                                                 <ComboBoxItem Content="120/208V 3-Φ" Tag="1" />
                                                 <ComboBoxItem Content="120/240V 1-Φ" Tag="2"/>
                                                 <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
@@ -345,19 +345,7 @@
                                             </ComboBox>
 
                                             <Label VerticalAlignment="Top" Margin="230,28,0,0" HorizontalAlignment="Left" Content="Main (A)" FontWeight="Bold"/>
-                                            <ComboBox SelectedValuePath="Tag" Height="20" VerticalAlignment="Top" Margin="230,50,0,0" HorizontalAlignment="Left" Width="50" >
-                                                <ComboBox.Style>
-                                                    <Style TargetType="ComboBox">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                        <Setter Property="SelectedValue" Value="{Binding MainSize}"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsMlo}" Value="True">
-                                                                <Setter Property="IsEnabled" Value="False"/>
-                                                                <Setter Property="SelectedValue" Value="14"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ComboBox.Style>
+                                            <ComboBox SelectedValuePath="Tag" Height="20" IsEnabled="False" VerticalAlignment="Top" Margin="230,50,0,0" HorizontalAlignment="Left" Width="50" >
                                                 <ComboBoxItem Content="60" Tag="1"/>
                                                 <ComboBoxItem Content="100" Tag="2"/>
                                                 <ComboBoxItem Content="125" Tag="3"/>
@@ -373,7 +361,7 @@
                                                 <ComboBoxItem Content="800" Tag="13"/>
                                             </ComboBox>
                                             <Label VerticalAlignment="Top" Margin="300,28,0,0" HorizontalAlignment="Left" Content="Bus (A)" FontWeight="Bold"/>
-                                            <ComboBox SelectedValue="{Binding BusSize}" SelectedValuePath="Tag" Height="20" VerticalAlignment="Top" Margin="300,50,0,0" HorizontalAlignment="Left" Width="50" >
+                                            <ComboBox SelectedValue="{Binding BusSize}" IsEnabled="False" SelectedValuePath="Tag" Height="20" VerticalAlignment="Top" Margin="300,50,0,0" HorizontalAlignment="Left" Width="50" >
                                                 <ComboBoxItem Content="60" Tag="1"/>
                                                 <ComboBoxItem Content="100" Tag="2"/>
                                                 <ComboBoxItem Content="125" Tag="3"/>
@@ -389,7 +377,7 @@
                                                 <ComboBoxItem Content="800" Tag="13"/>
                                             </ComboBox>
 
-                                            <CheckBox IsChecked="{Binding IsMlo}" FontWeight="Bold" Content="MLO"  VerticalAlignment="Top" Margin="370,53,0,0" HorizontalAlignment="Left" Width="70" />
+                                            <CheckBox IsChecked="{Binding IsMlo}" IsEnabled="False" FontWeight="Bold" Content="MLO"  VerticalAlignment="Top" Margin="370,53,0,0" HorizontalAlignment="Left" Width="70" />
 
                                             <Label VerticalAlignment="Top" Margin="440,28,0,0" HorizontalAlignment="Left" Content="# Breakers" FontWeight="Bold"/>
                                             <TextBox Text="{Binding NumBreakers}" Height="20" VerticalAlignment="Top" Margin="440,50,0,0" HorizontalAlignment="Left" Width="70" TextAlignment="Right" CharacterCasing="Upper" MaxLength="2"/>
@@ -416,28 +404,23 @@
                                             </ComboBox>
                                             
                                             <Label VerticalAlignment="Top" Margin="860,0,0,0" HorizontalAlignment="Left" Content="Fed From" FontWeight="Bold"/>
-                                            <ComboBox x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="860 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
+                                            <ComboBox IsEnabled="False" x:Name="PanelParent" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="860 23 0 0" HorizontalContentAlignment="Right" SelectedValue="{Binding ParentId}" SelectedValuePath="Key" ItemsSource="{Binding DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" DisplayMemberPath="Value"/>
                                             <Label VerticalAlignment="Top" Margin="860,42,0,0" HorizontalAlignment="Left" Content="Distance" FontWeight="Bold"/>
-                                            <TextBox Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="860,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
+                                            <TextBox IsEnabled="False" Text="{Binding DistanceFromParent}" Height="20" Width="80" Margin="860,55,0,0" HorizontalAlignment="Left" MaxLength="5"/>
 
                                             <Label VerticalAlignment="Top" Margin="960,28,0,0" HorizontalAlignment="Left" Content="AIC Rating" FontWeight="Bold"/>
                                             <TextBox Text="{Binding AicRating}" Height="20" VerticalAlignment="Top" Margin="960,50,150,0" HorizontalAlignment="Left" Width="80"  TextAlignment="Right" MaxLength="10" IsReadOnly="True" Background="LightYellow"/>
-                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="1060,50,150,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
-                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="1160,50,150,0" HorizontalAlignment="Left" Width="150" />
+                                            <Button Click="CircuitManager_Click" Height="20" VerticalAlignment="Top" Margin="1060,50,0,0" HorizontalAlignment="Left" Width="80"  Content="Circuits" CommandParameter="{Binding}" FontWeight="Bold"/>
+                                            <CheckBox IsChecked="{Binding IsHiddenOnPlan}" IsEnabled="False" FontWeight="Bold" Content="Hidden on plan"  VerticalAlignment="Top" Margin="1160,50,50,0" HorizontalAlignment="Left" Width="150" />
                                         </Grid>
-                                        <Grid Margin="20 0" HorizontalAlignment="Right"  >
-                                            <Rectangle x:Name="DeleteSeparator" HorizontalAlignment="Right" Height="900" Margin="0,0,80,0" Stroke="LightGray" VerticalAlignment="Center"/>
-                                            <Button Height="20" Width="50" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 0 0" Content="Delete" FontWeight="Bold" Click="DeleteSelectedElectricalPanel" CommandParameter="{Binding}"/>
-                                        </Grid>
+                                        
                                     </Grid>
                                     <DataTemplate.Triggers>
                                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
                                             <Setter Property="Background" Value="White" TargetName="PanelGrid"/>
-                                            <Setter Property="Stroke" Value="LightGray" TargetName="DeleteSeparator"/>
                                         </Trigger>
                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                             <Setter Property="Background" Value="LightGray" TargetName="PanelGrid"/>
-                                            <Setter Property="Stroke" Value="White" TargetName="DeleteSeparator"/>
                                         </Trigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>
@@ -446,7 +429,6 @@
                     </ScrollViewer>
                     <Grid HorizontalAlignment="Right">
                         <Rectangle Height="900" Stroke="LightGray" HorizontalAlignment="Left" Margin="0 0 48 0" VerticalAlignment="Top"/>
-                        <Button Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 0 0" Content="+" Click="AddNewElectricalPanel"/>
                     </Grid>
                 </Grid>
             </Expander>
