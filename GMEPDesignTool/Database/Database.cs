@@ -869,7 +869,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
-            command.Parameters.AddWithValue("@highLegPhase", panel.Location);
+            command.Parameters.AddWithValue("@highLegPhase", panel.HighLegPhase);
             command.Parameters.AddWithValue("@amp", panel.Amp);
             command.Parameters.AddWithValue("@kva", panel.Kva);
             await command.ExecuteNonQueryAsync();

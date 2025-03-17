@@ -2084,6 +2084,71 @@ namespace GMEPDesignTool
             {
                 equipment.OrderNo = index;
                 index++;
+
+            }
+        }
+
+        private async void SingleLine_Click(object sender, RoutedEventArgs e)
+        {
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string relativePath = System.IO.Path.Combine("Documents", "Scripts", "GMEPNodeGraph", "bin", "Debug", "net6.0-windows", "GMEPNodeGraph.exe");
+            string filePath = System.IO.Path.Combine(userProfile, relativePath);
+            string arguments = ProjectView.ProjectNo.ToString() + " 1";
+
+            if (File.Exists(filePath))
+            {
+                await LaunchProcess(filePath, arguments);
+
+            }
+
+             async Task LaunchProcess(string executablePath, string commandLineArguments)
+            {
+                try
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = executablePath,
+                        Arguments = commandLineArguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = false
+                    };
+
+
+                    Process process = new Process
+                    {
+                        StartInfo = startInfo,
+                        EnableRaisingEvents = true
+                    };
+
+
+                    process.Exited += (s, e) =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                window.Show();
+                            }
+                            timer.Start();
+                        });
+                    };
+
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        window.Hide();
+                    }
+                    timer.Stop();
+                    ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+                    ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+                    ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+                    process.Start();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error launching process: {ex.Message}");
+                }
             }
         }
     }
