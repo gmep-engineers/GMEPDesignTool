@@ -2123,15 +2123,21 @@ namespace GMEPDesignTool
                     };
 
 
-                    process.Exited += (s, e) =>
+                    process.Exited += async (s, e) =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            foreach (Window window in Application.Current.Windows)
+                        await Task.Run(async () => {
+                            //ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+                            ElectricalPanels.Clear();
+                            //ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+                            //ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                window.Show();
-                            }
-                            timer.Start();
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    window.Show();
+                                }
+                                timer.Start();
+                            });
                         });
                     };
 
@@ -2139,10 +2145,7 @@ namespace GMEPDesignTool
                     {
                         window.Hide();
                     }
-                    timer.Stop();
-                    ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
-                    ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
-                    ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+                    timer.Stop();  
                     process.Start();
                 }
                 catch (Exception ex)
