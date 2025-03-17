@@ -2118,6 +2118,7 @@ namespace GMEPDesignTool
                         process.StartInfo = startInfo;
                         Task.Run(() => process.Start());
                         process.WaitForExit();
+                        //ReadSingleLineComponents(ElectricalServices, ElectricalTransformers, ElectricalPanels);
                         Console.WriteLine($"Process exited with code: {process.ExitCode}");
 
                     }

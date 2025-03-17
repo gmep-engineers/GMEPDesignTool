@@ -1548,6 +1548,25 @@ namespace GMEPDesignTool.Database
             return locations;
         }
 
+        public async Task ReadSingleLineComponents(string projectId, ObservableCollection<ElectricalService> services, ObservableCollection<ElectricalTransformer> transformers, ObservableCollection<ElectricalPanel> panels)
+        {
+            var projectServices = await GetProjectServices(projectId);
+            var projectTransformers = await GetProjectTransformers(projectId);
+            var projectPanels = await GetProjectPanels(projectId);
+            foreach (var service in projectServices)
+            {
+                ElectricalService matchingService = services.FirstOrDefault(s => s.Id == service.Id);
+            }
+            foreach (var transformer in projectTransformers)
+            {
+                transformers.Add(transformer);
+            }
+            foreach (var panel in projectPanels)
+            {
+                panels.Add(panel);
+            }
+        }
+    
         public async Task CloneElectricalProject(string projectId, string newProjectId)
         {
             var services = await GetProjectServices(projectId);
