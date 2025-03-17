@@ -916,7 +916,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
-            command.Parameters.AddWithValue("@highLegPhase", panel.HighLegPhase);
+            command.Parameters.AddWithValue("@highLegPhase", panel.Location);
             command.Parameters.AddWithValue("@amp", panel.Amp);
             command.Parameters.AddWithValue("@kva", panel.Kva);
             await command.ExecuteNonQueryAsync();
@@ -1276,7 +1276,7 @@ namespace GMEPDesignTool.Database
                             : reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
                         reader.GetString("location"),
-                        reader.IsDBNull(reader.GetOrdinal("high_leg_phase")) ? '\0' : reader.GetChar("high_leg_phase")
+                        reader.GetChar("high_leg_phase")
                     )
                 );
             }
