@@ -573,10 +573,10 @@ namespace GMEPDesignTool.Database
         {
             await OpenConnectionAsync();
 
-            await UpdateServices(projectId, services);
+            await UploadServices(projectId, services);
             await UploadPanels(projectId, panels);
             await UpdateEquipments(projectId, equipments);
-            await UpdateTransformers(projectId, transformers);
+            await UploadTransformers(projectId, transformers);
             await UpdateLightings(projectId, lightings);
             await UpdateLightingLocations(projectId, locations);
             await UpdatePanelNotes(projectId, panelNotes);
@@ -602,13 +602,26 @@ namespace GMEPDesignTool.Database
                     await UpdateService(service);
                     existingServiceIds.Remove(service.Id);
                 }
-                else
+            }
+        }
+        private async Task UploadServices(
+            string projectId,
+            ObservableCollection<ElectricalService> services
+        )
+        {
+            var existingServiceIds = await GetExistingIds(
+                "electrical_services",
+                "project_id",
+                projectId
+            );
+
+            foreach (var service in services)
+            {
+                if (!existingServiceIds.Contains(service.Id))
                 {
                     await InsertService(projectId, service);
                 }
             }
-
-            await DeleteRemovedItems("electrical_services", existingServiceIds);
         }
 
         private async Task UpdatePanels(
@@ -634,7 +647,7 @@ namespace GMEPDesignTool.Database
         private async Task UploadPanels(
            string projectId,
            ObservableCollection<ElectricalPanel> panels
-       )
+        )
         {
             var existingPanelIds = await GetExistingIds(
                 "electrical_panels",
@@ -713,13 +726,26 @@ namespace GMEPDesignTool.Database
                     await UpdateTransformer(transformer);
                     existingTransformerIds.Remove(transformer.Id);
                 }
-                else
+            }
+        }
+        private async Task UploadTransformers(
+            string projectId,
+            ObservableCollection<ElectricalTransformer> transformers
+        )
+        {
+            var existingTransformerIds = await GetExistingIds(
+                "electrical_transformers",
+                "project_id",
+                projectId
+            );
+
+            foreach (var transformer in transformers)
+            {
+                if (!existingTransformerIds.Contains(transformer.Id))
                 {
                     await InsertTransformer(projectId, transformer);
                 }
             }
-
-            await DeleteRemovedItems("electrical_transformers", existingTransformerIds);
         }
 
         private async Task UpdateEquipments(
@@ -827,16 +853,10 @@ namespace GMEPDesignTool.Database
         private async Task UpdateService(ElectricalService service)
         {
             string query =
-                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating, parent_id = @parentId WHERE id = @id";
+                "UPDATE electrical_services SET color_code = @color_code WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@name", service.Name);
-            command.Parameters.AddWithValue("@amp", service.Amp);
             command.Parameters.AddWithValue("@id", service.Id);
-            command.Parameters.AddWithValue("@type", service.Type);
-            command.Parameters.AddWithValue("@config", service.Config);
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
-            command.Parameters.AddWithValue("@aicRating", service.AicRating);
-            command.Parameters.AddWithValue("@parentId", service.ParentId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1110,20 +1130,12 @@ namespace GMEPDesignTool.Database
         private async Task UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
+                "UPDATE electrical_transformers SET kva_id = @kva, color_code = @color_code, circuit_no = @circuitNo WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@id", transformer.Id);
-            command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
-            command.Parameters.AddWithValue("@voltage", transformer.Voltage);
-            command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
             command.Parameters.AddWithValue("@kva", transformer.Kva);
             command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
-            command.Parameters.AddWithValue("@name", transformer.Name);
             command.Parameters.AddWithValue("@circuitNo", transformer.CircuitNo);
-            command.Parameters.AddWithValue("@is_hidden_on_plan", transformer.IsHiddenOnPlan);
-            command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
-            command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
             await command.ExecuteNonQueryAsync();
         }
 
