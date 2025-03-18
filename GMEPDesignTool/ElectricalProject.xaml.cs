@@ -37,6 +37,7 @@ namespace GMEPDesignTool
     public partial class ElectricalProject : UserControl, IDropTarget
     {
         private DispatcherTimer timer = new DispatcherTimer();
+        private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
@@ -60,11 +61,13 @@ namespace GMEPDesignTool
         public Database.S3 s3 = new Database.S3();
         ProjectControlViewModel ProjectView { get; set; }
 
-        public ElectricalProject(string projectId, ProjectControlViewModel projectView)
+        public ElectricalProject(string projectId, ProjectControlViewModel projectView, ProjectControl parent)
         {
             InitializeComponent();
             ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
             ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
+            ParentControl = parent ?? throw new ArgumentNullException(nameof(parent));
+
 
             // Initialize collections to avoid null references
             ElectricalPanels = new ObservableCollection<ElectricalPanel>();
@@ -2122,42 +2125,16 @@ namespace GMEPDesignTool
                         EnableRaisingEvents = true
                     };
 
-                    foreach (Window window in Application.Current.Windows)
+                    /*foreach (Window window in Application.Current.Windows)
                     {
                         window.Hide();
-                    }
+                    }*/
                     timer.Stop();  
                     process.Start();
 
                     process.WaitForExit();
-                    ElectricalPanels.Clear();
-                    ElectricalTransformers.Clear();
-                    ElectricalServices.Clear();
-                    var panels = await ProjectView.database.GetProjectPanels(ProjectId);
-                    var transformers = await ProjectView.database.GetProjectTransformers(ProjectId);
-                    var services = await ProjectView.database.GetProjectServices(ProjectId);
+                    ParentControl.ReloadElectricalProject();
 
-                    foreach (var panel in panels)
-                    {
-                        ElectricalPanels.Add(panel);
-                    }
-                    foreach (var transformer in transformers)
-                    {
-                        ElectricalTransformers.Add(transformer);
-                    }
-                    foreach (var service in services)
-                    {
-                        ElectricalServices.Add(service);
-                    }
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            window.Show();
-                        }
-                        timer.Start();
-                    });
                 }
                 catch (Exception ex)
                 {
