@@ -2191,7 +2191,7 @@ namespace GMEPDesignTool
                     process.Start();
 
                     await process.WaitForExitAsync();
-
+                    
                     timer.Start();
                     foreach (Window window in Application.Current.Windows)
                     {
