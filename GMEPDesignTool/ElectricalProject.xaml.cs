@@ -194,8 +194,8 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(15);
+            timer.Tick -= Timer_Tick;
             timer.Tick += Timer_Tick;
             timer.Start();
             ProjectView.SaveText = "";
@@ -2190,36 +2190,20 @@ namespace GMEPDesignTool
                     timer.Stop();  
                     process.Start();
 
-                    process.WaitForExit();
-              
-                    /*ElectricalPanels.Clear();
-                    ElectricalTransformers.Clear();
-                    ElectricalServices.Clear();
-                    var panels = await ProjectView.database.GetProjectPanels(ProjectId);
-                    var transformers = await ProjectView.database.GetProjectTransformers(ProjectId);
-                    var services = await ProjectView.database.GetProjectServices(ProjectId);
+                    await process.WaitForExitAsync();
 
-                    foreach (var panel in panels)
+                    timer.Start();
+                    foreach (Window window in Application.Current.Windows)
                     {
-                        ElectricalPanels.Add(panel);
+                        Console.WriteLine("Meow");
+                        window.Show();
                     }
-                    foreach (var transformer in transformers)
-                    {
-                        ElectricalTransformers.Add(transformer);
-                    }
-                    foreach (var service in services)
-                    {
-                        ElectricalServices.Add(service);
-                    }*/
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            window.Show();
-                        }
-                    });
                     await InitializeAsync();
+
+
+
+
+
                 }
                 catch (Exception ex)
                 {
