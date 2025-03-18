@@ -98,164 +98,159 @@ namespace GMEPDesignTool
 
         public async Task InitializeAsync()
         {
-            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            ResetCollections();
+
+            foreach (var panel in await ProjectView.database.GetProjectPanels(ProjectId))
             {
-                ResetCollections();
+                ElectricalPanels.Add(panel);
+            }
+            foreach (var service in await ProjectView.database.GetProjectServices(ProjectId))
+            {
+                ElectricalServices.Add(service);
+            }
+            foreach (var equipment in await ProjectView.database.GetProjectEquipment(ProjectId))
+            {
+                ElectricalEquipments.Add(equipment);
+            }
+            foreach (var transformer in await ProjectView.database.GetProjectTransformers(ProjectId))
+            {
+                ElectricalTransformers.Add(transformer);
+            }
+            foreach (var lighting in await ProjectView.database.GetProjectLighting(ProjectId))
+            {
+                ElectricalLightings.Add(lighting);
+            }
+            foreach (var location in await ProjectView.database.GetLightingLocations(ProjectId))
+            {
+                LightingLocations.Add(location);
+            }
+            foreach (var note in await ProjectView.database.GetProjectPanelNotes(ProjectId))
+            {
+                PanelNotes.Add(note);
+            }
+    
+            foreach (var circuit in await ProjectView.database.GetProjectCustomCircuits(ProjectId))
+            {
+                CustomCircuits.Add(circuit);
+            }
 
-                foreach (var panel in await ProjectView.database.GetProjectPanels(ProjectId))
-                {
-                    ElectricalPanels.Add(panel);
-                }
-                foreach (var service in await ProjectView.database.GetProjectServices(ProjectId))
-                {
-                    ElectricalServices.Add(service);
-                }
-                foreach (var equipment in await ProjectView.database.GetProjectEquipment(ProjectId))
-                {
-                    ElectricalEquipments.Add(equipment);
-                }
-                foreach (var transformer in await ProjectView.database.GetProjectTransformers(ProjectId))
-                {
-                    ElectricalTransformers.Add(transformer);
-                }
-                foreach (var lighting in await ProjectView.database.GetProjectLighting(ProjectId))
-                {
-                    ElectricalLightings.Add(lighting);
-                }
-                foreach (var location in await ProjectView.database.GetLightingLocations(ProjectId))
-                {
-                    LightingLocations.Add(location);
-                }
-                foreach (var note in await ProjectView.database.GetProjectPanelNotes(ProjectId))
-                {
-                    PanelNotes.Add(note);
-                }
+            Owners = await ProjectView.database.getOwners();
 
-                foreach (var circuit in await ProjectView.database.GetProjectCustomCircuits(ProjectId))
-                {
-                    CustomCircuits.Add(circuit);
-                }
+            ParentNames.Add("", "");
+            PanelTransformerNames.Add("", "");
+            PanelNames.Add("", "");
+            ServiceNames.Add("", "");
 
-                Owners = await ProjectView.database.getOwners();
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
+            symbolsPath = System.IO.Path.GetFullPath(symbolsPath);
+            ImagePaths = new ObservableCollection<string>(
+                Directory.GetFiles(symbolsPath, "*.png").Select(System.IO.Path.GetFullPath)
+            );
 
-
-                ParentNames.Add("", "");
-                PanelTransformerNames.Add("", "");
-                PanelNames.Add("", "");
-                ServiceNames.Add("", "");
-
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
-                string symbolsPath = System.IO.Path.Combine(basePath, "..", "..", "..", "symbols");
-                symbolsPath = System.IO.Path.GetFullPath(symbolsPath);
-                ImagePaths = new ObservableCollection<string>(
-                    Directory.GetFiles(symbolsPath, "*.png").Select(System.IO.Path.GetFullPath)
-                );
-
-                foreach (var service in ElectricalServices)
-                {
-                    service.PropertyChanged += ElectricalService_PropertyChanged;
-                }
-                foreach (var circuit in CustomCircuits)
+            foreach (var service in ElectricalServices)
+            {
+                service.PropertyChanged += ElectricalService_PropertyChanged;
+            }
+            foreach (var circuit in CustomCircuits) {
+                circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                foreach (var circuit in panel.leftCircuits)
                 {
                     circuit.PropertyChanged += PanelCircuits_PropertyChanged;
                 }
-                foreach (var panel in ElectricalPanels)
+                foreach (var circuit in panel.rightCircuits)
                 {
-                    panel.PropertyChanged += ElectricalPanel_PropertyChanged;
-                    panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
-                    panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                    panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                    panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    foreach (var circuit in panel.leftCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    foreach (var circuit in panel.rightCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    AssignPanelNotes(panel);
-                    AssignCustomCircuits(panel);
+                    circuit.PropertyChanged += PanelCircuits_PropertyChanged;
                 }
-                foreach (var equipment in ElectricalEquipments)
-                {
-                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
-                }
-                foreach (var transformer in ElectricalTransformers)
-                {
-                    transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
-                }
-                foreach (var lighting in ElectricalLightings)
-                {
-                    lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
-                }
-                LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
-                foreach (var location in LightingLocations)
-                {
-                    location.PropertyChanged += LightingLocations_PropertyChanged;
-                }
+                AssignPanelNotes(panel);
+                AssignCustomCircuits(panel);
+            }
+            foreach (var equipment in ElectricalEquipments)
+            {
+                equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+            }
+            foreach (var lighting in ElectricalLightings)
+            {
+                lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
+            }
+            LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
+            foreach (var location in LightingLocations)
+            {
+                location.PropertyChanged += LightingLocations_PropertyChanged;
+            }
 
-                this.DataContext = this;
+            this.DataContext = this;
 
-                timer.Interval = TimeSpan.FromSeconds(15);
-                timer.Tick -= Timer_Tick;
-                timer.Tick += Timer_Tick;
-                timer.Start();
-                ProjectView.SaveText = "";
-                GetNames();
-                setPower();
-                this.Unloaded += new RoutedEventHandler(Project_Unloaded);
+            timer.Interval = TimeSpan.FromSeconds(15);
+            timer.Tick -= Timer_Tick;
+            timer.Tick += Timer_Tick;
+            timer.Start();
+            ProjectView.SaveText = "";
+            GetNames();
+            setPower();
+            this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
-                List<Tuple<string, ElectricalPanel>> panelParentIds =
-                    new List<Tuple<string, ElectricalPanel>>();
+            List<Tuple<string, ElectricalPanel>> panelParentIds =
+                new List<Tuple<string, ElectricalPanel>>();
 
-                foreach (var panel in ElectricalPanels)
+            foreach (var panel in ElectricalPanels)
+            {
+                panel.DownloadComponents(
+                    ElectricalEquipments,
+                    ElectricalPanels,
+                    ElectricalTransformers
+                );
+                if (!string.IsNullOrEmpty(panel.ParentId))
                 {
-                    panel.DownloadComponents(
-                        ElectricalEquipments,
-                        ElectricalPanels,
-                        ElectricalTransformers
-                    );
-                    if (!string.IsNullOrEmpty(panel.ParentId))
+                    panelParentIds.Add(new Tuple<string, ElectricalPanel>(panel.ParentId, panel));
+                }
+            }
+            foreach (var transformer in ElectricalTransformers)
+            {
+                foreach (var panelParentId in panelParentIds)
+                {
+                    if (panelParentId.Item1 == transformer.Id)
                     {
-                        panelParentIds.Add(new Tuple<string, ElectricalPanel>(panel.ParentId, panel));
+                        transformer.AddChildPanel(panelParentId.Item2);
+                        panelParentId.Item2.AssignParentComponent(transformer);
                     }
                 }
-                foreach (var transformer in ElectricalTransformers)
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                foreach (var panelParentId in panelParentIds)
                 {
-                    foreach (var panelParentId in panelParentIds)
+                    if (panelParentId.Item1 == panel.Id)
                     {
-                        if (panelParentId.Item1 == transformer.Id)
-                        {
-                            transformer.AddChildPanel(panelParentId.Item2);
-                            panelParentId.Item2.AssignParentComponent(transformer);
-                        }
+                        panelParentId.Item2.AssignParentComponent(panel);
                     }
                 }
-                foreach (var panel in ElectricalPanels)
+            }
+            foreach (var service in ElectricalServices)
+            {
+                service.DownloadComponents(ElectricalPanels, ElectricalTransformers, ElectricalServices);
+                foreach (var panelParentId in panelParentIds)
                 {
-                    foreach (var panelParentId in panelParentIds)
+                    if (panelParentId.Item1 == service.Id)
                     {
-                        if (panelParentId.Item1 == panel.Id)
-                        {
-                            panelParentId.Item2.AssignParentComponent(panel);
-                        }
+                        panelParentId.Item2.AssignParentComponent(service);
                     }
                 }
-                foreach (var service in ElectricalServices)
-                {
-                    service.DownloadComponents(ElectricalPanels, ElectricalTransformers, ElectricalServices);
-                    foreach (var panelParentId in panelParentIds)
-                    {
-                        if (panelParentId.Item1 == service.Id)
-                        {
-                            panelParentId.Item2.AssignParentComponent(service);
-                        }
-                    }
-                }
-            });
-         }
+            }
+        }
         public void ResetCollections()
         {
             LightingLocations.CollectionChanged -= LightingLocations_CollectionChanged;
