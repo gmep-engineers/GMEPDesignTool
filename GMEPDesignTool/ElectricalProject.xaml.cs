@@ -98,15 +98,43 @@ namespace GMEPDesignTool
 
         public async Task InitializeAsync()
         {
-            ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
-            ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
-            ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
-            ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
-            ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
-            LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
-            PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
+            ResetCollections();
+
+            foreach (var panel in await ProjectView.database.GetProjectPanels(ProjectId))
+            {
+                ElectricalPanels.Add(panel);
+            }
+            foreach (var service in await ProjectView.database.GetProjectServices(ProjectId))
+            {
+                ElectricalServices.Add(service);
+            }
+            foreach (var equipment in await ProjectView.database.GetProjectEquipment(ProjectId))
+            {
+                ElectricalEquipments.Add(equipment);
+            }
+            foreach (var transformer in await ProjectView.database.GetProjectTransformers(ProjectId))
+            {
+                ElectricalTransformers.Add(transformer);
+            }
+            foreach (var lighting in await ProjectView.database.GetProjectLighting(ProjectId))
+            {
+                ElectricalLightings.Add(lighting);
+            }
+            foreach (var location in await ProjectView.database.GetLightingLocations(ProjectId))
+            {
+                LightingLocations.Add(location);
+            }
+            foreach (var note in await ProjectView.database.GetProjectPanelNotes(ProjectId))
+            {
+                PanelNotes.Add(note);
+            }
+    
+            foreach (var circuit in await ProjectView.database.GetProjectCustomCircuits(ProjectId))
+            {
+                CustomCircuits.Add(circuit);
+            }
+
             Owners = await ProjectView.database.getOwners();
-            CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
 
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
@@ -223,6 +251,47 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public void ResetCollections()
+        {
+            LightingLocations.CollectionChanged -= LightingLocations_CollectionChanged;
+            var locationsToRemove = LightingLocations.ToList();
+            foreach (var location in locationsToRemove)
+            {
+                location.PropertyChanged -= LightingLocations_PropertyChanged;
+                LightingLocations.Remove(location);
+            }
+
+            var panelsToRemove = ElectricalPanels.ToList();
+            foreach (var panel in panelsToRemove)
+            {
+                RemoveElectricalPanel(panel);
+            }
+
+            var servicesToRemove = ElectricalServices.ToList();
+            foreach (var service in servicesToRemove)
+            {
+                RemoveElectricalService(service);
+            }
+
+            var equipmentsToRemove = ElectricalEquipments.ToList();
+            foreach (var equipment in equipmentsToRemove)
+            {
+                RemoveElectricalEquipment(equipment);
+            }
+
+            var transformersToRemove = ElectricalTransformers.ToList();
+            foreach (var transformer in transformersToRemove)
+            {
+                RemoveElectricalTransformer(transformer);
+            }
+
+            var lightingsToRemove = ElectricalLightings.ToList();
+            foreach (var lighting in lightingsToRemove)
+            {
+                RemoveElectricalLighting(lighting);
+            }
+          
+        }
 
         private async void Timer_Tick(object sender, EventArgs e)
         {
@@ -239,16 +308,8 @@ namespace GMEPDesignTool
                 PanelNotes,
                 CustomCircuits
             );
-            //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
         }
-
-        /*private void StartTimer()
-        {
-            timer.Stop();
-            timer.Start();
-            //ProjectView.SaveText = "*SAVING*";
-        }*/
 
         public void setPower()
         {
@@ -2130,7 +2191,8 @@ namespace GMEPDesignTool
                     process.Start();
 
                     process.WaitForExit();
-                    ElectricalPanels.Clear();
+              
+                    /*ElectricalPanels.Clear();
                     ElectricalTransformers.Clear();
                     ElectricalServices.Clear();
                     var panels = await ProjectView.database.GetProjectPanels(ProjectId);
@@ -2148,7 +2210,7 @@ namespace GMEPDesignTool
                     foreach (var service in services)
                     {
                         ElectricalServices.Add(service);
-                    }
+                    }*/
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -2156,8 +2218,8 @@ namespace GMEPDesignTool
                         {
                             window.Show();
                         }
-                        timer.Start();
                     });
+                    await InitializeAsync();
                 }
                 catch (Exception ex)
                 {
