@@ -942,7 +942,10 @@
                                                     </TabItem>
                                                     <TabItem Header="Location">
                                                         <Grid Margin="20 0 20 0">
-                                                            <Button Content="Locations" VerticalAlignment="Top" Height="20" Width="90" Margin="0 10 0 0" FontWeight="Bold" Click="OpenLocations_Click" CommandParameter="{Binding}"/>
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                                                <Button Content="Time Clocks" Height="20" Width="90" Margin="0 10 0 0" FontWeight="Bold" Click="OpenTimeClocks_Click" CommandParameter="{Binding}"/>
+                                                                <Button Content="Locations" Height="20" Width="90" Margin="0 10 0 0" FontWeight="Bold" Click="OpenLocations_Click" CommandParameter="{Binding}"/>
+                                                            </StackPanel>
                                                             <StackPanel Orientation="Horizontal" Margin="0 40 0 0">
                                                                 <ComboBox Height="50" Width="400" Margin="2 2 2 5" ItemsSource="{Binding DataContext.LightingLocations, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValue="{Binding LocationId}" SelectedValuePath="Id">
                                                                     <ComboBox.ItemTemplate>

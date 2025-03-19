@@ -3,10 +3,70 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GMEPDesignTool.Lighting"
+        xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="TimeClocks" Height="450" Width="800">
+    <Window.Resources>
+        <local:BindingProxy x:Key="PanelNamesBindingProxy" Data="{Binding PanelNames}"/>
+    </Window.Resources>
     <Grid>
-        
+        <Grid Background="SlateGray">
+            <DataGrid Name="LocationGrid" Grid.Row="0" ItemsSource="{Binding Clocks}" AutoGenerateColumns="False" CanUserAddRows="True">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="*" Header="Name">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Name}" MaxLength="7"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="*" Header="Bypass Switch">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding BypassSwitchName}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding BypassSwitchName}" MaxLength="7"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="*" Header="Bypass Switch Location">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding BypassSwitchLocation}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding BypassSwitchLocation}" MaxLength="20"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridComboBoxColumn Width="*" SelectedValueBinding="{Binding VoltageId}" SelectedValuePath="Tag">
+                        <DataGridComboBoxColumn.ItemsSource>
+                            <x:Array Type="{x:Type ComboBoxItem}">
+                                <ComboBoxItem Content="" Background="White" Tag="" />
+                                <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
+                                <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
+                                <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
+                                <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
+                                <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
+                                <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
+                                <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
+                            </x:Array>
+                        </DataGridComboBoxColumn.ItemsSource>
+                    </DataGridComboBoxColumn>
+
+                    <DataGridComboBoxColumn Width="*" Header="Adjacent Panel" SelectedValueBinding="{Binding AdjacentPanelId}" SelectedValuePath="Key" ItemsSource="{Binding Data, Source={StaticResource PanelNamesBindingProxy}}" DisplayMemberPath="Value"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
     </Grid>
 </Window>

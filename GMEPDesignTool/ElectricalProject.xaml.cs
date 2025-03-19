@@ -53,6 +53,7 @@ namespace GMEPDesignTool
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public ObservableCollection<Location> LightingLocations { get; set; }
+        public ObservableCollection<TimeClock> TimeClocks { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
@@ -98,6 +99,7 @@ namespace GMEPDesignTool
             ServiceNames = new ObservableDictionary<string, string>();
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
+            TimeClocks = new ObservableCollection<TimeClock>();
             Owners = new Dictionary<string, string>();
             isEditingSingleLine = false;
 
@@ -126,6 +128,7 @@ namespace GMEPDesignTool
             PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
             Owners = await ProjectView.database.getOwners();
             CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
+            //TimeClocks = await ProjectView.database.GetProjectTimeClocks(ProjectId);
 
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
@@ -1778,6 +1781,25 @@ namespace GMEPDesignTool
                         ProjectView.database
                     );
                     locations.Show();
+                }
+            });
+        }
+        public void OpenTimeClocks_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+               
+                if (
+                    sender is Button button
+                    && button.CommandParameter is ElectricalLighting lighting
+                )
+                {
+                    TimeClocks clocks = new TimeClocks(
+                        TimeClocks,
+                        ProjectView.database,
+                        PanelNames
+                    );
+                    clocks.Show();
                 }
             });
         }
