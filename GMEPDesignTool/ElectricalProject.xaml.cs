@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
+using GMEPDesignTool.Lighting;
 using GongSolutions.Wpf.DragDrop;
 using Google.Protobuf.WellKnownTypes;
 using Mysqlx.Crud;

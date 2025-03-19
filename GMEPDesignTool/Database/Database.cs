@@ -16,6 +16,7 @@ using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using BCrypt.Net;
+using GMEPDesignTool.Lighting;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
 

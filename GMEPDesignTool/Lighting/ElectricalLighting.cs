@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Mysqlx.Crud;
 
-namespace GMEPDesignTool
+namespace GMEPDesignTool.Lighting
 {
     public class ElectricalLighting : INotifyPropertyChanged
     {
