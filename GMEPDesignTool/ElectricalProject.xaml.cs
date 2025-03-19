@@ -84,6 +84,7 @@ namespace GMEPDesignTool
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
             Owners = new Dictionary<string, string>();
+            IsEditingSingleLine = false;
 
             // Initialize ViewSources
             EquipmentViewSource =
@@ -2093,6 +2094,7 @@ namespace GMEPDesignTool
 
         private async void SingleLine_Click(object sender, RoutedEventArgs e)
         {
+            Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string relativePath = System.IO.Path.Combine("Documents", "Scripts", "GMEPNodeGraph", "bin", "Debug", "net6.0-windows", "GMEPNodeGraph.exe");
             string filePath = System.IO.Path.Combine(userProfile, relativePath);
@@ -2100,8 +2102,7 @@ namespace GMEPDesignTool
 
             if (File.Exists(filePath))
             {
-                await LaunchProcess(filePath, arguments);
-
+               //await LaunchProcess(filePath, arguments);
             }
 
              async Task LaunchProcess(string executablePath, string commandLineArguments)
@@ -2125,10 +2126,8 @@ namespace GMEPDesignTool
                         EnableRaisingEvents = true
                     };
 
-                    /*foreach (Window window in Application.Current.Windows)
-                    {
-                        window.Hide();
-                    }*/
+
+                    
                     timer.Stop();  
                     process.Start();
 
