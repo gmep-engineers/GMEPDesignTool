@@ -34,7 +34,7 @@ namespace GMEPDesignTool
     /// <summary>
     /// Interaction logic for ElectricalProject.xaml
     /// </summary>
-    public partial class ElectricalProject : UserControl, IDropTarget
+    public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
@@ -61,6 +61,20 @@ namespace GMEPDesignTool
         public Database.S3 s3 = new Database.S3();
         ProjectControlViewModel ProjectView { get; set; }
 
+        private bool isEditingSingleLine;
+        public bool IsEditingSingleLine
+        {
+            get => isEditingSingleLine;
+            set
+            {
+                if (isEditingSingleLine != value)
+                {
+                    isEditingSingleLine = value;
+                    OnPropertyChanged(nameof(IsEditingSingleLine));
+                }
+            }
+        }
+
         public ElectricalProject(string projectId, ProjectControlViewModel projectView, ProjectControl parent)
         {
             InitializeComponent();
@@ -84,7 +98,7 @@ namespace GMEPDesignTool
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
             Owners = new Dictionary<string, string>();
-            IsEditingSingleLine = false;
+            isEditingSingleLine = false;
 
             // Initialize ViewSources
             EquipmentViewSource =
@@ -2102,7 +2116,8 @@ namespace GMEPDesignTool
 
             if (File.Exists(filePath))
             {
-               //await LaunchProcess(filePath, arguments);
+                await Task.Run(() => IsEditingSingleLine = true);
+                await LaunchProcess(filePath, arguments);
             }
 
              async Task LaunchProcess(string executablePath, string commandLineArguments)
@@ -2140,6 +2155,12 @@ namespace GMEPDesignTool
                     Console.WriteLine($"Error launching process: {ex.Message}");
                 }
             }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
