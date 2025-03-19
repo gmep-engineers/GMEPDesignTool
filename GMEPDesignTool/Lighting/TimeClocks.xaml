@@ -13,46 +13,30 @@
         <Grid Background="SlateGray">
             <DataGrid Name="LocationGrid" Grid.Row="0" ItemsSource="{Binding Clocks}" AutoGenerateColumns="False" CanUserAddRows="True">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="*" Header="Name">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding Name}" MaxLength="7"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Header="Bypass Switch">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding BypassSwitchName}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding BypassSwitchName}" MaxLength="7"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="*" Header="Bypass Switch Location">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding BypassSwitchLocation}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding BypassSwitchLocation}" MaxLength="20"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridComboBoxColumn Width="*" SelectedValueBinding="{Binding VoltageId}" SelectedValuePath="Tag">
+                    <DataGridTextColumn Binding="{Binding Name}" Width="*" Header="Name">
+                        <DataGridTextColumn.EditingElementStyle>
+                            <Style TargetType="TextBox">
+                                <Setter Property="MaxLength" Value="7"/>
+                            </Style>
+                        </DataGridTextColumn.EditingElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding BypassSwitchName}"  Width="*" Header="Bypass Switch Name">
+                        <DataGridTextColumn.EditingElementStyle>
+                            <Style TargetType="TextBox">
+                                <Setter Property="MaxLength" Value="7"/>
+                            </Style>
+                        </DataGridTextColumn.EditingElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding BypassSwitchLocation}" Width="*" Header="Bypass Switch Location">
+                        <DataGridTextColumn.EditingElementStyle>
+                            <Style TargetType="TextBox">
+                                <Setter Property="MaxLength" Value="21"/>
+                            </Style>
+                        </DataGridTextColumn.EditingElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridComboBoxColumn Header="Voltage" Width="*" SelectedValueBinding="{Binding VoltageId}" SelectedValuePath="Tag">
                         <DataGridComboBoxColumn.ItemsSource>
                             <x:Array Type="{x:Type ComboBoxItem}">
-                                <ComboBoxItem Content="" Background="White" Tag="" />
                                 <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
                                 <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
                                 <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
