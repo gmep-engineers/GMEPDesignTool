@@ -2116,7 +2116,10 @@ namespace GMEPDesignTool
 
             if (File.Exists(filePath))
             {
-                await Task.Run(() => IsEditingSingleLine = true);
+                await Task.Run(() => {
+                    IsEditingSingleLine = true;
+                    ProjectView.SaveText = "LOCKED";
+                });
                 await LaunchProcess(filePath, arguments);
             }
 
@@ -2144,10 +2147,13 @@ namespace GMEPDesignTool
 
                     
                     timer.Stop();  
-                    process.Start();
+                    await Task.Run(() => process.Start());
+                    await process.WaitForExitAsync();
 
-                    process.WaitForExit();
-                    ParentControl.ReloadElectricalProject();
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ParentControl.ReloadElectricalProject();
+                    });
 
                 }
                 catch (Exception ex)
