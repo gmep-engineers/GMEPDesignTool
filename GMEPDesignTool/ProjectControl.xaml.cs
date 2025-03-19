@@ -91,12 +91,25 @@ namespace GMEPDesignTool
                 ElectricalTab.Content = loadingScreen;
                 //Electrical Tab
                 string newprojectId = selectedPair.Value;
-                viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel);
+                viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel, this);
                 await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
 
                 //Admin Tab
                 AdminTab.Content = new Admin();
+            }
+        }
+        public async void ReloadElectricalProject()
+        {
+            if (viewModel?.ActiveElectricalProject != null)
+            {
+                var loadingScreen = new LoadingScreen();
+                ElectricalTab.Content = loadingScreen;
+
+                string projectId = viewModel.ActiveElectricalProject.ProjectId;
+                viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel, this);
+                await viewModel.ActiveElectricalProject.InitializeAsync();
+                ElectricalTab.Content = viewModel.ActiveElectricalProject;
             }
         }
 

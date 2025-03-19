@@ -869,7 +869,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuit_no", panel.CircuitNo);
             command.Parameters.AddWithValue("@is_hidden_on_plan", panel.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@location", panel.Location);
-            command.Parameters.AddWithValue("@highLegPhase", panel.Location);
+            command.Parameters.AddWithValue("@highLegPhase", panel.HighLegPhase);
             command.Parameters.AddWithValue("@amp", panel.Amp);
             command.Parameters.AddWithValue("@kva", panel.Kva);
             await command.ExecuteNonQueryAsync();
@@ -1469,16 +1469,16 @@ namespace GMEPDesignTool.Database
                         reader.GetString("id"),
                         reader.GetString("project_id"),
                         reader.GetString("parent_id"),
-                        reader.GetInt32("parent_distance"),
+                        reader.IsDBNull(reader.GetOrdinal("parent_distance")) ? 0 : reader.GetInt32("parent_distance"),
                         reader.GetString("color_code"),
-                        reader.GetInt32("voltage_id"),
+                        reader.IsDBNull(reader.GetOrdinal("voltage_id")) ? 0 : reader.GetInt32("voltage_id"),
                         reader.GetString("name"),
-                        reader.GetInt32("kva_id"),
+                        reader.IsDBNull(reader.GetOrdinal("kva_id")) ? 0 : reader.GetInt32("kva_id"),
                         false,
-                        reader.GetInt32("circuit_no"),
+                        reader.IsDBNull(reader.GetOrdinal("circuit_no")) ? 0 : reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
                         reader.GetBoolean("is_wall_mounted"),
-                        reader.GetInt32("aic_rating")
+                        reader.IsDBNull(reader.GetOrdinal("aic_rating")) ? 0 : reader.GetInt32("aic_rating")
                     )
                 );
             }

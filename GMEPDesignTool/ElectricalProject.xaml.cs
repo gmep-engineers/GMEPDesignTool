@@ -34,9 +34,10 @@ namespace GMEPDesignTool
     /// <summary>
     /// Interaction logic for ElectricalProject.xaml
     /// </summary>
-    public partial class ElectricalProject : UserControl, IDropTarget
+    public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
         private DispatcherTimer timer = new DispatcherTimer();
+        private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
@@ -60,11 +61,27 @@ namespace GMEPDesignTool
         public Database.S3 s3 = new Database.S3();
         ProjectControlViewModel ProjectView { get; set; }
 
-        public ElectricalProject(string projectId, ProjectControlViewModel projectView)
+        private bool isEditingSingleLine;
+        public bool IsEditingSingleLine
+        {
+            get => isEditingSingleLine;
+            set
+            {
+                if (isEditingSingleLine != value)
+                {
+                    isEditingSingleLine = value;
+                    OnPropertyChanged(nameof(IsEditingSingleLine));
+                }
+            }
+        }
+
+        public ElectricalProject(string projectId, ProjectControlViewModel projectView, ProjectControl parent)
         {
             InitializeComponent();
             ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
             ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
+            ParentControl = parent ?? throw new ArgumentNullException(nameof(parent));
+
 
             // Initialize collections to avoid null references
             ElectricalPanels = new ObservableCollection<ElectricalPanel>();
@@ -81,6 +98,7 @@ namespace GMEPDesignTool
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
             Owners = new Dictionary<string, string>();
+            isEditingSingleLine = false;
 
             // Initialize ViewSources
             EquipmentViewSource =
@@ -2084,7 +2102,71 @@ namespace GMEPDesignTool
             {
                 equipment.OrderNo = index;
                 index++;
+
             }
+        }
+
+        private async void SingleLine_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string relativePath = System.IO.Path.Combine("Documents", "Scripts", "GMEPNodeGraph", "bin", "Debug", "net6.0-windows", "GMEPNodeGraph.exe");
+            string filePath = System.IO.Path.Combine(userProfile, relativePath);
+            string arguments = ProjectView.ProjectNo.ToString() + " 1";
+
+            if (File.Exists(filePath))
+            {
+                await Task.Run(() => {
+                    IsEditingSingleLine = true;
+                    ProjectView.SaveText = "LOCKED";
+                });
+                await LaunchProcess(filePath, arguments);
+            }
+
+             async Task LaunchProcess(string executablePath, string commandLineArguments)
+            {
+                try
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = executablePath,
+                        Arguments = commandLineArguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = false
+                    };
+
+
+                    Process process = new Process
+                    {
+                        StartInfo = startInfo,
+                        EnableRaisingEvents = true
+                    };
+
+
+                    
+                    timer.Stop();  
+                    await Task.Run(() => process.Start());
+                    await process.WaitForExitAsync();
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ParentControl.ReloadElectricalProject();
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error launching process: {ex.Message}");
+                }
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

@@ -15,6 +15,7 @@
 	<None Include="Loading.gif" />
 	<None Include="Green_tick.png" />
 	<None Include="RedX.png" />
+	<None Include="WarningSign.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
 	<Resource Include="Loading.gif" />
 	<Resource Include="Green_tick.png" />
 	<Resource Include="RedX.png" />
+	<Resource Include="WarningSign.png" />
   </ItemGroup>
 
   <ItemGroup>
