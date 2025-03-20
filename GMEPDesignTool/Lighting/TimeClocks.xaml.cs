@@ -105,8 +105,8 @@ namespace GMEPDesignTool.Lighting
             {
                 if (bypassSwitchLocation!= value)
                 {
-                    bypassSwitchName = value;
-                    OnPropertyChanged(nameof(BypassSwitchName));
+                    bypassSwitchLocation = value;
+                    OnPropertyChanged(nameof(BypassSwitchLocation));
                 }
             }
         }
