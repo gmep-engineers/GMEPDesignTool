@@ -1715,13 +1715,7 @@ namespace GMEPDesignTool
                         isAccepted = false;
                     }
                 }
-                if (LightingLocationFilter.SelectedValue is string selectedLocationString)
-                {
-                    if (lighting.LocationId != selectedLocationString)
-                    {
-                        isAccepted = false;
-                    }
-                }
+               
                 if (
                     MountingFilter.SelectedValue is string selectedCategory
                     && selectedCategory != ""
@@ -1752,7 +1746,6 @@ namespace GMEPDesignTool
             MountingFilter.SelectedIndex = 0;
             LightingVoltageFilter.SelectedValue = "";
             //LightingPanelFilter.SelectedValue = "";
-            LightingLocationFilter.SelectedValue = "";
             ModelNumberFilter.Text = "";
         }
 
