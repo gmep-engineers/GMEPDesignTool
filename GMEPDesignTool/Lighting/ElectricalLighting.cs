@@ -31,7 +31,7 @@ namespace GMEPDesignTool.Lighting
         private bool specSheetFromClient;
         private string specSheetId;
         private bool hasPhotoCell;
-        private string locationId;
+        //private string locationId;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,8 +56,8 @@ namespace GMEPDesignTool.Lighting
             int driverTypeId,
             bool specSheetFromClient, 
             string specSheetId,
-            bool hasPhotoCell,
-            string locationId
+            bool hasPhotoCell
+           // string locationId
         )
         {
             this.id = id;
@@ -81,7 +81,7 @@ namespace GMEPDesignTool.Lighting
             this.specSheetFromClient = specSheetFromClient; 
             this.specSheetId = specSheetId;
             this.hasPhotoCell = hasPhotoCell;
-            this.locationId = locationId;
+            //this.locationId = locationId;
         }
 
         public string Id
@@ -355,7 +355,7 @@ namespace GMEPDesignTool.Lighting
                 }
             }
         }
-        public string LocationId
+       /* public string LocationId
         {
             get => locationId;
             set
@@ -366,7 +366,7 @@ namespace GMEPDesignTool.Lighting
                     OnPropertyChanged(nameof(LocationId));
                 }
             }
-        }
+        }*/
 
         protected void OnPropertyChanged(string propertyName)
         {
