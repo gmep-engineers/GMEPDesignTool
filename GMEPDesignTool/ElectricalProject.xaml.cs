@@ -128,7 +128,7 @@ namespace GMEPDesignTool
             PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
             Owners = await ProjectView.database.getOwners();
             CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
-            //TimeClocks = await ProjectView.database.GetProjectTimeClocks(ProjectId);
+            TimeClocks = await ProjectView.database.GetLightingTimeClocks(ProjectId);
 
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
@@ -258,6 +258,7 @@ namespace GMEPDesignTool
                 ElectricalTransformers,
                 ElectricalLightings,
                 LightingLocations,
+                TimeClocks,
                 PanelNotes,
                 CustomCircuits
             );
