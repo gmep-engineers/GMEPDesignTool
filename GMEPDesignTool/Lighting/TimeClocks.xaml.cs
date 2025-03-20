@@ -55,6 +55,11 @@ namespace GMEPDesignTool.Lighting
         {
             id = Guid.NewGuid().ToString();
             voltageId = 1;
+            bypassSwitchName = "";
+            bypassSwitchLocation = "";
+            adjacentPanelId = "";
+            Name = "";
+
         }
 
         public string Id
