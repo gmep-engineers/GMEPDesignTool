@@ -142,7 +142,7 @@
                 <GridSplitter Grid.Column="1" MinWidth="100" HorizontalAlignment="Stretch" Margin="0 101 0 30"/>
                 <Grid Grid.Column="2" Margin="0 101 0 30">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding LeftNodes}">
+                    <ItemsControl ItemsSource="{Binding LeftNotes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Grid>
@@ -179,10 +179,10 @@
                                         </Grid>
                                         <Grid>
                                             <Grid.ToolTip>
-                                                <ToolTip Content="{Binding Description}"/>
+                                                <ToolTip Content="{Binding NoteText}"/>
                                             </Grid.ToolTip>
                                             <Ellipse Fill="White" Stroke="Black" StrokeThickness="1" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Tag}"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -492,12 +492,12 @@
                                         <MenuItem Header="Toggle Custom Description" Click="LeftCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="LeftCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
-                                            <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding Notes}" SelectionChanged="LeftCircuitGrid_AddNote">
+                                            <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding ElectricalPanelNoteRels}" SelectionChanged="LeftCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
                                                             <Ellipse StrokeThickness="1" Stroke="Black"/>
-                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Tag}"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
@@ -810,12 +810,12 @@
                                         <MenuItem Header="Toggle Custom Description" Click="RightCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="RightCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
-                                            <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding Notes}" SelectionChanged="RightCircuitGrid_AddNote">
+                                            <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding ElectricalPanelNoteRels}" SelectionChanged="RightCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
                                                             <Ellipse StrokeThickness="1" Stroke="Black"/>
-                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Tag}"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ListBox.ItemTemplate>
@@ -828,7 +828,7 @@
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
+                                                <TextBlock Text="{Binding Tag}" Background="LightBlue"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -1210,7 +1210,7 @@
                 </Border>
                 <Grid Grid.Column="4" Margin="0 101 0 30">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding RightNodes}">
+                    <ItemsControl ItemsSource="{Binding RightNotes}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Grid>
@@ -1247,10 +1247,10 @@
                                         </Grid>
                                         <Grid>
                                             <Grid.ToolTip>
-                                                <ToolTip Content="{Binding Description}"/>
+                                                <ToolTip Content="{Binding NoteText}"/>
                                             </Grid.ToolTip>
                                             <Ellipse Fill="White" Stroke="Black" StrokeThickness="1" Width="25" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Number}"/>
+                                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="{Binding Tag}"/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -1384,19 +1384,19 @@
                         <DropShadowEffect ShadowDepth="-5" BlurRadius="10" Color="Black" Opacity="0.7"/>
                     </StackPanel.Effect>
                     <TextBox FontSize="23"  Text="NOTES: " IsReadOnly="True"/>
-                    <DataGrid ItemsSource="{Binding Notes}" Height="130" CanUserAddRows="True" AutoGenerateColumns="False" HeadersVisibility="None" RowHeight="30">
+                    <DataGrid ItemsSource="{Binding ElectricalPanelNotes}" Height="130" CanUserAddRows="True" AutoGenerateColumns="False" HeadersVisibility="None" RowHeight="30">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Width="40">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="Black" Fill="White"/>
-                                            <TextBox Foreground="Black" HorizontalAlignment="Center" Text="{Binding Number, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" BorderThickness="0" MaxLength="4" TextAlignment="Center"/>
+                                            <TextBox Foreground="Black" IsEnabled="False" HorizontalAlignment="Center" Text="{Binding Tag}" VerticalAlignment="Center" BorderThickness="0" MaxLength="4" TextAlignment="Center"/>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Note" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

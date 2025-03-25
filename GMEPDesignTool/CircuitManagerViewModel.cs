@@ -1,39 +1,37 @@
-﻿using GongSolutions.Wpf.DragDrop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.ComponentModel;
-using System.Net.Http.Headers;
-using System.Globalization;
-using System.Windows.Data;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
-using System.Collections.Specialized;
-using System.Text.RegularExpressions;
-
-
-
-
+using GongSolutions.Wpf.DragDrop;
 
 namespace GMEPDesignTool
 {
-   public class CircuitManagerViewModel : ViewModelBase, IDropTarget
+    public class CircuitManagerViewModel : ViewModelBase, IDropTarget
     {
         public ElectricalPanel Panel { get; set; }
         public ObservableCollection<Circuit> LeftCircuits { get; set; }
         public ObservableCollection<Circuit> RightCircuits { get; set; }
-        public  ObservableCollection<ElectricalComponent> ComponentsCollection { get; set; }
+        public ObservableCollection<ElectricalComponent> ComponentsCollection { get; set; }
         public ObservableCollection<ElectricalComponent> LeftComponents { get; set; }
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
+        public ObservableCollection<ElectricalPanelNote> ElectricalPanelNotes { get; set; }
         public ObservableCollection<Note> LeftNodes { get; set; }
         public ObservableCollection<Note> RightNodes { get; set; }
-
+        public ObservableCollection<ElectricalPanelNoteRel> LeftNotes { get; set; }
+        public ObservableCollection<ElectricalPanelNoteRel> RightNotes { get; set; }
 
         private float _phaseAVa;
         public float PhaseAVa
@@ -82,7 +80,6 @@ namespace GMEPDesignTool
             get => _location;
             set => SetProperty(ref _location, value);
         }
-
 
         private int _pole;
         public int Pole
@@ -146,7 +143,7 @@ namespace GMEPDesignTool
             get => mounting;
             set => SetProperty(ref mounting, value);
         }
-  
+
         private string parentName;
 
         public string ParentName
@@ -177,11 +174,14 @@ namespace GMEPDesignTool
             LeftComponents = panel.leftComponents;
             ComponentsCollection = panel.componentsCollection;
             Panel = panel;
-            Notes = panel.notes;
+            ElectricalPanelNotes = panel.notes;
+
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
             LeftNodes = panel.leftNodes;
             RightNodes = panel.rightNodes;
+            LeftNotes = panel.leftNotes;
+            RightNotes = panel.rightNotes;
             _phaseAVa = panel.PhaseAVA;
             _phaseBVa = panel.PhaseBVA;
             _phaseCVa = panel.PhaseCVA;
@@ -203,105 +203,106 @@ namespace GMEPDesignTool
             phases = determinePhases(panel.Type);
             mounting = setMounting(panel.IsRecessed);
             Panel.PropertyChanged += Panel_PropertyChanged;
-            Notes.CollectionChanged += Notes_CollectionChanged;
+            //Notes.CollectionChanged += Notes_CollectionChanged;
+            ElectricalPanelNotes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
         }
 
         public void Panel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-          
-                if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))
-                {
-                    PhaseAVa = Panel.PhaseAVA;
-                    OnPropertyChanged(nameof(PhaseAVa));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
-                {
-                    PhaseBVa = Panel.PhaseBVA;
-                    OnPropertyChanged(nameof(PhaseBVa));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
-                {
-                    PhaseCVa = Panel.PhaseCVA;
-                    OnPropertyChanged(nameof(PhaseCVa));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Kva))
-                {
-                    Kva = Panel.Kva;
-                    OnPropertyChanged(nameof(Kva));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Va))
-                {
-                    Va = Panel.Va;
-                    OnPropertyChanged(nameof(Va));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Name))
-                {
-                    Name = Panel.Name;
-                    OnPropertyChanged(nameof(Name));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Pole))
-                {
-                    Pole = Panel.Pole;
-                    OnPropertyChanged(nameof(Pole));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Amp))
-                {
-                    Amp = Panel.Amp;
-                    OnPropertyChanged(nameof(Amp));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Lcl))
-                {
-                    Lcl = Panel.Lcl;
-                    OnPropertyChanged(nameof(Lcl));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Lml))
-                {
-                    Lml = Panel.Lml;
-                    OnPropertyChanged(nameof(Lml));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.BusSize))
-                {
-                    BusRating = setBusRating(Panel.BusSize);
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.MainSize))
-                {
-                    MainRating = setMainRating(Panel);
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.IsMlo))
-                {
-                    MainRating = setMainRating(Panel);
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Type))
-                {
-                    Voltage = determineVoltage(Panel.Type);
-                    Phases = determinePhases(Panel.Type);
-                    Wire = determineWire(Panel.Type);
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.IsRecessed))
-                {
-                    Mounting = setMounting(Panel.IsRecessed);
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.Location))
-                {
-                    Location = Panel.Location;
-                    OnPropertyChanged(nameof(Location));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.ParentName))
-                {
-                    ParentName = Panel.ParentName;
-                    OnPropertyChanged(nameof(ParentName));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.ParentType))
-                {
-                    ParentType = Panel.ParentType;
-                    OnPropertyChanged(nameof(ParentType));
-                }
-                if (e.PropertyName == nameof(ElectricalPanel.HighLegPhase))
-                {
-                    HighLegPhase = Panel.HighLegPhase;
-                    OnPropertyChanged(nameof(HighLegPhase));
-                }
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseAVA))
+            {
+                PhaseAVa = Panel.PhaseAVA;
+                OnPropertyChanged(nameof(PhaseAVa));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseBVA))
+            {
+                PhaseBVa = Panel.PhaseBVA;
+                OnPropertyChanged(nameof(PhaseBVa));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.PhaseCVA))
+            {
+                PhaseCVa = Panel.PhaseCVA;
+                OnPropertyChanged(nameof(PhaseCVa));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Kva))
+            {
+                Kva = Panel.Kva;
+                OnPropertyChanged(nameof(Kva));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Va))
+            {
+                Va = Panel.Va;
+                OnPropertyChanged(nameof(Va));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Name))
+            {
+                Name = Panel.Name;
+                OnPropertyChanged(nameof(Name));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Pole))
+            {
+                Pole = Panel.Pole;
+                OnPropertyChanged(nameof(Pole));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Amp))
+            {
+                Amp = Panel.Amp;
+                OnPropertyChanged(nameof(Amp));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Lcl))
+            {
+                Lcl = Panel.Lcl;
+                OnPropertyChanged(nameof(Lcl));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Lml))
+            {
+                Lml = Panel.Lml;
+                OnPropertyChanged(nameof(Lml));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.BusSize))
+            {
+                BusRating = setBusRating(Panel.BusSize);
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.MainSize))
+            {
+                MainRating = setMainRating(Panel);
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.IsMlo))
+            {
+                MainRating = setMainRating(Panel);
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Type))
+            {
+                Voltage = determineVoltage(Panel.Type);
+                Phases = determinePhases(Panel.Type);
+                Wire = determineWire(Panel.Type);
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.IsRecessed))
+            {
+                Mounting = setMounting(Panel.IsRecessed);
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.Location))
+            {
+                Location = Panel.Location;
+                OnPropertyChanged(nameof(Location));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.ParentName))
+            {
+                ParentName = Panel.ParentName;
+                OnPropertyChanged(nameof(ParentName));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.ParentType))
+            {
+                ParentType = Panel.ParentType;
+                OnPropertyChanged(nameof(ParentType));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.HighLegPhase))
+            {
+                HighLegPhase = Panel.HighLegPhase;
+                OnPropertyChanged(nameof(HighLegPhase));
+            }
         }
+
         public string setBusRating(int bus)
         {
             string result = "0A";
@@ -401,6 +402,7 @@ namespace GMEPDesignTool
             }
             return result;
         }
+
         public string determineVoltage(int type)
         {
             switch (type)
@@ -418,6 +420,7 @@ namespace GMEPDesignTool
             }
             return "";
         }
+
         public string determineWire(int type)
         {
             switch (type)
@@ -435,6 +438,7 @@ namespace GMEPDesignTool
             }
             return "";
         }
+
         public string determinePhases(int type)
         {
             switch (type)
@@ -461,7 +465,6 @@ namespace GMEPDesignTool
             }
             return "SURFACE";
         }
-  
 
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
@@ -482,8 +485,12 @@ namespace GMEPDesignTool
 
             if (sourceItem != null)
             {
-                ObservableCollection<ElectricalComponent> sourceCollection = GetSourceCollection(sourceItem);
-                ObservableCollection<ElectricalComponent> targetCollection = GetTargetCollection(targetItem);
+                ObservableCollection<ElectricalComponent> sourceCollection = GetSourceCollection(
+                    sourceItem
+                );
+                ObservableCollection<ElectricalComponent> targetCollection = GetTargetCollection(
+                    targetItem
+                );
 
                 if (targetItem == null)
                 {
@@ -502,13 +509,15 @@ namespace GMEPDesignTool
                 }
 
                 int sourceIndex = sourceCollection.IndexOf(sourceItem);
-                int targetIndex = targetItem != null ? targetCollection.IndexOf(targetItem) : targetCollection.Count;
+                int targetIndex =
+                    targetItem != null
+                        ? targetCollection.IndexOf(targetItem)
+                        : targetCollection.Count;
 
                 if (targetIndex > targetCollection.Count - 1 && targetIndex != 0)
                 {
                     targetIndex = targetCollection.Count - 1;
                 }
-                
 
                 if (sourceIndex != -1)
                 {
@@ -516,11 +525,13 @@ namespace GMEPDesignTool
                     targetCollection.Insert(targetIndex, sourceItem);
                     Panel.SetCircuitNumbers();
                     Panel.SetCircuitVa();
-
                 }
             }
         }
-        private ObservableCollection<ElectricalComponent> GetSourceCollection(ElectricalComponent item)
+
+        private ObservableCollection<ElectricalComponent> GetSourceCollection(
+            ElectricalComponent item
+        )
         {
             if (LeftComponents.Contains(item))
             {
@@ -536,7 +547,9 @@ namespace GMEPDesignTool
             }
         }
 
-        private ObservableCollection<ElectricalComponent> GetTargetCollection(ElectricalComponent item)
+        private ObservableCollection<ElectricalComponent> GetTargetCollection(
+            ElectricalComponent item
+        )
         {
             if (item == null)
             {
@@ -555,6 +568,7 @@ namespace GMEPDesignTool
                 return ComponentsCollection;
             }
         }
+
         private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -563,13 +577,17 @@ namespace GMEPDesignTool
                 {
                     var groupId = removedItem.GroupId;
 
-                    var leftNodesToRemove = LeftNodes.Where(node => node.GroupId == groupId).ToList();
+                    var leftNodesToRemove = LeftNodes
+                        .Where(node => node.GroupId == groupId)
+                        .ToList();
                     foreach (var node in leftNodesToRemove)
                     {
                         LeftNodes.Remove(node);
                     }
 
-                    var rightNodesToRemove = RightNodes.Where(node => node.GroupId == groupId).ToList();
+                    var rightNodesToRemove = RightNodes
+                        .Where(node => node.GroupId == groupId)
+                        .ToList();
                     foreach (var node in rightNodesToRemove)
                     {
                         RightNodes.Remove(node);
@@ -578,6 +596,33 @@ namespace GMEPDesignTool
             }
         }
 
+        private void ElectricalPanelNotes_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanelNote removedItem in e.OldItems)
+                {
+                    var leftNotesToRemove = LeftNotes
+                        .Where(note => note.NoteId == removedItem.Id)
+                        .ToList();
+                    foreach (var note in leftNotesToRemove)
+                    {
+                        LeftNotes.Remove(note);
+                    }
+
+                    var rightNotesToRemove = RightNotes
+                        .Where(note => note.NoteId == removedItem.Id)
+                        .ToList();
+                    foreach (var note in rightNotesToRemove)
+                    {
+                        RightNotes.Remove(note);
+                    }
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -586,6 +631,7 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
     public class PoleToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -597,11 +643,17 @@ namespace GMEPDesignTool
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
+
     public class LclConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -613,11 +665,17 @@ namespace GMEPDesignTool
             return 0;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
+
     public class ValueRounder : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -629,11 +687,17 @@ namespace GMEPDesignTool
             return 0;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
+
     public class BindingProxy : Freezable
     {
         protected override Freezable CreateInstanceCore()
@@ -647,10 +711,11 @@ namespace GMEPDesignTool
             set { SetValue(DataProperty, value); }
         }
 
-        public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register(
+            "Data",
+            typeof(object),
+            typeof(BindingProxy),
+            new UIPropertyMetadata(null)
+        );
     }
-    
-
-
 }

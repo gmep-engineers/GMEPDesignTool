@@ -25,14 +25,15 @@ namespace GMEPDesignTool
     public partial class CircuitManager : Window
     {
         CircuitManagerViewModel viewModel { get; set; }
+
         public CircuitManager(ElectricalPanel panel)
         {
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
-
         }
+
         private void CircuitManager_Closed(object sender, EventArgs e)
         {
             // Unsubscribe from any events
@@ -41,6 +42,7 @@ namespace GMEPDesignTool
                 viewModel.Panel.PropertyChanged -= viewModel.Panel_PropertyChanged;
             }
         }
+
         private void AddSpaceLeft(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
@@ -48,6 +50,7 @@ namespace GMEPDesignTool
                 viewModel.Panel.AssignSpace(true);
             }
         }
+
         private void AddSpaceRight(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
@@ -58,7 +61,10 @@ namespace GMEPDesignTool
 
         private void LeftCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
         {
-            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
             {
                 bool allCustom = false;
@@ -71,16 +77,19 @@ namespace GMEPDesignTool
                     }
                 }
 
-
                 foreach (var circuit in selectedItems)
                 {
                     circuit.CustomDescription = allCustom;
                 }
             }
         }
+
         private void LeftCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
         {
-            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
             {
                 bool allCustom = false;
@@ -102,34 +111,54 @@ namespace GMEPDesignTool
 
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-            if (sender is ListBox listBox && listBox.SelectedItem is Note selectedNote)
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
+            if (
+                sender is ListBox listBox
+                && listBox.SelectedItem is ElectricalPanelNoteRel selectedNote
+            )
             {
                 if (selectedItems.Any())
                 {
                     var firstItem = selectedItems.First();
                     var lastItem = selectedItems.Last();
-                    var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
+                    var range =
+                        (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
-                    var newNote = new Note(selectedNote);
+                    var newNote = new ElectricalPanelNoteRel(
+                        selectedNote.Id,
+                        selectedNote.ProjectId,
+                        selectedNote.PanelId,
+                        selectedNote.NoteId,
+                        selectedNote.NoteText,
+                        selectedNote.CircuitNo,
+                        selectedNote.Tag
+                    );
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> existingNodes = new List<Note>();
+                    List<ElectricalPanelNoteRel> existingNodes = new List<ElectricalPanelNoteRel>();
                     int startCircuit = newNote.CircuitNo;
-                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1) * 2;
 
-                    foreach (var node in viewModel.LeftNodes)
+                    foreach (var note in viewModel.LeftNotes)
                     {
-                        int startCircuit2 = node.CircuitNo;
-                        int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
+                        int startCircuit2 = note.CircuitNo;
+                        int endCircuit2 = note.CircuitNo + (note.Length - 1) * 2;
+                        if (
+                            (startCircuit <= endCircuit2 && endCircuit >= startCircuit2)
+                            || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit)
+                        )
                         {
-                            existingNodes.Add(node);
+                            existingNodes.Add(note);
                         }
                     }
 
-                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+                    List<ElectricalPanelNoteRel> existingNodes2 = existingNodes
+                        .OrderBy(note => note.Stack)
+                        .ToList();
 
                     if (existingNodes2.Count > 0)
                     {
@@ -143,41 +172,48 @@ namespace GMEPDesignTool
                             }
                         }
                     }
-                    viewModel.LeftNodes.Add(newNote);
+                    viewModel.LeftNotes.Add(newNote);
                 }
-
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
         }
+
         private void LeftCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
         {
-            var selectedItems = LeftCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem)
             {
-                List<Note> toRemove = new List<Note>();
+                List<ElectricalPanelNoteRel> toRemove = new List<ElectricalPanelNoteRel>(); // HERE replace with ElectricalPanelNoteRel type
 
-                foreach (var node in viewModel.LeftNodes)
+                foreach (var note in viewModel.LeftNotes)
                 {
-                    int startCircuit = node.CircuitNo;
-                    int endCircuit = node.CircuitNo + (node.Length - 1)*2;
+                    int startCircuit = note.CircuitNo;
+                    int endCircuit = note.CircuitNo + (note.Length - 1) * 2;
                     foreach (var item in selectedItems)
                     {
                         if (item.Number >= startCircuit && item.Number <= endCircuit)
                         {
-                            toRemove.Add(node);
+                            toRemove.Add(note);
                         }
                     }
                 }
-                foreach (var node in toRemove)
+                foreach (var note in toRemove)
                 {
-                    viewModel.LeftNodes.Remove(node);
+                    viewModel.LeftNotes.Remove(note);
                 }
             }
         }
+
         private void RightCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
         {
-            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
             {
                 bool allCustom = false;
@@ -196,9 +232,13 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void RightCircuitGrid_ToggleCustomBreakerSize(object sender, RoutedEventArgs e)
         {
-            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem && selectedItems.Any())
             {
                 bool allCustom = false;
@@ -217,43 +257,63 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void RightCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
-            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
-            if (sender is ListBox listBox && listBox.SelectedItem is Note selectedNote)
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
+            if (
+                sender is ListBox listBox
+                && listBox.SelectedItem is ElectricalPanelNoteRel selectedNote
+            )
             {
                 if (selectedItems.Any())
                 {
                     var firstItem = selectedItems.First();
                     var lastItem = selectedItems.Last();
-                    var range = (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number)/2) + 1;
+                    var range =
+                        (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
-                    var newNote = new Note(selectedNote);
+                    var newNote = new ElectricalPanelNoteRel(
+                        selectedNote.Id,
+                        selectedNote.ProjectId,
+                        selectedNote.PanelId,
+                        selectedNote.NoteId,
+                        selectedNote.NoteText,
+                        selectedNote.CircuitNo,
+                        selectedNote.Tag
+                    );
                     newNote.CircuitNo = firstItem.Number;
                     newNote.Length = range;
 
-                    List<Note> existingNodes = new List<Note>();
+                    List<ElectricalPanelNoteRel> existingNotes = new List<ElectricalPanelNoteRel>();
                     int startCircuit = newNote.CircuitNo;
-                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1)*2;
-                   
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1) * 2;
 
-                    foreach (var node in viewModel.RightNodes)
+                    foreach (var note in viewModel.RightNotes)
                     {
-                        int startCircuit2 = node.CircuitNo;
-                        int endCircuit2 = node.CircuitNo + (node.Length - 1)*2;
-                        if ((startCircuit <= endCircuit2 && endCircuit >= startCircuit2) || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit))
+                        int startCircuit2 = note.CircuitNo;
+                        int endCircuit2 = note.CircuitNo + (note.Length - 1) * 2;
+                        if (
+                            (startCircuit <= endCircuit2 && endCircuit >= startCircuit2)
+                            || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit)
+                        )
                         {
-                            existingNodes.Add(node);
+                            existingNotes.Add(note);
                         }
                     }
 
-                    List<Note> existingNodes2 = existingNodes.OrderBy(note => note.Stack).ToList();
+                    List<ElectricalPanelNoteRel> existingNotes2 = existingNotes
+                        .OrderBy(note => note.Stack)
+                        .ToList();
 
-                    if (existingNodes2.Count > 0)
+                    if (existingNotes2.Count > 0)
                     {
-                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
+                        for (int i = 0; i <= existingNotes2.Last().Stack + 1; i++)
                         {
-                            var node = existingNodes2.Find(note => note.Stack == i);
+                            var node = existingNotes2.Find(note => note.Stack == i);
                             if (node == null)
                             {
                                 newNote.Stack = i;
@@ -262,36 +322,38 @@ namespace GMEPDesignTool
                         }
                     }
 
-                    viewModel.RightNodes.Add(newNote);
-
+                    viewModel.RightNotes.Add(newNote);
                 }
-
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
         }
+
         private void RightCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
         {
-            var selectedItems = RightCircuitGrid.SelectedItems.Cast<Circuit>().OrderBy(circuit => circuit.Number).ToList();
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
             if (sender is MenuItem menuItem)
             {
-                List<Note> toRemove = new List<Note>();
+                List<ElectricalPanelNoteRel> toRemove = new List<ElectricalPanelNoteRel>();
 
-                foreach (var node in viewModel.RightNodes)
+                foreach (var note in viewModel.RightNotes)
                 {
-                    int startCircuit = node.CircuitNo;
-                    int endCircuit = node.CircuitNo + (node.Length - 1)*2;
+                    int startCircuit = note.CircuitNo;
+                    int endCircuit = note.CircuitNo + (note.Length - 1) * 2;
                     foreach (var item in selectedItems)
                     {
                         if (item.Number >= startCircuit && item.Number <= endCircuit)
                         {
-                            toRemove.Add(node);
+                            toRemove.Add(note);
                         }
                     }
                 }
-                foreach(var node in toRemove)
+                foreach (var note in toRemove)
                 {
-                    viewModel.RightNodes.Remove(node);
+                    viewModel.RightNotes.Remove(note);
                 }
             }
         }
@@ -326,12 +388,16 @@ namespace GMEPDesignTool
                 }
             }
         }
-       
     }
 
     public class LeftMarginConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(
+            object[] values,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             if (values[0] is int CircuitNo && values[1] is int stack)
             {
@@ -343,26 +409,42 @@ namespace GMEPDesignTool
             return new Thickness(0);
         }
 
-        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(
+            object values,
+            Type[] targetTypes,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
+
     public class RightMarginConverter : IMultiValueConverter
     {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(
+            object[] values,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             if (values[0] is int CircuitNo && values[1] is int stack)
             {
                 var NewCircuitNo = (int)Math.Floor((CircuitNo - 1) / 2.0);
                 // Adjust the margin based on the number of notes
-              
+
                 return new Thickness(stack * 30, NewCircuitNo * 28, 0, 0);
             }
             return new Thickness(0);
         }
 
-        public object[] ConvertBack(object values, Type[] targetTypes, object parameter, CultureInfo culture)
+        public object[] ConvertBack(
+            object values,
+            Type[] targetTypes,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
@@ -379,11 +461,17 @@ namespace GMEPDesignTool
             return 0;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
+
     public class BreakerSizeVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -398,7 +486,12 @@ namespace GMEPDesignTool
             return value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             // Implement ConvertBack if you need two way binding
             if (value is string strValue && int.TryParse(strValue, out int result))
@@ -408,6 +501,7 @@ namespace GMEPDesignTool
             return DependencyProperty.UnsetValue;
         }
     }
+
     public class NotEmptyStringToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -419,11 +513,14 @@ namespace GMEPDesignTool
             return false;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotImplementedException();
         }
     }
-
 }
-
