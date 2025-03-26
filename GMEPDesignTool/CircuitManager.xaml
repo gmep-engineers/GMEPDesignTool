@@ -492,7 +492,7 @@
                                         <MenuItem Header="Toggle Custom Description" Click="LeftCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="LeftCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
-                                            <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding ElectricalPanelNoteRels}" SelectionChanged="LeftCircuitGrid_AddNote">
+                                            <ListBox Height="150" HorizontalContentAlignment="Center" Width="100" ItemsSource="{Binding ElectricalPanelNotes}" SelectionChanged="LeftCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
@@ -810,7 +810,7 @@
                                         <MenuItem Header="Toggle Custom Description" Click="RightCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="RightCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
-                                            <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding ElectricalPanelNoteRels}" SelectionChanged="RightCircuitGrid_AddNote">
+                                            <ListBox HorizontalContentAlignment="Center" Width="100" Height="150" ItemsSource="{Binding ElectricalPanelNotes}" SelectionChanged="RightCircuitGrid_AddNote">
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Height="30" Width="30">
@@ -828,7 +828,7 @@
                                     <DataGridTemplateColumn Width="20">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Tag}" Background="LightBlue"/>
+                                                <TextBlock Text="{Binding Number}" Background="LightBlue"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

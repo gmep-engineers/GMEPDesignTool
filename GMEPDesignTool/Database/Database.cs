@@ -1435,16 +1435,22 @@ namespace GMEPDesignTool.Database
                 FROM electrical_panel_note_panel_rel
                 LEFT JOIN electrical_panel_notes ON electrical_panel_notes.id = electrical_panel_note_panel_rel.note_id
                 WHERE electrical_panel_note_panel_rel.panel_id = @panelId
-                ORDER BY electrical_panel_note_panel_rel.note_id
+                ORDER BY electrical_panel_note_panel_rel.panel_id, note_id
                 ";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
             List<string> noteIds = new List<string>();
+            string currentPanelId = "";
             while (await reader.ReadAsync())
             {
                 string noteId = GetSafeString(reader, "note_id");
+                if (currentPanelId != GetSafeString(reader, "panel_id"))
+                {
+                    noteIds.Clear();
+                    currentPanelId = GetSafeString(reader, "panel_id");
+                }
                 if (!noteIds.Contains(noteId))
                 {
                     noteIds.Add(noteId);
@@ -1452,7 +1458,7 @@ namespace GMEPDesignTool.Database
                 ElectricalPanelNoteRel noteRel = new ElectricalPanelNoteRel(
                     GetSafeString(reader, "id"),
                     GetSafeString(reader, "project_id"),
-                    GetSafeString(reader, "panel_id"),
+                    currentPanelId,
                     GetSafeString(reader, "note_id"),
                     GetSafeString(reader, "note"),
                     GetSafeInt(reader, "circuit_no"),
