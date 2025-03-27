@@ -25,11 +25,13 @@ namespace GMEPDesignTool
     public partial class CircuitManager : Window
     {
         CircuitManagerViewModel viewModel { get; set; }
+        ElectricalPanel Panel { get; set; }
 
         public CircuitManager(ElectricalPanel panel)
         {
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
+            Panel = panel;
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
         }
@@ -117,7 +119,7 @@ namespace GMEPDesignTool
                 .ToList();
             if (
                 sender is ListBox listBox
-                && listBox.SelectedItem is ElectricalPanelNoteRel selectedNote
+                && listBox.SelectedItem is ElectricalPanelNote selectedNote
             )
             {
                 if (selectedItems.Any())
@@ -128,12 +130,13 @@ namespace GMEPDesignTool
                         (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
                     var newNote = new ElectricalPanelNoteRel(
-                        selectedNote.Id,
+                        Guid.NewGuid().ToString(),
                         selectedNote.ProjectId,
-                        selectedNote.PanelId,
-                        selectedNote.NoteId,
-                        selectedNote.NoteText,
-                        selectedNote.CircuitNo,
+                        Panel.Id,
+                        selectedNote.Id,
+                        selectedNote.Note,
+                        0,
+                        0,
                         selectedNote.Tag
                     );
                     newNote.CircuitNo = firstItem.Number;
@@ -266,7 +269,7 @@ namespace GMEPDesignTool
                 .ToList();
             if (
                 sender is ListBox listBox
-                && listBox.SelectedItem is ElectricalPanelNoteRel selectedNote
+                && listBox.SelectedItem is ElectricalPanelNote selectedNote
             )
             {
                 if (selectedItems.Any())
@@ -277,12 +280,13 @@ namespace GMEPDesignTool
                         (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
                     var newNote = new ElectricalPanelNoteRel(
-                        selectedNote.Id,
+                        Guid.NewGuid().ToString(),
                         selectedNote.ProjectId,
-                        selectedNote.PanelId,
-                        selectedNote.NoteId,
-                        selectedNote.NoteText,
-                        selectedNote.CircuitNo,
+                        Panel.Id,
+                        selectedNote.Id,
+                        selectedNote.Note,
+                        0,
+                        0,
                         selectedNote.Tag
                     );
                     newNote.CircuitNo = firstItem.Number;

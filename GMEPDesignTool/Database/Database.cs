@@ -134,6 +134,16 @@ namespace GMEPDesignTool.Database
             return false;
         }
 
+        DateTime GetSafeDateTime(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetDateTime(index);
+            }
+            return DateTime.MinValue;
+        }
+
         public bool LoginUser(string userName, string password)
         {
             string query =
@@ -218,7 +228,6 @@ namespace GMEPDesignTool.Database
 
         public void SaveEmployee(Employee employee)
         {
-            Trace.WriteLine(employee.FirstName);
             OpenConnection();
             var query =
                 @"
@@ -669,23 +678,22 @@ namespace GMEPDesignTool.Database
 
         private async Task UpdateElectricalPanelNoteRels(
             string projectId,
-            ObservableCollection<ElectricalPanelNoteRel> panelNotes
+            ObservableCollection<ElectricalPanelNoteRel> noteRels
         )
         {
-            var existingPanelIds = await GetExistingIds(
+            var existingNoteRelIds = await GetExistingIds(
                 "electrical_panel_note_panel_rel",
                 "project_id",
                 projectId
             );
+            var noteRelsCopy = noteRels.ToList(); // Create a copy of the collection
 
-            var panelNotesCopy = panelNotes.ToList(); // Create a copy of the collection
-
-            foreach (var note in panelNotesCopy)
+            foreach (var note in noteRelsCopy)
             {
-                if (existingPanelIds.Contains(note.Id))
+                if (existingNoteRelIds.Contains(note.Id))
                 {
                     await UpdateElectricalPanelNoteRel(note);
-                    existingPanelIds.Remove(note.Id);
+                    existingNoteRelIds.Remove(note.Id);
                 }
                 else
                 {
@@ -693,7 +701,7 @@ namespace GMEPDesignTool.Database
                 }
             }
 
-            await DeleteRemovedItems("electrical_panel_note_panel_rel", existingPanelIds);
+            await DeleteRemovedItems("electrical_panel_note_panel_rel", existingNoteRelIds);
         }
 
         private async Task UpdateCustomCircuits(
@@ -956,7 +964,7 @@ namespace GMEPDesignTool.Database
 
         private async Task UpdateElectricalPanelNote(ElectricalPanelNote note)
         {
-            string query = "UPDATE electrical_panel_notes SET node = @note WHERE id = @id";
+            string query = "UPDATE electrical_panel_notes SET note = @note WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@note", note.Note);
@@ -968,13 +976,14 @@ namespace GMEPDesignTool.Database
         private async Task UpdateElectricalPanelNoteRel(ElectricalPanelNoteRel noteRel)
         {
             string query =
-                "UPDATE electrical_panel_note_panel_rel SET panel_id = @panelId, note_id = @noteId, circuit_no = @circuitNo WHERE id = @id";
+                "UPDATE electrical_panel_note_panel_rel SET panel_id = @panelId, note_id = @noteId, circuit_no = @circuitNo, length = @length WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@id", noteRel.Id);
             command.Parameters.AddWithValue("@panelId", noteRel.PanelId);
             command.Parameters.AddWithValue("@noteId", noteRel.NoteId);
             command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
+            command.Parameters.AddWithValue("@length", noteRel.Length);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -998,16 +1007,21 @@ namespace GMEPDesignTool.Database
 
         private async Task InsertElectricalPanelNote(string projectId, ElectricalPanelNote note)
         {
+            if (String.IsNullOrEmpty(note.Note))
+            {
+                return;
+            }
             string query =
                 @"
-                INSERT INTO electrical_panel_notes (id, project_id, note)
+                INSERT IGNORE INTO electrical_panel_notes (id, project_id, note, date)
                 VALUES
-                (@id, @projectId, @note)
+                (@id, @projectId, @note, @date)
                 ";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", note.Id);
             command.Parameters.AddWithValue("@projectId", note.ProjectId);
             command.Parameters.AddWithValue("@note", note.Note);
+            command.Parameters.AddWithValue("@date", note.DateCreated);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1018,10 +1032,10 @@ namespace GMEPDesignTool.Database
         {
             string query =
                 @"
-                INSERT INTO electrical_panel_note_panel_rel
-                (id, project_id, panel_id, note_id, circuit_no)
+                INSERT IGNORE INTO electrical_panel_note_panel_rel
+                (id, project_id, panel_id, note_id, circuit_no, length)
                 VALUES
-                (@id, @projectId, @panelId, @noteId, @circuitNo)
+                (@id, @projectId, @panelId, @noteId, @circuitNo, @length)
                 ";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", noteRel.Id);
@@ -1029,6 +1043,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@panelId", noteRel.PanelId);
             command.Parameters.AddWithValue("@noteId", noteRel.NoteId);
             command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
+            command.Parameters.AddWithValue("@length", noteRel.Length);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -1384,11 +1399,12 @@ namespace GMEPDesignTool.Database
                 electrical_panel_note_panel_rel.panel_id,
                 electrical_panel_note_panel_rel.note_id,
                 electrical_panel_note_panel_rel.circuit_no,
+                electrical_panel_note_panel_rel.length,
                 electrical_panel_notes.note
                 FROM electrical_panel_note_panel_rel
                 LEFT JOIN electrical_panel_notes ON electrical_panel_notes.id = electrical_panel_note_panel_rel.note_id
                 WHERE electrical_panel_note_panel_rel.panel_id = @panelId
-                ORDER BY electrical_panel_note_panel_rel.note_id
+                ORDER BY electrical_panel_notes.date
                 ";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -1409,8 +1425,10 @@ namespace GMEPDesignTool.Database
                     GetSafeString(reader, "note_id"),
                     GetSafeString(reader, "note"),
                     GetSafeInt(reader, "circuit_no"),
+                    GetSafeInt(reader, "length"),
                     (noteIds.IndexOf(noteId) + 1).ToString()
                 );
+                noteRels.Add(noteRel);
             }
             reader.Close();
             CloseConnection();
@@ -1425,17 +1443,18 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalPanelNoteRel>();
             string query =
                 @"
-                 SELECT 
+                SELECT 
                 electrical_panel_note_panel_rel.id,
                 electrical_panel_note_panel_rel.project_id,
                 electrical_panel_note_panel_rel.panel_id,
                 electrical_panel_note_panel_rel.note_id,
                 electrical_panel_note_panel_rel.circuit_no,
+                electrical_panel_note_panel_rel.length,
                 electrical_panel_notes.note
                 FROM electrical_panel_note_panel_rel
                 LEFT JOIN electrical_panel_notes ON electrical_panel_notes.id = electrical_panel_note_panel_rel.note_id
-                WHERE electrical_panel_note_panel_rel.panel_id = @panelId
-                ORDER BY electrical_panel_note_panel_rel.panel_id, note_id
+                WHERE electrical_panel_note_panel_rel.project_id = @projectId
+                ORDER BY electrical_panel_note_panel_rel.panel_id, electrical_panel_notes.date
                 ";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -1462,8 +1481,10 @@ namespace GMEPDesignTool.Database
                     GetSafeString(reader, "note_id"),
                     GetSafeString(reader, "note"),
                     GetSafeInt(reader, "circuit_no"),
+                    GetSafeInt(reader, "length"),
                     (noteIds.IndexOf(noteId) + 1).ToString()
                 );
+                noteRels.Add(noteRel);
             }
             await reader.CloseAsync();
             await CloseConnectionAsync();
@@ -1490,7 +1511,7 @@ namespace GMEPDesignTool.Database
             List<string> noteIds = new List<string>();
             while (await reader.ReadAsync())
             {
-                string noteId = GetSafeString(reader, "note_id");
+                string noteId = GetSafeString(reader, "id");
                 if (!noteIds.Contains(noteId))
                 {
                     noteIds.Add(noteId);
@@ -1505,6 +1526,53 @@ namespace GMEPDesignTool.Database
             }
             await reader.CloseAsync();
             await CloseConnectionAsync();
+            return notes;
+        }
+
+        public ObservableCollection<ElectricalPanelNote> GetElectricalPanelNotes(string panelId)
+        {
+            ObservableCollection<ElectricalPanelNote> notes =
+                new ObservableCollection<ElectricalPanelNote>();
+            string query =
+                @"
+                SELECT 
+                electrical_panel_notes.id as note_id,
+                electrical_panel_notes.project_id,
+                electrical_panel_notes.note,
+                electrical_panel_notes.date,
+                electrical_panel_note_panel_rel.id as rel_id,
+                electrical_panel_note_panel_rel.panel_id,
+                electrical_panel_note_panel_rel.circuit_no
+                FROM electrical_panel_notes
+                LEFT JOIN electrical_panel_note_panel_rel
+                ON electrical_panel_note_panel_rel.note_id = electrical_panel_notes.id
+                WHERE electrical_panel_note_panel_rel.panel_id = @panelId
+                ORDER BY electrical_panel_notes.date
+                ";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@panelId", panelId);
+            MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+            List<string> noteIds = new List<string>();
+            while (reader.Read())
+            {
+                string noteId = GetSafeString(reader, "note_id");
+                if (!noteIds.Contains(noteId))
+                {
+                    noteIds.Add(noteId);
+                    ElectricalPanelNote note = new ElectricalPanelNote(
+                        GetSafeString(reader, "note_id"),
+                        GetSafeString(reader, "project_id"),
+                        GetSafeString(reader, "note"),
+                        (noteIds.IndexOf(noteId) + 1).ToString()
+                    );
+                    note.DateCreated = GetSafeDateTime(reader, "date")
+                        .ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    notes.Add(note);
+                }
+            }
+            reader.Close();
+            CloseConnection();
             return notes;
         }
 

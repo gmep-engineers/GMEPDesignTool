@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using GMEPDesignTool.Database;
 using GongSolutions.Wpf.DragDrop;
 
 namespace GMEPDesignTool

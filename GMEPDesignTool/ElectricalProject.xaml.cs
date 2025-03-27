@@ -133,6 +133,9 @@ namespace GMEPDesignTool
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
             );
+            ElectricalPanelNoteRels = await ProjectView.database.GetProjectElectricalPanelNoteRels(
+                ProjectId
+            );
             Owners = await ProjectView.database.getOwners();
             CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
 
@@ -160,11 +163,11 @@ namespace GMEPDesignTool
             {
                 ElectricalPanel panel = ElectricalPanels[i];
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
-                panel.notes.CollectionChanged += PanelNotes_CollectionChanged;
-                panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                panel.leftNotes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-                panel.rightNotes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                panel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                //panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                //panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+                panel.leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+                panel.rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
                 panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
                 panel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
                 foreach (var circuit in panel.leftCircuits)
@@ -696,11 +699,13 @@ namespace GMEPDesignTool
         public void AddElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
-            electricalPanel.notes.CollectionChanged += PanelNotes_CollectionChanged;
-            electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
-            electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
-            electricalPanel.leftNotes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-            electricalPanel.rightNotes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+            electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+            //electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            //electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
+            electricalPanel.leftNotes.CollectionChanged +=
+                ElectricalPanelNoteRels_CollectionChanged;
+            electricalPanel.rightNotes.CollectionChanged +=
+                ElectricalPanelNoteRels_CollectionChanged;
             electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
             electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
             foreach (var circuit in electricalPanel.leftCircuits)
@@ -720,7 +725,6 @@ namespace GMEPDesignTool
 
         public void AddNewElectricalPanel(object sender, EventArgs e)
         {
-            Trace.WriteLine("new panel");
             ElectricalPanel electricalPanel = new ElectricalPanel(
                 Guid.NewGuid().ToString(),
                 ProjectId,
@@ -757,11 +761,13 @@ namespace GMEPDesignTool
             electricalPanel.leftCircuits.Clear();
             electricalPanel.rightCircuits.Clear();
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
-            electricalPanel.notes.CollectionChanged -= PanelNotes_CollectionChanged;
-            electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
-            electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
-            electricalPanel.leftNotes.CollectionChanged -= ElectricalPanelNotes_CollectionChanged;
-            electricalPanel.rightNotes.CollectionChanged -= ElectricalPanelNotes_CollectionChanged;
+            electricalPanel.notes.CollectionChanged -= ElectricalPanelNotes_CollectionChanged;
+            //electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
+            //electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
+            electricalPanel.leftNotes.CollectionChanged -=
+                ElectricalPanelNoteRels_CollectionChanged;
+            electricalPanel.rightNotes.CollectionChanged -=
+                ElectricalPanelNoteRels_CollectionChanged;
             electricalPanel.leftCircuits.CollectionChanged -= PanelCircuits_CollectionChanged;
             electricalPanel.rightCircuits.CollectionChanged -= PanelCircuits_CollectionChanged;
             foreach (var circuit in electricalPanel.leftCircuits)
@@ -792,17 +798,22 @@ namespace GMEPDesignTool
 
         public void AssignElectricalPanelNoteRels(ElectricalPanel panel)
         {
-            var notes = ProjectView.database.GetElectricalPanelNoteRels(panel.Id);
+            var notes = ProjectView.database.GetElectricalPanelNotes(panel.Id);
+            var noteRels = ProjectView.database.GetElectricalPanelNoteRels(panel.Id);
 
             foreach (var note in notes)
             {
-                if (note.CircuitNo % 2 == 0)
+                panel.notes.Add(note);
+            }
+            foreach (var noteRel in noteRels)
+            {
+                if (noteRel.CircuitNo % 2 == 0)
                 {
-                    panel.rightNotes.Add(note);
+                    panel.rightNotes.Add(noteRel);
                 }
                 else
                 {
-                    panel.leftNotes.Add(note);
+                    panel.leftNotes.Add(noteRel);
                 }
             }
         }
@@ -1141,31 +1152,6 @@ namespace GMEPDesignTool
             }
         }
 
-        private void PanelNotes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (Note newNote in e.NewItems)
-                {
-                    if (!PanelNotes.Contains(newNote))
-                    {
-                        PanelNotes.Add(newNote);
-                    }
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (Note oldNote in e.OldItems)
-                {
-                    PanelNotes.Remove(oldNote);
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                PanelNotes.Clear();
-            }
-        }
-
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
@@ -1191,6 +1177,34 @@ namespace GMEPDesignTool
             else if (e.Action == NotifyCollectionChangedAction.Reset)
             {
                 ElectricalPanelNotes.Clear();
+            }
+        }
+
+        private void ElectricalPanelNoteRels_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanelNoteRel newNote in e.NewItems)
+                {
+                    if (!ElectricalPanelNoteRels.Contains(newNote))
+                    {
+                        ElectricalPanelNoteRels.Add(newNote);
+                    }
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanelNoteRel oldNote in e.OldItems)
+                {
+                    ElectricalPanelNoteRels.Remove(oldNote);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                ElectricalPanelNoteRels.Clear();
             }
         }
 
@@ -1234,6 +1248,7 @@ namespace GMEPDesignTool
                             break;
                         }
                     }
+
                     CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
@@ -1251,7 +1266,6 @@ namespace GMEPDesignTool
 
         public void AddNewElectricalService(object sender, EventArgs e)
         {
-            Trace.WriteLine("new service");
             ElectricalService electricalService = new ElectricalService(
                 Guid.NewGuid().ToString(),
                 ProjectId,
@@ -1315,7 +1329,6 @@ namespace GMEPDesignTool
                 }
                 if (e.PropertyName == nameof(ElectricalService.Name))
                 {
-                    Trace.WriteLine("ElectricalService name changed");
                     GetNames();
                 }
                 if (e.PropertyName == nameof(ElectricalService.ColorCode))
@@ -1371,7 +1384,6 @@ namespace GMEPDesignTool
 
         public void AddNewElectricalEquipment(object sender, EventArgs e)
         {
-            Trace.WriteLine("new panel");
             ElectricalEquipment electricalEquipment = new ElectricalEquipment(
                 Guid.NewGuid().ToString(),
                 ProjectId,
@@ -1627,7 +1639,6 @@ namespace GMEPDesignTool
 
         public void AddNewElectricalLighting(object sender, EventArgs e)
         {
-            Trace.WriteLine("new panel");
             ElectricalLighting electricalLighting = new ElectricalLighting(
                 Guid.NewGuid().ToString(),
                 ProjectId,
@@ -1865,7 +1876,6 @@ namespace GMEPDesignTool
 
         public void AddNewElectricalTransformer(object sender, EventArgs e)
         {
-            Trace.WriteLine("new transformer");
             ElectricalTransformer electricalTransformer = new ElectricalTransformer(
                 Guid.NewGuid().ToString(),
                 ProjectId,

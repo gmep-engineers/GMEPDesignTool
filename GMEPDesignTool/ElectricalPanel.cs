@@ -117,6 +117,8 @@ namespace GMEPDesignTool
             PopulateCircuits(Id, ProjectId);
             updateFlag = false;
             notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+            leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
         }
 
         public string ParentName
@@ -614,7 +616,35 @@ namespace GMEPDesignTool
                 foreach (ElectricalPanelNote newNote in e.NewItems)
                 {
                     newNote.ProjectId = ProjectId;
-                    newNote.Tag = (notes.Count() + 2).ToString();
+                    newNote.Tag = (notes.Count()).ToString();
+                    newNote.Id = !String.IsNullOrEmpty(newNote.Id)
+                        ? newNote.Id
+                        : Guid.NewGuid().ToString();
+                    newNote.DateCreated = !String.IsNullOrEmpty(newNote.DateCreated)
+                        ? newNote.DateCreated
+                        : DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                }
+            }
+        }
+
+        private void ElectricalPanelNoteRels_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanelNoteRel newNote in e.NewItems)
+                {
+                    newNote.ProjectId = ProjectId;
+                    newNote.Tag = (notes.Count()).ToString();
+                    newNote.Id = !String.IsNullOrEmpty(newNote.Id)
+                        ? newNote.Id
+                        : Guid.NewGuid().ToString();
+                    newNote.NoteId = !String.IsNullOrEmpty(newNote.NoteId)
+                        ? newNote.NoteId
+                        : string.Empty;
+                    newNote.PanelId = id;
                 }
             }
         }
@@ -1716,6 +1746,7 @@ namespace GMEPDesignTool
             string NoteId,
             string NoteText,
             int CircuitNo,
+            int Length,
             string Tag
         )
         {
@@ -1725,6 +1756,7 @@ namespace GMEPDesignTool
             this.NoteId = NoteId;
             this.NoteText = NoteText;
             this.CircuitNo = CircuitNo;
+            this.Length = Length;
             this.Tag = Tag;
         }
 
@@ -1872,7 +1904,9 @@ namespace GMEPDesignTool
             this.Tag = Tag;
         }
 
-        private string _Id = String.Empty;
+        public ElectricalPanelNote() { }
+
+        private string _Id = string.Empty;
         public string Id
         {
             get => _Id;
@@ -1924,6 +1958,20 @@ namespace GMEPDesignTool
                 {
                     _Note = value;
                     OnPropertyChanged(nameof(Note));
+                }
+            }
+        }
+
+        private string _DateCreated = string.Empty;
+        public string DateCreated
+        {
+            get => _DateCreated;
+            set
+            {
+                if (_DateCreated != value)
+                {
+                    _DateCreated = value;
+                    OnPropertyChanged(nameof(DateCreated));
                 }
             }
         }
