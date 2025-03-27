@@ -29,8 +29,6 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalComponent> RightComponents { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
         public ObservableCollection<ElectricalPanelNote> ElectricalPanelNotes { get; set; }
-        public ObservableCollection<Note> LeftNodes { get; set; }
-        public ObservableCollection<Note> RightNodes { get; set; }
         public ObservableCollection<ElectricalPanelNoteRel> LeftNotes { get; set; }
         public ObservableCollection<ElectricalPanelNoteRel> RightNotes { get; set; }
 
@@ -179,8 +177,6 @@ namespace GMEPDesignTool
 
             LeftCircuits = panel.leftCircuits;
             RightCircuits = panel.rightCircuits;
-            LeftNodes = panel.leftNodes;
-            RightNodes = panel.rightNodes;
             LeftNotes = panel.leftNotes;
             RightNotes = panel.rightNotes;
             _phaseAVa = panel.PhaseAVA;
@@ -567,33 +563,6 @@ namespace GMEPDesignTool
             else
             {
                 return ComponentsCollection;
-            }
-        }
-
-        private void Notes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (Note removedItem in e.OldItems)
-                {
-                    var groupId = removedItem.GroupId;
-
-                    var leftNodesToRemove = LeftNodes
-                        .Where(node => node.GroupId == groupId)
-                        .ToList();
-                    foreach (var node in leftNodesToRemove)
-                    {
-                        LeftNodes.Remove(node);
-                    }
-
-                    var rightNodesToRemove = RightNodes
-                        .Where(node => node.GroupId == groupId)
-                        .ToList();
-                    foreach (var node in rightNodesToRemove)
-                    {
-                        RightNodes.Remove(node);
-                    }
-                }
             }
         }
 

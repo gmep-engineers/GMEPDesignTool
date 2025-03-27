@@ -462,7 +462,8 @@ namespace GMEPDesignTool.Database
                 "electrical_lighting_locations",
                 "electrical_lighting",
                 "electrical_services",
-                "panel_notes",
+                "electrical_panel_notes",
+                "electrical_panel_note_panel_rel",
                 "custom_circuits",
             };
             string query;
@@ -623,28 +624,6 @@ namespace GMEPDesignTool.Database
             }
 
             await DeleteRemovedItems("electrical_panels", existingPanelIds);
-        }
-
-        private async Task UpdatePanelNotes(string projectId, ObservableCollection<Note> panelNotes)
-        {
-            var existingPanelIds = await GetExistingIds("panel_notes", "project_id", projectId);
-
-            var panelNotesCopy = panelNotes.ToList(); // Create a copy of the collection
-
-            foreach (var note in panelNotesCopy)
-            {
-                if (existingPanelIds.Contains(note.Id))
-                {
-                    await UpdatePanelNote(note);
-                    existingPanelIds.Remove(note.Id);
-                }
-                else
-                {
-                    await InsertPanelNote(projectId, note);
-                }
-            }
-
-            await DeleteRemovedItems("panel_notes", existingPanelIds);
         }
 
         private async Task UpdateElectricalPanelNotes(
@@ -946,22 +925,6 @@ namespace GMEPDesignTool.Database
             await command.ExecuteNonQueryAsync();
         }
 
-        private async Task UpdatePanelNote(Note panelNotes)
-        {
-            string query =
-                "UPDATE panel_notes SET number = @number, circuit_no = @circuitNo, length = @length, description = @description, stack = @stack WHERE id = @id";
-            MySqlCommand command = new MySqlCommand(query, Connection);
-
-            command.Parameters.AddWithValue("@id", panelNotes.Id);
-            command.Parameters.AddWithValue("@number", panelNotes.Number);
-            command.Parameters.AddWithValue("@circuitNo", panelNotes.CircuitNo);
-            command.Parameters.AddWithValue("@length", panelNotes.Length);
-            command.Parameters.AddWithValue("@description", panelNotes.Description);
-            command.Parameters.AddWithValue("@stack", panelNotes.Stack);
-
-            await command.ExecuteNonQueryAsync();
-        }
-
         private async Task UpdateElectricalPanelNote(ElectricalPanelNote note)
         {
             string query = "UPDATE electrical_panel_notes SET note = @note WHERE id = @id";
@@ -985,23 +948,6 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
             command.Parameters.AddWithValue("@length", noteRel.Length);
 
-            await command.ExecuteNonQueryAsync();
-        }
-
-        private async Task InsertPanelNote(string projectId, Note panelNotes)
-        {
-            string query =
-                "INSERT INTO panel_notes (id, number, panel_id, project_id, circuit_no, length, description, group_id, stack) VALUES (@id, @number, @panelId, @projectId, @circuitNo, @length, @description, @groupId, @stack)";
-            MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@id", panelNotes.Id);
-            command.Parameters.AddWithValue("@number", panelNotes.Number);
-            command.Parameters.AddWithValue("@panelId", panelNotes.PanelId);
-            command.Parameters.AddWithValue("@projectId", panelNotes.ProjectId);
-            command.Parameters.AddWithValue("@circuitNo", panelNotes.CircuitNo);
-            command.Parameters.AddWithValue("@length", panelNotes.Length);
-            command.Parameters.AddWithValue("@description", panelNotes.Description);
-            command.Parameters.AddWithValue("@groupId", panelNotes.GroupId);
-            command.Parameters.AddWithValue("@stack", panelNotes.Stack);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1576,33 +1522,6 @@ namespace GMEPDesignTool.Database
             return notes;
         }
 
-        public async Task<ObservableCollection<Note>> GetProjectPanelNotes(string projectId)
-        {
-            ObservableCollection<Note> panelNotes = new ObservableCollection<Note>();
-            string query = "SELECT * FROM panel_notes WHERE project_id = @projectId";
-            await OpenConnectionAsync();
-            MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                Note note = new Note();
-                note.Id = reader.GetString("id");
-                note.Number = reader.GetInt32("number");
-                note.PanelId = reader.GetString("panel_id");
-                note.ProjectId = reader.GetString("project_id");
-                note.circuitNo = reader.GetInt32("circuit_no");
-                note.length = reader.GetInt32("length");
-                note.Description = reader.GetString("description");
-                note.GroupId = reader.GetString("group_id");
-                note.Stack = reader.GetInt32("stack");
-                panelNotes.Add(note);
-            }
-            await reader.CloseAsync();
-            await CloseConnectionAsync();
-            return panelNotes;
-        }
-
         public async Task<ObservableCollection<Circuit>> GetProjectCustomCircuits(string projectId)
         {
             ObservableCollection<Circuit> customCircuits = new ObservableCollection<Circuit>();
@@ -1858,7 +1777,6 @@ namespace GMEPDesignTool.Database
             var lightings = await GetProjectLighting(projectId);
             var transformers = await GetProjectTransformers(projectId);
             var locations = await GetLightingLocations(projectId);
-            var panelNotes = await GetProjectPanelNotes(projectId);
             var electricalPanelNotes = await GetProjectElectricalPanelNotes(projectId);
             var electricalPanelNoteRels = await GetProjectElectricalPanelNoteRels(projectId);
             var customCircuits = await GetProjectCustomCircuits(projectId);
@@ -1909,13 +1827,6 @@ namespace GMEPDesignTool.Database
                 {
                     lighting.LocationId = locationIdSwitch[lighting.LocationId];
                 }
-            }
-            foreach (var note in panelNotes)
-            {
-                string Id = Guid.NewGuid().ToString();
-                note.Id = Id;
-                note.projectId = newProjectId;
-                note.PanelId = parentIdSwitch[note.PanelId];
             }
             foreach (var note in electricalPanelNotes)
             {

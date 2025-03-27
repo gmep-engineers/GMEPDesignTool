@@ -42,10 +42,6 @@ namespace GMEPDesignTool
             new ObservableCollection<Circuit>();
         public ObservableCollection<ElectricalPanelNote> notes { get; set; } =
             new ObservableCollection<ElectricalPanelNote>();
-        public ObservableCollection<Note> leftNodes { get; set; } =
-            new ObservableCollection<Note>();
-        public ObservableCollection<Note> rightNodes { get; set; } =
-            new ObservableCollection<Note>();
         public ObservableCollection<ElectricalPanelNoteRel> leftNotes { get; set; } =
             new ObservableCollection<ElectricalPanelNoteRel>();
         public ObservableCollection<ElectricalPanelNoteRel> rightNotes { get; set; } =

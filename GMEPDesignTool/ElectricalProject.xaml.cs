@@ -39,7 +39,6 @@ namespace GMEPDesignTool
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
-        public ObservableCollection<Note> PanelNotes { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
@@ -94,7 +93,6 @@ namespace GMEPDesignTool
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             ElectricalLightings = new ObservableCollection<ElectricalLighting>();
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
-            PanelNotes = new ObservableCollection<Note>();
             ElectricalPanelNotes = new ObservableCollection<ElectricalPanelNote>();
             ElectricalPanelNoteRels = new ObservableCollection<ElectricalPanelNoteRel>();
             CustomCircuits = new ObservableCollection<Circuit>();
@@ -129,7 +127,6 @@ namespace GMEPDesignTool
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
-            PanelNotes = await ProjectView.database.GetProjectPanelNotes(ProjectId);
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
             );
@@ -164,8 +161,6 @@ namespace GMEPDesignTool
                 ElectricalPanel panel = ElectricalPanels[i];
                 panel.PropertyChanged += ElectricalPanel_PropertyChanged;
                 panel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-                //panel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
-                //panel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
                 panel.leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
                 panel.rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
                 panel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
@@ -700,8 +695,6 @@ namespace GMEPDesignTool
         {
             electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
             electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-            //electricalPanel.leftNodes.CollectionChanged += PanelNotes_CollectionChanged;
-            //electricalPanel.rightNodes.CollectionChanged += PanelNotes_CollectionChanged;
             electricalPanel.leftNotes.CollectionChanged +=
                 ElectricalPanelNoteRels_CollectionChanged;
             electricalPanel.rightNotes.CollectionChanged +=
@@ -754,16 +747,12 @@ namespace GMEPDesignTool
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
         {
             electricalPanel.notes.Clear();
-            electricalPanel.leftNodes.Clear();
-            electricalPanel.rightNodes.Clear();
             electricalPanel.leftNotes.Clear();
             electricalPanel.rightNotes.Clear();
             electricalPanel.leftCircuits.Clear();
             electricalPanel.rightCircuits.Clear();
             electricalPanel.PropertyChanged -= ElectricalPanel_PropertyChanged;
             electricalPanel.notes.CollectionChanged -= ElectricalPanelNotes_CollectionChanged;
-            //electricalPanel.leftNodes.CollectionChanged -= PanelNotes_CollectionChanged;
-            //electricalPanel.rightNodes.CollectionChanged -= PanelNotes_CollectionChanged;
             electricalPanel.leftNotes.CollectionChanged -=
                 ElectricalPanelNoteRels_CollectionChanged;
             electricalPanel.rightNotes.CollectionChanged -=
