@@ -371,3 +371,6 @@ FodyWeavers.xsd
 
 #load file
 load_dll.lsp
+
+# release archive
+GMEPDesignTool.zip

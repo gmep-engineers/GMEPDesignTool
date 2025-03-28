@@ -53,7 +53,7 @@
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Extension" Binding="{Binding Extension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
-                <DataGridTextColumn>
+                <DataGridTextColumn Header="Hire Date">
                     <DataGridTextColumn.Binding>
                         <Binding Path="HireDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
                             <Binding.Converter>
