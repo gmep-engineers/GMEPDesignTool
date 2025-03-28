@@ -43,8 +43,6 @@ namespace GMEPDesignTool
                     Trace.WriteLine("do nothing");
                     return Binding.DoNothing;
                 }
-                Trace.WriteLine("d");
-                Trace.WriteLine(d);
                 return d;
             }
             return null;
