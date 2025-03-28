@@ -633,7 +633,6 @@ namespace GMEPDesignTool
                 foreach (ElectricalPanelNoteRel newNote in e.NewItems)
                 {
                     newNote.ProjectId = ProjectId;
-                    newNote.Tag = (notes.Count()).ToString();
                     newNote.Id = !String.IsNullOrEmpty(newNote.Id)
                         ? newNote.Id
                         : Guid.NewGuid().ToString();
@@ -1743,6 +1742,7 @@ namespace GMEPDesignTool
             string NoteText,
             int CircuitNo,
             int Length,
+            int Stack,
             string Tag
         )
         {
@@ -1753,6 +1753,7 @@ namespace GMEPDesignTool
             this.NoteText = NoteText;
             this.CircuitNo = CircuitNo;
             this.Length = Length;
+            this.Stack = Stack;
             this.Tag = Tag;
         }
 
@@ -1798,15 +1799,15 @@ namespace GMEPDesignTool
             }
         }
 
-        private string _Tag = string.Empty;
+        private string _NoteTag = string.Empty;
         public string Tag
         {
-            get => _Tag;
+            get => _NoteTag;
             set
             {
-                if (_Tag != value)
+                if (_NoteTag != value)
                 {
-                    _Tag = value;
+                    _NoteTag = value;
                     OnPropertyChanged(nameof(Tag));
                 }
             }

@@ -1188,7 +1188,20 @@ namespace GMEPDesignTool
             {
                 foreach (ElectricalPanelNoteRel oldNote in e.OldItems)
                 {
-                    ElectricalPanelNoteRels.Remove(oldNote);
+                    // this is to circumvent some strange behavior where ElectricalPanelNotesRel
+                    // has all the IDs twice
+                    List<int> indices = new List<int>();
+                    for (int i = 0; i < ElectricalPanelNoteRels.Count; i++)
+                    {
+                        if (ElectricalPanelNoteRels[i].Id == oldNote.Id)
+                        {
+                            indices.Add(i);
+                        }
+                    }
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        ElectricalPanelNoteRels.RemoveAt(indices[i] - i);
+                    }
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Reset)

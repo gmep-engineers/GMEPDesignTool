@@ -679,7 +679,6 @@ namespace GMEPDesignTool.Database
                     await InsertElectricalPanelNoteRel(projectId, note);
                 }
             }
-
             await DeleteRemovedItems("electrical_panel_note_panel_rel", existingNoteRelIds);
         }
 
@@ -939,7 +938,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateElectricalPanelNoteRel(ElectricalPanelNoteRel noteRel)
         {
             string query =
-                "UPDATE electrical_panel_note_panel_rel SET panel_id = @panelId, note_id = @noteId, circuit_no = @circuitNo, length = @length WHERE id = @id";
+                "UPDATE electrical_panel_note_panel_rel SET panel_id = @panelId, note_id = @noteId, circuit_no = @circuitNo, length = @length, stack = @stack WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@id", noteRel.Id);
@@ -947,6 +946,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@noteId", noteRel.NoteId);
             command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
             command.Parameters.AddWithValue("@length", noteRel.Length);
+            command.Parameters.AddWithValue("@stack", noteRel.Stack);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -979,9 +979,9 @@ namespace GMEPDesignTool.Database
             string query =
                 @"
                 INSERT IGNORE INTO electrical_panel_note_panel_rel
-                (id, project_id, panel_id, note_id, circuit_no, length)
+                (id, project_id, panel_id, note_id, circuit_no, length, stack)
                 VALUES
-                (@id, @projectId, @panelId, @noteId, @circuitNo, @length)
+                (@id, @projectId, @panelId, @noteId, @circuitNo, @length, @stack)
                 ";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", noteRel.Id);
@@ -990,6 +990,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@noteId", noteRel.NoteId);
             command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
             command.Parameters.AddWithValue("@length", noteRel.Length);
+            command.Parameters.AddWithValue("@stack", noteRel.Stack);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -1346,6 +1347,7 @@ namespace GMEPDesignTool.Database
                 electrical_panel_note_panel_rel.note_id,
                 electrical_panel_note_panel_rel.circuit_no,
                 electrical_panel_note_panel_rel.length,
+                electrical_panel_note_panel_rel.stack,
                 electrical_panel_notes.note
                 FROM electrical_panel_note_panel_rel
                 LEFT JOIN electrical_panel_notes ON electrical_panel_notes.id = electrical_panel_note_panel_rel.note_id
@@ -1372,6 +1374,7 @@ namespace GMEPDesignTool.Database
                     GetSafeString(reader, "note"),
                     GetSafeInt(reader, "circuit_no"),
                     GetSafeInt(reader, "length"),
+                    GetSafeInt(reader, "stack"),
                     (noteIds.IndexOf(noteId) + 1).ToString()
                 );
                 noteRels.Add(noteRel);
@@ -1396,6 +1399,7 @@ namespace GMEPDesignTool.Database
                 electrical_panel_note_panel_rel.note_id,
                 electrical_panel_note_panel_rel.circuit_no,
                 electrical_panel_note_panel_rel.length,
+                electrical_panel_note_panel_rel.stack,
                 electrical_panel_notes.note
                 FROM electrical_panel_note_panel_rel
                 LEFT JOIN electrical_panel_notes ON electrical_panel_notes.id = electrical_panel_note_panel_rel.note_id
@@ -1428,6 +1432,7 @@ namespace GMEPDesignTool.Database
                     GetSafeString(reader, "note"),
                     GetSafeInt(reader, "circuit_no"),
                     GetSafeInt(reader, "length"),
+                    GetSafeInt(reader, "stack"),
                     (noteIds.IndexOf(noteId) + 1).ToString()
                 );
                 noteRels.Add(noteRel);

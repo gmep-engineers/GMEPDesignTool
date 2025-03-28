@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -137,6 +138,7 @@ namespace GMEPDesignTool
                         selectedNote.Note,
                         0,
                         0,
+                        0,
                         selectedNote.Tag
                     );
                     newNote.CircuitNo = firstItem.Number;
@@ -190,7 +192,7 @@ namespace GMEPDesignTool
                 .ToList();
             if (sender is MenuItem menuItem)
             {
-                List<ElectricalPanelNoteRel> toRemove = new List<ElectricalPanelNoteRel>(); // HERE replace with ElectricalPanelNoteRel type
+                List<ElectricalPanelNoteRel> toRemove = new List<ElectricalPanelNoteRel>();
 
                 foreach (var note in viewModel.LeftNotes)
                 {
@@ -285,6 +287,7 @@ namespace GMEPDesignTool
                         Panel.Id,
                         selectedNote.Id,
                         selectedNote.Note,
+                        0,
                         0,
                         0,
                         selectedNote.Tag
