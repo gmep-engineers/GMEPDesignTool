@@ -30,17 +30,14 @@ namespace GMEPDesignTool
         {
             if (value != null)
             {
-                Trace.WriteLine(value.ToString());
                 string str = value
                     .ToString()
                     .Replace("(", "")
                     .Replace(")", "")
                     .Replace("-", "")
                     .Replace(" ", "");
-                Trace.WriteLine(str);
                 if (!long.TryParse(str, out long d))
                 {
-                    Trace.WriteLine("do nothing");
                     return Binding.DoNothing;
                 }
                 return d;
