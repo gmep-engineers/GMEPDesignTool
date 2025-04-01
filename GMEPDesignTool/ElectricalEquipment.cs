@@ -35,6 +35,7 @@ namespace GMEPDesignTool
         private int va;
         private bool isHiddenOnPlan;
         private int loadType;
+        private string circuits;
 
         public ElectricalEquipment(
             string id,
@@ -115,6 +116,7 @@ namespace GMEPDesignTool
             DetermineLoadCategory();
             //DetermineLoadTypes();
             determineEquipmentPole();
+            DetermineCircuits();
             SetPhaseVa();
         }
 
@@ -220,7 +222,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
 
         public bool Is3Ph
         {
@@ -449,11 +450,10 @@ namespace GMEPDesignTool
                     pole = value;
                     SetPhaseVa();
                     OnPropertyChanged(nameof(Pole));
-                
                 }
             }
         }
-   
+
         public int LoadType
         {
             get => loadType;
@@ -468,6 +468,32 @@ namespace GMEPDesignTool
             }
         }
 
+        public override int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+
+        public override string Circuits
+        {
+            get => circuits;
+            set
+            {
+                if (circuits != value)
+                {
+                    circuits = value;
+                    OnPropertyChanged(nameof(Circuits));
+                }
+            }
+        }
 
         public void SetPhaseVa()
         {
@@ -517,11 +543,10 @@ namespace GMEPDesignTool
                     BLml = 0;
                     CLml = 0;
                     break;
-
-
             }
-           // OnPropertyChanged(nameof())
+            // OnPropertyChanged(nameof())
         }
+
         private void determineEquipmentPole()
         {
             int pole = 3;
@@ -537,6 +562,27 @@ namespace GMEPDesignTool
                 }
             }
             this.Pole = pole;
+        }
+
+        public void DetermineCircuits()
+        {
+            if (circuitNo == 0)
+            {
+                Circuits = "Assign";
+                return;
+            }
+            if (Pole == 3)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2},{circuitNo + 4}";
+            }
+            if (Pole == 2)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2}";
+            }
+            if (Pole == 1)
+            {
+                Circuits = $"{circuitNo}";
+            }
         }
 
         /*public void DetermineLoadTypes()
@@ -572,6 +618,7 @@ namespace GMEPDesignTool
                 LoadCategory = 3;
             }
         }
+
         public bool Verify()
         {
             if (!Utils.IsOwnerName(Owner))
@@ -593,5 +640,4 @@ namespace GMEPDesignTool
             return true;
         }
     }
-
 }

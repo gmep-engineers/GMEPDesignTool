@@ -1,11 +1,11 @@
-﻿using Mysqlx.Crud;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mysqlx.Crud;
 using Xceed.Wpf.Toolkit;
 
 namespace GMEPDesignTool
@@ -20,6 +20,7 @@ namespace GMEPDesignTool
         public string projectId;
         public string colorCode;
         public int circuitNo;
+        public string circuits;
         public int pole;
         public string name;
         public float amp;
@@ -37,10 +38,10 @@ namespace GMEPDesignTool
         public int orderNo;
         public bool updateFlag;
 
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ObservableDictionary<string, string> ErrorMessages { get; set; } = new ObservableDictionary<string, string>();
+        public ObservableDictionary<string, string> ErrorMessages { get; set; } =
+            new ObservableDictionary<string, string>();
 
         //public ObservableDictionary<string, string> BaseErrorMessages { get; set; } = new ObservableDictionary<string, string>();
 
@@ -226,7 +227,20 @@ namespace GMEPDesignTool
                 }
             }
         }
-       
+
+        public virtual string Circuits
+        {
+            get => circuits;
+            set
+            {
+                if (circuits != value)
+                {
+                    circuits = value;
+                    OnPropertyChanged(nameof(Circuits));
+                }
+            }
+        }
+
         public virtual int Pole
         {
             get => pole;

@@ -36,6 +36,8 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
+        public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
+        public ElectricalLighting? SelectedElectricaLighting { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -1235,6 +1237,14 @@ namespace GMEPDesignTool
             }
         }
 
+        private void RemoveSelectedElectricalEquipment_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedElectricalEquipment != null)
+            {
+                ElectricalEquipments.Remove(SelectedElectricalEquipment);
+            }
+        }
+
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
             var man = CustomCircuits;
@@ -1254,6 +1264,31 @@ namespace GMEPDesignTool
                     CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
+            }
+            else if (
+                sender is Button assignButton
+                && assignButton.CommandParameter is string panelId
+            )
+            {
+                foreach (ElectricalPanel assignedPanel in ElectricalPanels)
+                {
+                    if (assignedPanel.Id == panelId)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                if (window is CircuitManager circuitManager)
+                                {
+                                    circuitManager.Close();
+                                    break;
+                                }
+                            }
+                            CircuitManager manager = new CircuitManager(assignedPanel);
+                            manager.Show();
+                        });
+                    }
+                }
             }
         }
 
