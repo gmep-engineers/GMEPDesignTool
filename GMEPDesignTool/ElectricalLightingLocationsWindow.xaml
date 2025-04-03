@@ -1,0 +1,19 @@
+﻿<Window x:Class="GMEPDesignTool.ElectricalLightingLocationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        xmlns:uc="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Lighting Locations" Height="400" Width="640">
+    
+    <Grid>
+        <DataGrid Name="ElectricalLightingLocationsDataGrid" CanUserAddRows="True" ItemsSource="{Binding LightingLocations,Mode=TwoWay}" SelectedItem="{Binding Path=SelectedLocation,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 20 0 0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Description" Binding="{Binding LocationDescription}" />
+                <DataGridCheckBoxColumn Header="Outdoor" Binding="{Binding IsOutside}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

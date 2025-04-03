@@ -1220,6 +1220,10 @@ namespace GMEPDesignTool.Database
 
         private async Task InsertLocation(string projectId, Location location)
         {
+            if (String.IsNullOrEmpty(location.LocationDescription))
+            {
+                return;
+            }
             string query =
                 "INSERT INTO electrical_lighting_locations (id, project_id, location, outdoor) VALUES (@id, @projectId, @locationDescription, @isOutside)";
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -1774,9 +1778,9 @@ namespace GMEPDesignTool.Database
             while (await reader.ReadAsync())
             {
                 var location = new Location();
-                location.Id = reader.GetString("id");
-                location.isOutside = reader.GetBoolean("outdoor");
-                location.LocationDescription = reader.GetString("location");
+                location.Id = GetSafeString(reader, "id");
+                location.isOutside = GetSafeBoolean(reader, "outdoor");
+                location.LocationDescription = GetSafeString(reader, "location");
                 locations.Add(location);
             }
             await reader.CloseAsync();

@@ -210,8 +210,9 @@
                                     </Label>
                                 </StackPanel>
                                 <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
-                                    <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 150 0" VerticalAlignment="Center"/>
-                                    <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalLighting"/>
+                                    <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 250 0" VerticalAlignment="Center"/>
+                                    <Button Width="100" VerticalAlignment="Center"  Margin="0 0 120 0" Content="Add Fixture" Click="AddNewElectricalLighting"/>
+                                    <Button Width="100" VerticalAlignment="Center"  Margin="0 0 -120 0" Content="Add Location" Click="AddNewElectricalLightingLocation_Click"/>
                                 </Grid>
                                 <Rectangle Width="9999" Height="1" Margin="0 38 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
@@ -293,6 +294,18 @@
                                 </DataGridComboBoxColumn>
                                 <DataGridCheckBoxColumn Header="EM-Capable" Binding="{Binding EmCapable}" />
                                 <DataGridCheckBoxColumn Header="Photocell" Binding="{Binding HasPhotoCell}" />
+                                <DataGridComboBoxColumn Header="Location" SelectedValueBinding="{Binding LocationId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                    <DataGridComboBoxColumn.ElementStyle>
+                                        <Style TargetType="{x:Type ComboBox}">
+                                            <Setter Property="ItemsSource" Value="{Binding Path=DataContext.LocationNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                        </Style>
+                                    </DataGridComboBoxColumn.ElementStyle>
+                                    <DataGridComboBoxColumn.EditingElementStyle>
+                                        <Style TargetType="{x:Type ComboBox}">
+                                            <Setter Property="ItemsSource" Value="{Binding Path=DataContext.LocationNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                        </Style>
+                                    </DataGridComboBoxColumn.EditingElementStyle>
+                                </DataGridComboBoxColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

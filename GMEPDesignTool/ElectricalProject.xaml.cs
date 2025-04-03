@@ -1,33 +1,15 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Amazon.S3.Model;
 using GongSolutions.Wpf.DragDrop;
-using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Crud;
-using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
-using Org.BouncyCastle.Utilities;
 
 namespace GMEPDesignTool
 {
@@ -37,7 +19,7 @@ namespace GMEPDesignTool
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
         public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
-        public ElectricalLighting? SelectedElectricaLighting { get; set; }
+        public ElectricalLighting? SelectedElectricalLighting { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -49,6 +31,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanelNote> ElectricalPanelNotes { get; set; }
         public ObservableCollection<ElectricalPanelNoteRel> ElectricalPanelNoteRels { get; set; }
         public ObservableDictionary<string, string> ParentNames { get; set; }
+        public ObservableDictionary<string, string> LocationNames { get; set; }
         public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
         public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableDictionary<string, string> ServiceNames { get; set; }
@@ -101,6 +84,7 @@ namespace GMEPDesignTool
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            LocationNames = new ObservableDictionary<string, string>();
             ServiceNames = new ObservableDictionary<string, string>();
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
@@ -141,6 +125,7 @@ namespace GMEPDesignTool
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
+            LocationNames.Add("", "");
             ServiceNames.Add("", "");
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
@@ -895,6 +880,14 @@ namespace GMEPDesignTool
                 AddToParentNames(value);
                 AddToPanelTransformerNames(value);
             }
+            foreach (Location location in LightingLocations)
+            {
+                KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                    location.Id,
+                    location.LocationDescription
+                );
+                AddToLocationNames(value);
+            }
             CleanUpNames();
 
             void AddToPanelTransformerNames(KeyValuePair<string, string> value)
@@ -991,6 +984,30 @@ namespace GMEPDesignTool
                     if (!string.IsNullOrEmpty(value.Value))
                     {
                         PanelNames.Add(value.Key, value.Value);
+                    }
+                }
+            }
+            void AddToLocationNames(KeyValuePair<string, string> value)
+            {
+                if (LocationNames.ContainsKey(value.Key))
+                {
+                    if (LocationNames[value.Key] != value.Value)
+                    {
+                        if (!string.IsNullOrEmpty(value.Value))
+                        {
+                            LocationNames[value.Key] = value.Value;
+                        }
+                        else
+                        {
+                            LocationNames.Remove(value.Key);
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value.Value))
+                    {
+                        LocationNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -1703,6 +1720,13 @@ namespace GMEPDesignTool
             AddElectricalLighting(electricalLighting);
         }
 
+        public void AddNewElectricalLightingLocation_Click(object sender, RoutedEventArgs e)
+        {
+            ElectricalLightingLocationsWindow electricalLightingLocations =
+                new ElectricalLightingLocationsWindow(LightingLocations);
+            electricalLightingLocations.Show();
+        }
+
         public void RemoveElectricalLighting(ElectricalLighting electricalLighting)
         {
             if (electricalLighting.SpecSheetId.Length != 0)
@@ -1885,6 +1909,7 @@ namespace GMEPDesignTool
                 {
                     // Handle the new item added to the collection
                     newItem.PropertyChanged += LightingLocations_PropertyChanged;
+                    LocationNames[newItem.Id] = newItem.LocationDescription;
                 }
             }
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -1893,6 +1918,7 @@ namespace GMEPDesignTool
                 {
                     // Handle the new item added to the collection
                     removedItem.PropertyChanged -= LightingLocations_PropertyChanged;
+                    LocationNames.Remove(removedItem.Id);
                 }
             }
         }
@@ -1900,6 +1926,10 @@ namespace GMEPDesignTool
         private void LightingLocations_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //StartTimer();
+            if (sender is Location location)
+            {
+                LocationNames[location.Id] = location.LocationDescription;
+            }
         }
 
         //Transformer Functions
