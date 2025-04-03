@@ -17,5 +17,16 @@ namespace GMEPDesignTool
             this.DataContext = viewModel;
             InitializeComponent();
         }
+
+        private void RemoveSelectedElectricalLightingLocation_Click(
+            object sender,
+            RoutedEventArgs e
+        )
+        {
+            if (viewModel.SelectedLocation != null)
+            {
+                viewModel.LightingLocations.Remove(viewModel.SelectedLocation);
+            }
+        }
     }
 }

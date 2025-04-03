@@ -10,6 +10,11 @@
     
     <Grid>
         <DataGrid Name="ElectricalLightingLocationsDataGrid" CanUserAddRows="True" ItemsSource="{Binding LightingLocations,Mode=TwoWay}" SelectedItem="{Binding Path=SelectedLocation,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 20 0 0">
+            <DataGrid.ContextMenu>
+                <ContextMenu Name="ElectricalLightingLocationsDataGridContextMenu">
+                    <MenuItem Header="Remove" Click="RemoveSelectedElectricalLightingLocation_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Description" Binding="{Binding LocationDescription}" />
                 <DataGridCheckBoxColumn Header="Outdoor" Binding="{Binding IsOutside}" />
