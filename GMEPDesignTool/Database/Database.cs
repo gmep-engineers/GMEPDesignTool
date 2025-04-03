@@ -1229,6 +1229,16 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@isOutside", location.IsOutside);
 
             await command.ExecuteNonQueryAsync();
+
+            query =
+                "INSERT INTO electrical_lighting_timeclock_control_relays (id, project_id, name, outdoor) VALUES (@id, @projectId, @locationDescription, @isOutside)";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", location.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@locationDescription", location.LocationDescription);
+            command.Parameters.AddWithValue("@isOutside", location.IsOutside);
+
+            await command.ExecuteNonQueryAsync();
         }
 
         private async Task DeleteRemovedItems(string tableName, HashSet<string> ids)
@@ -1668,7 +1678,7 @@ namespace GMEPDesignTool.Database
                             : reader.GetBoolean("occupancy"),
                         reader.IsDBNull(reader.GetOrdinal("wattage"))
                             ? 0
-                            : reader.GetInt32("wattage"),
+                            : reader.GetFloat("wattage"),
                         reader.IsDBNull(reader.GetOrdinal("em_capable"))
                             ? false
                             : reader.GetBoolean("em_capable"),

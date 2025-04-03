@@ -111,11 +111,11 @@
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
-                                <DataGridComboBoxColumn Header="Phase" SelectedItemBinding="{Binding Is3ph,UpdateSourceTrigger=LostFocus}">
+                                <DataGridComboBoxColumn Header="Phase" SelectedValueBinding="{Binding Is3Ph,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
                                         <CompositeCollection>
-                                            <ComboBoxItem Content="1" />
-                                            <ComboBoxItem Content="3" />
+                                            <ComboBoxItem Content="1" Tag="False"/>
+                                            <ComboBoxItem Content="3" Tag="True"/>
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
@@ -220,6 +220,7 @@
                         <DataGrid Name="ElectricalLightingDataGrid" ItemsSource="{Binding Source={StaticResource LightingViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLighting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
                             
                                 <DataGridComboBoxColumn Header="Mounting Type" SelectedValueBinding="{Binding MountingType,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
@@ -230,13 +231,38 @@
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
-                                <DataGridTemplateColumn Header="Symbol">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="{Binding Path=SymbolId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"   CommandParameter="{Binding}"></Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                                <DataGridComboBoxColumn Header="Symbol" SelectedValueBinding="{Binding SymbolId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                    <DataGridComboBoxColumn.ItemsSource>
+                                        <CompositeCollection>
+                                            <ComboBoxItem Content="2&apos;x4&apos;" Tag="1"/>
+                                            <ComboBoxItem Content="1&apos;x4&apos;" Tag="2"/>
+                                            <ComboBoxItem Content="2&apos;x2&apos;" Tag="3"/>
+                                            <ComboBoxItem Content="1&apos;x2&apos;" Tag="4"/>
+                                            <ComboBoxItem Content="1&apos;x1&apos;" Tag="5"/>
+                                            <ComboBoxItem Content="4&quot; Round" Tag="6"/>
+                                            <ComboBoxItem Content="6&quot; Round" Tag="7"/>
+                                            <ComboBoxItem Content="8&quot; Round" Tag="8"/>
+                                            <ComboBoxItem Content="Decorative Round 6&quot;" Tag="9"/>
+                                            <ComboBoxItem Content="Decorative Round 8&quot;" Tag="10"/>
+                                            <ComboBoxItem Content="Decorative Round 10&quot;" Tag="11"/>
+                                            <ComboBoxItem Content="Decorative Round 12&quot;" Tag="12"/>
+                                            <ComboBoxItem Content="Wall Sconce Round 4&quot;" Tag="13"/>
+                                            <ComboBoxItem Content="Wall Sconce Round 6&quot;" Tag="14"/>
+                                            <ComboBoxItem Content="Wall Sconce Round 8&quot;" Tag="15"/>
+                                            <ComboBoxItem Content="Wall Sconce Rect. 6&quot;" Tag="16"/>
+                                            <ComboBoxItem Content="Wall Sconce Rect. 8&quot;" Tag="17"/>
+                                            <ComboBoxItem Content="Wall Sconce Rect. 10&quot;" Tag="18"/>
+                                            <ComboBoxItem Content="3&apos; Track" Tag="19"/>
+                                            <ComboBoxItem Content="4&apos; Track" Tag="20"/>
+                                            <ComboBoxItem Content="5&apos; Track" Tag="21"/>
+                                            <ComboBoxItem Content="6&apos; Track" Tag="22"/>
+                                            <ComboBoxItem Content="7&apos; Track" Tag="23"/>
+                                            <ComboBoxItem Content="8&apos; Track" Tag="24"/>
+                                            <ComboBoxItem Content="9&apos; Track" Tag="25"/>
+                                            <ComboBoxItem Content="10&apos; Track" Tag="26"/>
+                                        </CompositeCollection>
+                                    </DataGridComboBoxColumn.ItemsSource>
+                                </DataGridComboBoxColumn>
                                 <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer, UpdateSourceTrigger=LostFocus}"/>
                                 <DataGridTextColumn Header="Model No." Binding="{Binding ModelNo, UpdateSourceTrigger=LostFocus}"/>
                                 <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
@@ -247,13 +273,21 @@
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
-                                <DataGridTextColumn Header="Wattage" Binding="{Binding Wattage, UpdateSourceTrigger=LostFocus}"/>
+                                <DataGridTextColumn Header="Wattage">
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="Wattage" UpdateSourceTrigger="LostFocus" TargetNullValue="{}">
+                                            <Binding.Converter>
+                                                <local:RoundToNearestDecimalConverter />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
                                 <DataGridComboBoxColumn Header="Driver Type" SelectedValueBinding="{Binding DriverTypeId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
                                         <CompositeCollection>
                                             <ComboBoxItem Content="0-10V" Tag="1"/>
-                                            <ComboBoxItem Content="Line Voltage" Tag="2"/>
-                                            <ComboBoxItem Content="Switch" Tag="3"/>
+                                            <ComboBoxItem Content="TRIAC" Tag="2"/>
+                                            <ComboBoxItem Content="Line Volt" Tag="3"/>
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>

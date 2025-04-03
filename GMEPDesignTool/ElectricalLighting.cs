@@ -17,7 +17,7 @@ namespace GMEPDesignTool
         private string modelNo;
         private int qty;
         private bool occupancy;
-        public int wattage;
+        public double wattage;
         public bool emCapable;
         private int mountingType;
         private string tag;
@@ -43,7 +43,7 @@ namespace GMEPDesignTool
             string modelNo,
             int qty,
             bool occupancy,
-            int wattage,
+            double wattage,
             bool emCapable,
             int mountingType,
             string tag,
@@ -54,7 +54,7 @@ namespace GMEPDesignTool
             bool powered,
             string description,
             int driverTypeId,
-            bool specSheetFromClient, 
+            bool specSheetFromClient,
             string specSheetId,
             bool hasPhotoCell,
             string locationId
@@ -78,7 +78,7 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.description = description;
             this.driverTypeId = driverTypeId;
-            this.specSheetFromClient = specSheetFromClient; 
+            this.specSheetFromClient = specSheetFromClient;
             this.specSheetId = specSheetId;
             this.hasPhotoCell = hasPhotoCell;
             this.locationId = locationId;
@@ -175,7 +175,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Wattage
+        public double Wattage
         {
             get => wattage;
             set
@@ -331,7 +331,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string SpecSheetId 
+        public string SpecSheetId
         {
             get => specSheetId;
             set
@@ -343,7 +343,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public bool HasPhotoCell 
+        public bool HasPhotoCell
         {
             get => hasPhotoCell;
             set
