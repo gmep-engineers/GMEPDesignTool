@@ -329,6 +329,7 @@
                                             <ComboBoxItem Content="Recessed" Tag="1"/>
                                             <ComboBoxItem Content="Surface" Tag="2"/>
                                             <ComboBoxItem Content="Pendant" Tag="3"/>
+                                            <ComboBoxItem Content="Pole" Tag="4"/>
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
