@@ -12,31 +12,31 @@ namespace GMEPDesignTool
 {
     public abstract class ElectricalComponent : INotifyPropertyChanged
     {
-        public string id;
-        public string parentId;
-        public float phaseAVa;
-        public float phaseBVa;
-        public float phaseCVa;
-        public string projectId;
-        public string colorCode;
-        public int circuitNo;
-        public string circuits;
-        public int pole;
-        public string name;
-        public float amp;
-        public float lcl;
-        public float aLcl;
-        public float bLcl;
-        public float cLcl;
-        public float lml;
-        public float aLml;
-        public float bLml;
-        public float cLml;
-        public float rootKva;
-        public int loadCategory;
-        public string componentType;
-        public int orderNo;
-        public bool updateFlag;
+        public string id = Guid.NewGuid().ToString();
+        public string parentId = string.Empty;
+        public float phaseAVa = 0;
+        public float phaseBVa = 0;
+        public float phaseCVa = 0;
+        public string projectId = string.Empty;
+        public string colorCode = "#FFFFFFFF";
+        public int circuitNo = 0;
+        public string circuits = string.Empty;
+        public int pole = 1;
+        public string name = string.Empty;
+        public float amp = 0;
+        public float lcl = 0;
+        public float aLcl = 0;
+        public float bLcl = 0;
+        public float cLcl = 0;
+        public float lml = 0;
+        public float aLml = 0;
+        public float bLml = 0;
+        public float cLml = 0;
+        public float rootKva = 0;
+        public int loadCategory = 1;
+        public string componentType = string.Empty;
+        public int orderNo = 1;
+        public bool updateFlag = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

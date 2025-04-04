@@ -11,31 +11,31 @@ namespace GMEPDesignTool
 {
     public class ElectricalEquipment : ElectricalComponent
     {
-        private string owner;
-        private string equipNo;
-        private int qty;
-        private int voltage;
-        private float fla;
-        private bool is3Ph;
-        private string specSheetId;
-        private int aicRating;
-        private bool specSheetFromClient;
-        int distanceFromParent;
-        int category;
-        int connection;
-        private string description;
-        private int mcaId;
-        private string hp;
-        private float width;
-        private float depth;
-        public float height;
-        private bool powered;
-        private bool hasPlug;
-        private bool lockingConnector;
-        private int va;
-        private bool isHiddenOnPlan;
-        private int loadType;
-        private string circuits;
+        private string owner = string.Empty;
+        private string equipNo = string.Empty;
+        private int qty = 1;
+        private int voltage = 2;
+        private float fla = 0;
+        private bool is3Ph = false;
+        private string specSheetId = string.Empty;
+        private int aicRating = 0;
+        private bool specSheetFromClient = false;
+        int distanceFromParent = 0;
+        int category = 1;
+        int connection = 1;
+        private string description = string.Empty;
+        private int mcaId = 1;
+        private string hp = string.Empty;
+        private float width = 0;
+        private float depth = 0;
+        public float height = 0;
+        private bool powered = false;
+        private bool hasPlug = true;
+        private bool lockingConnector = false;
+        private int va = 0;
+        private bool isHiddenOnPlan = false;
+        private int loadType = 1;
+        private string circuits = string.Empty;
 
         public ElectricalEquipment(
             string id,
@@ -120,6 +120,8 @@ namespace GMEPDesignTool
             SetPhaseVa();
         }
 
+        public ElectricalEquipment() { }
+
         public string Description
         {
             get => description;
@@ -194,6 +196,7 @@ namespace GMEPDesignTool
                     voltage = value;
                     OnPropertyChanged(nameof(Voltage));
                     determineEquipmentPole();
+                    setVa();
                 }
             }
         }
@@ -208,6 +211,7 @@ namespace GMEPDesignTool
                     fla = value;
                     OnPropertyChanged(nameof(Fla));
                     OnPropertyChanged(nameof(Amp));
+                    setVa();
                 }
             }
         }
@@ -219,6 +223,7 @@ namespace GMEPDesignTool
                 if (fla != value)
                 {
                     fla = value;
+                    setVa();
                 }
             }
         }
@@ -233,6 +238,7 @@ namespace GMEPDesignTool
                     is3Ph = value;
                     OnPropertyChanged(nameof(Is3Ph));
                     determineEquipmentPole();
+                    setVa();
                 }
             }
         }
@@ -617,6 +623,58 @@ namespace GMEPDesignTool
             {
                 LoadCategory = 3;
             }
+        }
+
+        public void setVa()
+        {
+            double va = 0;
+
+            switch (Voltage)
+            {
+                case 1:
+                    va = Fla * 115;
+                    break;
+                case 2:
+                    va = Fla * 120;
+                    break;
+                case 3:
+                    if (Pole == 3)
+                        va = Fla * 208 / 1.732;
+                    else
+                        va = Fla * 208 / 2;
+                    break;
+                case 4:
+                    if (Pole == 3)
+                        va = Fla * 230 / 1.732;
+                    else
+                        va = Fla * 230 / 2;
+                    break;
+                case 5:
+                    if (Pole == 3)
+                        va = Fla * 240 / 1.732;
+                    else
+                        va = Fla * 240 / 2;
+                    break;
+                case 6:
+                    if (Pole == 3)
+                        va = Fla * 277 / 1.732;
+                    else
+                        va = Fla * 277 / 2;
+                    break;
+                case 7:
+                    if (Pole == 3)
+                        va = Fla * 460 / 1.732;
+                    else
+                        va = Fla * 460 / 2;
+                    break;
+                case 8:
+                    if (Pole == 3)
+                        va = Fla * 480 / 1.732;
+                    else
+                        va = Fla * 480 / 2;
+                    break;
+            }
+            Va = Convert.ToInt32(va);
         }
 
         public bool Verify()

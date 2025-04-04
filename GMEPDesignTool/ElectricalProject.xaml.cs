@@ -7,6 +7,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using GongSolutions.Wpf.DragDrop;
@@ -1675,6 +1676,18 @@ namespace GMEPDesignTool
             VoltageFilter.SelectedValue = "";
             PanelFilter.SelectedValue = "";
             EquipmentFilter.Text = "";
+        }
+
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            Trace.WriteLine("one");
+            Trace.WriteLine(sender.GetType());
+            Trace.WriteLine(e.Key.ToString());
+            if (sender is DataGrid dataGrid && e.Key == Key.Return)
+            {
+                Trace.WriteLine("three");
+                dataGrid.CurrentColumn = dataGrid.Columns[0];
+            }
         }
 
         private void ClrPcker_Background_SelectedColorChanged(

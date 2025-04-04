@@ -76,7 +76,7 @@
                                 <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                             </Grid>
                         </StackPanel>
-                        <DataGrid Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalEquipment,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                        <DataGrid CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalEquipment,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
                                     <Setter Property="Background" Value="{Binding ColorCode}" />
@@ -168,13 +168,6 @@
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
-                                <DataGridTemplateColumn Header="ExtraOptions">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button>Extra Options</Button>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Spec Sheet">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
