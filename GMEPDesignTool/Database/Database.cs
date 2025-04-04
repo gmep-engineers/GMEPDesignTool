@@ -464,7 +464,7 @@ namespace GMEPDesignTool.Database
                 "electrical_services",
                 "electrical_panel_notes",
                 "electrical_panel_note_panel_rel",
-                "custom_circuits",
+                "electrical_panel_custom_circuits",
             };
             string query;
             MySqlCommand command;
@@ -687,7 +687,11 @@ namespace GMEPDesignTool.Database
             ObservableCollection<Circuit> customCircuits
         )
         {
-            var existingPanelIds = await GetExistingIds("custom_circuits", "project_id", projectId);
+            var existingPanelIds = await GetExistingIds(
+                "electrical_panel_custom_circuits",
+                "project_id",
+                projectId
+            );
 
             var customCircuitsCopy = customCircuits.ToList(); // Create a copy of the collection
 
@@ -704,7 +708,7 @@ namespace GMEPDesignTool.Database
                 }
             }
 
-            await DeleteRemovedItems("custom_circuits", existingPanelIds);
+            await DeleteRemovedItems("electrical_panel_custom_circuits", existingPanelIds);
         }
 
         private async Task UpdateTransformers(
@@ -998,11 +1002,12 @@ namespace GMEPDesignTool.Database
         private async Task UpdateCustomCircuit(Circuit customCircuit)
         {
             string query =
-                "UPDATE custom_circuits SET number = @number, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va, custom_breaker_size = @customBreakerSize, custom_description = @customDescription WHERE id = @id";
+                "UPDATE electrical_panel_custom_circuits SET number = @number, equip_id = @equipId, breaker_size = @breakerSize, description = @description, load_category = @loadCategory, va = @va, custom_breaker_size = @customBreakerSize, custom_description = @customDescription WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
 
             command.Parameters.AddWithValue("@id", customCircuit.Id);
             command.Parameters.AddWithValue("@number", customCircuit.Number);
+            command.Parameters.AddWithValue("@equipId", customCircuit.EquipId);
             command.Parameters.AddWithValue("@breakerSize", customCircuit.BreakerSize);
             command.Parameters.AddWithValue("@loadCategory", customCircuit.LoadCategory);
             command.Parameters.AddWithValue("@description", customCircuit.Description);
@@ -1016,11 +1021,12 @@ namespace GMEPDesignTool.Database
         private async Task InsertCustomCircuit(string projectId, Circuit customCircuit)
         {
             string query =
-                "INSERT INTO custom_circuits (id, panel_id, project_id, number, breaker_size, description, load_category, va, custom_breaker_size, custom_description) VALUES (@id, @panelId, @projectId, @number, @breakerSize, @description, @loadCategory, @va, @customBreakerSize, @customDescription)";
+                "INSERT INTO electrical_panel_custom_circuits (id, panel_id, project_id, equip_id, number, breaker_size, description, load_category, va, custom_breaker_size, custom_description) VALUES (@id, @panelId, @projectId, @equipId, @number, @breakerSize, @description, @loadCategory, @va, @customBreakerSize, @customDescription)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", customCircuit.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@panelId", customCircuit.PanelId);
+            command.Parameters.AddWithValue("@equipId", customCircuit.EquipId);
             command.Parameters.AddWithValue("@number", customCircuit.Number);
             command.Parameters.AddWithValue("@breakerSize", customCircuit.BreakerSize);
             command.Parameters.AddWithValue("@loadCategory", customCircuit.LoadCategory);
@@ -1544,7 +1550,8 @@ namespace GMEPDesignTool.Database
         public async Task<ObservableCollection<Circuit>> GetProjectCustomCircuits(string projectId)
         {
             ObservableCollection<Circuit> customCircuits = new ObservableCollection<Circuit>();
-            string query = "SELECT * FROM custom_circuits WHERE project_id = @projectId";
+            string query =
+                "SELECT * FROM electrical_panel_custom_circuits WHERE project_id = @projectId";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1552,16 +1559,17 @@ namespace GMEPDesignTool.Database
             while (await reader.ReadAsync())
                 customCircuits.Add(
                     new Circuit(
-                        reader.GetString("id"),
-                        reader.GetString("panel_id"),
-                        reader.GetString("project_id"),
-                        reader.GetInt32("number"),
-                        reader.GetInt32("va"),
-                        reader.GetInt32("breaker_size"),
-                        reader.GetString("description"),
-                        reader.GetInt32("load_category"),
-                        reader.GetBoolean("custom_breaker_size"),
-                        reader.GetBoolean("custom_description")
+                        GetSafeString(reader, "id"),
+                        GetSafeString(reader, "panel_id"),
+                        GetSafeString(reader, "project_id"),
+                        GetSafeString(reader, "equip_id"),
+                        GetSafeInt(reader, "number"),
+                        GetSafeInt(reader, "va"),
+                        GetSafeInt(reader, "breaker_size"),
+                        GetSafeString(reader, "description"),
+                        GetSafeInt(reader, "load_category"),
+                        GetSafeBoolean(reader, "custom_breaker_size"),
+                        GetSafeBoolean(reader, "custom_description")
                     )
                 );
             await reader.CloseAsync();

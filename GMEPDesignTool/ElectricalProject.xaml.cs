@@ -1259,6 +1259,45 @@ namespace GMEPDesignTool
         {
             if (SelectedElectricalEquipment != null)
             {
+                foreach (ElectricalPanel panel in ElectricalPanels)
+                {
+                    List<int> circuitIndices = new List<int>();
+                    for (int i = 0; i < panel.rightCircuits.Count; i++)
+                    {
+                        if (panel.rightCircuits[i].equipId == SelectedElectricalEquipment.Id)
+                        {
+                            circuitIndices.Add(i);
+                        }
+                    }
+                    if (circuitIndices.Count > 0)
+                    {
+                        int offset = 0;
+                        foreach (int index in circuitIndices)
+                        {
+                            panel.rightCircuits.RemoveAt(index - offset);
+                            offset++;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < panel.leftCircuits.Count; i++)
+                        {
+                            if (panel.leftCircuits[i].equipId == SelectedElectricalEquipment.Id)
+                            {
+                                circuitIndices.Add(i);
+                            }
+                        }
+                        if (circuitIndices.Count > 0)
+                        {
+                            int offset = 0;
+                            foreach (int index in circuitIndices)
+                            {
+                                panel.rightCircuits.RemoveAt(index - offset);
+                                offset++;
+                            }
+                        }
+                    }
+                }
                 ElectricalEquipments.Remove(SelectedElectricalEquipment);
             }
         }

@@ -131,20 +131,12 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
-                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
         public override string Name
         {
-            get => description;
-            set
-            {
-                if (description != value)
-                {
-                    description = value;
-                }
-            }
+            get => equipNo + " - " + description;
         }
 
         public string Owner
