@@ -10,28 +10,28 @@ namespace GMEPDesignTool
 {
     public class ElectricalLighting : INotifyPropertyChanged
     {
-        private string id;
-        private string projectId;
-        private string parentId;
-        private string manufacturer;
-        private string modelNo;
-        private int qty;
-        private bool occupancy;
-        public double wattage;
-        public bool emCapable;
-        private int mountingType;
-        private string tag;
-        public string notes;
-        public int voltageId;
-        public int symbolId;
-        public string colorCode;
-        private bool powered;
-        private string description;
-        private int driverTypeId;
-        private bool specSheetFromClient;
-        private string specSheetId;
-        private bool hasPhotoCell;
-        private string locationId;
+        private string id = Guid.NewGuid().ToString();
+        private string projectId = string.Empty;
+        private string parentId = string.Empty;
+        private string manufacturer = string.Empty;
+        private string modelNo = string.Empty;
+        private int qty = 1;
+        private bool occupancy = false;
+        public double wattage = 0;
+        public bool emCapable = false;
+        private int mountingType = 1;
+        private string tag = string.Empty;
+        public string notes = string.Empty;
+        public int voltageId = 2;
+        public int symbolId = 1;
+        public string colorCode = "#FFFFFFFF";
+        private bool powered = false;
+        private string description = string.Empty;
+        private int driverTypeId = 1;
+        private bool specSheetFromClient = false;
+        private string specSheetId = string.Empty;
+        private bool hasPhotoCell = false;
+        private string locationId = string.Empty;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -83,6 +83,8 @@ namespace GMEPDesignTool
             this.hasPhotoCell = hasPhotoCell;
             this.locationId = locationId;
         }
+
+        public ElectricalLighting() { }
 
         public string Id
         {

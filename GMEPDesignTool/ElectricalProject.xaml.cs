@@ -1680,12 +1680,8 @@ namespace GMEPDesignTool
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            Trace.WriteLine("one");
-            Trace.WriteLine(sender.GetType());
-            Trace.WriteLine(e.Key.ToString());
             if (sender is DataGrid dataGrid && e.Key == Key.Return)
             {
-                Trace.WriteLine("three");
                 dataGrid.CurrentColumn = dataGrid.Columns[0];
             }
         }

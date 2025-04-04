@@ -311,11 +311,23 @@
                             </Grid>
                         </StackPanel>
 
-                        <DataGrid Name="ElectricalLightingDataGrid" ItemsSource="{Binding Source={StaticResource LightingViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLighting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                        <DataGrid Name="ElectricalLightingDataGrid" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" ItemsSource="{Binding Source={StaticResource LightingViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLighting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="{Binding ColorCode}" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="Goldenrod"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
+                                
                                 <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}"/>
                                 <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
-                            
+                                <DataGridTextColumn Header="Qty" Binding="{Binding Qty, UpdateSourceTrigger=LostFocus}"/>
                                 <DataGridComboBoxColumn Header="Mounting Type" SelectedValueBinding="{Binding MountingType,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
                                         <CompositeCollection>
