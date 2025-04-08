@@ -893,9 +893,6 @@ namespace GMEPDesignTool
                         }
 
                         leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
-                        Trace.WriteLine("adding " + component.Name);
-                        Trace.WriteLine(circuitIndex + 1);
-                        Trace.WriteLine(component.Id);
                         leftCircuits[circuitIndex + i].EquipId = component.Id;
 
                         switch (phaseIndex % Pole)

@@ -551,6 +551,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalEquipment> equipments,
             ObservableCollection<ElectricalTransformer> transformers,
             ObservableCollection<ElectricalLighting> lightings,
+            ObservableCollection<ElectricalLightingControl> lightingControls,
             ObservableCollection<Location> locations,
             ObservableCollection<ElectricalPanelNote> electricalPanelNotes,
             ObservableCollection<ElectricalPanelNoteRel> electricalPanelNoteRels,
@@ -558,17 +559,16 @@ namespace GMEPDesignTool.Database
         )
         {
             await OpenConnectionAsync();
-
             await UpdateServices(projectId, services);
             await UpdatePanels(projectId, panels);
             await UpdateEquipments(projectId, equipments);
             await UpdateTransformers(projectId, transformers);
             await UpdateLightings(projectId, lightings);
+            await UpdateLightingControls(projectId, lightingControls);
             await UpdateLightingLocations(projectId, locations);
             await UpdateElectricalPanelNotes(projectId, electricalPanelNotes);
             await UpdateElectricalPanelNoteRels(projectId, electricalPanelNoteRels);
             await UpdateCustomCircuits(projectId, customCircuits);
-
             await CloseConnectionAsync();
         }
 
@@ -790,6 +790,33 @@ namespace GMEPDesignTool.Database
             }
 
             await DeleteRemovedItems("electrical_lighting", existingLightingIds);
+        }
+
+        private async Task UpdateLightingControls(
+            string projectId,
+            ObservableCollection<ElectricalLightingControl> controls
+        )
+        {
+            var existingLightingControlIds = await GetExistingIds(
+                "electrical_lighting_controls",
+                "project_id",
+                projectId
+            );
+
+            foreach (var control in controls)
+            {
+                if (existingLightingControlIds.Contains(control.Id))
+                {
+                    await UpdateLightingControl(control);
+                    existingLightingControlIds.Remove(control.Id);
+                }
+                else
+                {
+                    await InsertLightingControl(projectId, control);
+                }
+            }
+
+            await DeleteRemovedItems("electrical_lighting_controls", existingLightingControlIds);
         }
 
         private async Task UpdateLightingLocations(
@@ -1143,6 +1170,20 @@ namespace GMEPDesignTool.Database
             await command.ExecuteNonQueryAsync();
         }
 
+        private async Task UpdateLightingControl(ElectricalLightingControl control)
+        {
+            string query =
+                @"
+                UPDATE electrical_lighting_controls SET driver_type_id = @driverTypeId, occupancy = @occupancy, name = @name WHERE id = @id
+                ";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@driverTypeId", control.DriverTypeId);
+            command.Parameters.AddWithValue("@occupancy", control.Occupancy);
+            command.Parameters.AddWithValue("@id", control.Id);
+            command.Parameters.AddWithValue("@name", control.Tag);
+            await command.ExecuteNonQueryAsync();
+        }
+
         private async Task InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
@@ -1169,6 +1210,24 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@qty", lighting.Qty);
             command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
             command.Parameters.AddWithValue("@locationId", lighting.LocationId);
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task InsertLightingControl(
+            string projectId,
+            ElectricalLightingControl control
+        )
+        {
+            string query =
+                @"
+                INSERT INTO electrical_lighting_controls (id, project_id, driver_type_id, occupancy, name) VALUES (@id, @projectId, @driverTypeId, @occupancy, @name)
+                ";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", control.Id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@driverTypeId", control.DriverTypeId);
+            command.Parameters.AddWithValue("@occupancy", control.Occupancy);
+            command.Parameters.AddWithValue("@name", control.Tag);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1343,7 +1402,7 @@ namespace GMEPDesignTool.Database
                             : reader.GetInt32("circuit_no"),
                         reader.GetBoolean("is_hidden_on_plan"),
                         reader.GetString("location"),
-                        reader.GetChar("high_leg_phase")
+                        reader.GetChar("high_leg_phase") // HERE only set high leg phase if 120/240 3ph
                     )
                 );
             }
@@ -1628,39 +1687,6 @@ namespace GMEPDesignTool.Database
             await reader.CloseAsync();
             await CloseConnectionAsync();
             return equipments;
-
-            float idToVoltage(int voltageId)
-            {
-                int voltage = 0;
-                switch (voltageId)
-                {
-                    case (1):
-                        voltage = 115;
-                        break;
-                    case (2):
-                        voltage = 120;
-                        break;
-                    case (3):
-                        voltage = 208;
-                        break;
-                    case (4):
-                        voltage = 230;
-                        break;
-                    case (5):
-                        voltage = 240;
-                        break;
-                    case (6):
-                        voltage = 277;
-                        break;
-                    case (7):
-                        voltage = 460;
-                        break;
-                    case (8):
-                        voltage = 480;
-                        break;
-                }
-                return voltage;
-            }
         }
 
         public async Task<ObservableCollection<ElectricalLighting>> GetProjectLighting(
@@ -1726,6 +1752,34 @@ namespace GMEPDesignTool.Database
             await reader.CloseAsync();
             await CloseConnectionAsync();
             return lightings;
+        }
+
+        public async Task<
+            ObservableCollection<ElectricalLightingControl>
+        > GetProjectLightingControls(string projectId)
+        {
+            ObservableCollection<ElectricalLightingControl> controls =
+                new ObservableCollection<ElectricalLightingControl>();
+            string query =
+                "SELECT * FROM electrical_lighting_controls WHERE project_id = @projectId";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                controls.Add(
+                    new ElectricalLightingControl(
+                        GetSafeString(reader, "id"),
+                        GetSafeInt(reader, "driver_type_id"),
+                        GetSafeBoolean(reader, "occupancy"),
+                        GetSafeString(reader, "name")
+                    )
+                );
+            }
+            await reader.CloseAsync();
+            await CloseConnectionAsync(); // HERE test
+            return controls;
         }
 
         public async Task<ObservableCollection<ElectricalTransformer>> GetProjectTransformers(
@@ -1802,6 +1856,7 @@ namespace GMEPDesignTool.Database
             var panels = await GetProjectPanels(projectId);
             var equipments = await GetProjectEquipment(projectId);
             var lightings = await GetProjectLighting(projectId);
+            var lightingControls = await GetProjectLightingControls(projectId);
             var transformers = await GetProjectTransformers(projectId);
             var locations = await GetLightingLocations(projectId);
             var electricalPanelNotes = await GetProjectElectricalPanelNotes(projectId);
@@ -1911,6 +1966,7 @@ namespace GMEPDesignTool.Database
                 equipments,
                 transformers,
                 lightings,
+                lightingControls,
                 locations,
                 electricalPanelNotes,
                 electricalPanelNoteRels,

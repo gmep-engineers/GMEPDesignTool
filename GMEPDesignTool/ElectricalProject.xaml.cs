@@ -21,6 +21,7 @@ namespace GMEPDesignTool
     {
         public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
         public ElectricalLighting? SelectedElectricalLighting { get; set; }
+        public ElectricalLightingControl? SelectedElectricalLightingControl { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -28,6 +29,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
+        public ObservableCollection<ElectricalLightingControl> ElectricalLightingControls { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<ElectricalPanelNote> ElectricalPanelNotes { get; set; }
         public ObservableCollection<ElectricalPanelNoteRel> ElectricalPanelNoteRels { get; set; }
@@ -42,6 +44,7 @@ namespace GMEPDesignTool
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
+        public CollectionViewSource LightingControlsViewSource { get; set; }
 
         //public Database.Database database = new Database.Database();
 
@@ -78,6 +81,7 @@ namespace GMEPDesignTool
             ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             ElectricalLightings = new ObservableCollection<ElectricalLighting>();
+            ElectricalLightingControls = new ObservableCollection<ElectricalLightingControl>();
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             ElectricalPanelNotes = new ObservableCollection<ElectricalPanelNote>();
             ElectricalPanelNoteRels = new ObservableCollection<ElectricalPanelNoteRel>();
@@ -101,6 +105,12 @@ namespace GMEPDesignTool
                 (CollectionViewSource)FindResource("LightingViewSource")
                 ?? throw new InvalidOperationException("LightingViewSource resource not found.");
             LightingViewSource.Filter += LightingViewSource_Filter;
+            LightingControlsViewSource =
+                (CollectionViewSource)FindResource("LightingControlsViewSource")
+                ?? throw new InvalidOperationException(
+                    "LightingControlsViewSource resource not found."
+                );
+            LightingControlsViewSource.Filter += LightingControlsViewSource_Filter;
 
             // Initialize other properties and event handlers
             //InitializeAsync(projectId, projectView).ConfigureAwait(false);
@@ -113,6 +123,9 @@ namespace GMEPDesignTool
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+            ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
+                ProjectId
+            );
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
@@ -176,6 +189,10 @@ namespace GMEPDesignTool
             {
                 lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             }
+            foreach (var control in ElectricalLightingControls)
+            {
+                control.PropertyChanged += ElectricalLightingControl_PropertyChanged;
+            }
             LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
             foreach (var location in LightingLocations)
             {
@@ -184,10 +201,10 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(15);
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            //timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromSeconds(15);
+            //timer.Tick += Timer_Tick;
+            //timer.Start();
             ProjectView.SaveText = "";
             GetNames();
             setPower();
@@ -246,7 +263,7 @@ namespace GMEPDesignTool
             }
         }
 
-        private async void Timer_Tick(object sender, EventArgs e)
+        public async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
             await ProjectView.database.UpdateProject(
@@ -256,6 +273,7 @@ namespace GMEPDesignTool
                 ElectricalEquipments,
                 ElectricalTransformers,
                 ElectricalLightings,
+                ElectricalLightingControls,
                 LightingLocations,
                 ElectricalPanelNotes,
                 ElectricalPanelNoteRels,
@@ -1823,6 +1841,14 @@ namespace GMEPDesignTool
             }
         }
 
+        private void ElectricalLightingControl_PropertyChanged(
+            object? sender,
+            PropertyChangedEventArgs e
+        )
+        {
+            if (sender is ElectricalLightingControl control) { }
+        }
+
         private void LightingViewSource_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is ElectricalLighting lighting)
@@ -1898,6 +1924,8 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LightingControlsViewSource_Filter(object sender, FilterEventArgs e) { }
+
         private void LightingFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             LightingViewSource.View.Refresh();
@@ -1906,6 +1934,19 @@ namespace GMEPDesignTool
         private void LightingFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LightingViewSource.View.Refresh();
+        }
+
+        private void LightingControlsFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LightingControlsViewSource.View.Refresh();
+        }
+
+        private void LightingControlsFilter_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e
+        )
+        {
+            LightingControlsViewSource.View.Refresh();
         }
 
         private void LightingResetFilters_Click(object sender, RoutedEventArgs e)

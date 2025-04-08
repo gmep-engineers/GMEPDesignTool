@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -120,7 +121,10 @@ namespace GMEPDesignTool
             SetPhaseVa();
         }
 
-        public ElectricalEquipment() { }
+        public ElectricalEquipment()
+        {
+            DetermineCircuits();
+        }
 
         public string Description
         {
@@ -434,6 +438,7 @@ namespace GMEPDesignTool
                 {
                     va = value;
                     SetPhaseVa();
+                    SetFla();
                     OnPropertyChanged(nameof(Va));
                 }
             }
@@ -493,8 +498,23 @@ namespace GMEPDesignTool
             }
         }
 
+        public override string ParentId
+        {
+            get => parentId;
+            set
+            {
+                if (parentId != value)
+                {
+                    parentId = value;
+                    OnPropertyChanged(nameof(ParentId));
+                    Circuits = "Assign";
+                }
+            }
+        }
+
         public void SetPhaseVa()
         {
+            determineEquipmentPole();
             double vaTemp = Va;
             switch (Pole)
             {
@@ -617,6 +637,59 @@ namespace GMEPDesignTool
             }
         }
 
+        public void SetFla()
+        {
+            double fla = 0;
+            double va = Convert.ToDouble(Va);
+            switch (Voltage)
+            {
+                case 1:
+                    fla = va / 115;
+                    break;
+                case 2:
+                    fla = va / 120;
+                    break;
+                case 3:
+                    if (Pole == 3)
+                        fla = va / 208 / 1.732;
+                    else
+                        fla = va / 208;
+                    break;
+                case 4:
+                    if (Pole == 3)
+                        fla = va / 230 / 1.732;
+                    else
+                        fla = va / 230;
+                    break;
+                case 5:
+                    if (Pole == 3)
+                        fla = va / 240 / 1.732;
+                    else
+                        fla = va / 240;
+                    Trace.WriteLine(va);
+                    break;
+                case 6:
+                    if (Pole == 3)
+                        fla = va / 277 / 1.732;
+                    else
+                        fla = va / 277;
+                    break;
+                case 7:
+                    if (Pole == 3)
+                        fla = va * 460 / 1.732;
+                    else
+                        fla = va * 460;
+                    break;
+                case 8:
+                    if (Pole == 3)
+                        fla = va / 480 / 1.732;
+                    else
+                        fla = va / 480;
+                    break;
+            }
+            this.va = Convert.ToInt32(va);
+        }
+
         public void setVa()
         {
             double va = 0;
@@ -633,40 +706,40 @@ namespace GMEPDesignTool
                     if (Pole == 3)
                         va = Fla * 208 / 1.732;
                     else
-                        va = Fla * 208 / 2;
+                        va = Fla * 208;
                     break;
                 case 4:
                     if (Pole == 3)
                         va = Fla * 230 / 1.732;
                     else
-                        va = Fla * 230 / 2;
+                        va = Fla * 230;
                     break;
                 case 5:
                     if (Pole == 3)
                         va = Fla * 240 / 1.732;
                     else
-                        va = Fla * 240 / 2;
+                        va = Fla * 240;
                     break;
                 case 6:
                     if (Pole == 3)
                         va = Fla * 277 / 1.732;
                     else
-                        va = Fla * 277 / 2;
+                        va = Fla * 277;
                     break;
                 case 7:
                     if (Pole == 3)
                         va = Fla * 460 / 1.732;
                     else
-                        va = Fla * 460 / 2;
+                        va = Fla * 460;
                     break;
                 case 8:
                     if (Pole == 3)
                         va = Fla * 480 / 1.732;
                     else
-                        va = Fla * 480 / 2;
+                        va = Fla * 480;
                     break;
             }
-            Va = Convert.ToInt32(va);
+            this.va = Convert.ToInt32(va);
         }
 
         public bool Verify()
