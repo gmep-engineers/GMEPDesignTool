@@ -2318,6 +2318,7 @@ namespace GMEPDesignTool
 
         private async void SingleLine_Click(object sender, RoutedEventArgs e)
         {
+            Timer_Tick(sender, e);
             Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string relativePath = System.IO.Path.Combine(

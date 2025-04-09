@@ -37,6 +37,7 @@ namespace GMEPDesignTool
         private bool isHiddenOnPlan = false;
         private int loadType = 1;
         private string circuits = string.Empty;
+        private DateTime dateCreated = DateTime.Now;
 
         public ElectricalEquipment(
             string id,
@@ -510,6 +511,11 @@ namespace GMEPDesignTool
                     Circuits = "Assign";
                 }
             }
+        }
+
+        public DateTime DateCreated
+        {
+            get => dateCreated;
         }
 
         public void SetPhaseVa()

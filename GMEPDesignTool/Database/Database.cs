@@ -74,6 +74,16 @@ namespace GMEPDesignTool.Database
             return string.Empty;
         }
 
+        char GetSafeChar(MySqlDataReader reader, string fieldName)
+        {
+            int index = reader.GetOrdinal(fieldName);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetChar(index);
+            }
+            return char.MinValue;
+        }
+
         DateTime? GetUnsafeDate(MySqlDataReader reader, string fieldName)
         {
             int index = reader.GetOrdinal(fieldName);
@@ -1105,7 +1115,7 @@ namespace GMEPDesignTool.Database
         private async Task InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1138,6 +1148,10 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@loadType", equipment.LoadType);
             command.Parameters.AddWithValue("@order_no", equipment.OrderNo);
             command.Parameters.AddWithValue("@va", equipment.Va);
+            command.Parameters.AddWithValue(
+                "@dateCreated",
+                equipment.DateCreated.ToString("yyyy-MM-dd HH:mm:ss.fff")
+            );
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1368,41 +1382,29 @@ namespace GMEPDesignTool.Database
             {
                 panels.Add(
                     new ElectricalPanel(
-                        reader.GetString("id"),
-                        reader.GetString("project_id"),
-                        reader.IsDBNull(reader.GetOrdinal("bus_amp_rating_id"))
-                            ? 0
-                            : reader.GetInt32("bus_amp_rating_id"),
-                        reader.IsDBNull(reader.GetOrdinal("main_amp_rating_id"))
-                            ? 0
-                            : reader.GetInt32("main_amp_rating_id"),
-                        reader.GetBoolean("is_mlo"),
-                        reader.GetBoolean("is_distribution"),
-                        reader.GetString("name"),
-                        reader.GetString("color_code"),
-                        reader.GetString("parent_id"),
-                        reader.IsDBNull(reader.GetOrdinal("num_breakers"))
-                            ? 0
-                            : reader.GetInt32("num_breakers"),
-                        reader.IsDBNull(reader.GetOrdinal("parent_distance"))
-                            ? 0
-                            : reader.GetInt32("parent_distance"),
-                        reader.IsDBNull(reader.GetOrdinal("aic_rating"))
-                            ? 0
-                            : reader.GetInt32("aic_rating"),
-                        reader.GetFloat("load_amperage"),
-                        reader.GetFloat("kva"),
-                        reader.IsDBNull(reader.GetOrdinal("voltage_id"))
-                            ? 0
-                            : reader.GetInt32("voltage_id"),
+                        GetSafeString(reader, "id"),
+                        GetSafeString(reader, "project_id"),
+                        GetSafeInt(reader, "bus_amp_rating_id"),
+                        GetSafeInt(reader, "main_amp_rating_id"),
+                        GetSafeBoolean(reader, "is_mlo"),
+                        GetSafeBoolean(reader, "is_distribution"),
+                        GetSafeString(reader, "name"),
+                        GetSafeString(reader, "color_code"),
+                        GetSafeString(reader, "parent_id"),
+                        GetSafeInt(reader, "num_breakers"),
+                        GetSafeInt(reader, "parent_distance"),
+                        GetSafeInt(reader, "aic_rating"),
+                        GetSafeFloat(reader, "load_amperage"),
+                        GetSafeFloat(reader, "kva"),
+                        GetSafeInt(reader, "voltage_id"),
                         false,
-                        reader.GetBoolean("is_recessed"),
-                        reader.IsDBNull(reader.GetOrdinal("circuit_no"))
-                            ? 0
-                            : reader.GetInt32("circuit_no"),
-                        reader.GetBoolean("is_hidden_on_plan"),
-                        reader.GetString("location"),
-                        reader.GetChar("high_leg_phase") // HERE only set high leg phase if 120/240 3ph
+                        GetSafeBoolean(reader, "is_recessed"),
+                        GetSafeInt(reader, "circuit_no"),
+                        GetSafeBoolean(reader, "is_hidden_on_plan"),
+                        GetSafeString(reader, "location"),
+                        GetSafeInt(reader, "voltage_id") == 4
+                            ? GetSafeChar(reader, "high_leg_phase")
+                            : char.MinValue
                     )
                 );
             }
@@ -1643,7 +1645,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalEquipment> equipments =
                 new ObservableCollection<ElectricalEquipment>();
             string query =
-                "SELECT * FROM electrical_equipment WHERE project_id = @projectId ORDER BY order_no";
+                "SELECT * FROM electrical_equipment WHERE project_id = @projectId ORDER BY order_no, date_created";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1778,7 +1780,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync(); // HERE test
+            await CloseConnectionAsync();
             return controls;
         }
 
