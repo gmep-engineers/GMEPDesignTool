@@ -565,7 +565,8 @@ namespace GMEPDesignTool.Database
             ObservableCollection<Location> locations,
             ObservableCollection<ElectricalPanelNote> electricalPanelNotes,
             ObservableCollection<ElectricalPanelNoteRel> electricalPanelNoteRels,
-            ObservableCollection<Circuit> customCircuits
+            ObservableCollection<Circuit> customCircuits,
+            ObservableCollection<TimeClock> timeClocks,
         )
         {
             await OpenConnectionAsync();
@@ -579,6 +580,8 @@ namespace GMEPDesignTool.Database
             await UpdateElectricalPanelNotes(projectId, electricalPanelNotes);
             await UpdateElectricalPanelNoteRels(projectId, electricalPanelNoteRels);
             await UpdateCustomCircuits(projectId, customCircuits);
+            await UpdateTimeClocks(projectId, timeClocks);
+
             await CloseConnectionAsync();
         }
 
@@ -855,6 +858,23 @@ namespace GMEPDesignTool.Database
 
             await DeleteRemovedItems("electrical_lighting_locations", existingLocationIds);
         }
+        private async Task UpdateTimeClocks(string projectId, ObservableCollection<TimeClock> clocks)
+        {
+            var existingLocationIds = await GetExistingIds("electrical_lighting_timeclocks", "project_id", projectId);
+            foreach (var clock in clocks)
+            {
+                if (existingLocationIds.Contains(clock.Id))
+                {
+                    await UpdateClock(clock);
+                    existingLocationIds.Remove(clock.Id);
+                }
+                else
+                {
+                    await InsertClock(projectId, clock);
+                }
+            }
+            await DeleteRemovedItems("electrical_lighting_timeclocks", existingLocationIds);
+        }
 
         private async Task<HashSet<string>> GetExistingIds(
             string tableName,
@@ -1054,7 +1074,20 @@ namespace GMEPDesignTool.Database
 
             await command.ExecuteNonQueryAsync();
         }
+        private async Task UpdateClock(TimeClock clock)
+        {
+            string query =
+                "UPDATE electrical_lighting_timeclocks SET name = @name, bypass_switch_name = @bypassSwitchName, bypass_switch_location = @bypassSwitchLocation, voltage_id = @voltageId, adjacent_panel_id = @adjacentPanelId WHERE id = @id";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", clock.Id);
+            command.Parameters.AddWithValue("@name", clock.Name);
+            command.Parameters.AddWithValue("@bypassSwitchName", clock.BypassSwitchName);
+            command.Parameters.AddWithValue("@bypassSwitchLocation", clock.BypassSwitchLocation);
+            command.Parameters.AddWithValue("@voltageId", clock.VoltageId);
+            command.Parameters.AddWithValue("@adjacentPanelId", clock.AdjacentPanelId);
 
+            await command.ExecuteNonQueryAsync();
+        }
         private async Task InsertCustomCircuit(string projectId, Circuit customCircuit)
         {
             string query =
@@ -1284,7 +1317,21 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
             await command.ExecuteNonQueryAsync();
         }
+        private async Task InsertClock(string projectId, TimeClock clock)
+        {
+            string query =
+                "INSERT INTO electrical_lighting_timeclocks (id, project_id, name, bypass_switch_name, bypass_switch_location, voltage_id, adjacent_panel_id) VALUES (@id, @projectId, @name, @bypassSwitchName, @bypassSwitchLocation, @voltageId, @adjacentPanelId)";
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", clock.Id);
+            command.Parameters.AddWithValue("@name", clock.Name);
+            command.Parameters.AddWithValue("@bypassSwitchName", clock.BypassSwitchName);
+            command.Parameters.AddWithValue("@bypassSwitchLocation", clock.BypassSwitchLocation);
+            command.Parameters.AddWithValue("@voltageId", clock.VoltageId);
+            command.Parameters.AddWithValue("@adjacentPanelId", clock.AdjacentPanelId);
+            command.Parameters.AddWithValue("@projectId", projectId);
 
+            await command.ExecuteNonQueryAsync();
+        }
         private async Task UpdateLocation(Location location)
         {
             string query =
@@ -1864,6 +1911,7 @@ namespace GMEPDesignTool.Database
             var electricalPanelNotes = await GetProjectElectricalPanelNotes(projectId);
             var electricalPanelNoteRels = await GetProjectElectricalPanelNoteRels(projectId);
             var customCircuits = await GetProjectCustomCircuits(projectId);
+            var clocks = await GetLightingTimeClocks(projectId);
 
             Dictionary<string, string> parentIdSwitch = new Dictionary<string, string>();
             Dictionary<string, string> locationIdSwitch = new Dictionary<string, string>();
