@@ -305,9 +305,10 @@
                                         </Label>
                                     </StackPanel>
                                     <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
-                                        <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 250 0" VerticalAlignment="Center"/>
-                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 120 0" Content="Add Fixture" Click="AddNewElectricalLighting"/>
-                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 -120 0" Content="Add Location" Click="AddNewElectricalLightingLocation_Click"/>
+                                        <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 320 0" VerticalAlignment="Center"/>
+                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 190 0" Content="Add Fixture" Click="AddNewElectricalLighting"/>
+                                        <Button Width="80" VerticalAlignment="Center"  Margin="0 0 -30 0" Content="Locations" Click="AddNewElectricalLightingLocation_Click"/>
+                                        <Button Width="80" VerticalAlignment="Center"  Margin="0 0 -195 0" Content="Timeclocks" Click="OpenTimeClocks_Click"/>
                                     </Grid>
                                     <Rectangle Width="9999" Height="1" Margin="0 38 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 </Grid>

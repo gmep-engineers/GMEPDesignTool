@@ -123,6 +123,7 @@ namespace GMEPDesignTool
             ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
             ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
+            ElectricalEquipments.CollectionChanged += ElectricalEquipments_CollectionChanged;
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
@@ -266,6 +267,7 @@ namespace GMEPDesignTool
             }
         }
 
+   
         public async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
@@ -1182,7 +1184,20 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        private void ElectricalEquipments_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+           if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalEquipment equipment in e.OldItems)
+                {
+                    equipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
+                    equipment.ParentId = "";
+                }
+            }
+        }
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
@@ -1987,6 +2002,24 @@ namespace GMEPDesignTool
                         ProjectView.database
                     );
                     locations.Show();
+                }
+            });
+        }
+        public void OpenTimeClocks_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+
+                if (
+                    sender is Button button
+                )
+                {
+                    TimeClocks clocks = new TimeClocks(
+                        TimeClocks,
+                        ProjectView.database,
+                        PanelNames
+                    );
+                    clocks.Show();
                 }
             });
         }
