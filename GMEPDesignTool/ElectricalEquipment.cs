@@ -139,6 +139,7 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -169,6 +170,7 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -468,6 +470,7 @@ namespace GMEPDesignTool
                 {
                     pole = value;
                     SetPhaseVa();
+                    DetermineCircuits();
                     OnPropertyChanged(nameof(Pole));
                 }
             }
