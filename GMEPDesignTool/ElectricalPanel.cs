@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
 using System.Windows.Controls;
@@ -437,6 +438,7 @@ namespace GMEPDesignTool
                         Guid.NewGuid().ToString(),
                         id,
                         projectId,
+                        string.Empty,
                         leftCircuits.Count * 2 + 1,
                         0,
                         0,
@@ -454,6 +456,7 @@ namespace GMEPDesignTool
                         Guid.NewGuid().ToString(),
                         id,
                         projectId,
+                        string.Empty,
                         rightCircuits.Count * 2 + 2,
                         0,
                         0,
@@ -890,6 +893,7 @@ namespace GMEPDesignTool
                         }
 
                         leftCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
+                        leftCircuits[circuitIndex + i].EquipId = component.Id;
 
                         switch (phaseIndex % Pole)
                         {
@@ -1002,6 +1006,7 @@ namespace GMEPDesignTool
                             }
                         }
                         rightCircuits[circuitIndex + i].LoadCategory = component.LoadCategory;
+                        leftCircuits[circuitIndex + i].EquipId = component.Id;
                         switch (phaseIndex % Pole)
                         {
                             case 0:
@@ -1596,11 +1601,13 @@ namespace GMEPDesignTool
         public bool customBreakerSize;
         public bool customDescription;
         public string errorMessage;
+        public string equipId;
 
         public Circuit(
             string _id,
             string _panelId,
             string _projectId,
+            string _equipId,
             int _number,
             int _va,
             int _breakerSize,
@@ -1621,6 +1628,7 @@ namespace GMEPDesignTool
             customBreakerSize = _customBreakerSize;
             customDescription = _customDescription;
             errorMessage = "";
+            equipId = string.Empty;
         }
 
         public string Id
@@ -1647,6 +1655,16 @@ namespace GMEPDesignTool
             set
             {
                 projectId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string EquipId
+        {
+            get => equipId;
+            set
+            {
+                equipId = value;
                 OnPropertyChanged();
             }
         }

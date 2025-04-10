@@ -10,28 +10,28 @@ namespace GMEPDesignTool
 {
     public class ElectricalLighting : INotifyPropertyChanged
     {
-        private string id;
-        private string projectId;
-        private string parentId;
-        private string manufacturer;
-        private string modelNo;
-        private int qty;
-        private bool occupancy;
-        public int wattage;
-        public bool emCapable;
-        private int mountingType;
-        private string tag;
-        public string notes;
-        public int voltageId;
-        public int symbolId;
-        public string colorCode;
-        private bool powered;
-        private string description;
-        private int driverTypeId;
-        private bool specSheetFromClient;
-        private string specSheetId;
-        private bool hasPhotoCell;
-        private string locationId;
+        private string id = Guid.NewGuid().ToString();
+        private string projectId = string.Empty;
+        private string parentId = string.Empty;
+        private string manufacturer = string.Empty;
+        private string modelNo = string.Empty;
+        private int qty = 1;
+        private bool occupancy = false;
+        public double wattage = 0;
+        public bool emCapable = false;
+        private int mountingType = 1;
+        private string tag = string.Empty;
+        public string notes = string.Empty;
+        public int voltageId = 2;
+        public int symbolId = 1;
+        public string colorCode = "#FFFFFFFF";
+        private bool powered = false;
+        private string description = string.Empty;
+        private int driverTypeId = 1;
+        private bool specSheetFromClient = false;
+        private string specSheetId = string.Empty;
+        private bool hasPhotoCell = false;
+        private string locationId = string.Empty;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,7 +43,7 @@ namespace GMEPDesignTool
             string modelNo,
             int qty,
             bool occupancy,
-            int wattage,
+            double wattage,
             bool emCapable,
             int mountingType,
             string tag,
@@ -54,7 +54,7 @@ namespace GMEPDesignTool
             bool powered,
             string description,
             int driverTypeId,
-            bool specSheetFromClient, 
+            bool specSheetFromClient,
             string specSheetId,
             bool hasPhotoCell,
             string locationId
@@ -78,11 +78,13 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.description = description;
             this.driverTypeId = driverTypeId;
-            this.specSheetFromClient = specSheetFromClient; 
+            this.specSheetFromClient = specSheetFromClient;
             this.specSheetId = specSheetId;
             this.hasPhotoCell = hasPhotoCell;
             this.locationId = locationId;
         }
+
+        public ElectricalLighting() { }
 
         public string Id
         {
@@ -175,7 +177,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public int Wattage
+        public double Wattage
         {
             get => wattage;
             set
@@ -331,7 +333,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string SpecSheetId 
+        public string SpecSheetId
         {
             get => specSheetId;
             set
@@ -343,7 +345,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public bool HasPhotoCell 
+        public bool HasPhotoCell
         {
             get => hasPhotoCell;
             set

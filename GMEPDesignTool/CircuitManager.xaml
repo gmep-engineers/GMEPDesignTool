@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         xmlns:dd="urn:gong-wpf-dragdrop"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="CircuitManager" Height="450" Width="800">
+        Title="CircuitManager" Height="450" Width="800"
+        WindowState="Maximized"
+        >
     <Window.Resources>
         <local:PoleToVisibilityConverter x:Key="PoleToVisibilityConverter"/>
         <local:LclConverter x:Key="LclConverter"/>

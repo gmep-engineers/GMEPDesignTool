@@ -91,7 +91,11 @@ namespace GMEPDesignTool
                 ElectricalTab.Content = loadingScreen;
                 //Electrical Tab
                 string newprojectId = selectedPair.Value;
-                viewModel.ActiveElectricalProject = new ElectricalProject(newprojectId, viewModel, this);
+                viewModel.ActiveElectricalProject = new ElectricalProject(
+                    newprojectId,
+                    viewModel,
+                    this
+                );
                 await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
 
@@ -99,6 +103,7 @@ namespace GMEPDesignTool
                 AdminTab.Content = new Admin();
             }
         }
+
         public async void ReloadElectricalProject()
         {
             if (viewModel?.ActiveElectricalProject != null)
@@ -107,9 +112,29 @@ namespace GMEPDesignTool
                 ElectricalTab.Content = loadingScreen;
 
                 string projectId = viewModel.ActiveElectricalProject.ProjectId;
-                viewModel.ActiveElectricalProject = new ElectricalProject(projectId, viewModel, this);
+                viewModel.ActiveElectricalProject = new ElectricalProject(
+                    projectId,
+                    viewModel,
+                    this
+                );
                 await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
+            }
+        }
+
+        private void ProjectControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                Save(sender, e);
+            }
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            if (viewModel?.ActiveElectricalProject != null)
+            {
+                viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
             }
         }
 

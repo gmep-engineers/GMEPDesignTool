@@ -189,7 +189,7 @@ namespace GMEPDesignTool
             _lcl = panel.Lcl;
             _lml = panel.Lml;
             _va = panel.Va;
-            highLegPhase = panel.HighLegPhase;
+            highLegPhase = panel.Type == 4 ? panel.HighLegPhase : '_';
             parentName = panel.ParentName;
             parentType = panel.ParentType;
             _location = panel.Location;

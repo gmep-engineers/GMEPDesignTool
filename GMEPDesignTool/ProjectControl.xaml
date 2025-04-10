@@ -10,7 +10,7 @@
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
-    <Grid Background="White">
+    <Grid Background="White" KeyDown="ProjectControl_KeyDown">
         <TabControl>
             <TabItem Header="Structural" Visibility="Visible">
                 <Grid Background="LightBlue" />
@@ -33,6 +33,7 @@
        
         <Grid Background="White" Height="22" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="SAVE" Click="Save" Margin="0 0 10 2" Width="150"></Button>
                 <Rectangle Width="1"  Stroke="Black" Height="19" Margin="0 0 5 0"/>
                 <TextBlock x:Name="SaveText" Text="{Binding SaveText}" Height="22" HorizontalAlignment="Right" Margin="0 0 5 0"/>
                 <Image Width="20" gif:ImageBehavior.AnimatedSource="Loading.gif">

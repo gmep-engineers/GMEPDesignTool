@@ -1,23 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Net;
+﻿using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Amazon.S3.Model;
 
 namespace GMEPDesignTool
 {
@@ -59,10 +46,26 @@ namespace GMEPDesignTool
             return logoutResponse;
         }
 
+        public void SearchBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (sender is TextBox textBox && e.Key == Key.Return)
+            {
+                Regex r = new Regex(@"[0-9]{2}-[0-9]{3}");
+                if (r.IsMatch(textBox.Text))
+                {
+                    MainWindowViewModel.OpenProject(textBox.Text);
+                }
+            }
+        }
+
         public void MainWindowOpenProject(object sender, MouseButtonEventArgs e)
         {
             string projectNo = (string)ProjectList.SelectedItem;
-            MainWindowViewModel.OpenProject(projectNo);
+            Regex r = new Regex(@"[0-9]{2}-[0-9]{3}.*");
+            if (r.IsMatch(projectNo))
+            {
+                MainWindowViewModel.OpenProject(projectNo);
+            }
         }
 
         public void MainWindowCloseProject(object sender, RoutedEventArgs e)

@@ -47,7 +47,7 @@
 
             <Grid Grid.Column="0" Background="SlateGray" Margin="0,21,10,0" Grid.ColumnSpan="2">
 
-                <TextBox HorizontalAlignment="Stretch" Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+                <TextBox KeyUp="SearchBox_KeyUp" HorizontalAlignment="Stretch"  Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
                 <ListView x:Name="ProjectList" Margin="10,44,10,180" Grid.ColumnSpan="2" ItemsSource="{Binding SearchResultKeys}">
                     
                     <ListView.ItemContainerStyle>

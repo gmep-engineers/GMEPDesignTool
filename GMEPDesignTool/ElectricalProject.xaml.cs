@@ -1,33 +1,16 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Amazon.S3.Model;
 using GongSolutions.Wpf.DragDrop;
-using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Crud;
-using Org.BouncyCastle.Asn1.Cmp;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
-using Org.BouncyCastle.Utilities;
 
 namespace GMEPDesignTool
 {
@@ -36,6 +19,9 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
+        public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
+        public ElectricalLighting? SelectedElectricalLighting { get; set; }
+        public ElectricalLightingControl? SelectedElectricalLightingControl { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -43,10 +29,12 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
+        public ObservableCollection<ElectricalLightingControl> ElectricalLightingControls { get; set; }
         public ObservableCollection<ElectricalTransformer> ElectricalTransformers { get; set; }
         public ObservableCollection<ElectricalPanelNote> ElectricalPanelNotes { get; set; }
         public ObservableCollection<ElectricalPanelNoteRel> ElectricalPanelNoteRels { get; set; }
         public ObservableDictionary<string, string> ParentNames { get; set; }
+        public ObservableDictionary<string, string> LocationNames { get; set; }
         public ObservableDictionary<string, string> PanelTransformerNames { get; set; }
         public ObservableDictionary<string, string> PanelNames { get; set; }
         public ObservableDictionary<string, string> ServiceNames { get; set; }
@@ -56,6 +44,7 @@ namespace GMEPDesignTool
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
+        public CollectionViewSource LightingControlsViewSource { get; set; }
 
         //public Database.Database database = new Database.Database();
 
@@ -92,6 +81,7 @@ namespace GMEPDesignTool
             ElectricalServices = new ObservableCollection<ElectricalService>();
             ElectricalEquipments = new ObservableCollection<ElectricalEquipment>();
             ElectricalLightings = new ObservableCollection<ElectricalLighting>();
+            ElectricalLightingControls = new ObservableCollection<ElectricalLightingControl>();
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             ElectricalPanelNotes = new ObservableCollection<ElectricalPanelNote>();
             ElectricalPanelNoteRels = new ObservableCollection<ElectricalPanelNoteRel>();
@@ -99,6 +89,7 @@ namespace GMEPDesignTool
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
             PanelNames = new ObservableDictionary<string, string>();
+            LocationNames = new ObservableDictionary<string, string>();
             ServiceNames = new ObservableDictionary<string, string>();
             ImagePaths = new ObservableCollection<string>();
             LightingLocations = new ObservableCollection<Location>();
@@ -114,6 +105,12 @@ namespace GMEPDesignTool
                 (CollectionViewSource)FindResource("LightingViewSource")
                 ?? throw new InvalidOperationException("LightingViewSource resource not found.");
             LightingViewSource.Filter += LightingViewSource_Filter;
+            LightingControlsViewSource =
+                (CollectionViewSource)FindResource("LightingControlsViewSource")
+                ?? throw new InvalidOperationException(
+                    "LightingControlsViewSource resource not found."
+                );
+            LightingControlsViewSource.Filter += LightingControlsViewSource_Filter;
 
             // Initialize other properties and event handlers
             //InitializeAsync(projectId, projectView).ConfigureAwait(false);
@@ -126,6 +123,9 @@ namespace GMEPDesignTool
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+            ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
+                ProjectId
+            );
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
@@ -139,6 +139,7 @@ namespace GMEPDesignTool
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
             PanelNames.Add("", "");
+            LocationNames.Add("", "");
             ServiceNames.Add("", "");
 
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
@@ -188,6 +189,10 @@ namespace GMEPDesignTool
             {
                 lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
             }
+            foreach (var control in ElectricalLightingControls)
+            {
+                control.PropertyChanged += ElectricalLightingControl_PropertyChanged;
+            }
             LightingLocations.CollectionChanged += LightingLocations_CollectionChanged;
             foreach (var location in LightingLocations)
             {
@@ -196,10 +201,10 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(15);
-            timer.Tick += Timer_Tick;
-            timer.Start();
+            //timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromSeconds(15);
+            //timer.Tick += Timer_Tick;
+            //timer.Start();
             ProjectView.SaveText = "";
             GetNames();
             setPower();
@@ -258,7 +263,7 @@ namespace GMEPDesignTool
             }
         }
 
-        private async void Timer_Tick(object sender, EventArgs e)
+        public async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
             await ProjectView.database.UpdateProject(
@@ -268,6 +273,7 @@ namespace GMEPDesignTool
                 ElectricalEquipments,
                 ElectricalTransformers,
                 ElectricalLightings,
+                ElectricalLightingControls,
                 LightingLocations,
                 ElectricalPanelNotes,
                 ElectricalPanelNoteRels,
@@ -893,6 +899,14 @@ namespace GMEPDesignTool
                 AddToParentNames(value);
                 AddToPanelTransformerNames(value);
             }
+            foreach (Location location in LightingLocations)
+            {
+                KeyValuePair<string, string> value = new KeyValuePair<string, string>(
+                    location.Id,
+                    location.LocationDescription
+                );
+                AddToLocationNames(value);
+            }
             CleanUpNames();
 
             void AddToPanelTransformerNames(KeyValuePair<string, string> value)
@@ -989,6 +1003,30 @@ namespace GMEPDesignTool
                     if (!string.IsNullOrEmpty(value.Value))
                     {
                         PanelNames.Add(value.Key, value.Value);
+                    }
+                }
+            }
+            void AddToLocationNames(KeyValuePair<string, string> value)
+            {
+                if (LocationNames.ContainsKey(value.Key))
+                {
+                    if (LocationNames[value.Key] != value.Value)
+                    {
+                        if (!string.IsNullOrEmpty(value.Value))
+                        {
+                            LocationNames[value.Key] = value.Value;
+                        }
+                        else
+                        {
+                            LocationNames.Remove(value.Key);
+                        }
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value.Value))
+                    {
+                        LocationNames.Add(value.Key, value.Value);
                     }
                 }
             }
@@ -1235,6 +1273,53 @@ namespace GMEPDesignTool
             }
         }
 
+        private void RemoveSelectedElectricalEquipment_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedElectricalEquipment != null)
+            {
+                foreach (ElectricalPanel panel in ElectricalPanels)
+                {
+                    List<int> circuitIndices = new List<int>();
+                    for (int i = 0; i < panel.rightCircuits.Count; i++)
+                    {
+                        if (panel.rightCircuits[i].equipId == SelectedElectricalEquipment.Id)
+                        {
+                            circuitIndices.Add(i);
+                        }
+                    }
+                    if (circuitIndices.Count > 0)
+                    {
+                        int offset = 0;
+                        foreach (int index in circuitIndices)
+                        {
+                            panel.rightCircuits.RemoveAt(index - offset);
+                            offset++;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < panel.leftCircuits.Count; i++)
+                        {
+                            if (panel.leftCircuits[i].equipId == SelectedElectricalEquipment.Id)
+                            {
+                                circuitIndices.Add(i);
+                            }
+                        }
+                        if (circuitIndices.Count > 0)
+                        {
+                            int offset = 0;
+                            foreach (int index in circuitIndices)
+                            {
+                                panel.rightCircuits.RemoveAt(index - offset);
+                                offset++;
+                            }
+                        }
+                    }
+                }
+                ElectricalEquipments.Remove(SelectedElectricalEquipment);
+            }
+        }
+
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
             var man = CustomCircuits;
@@ -1254,6 +1339,31 @@ namespace GMEPDesignTool
                     CircuitManager manager = new CircuitManager(panel);
                     manager.Show();
                 });
+            }
+            else if (
+                sender is Button assignButton
+                && assignButton.CommandParameter is string panelId
+            )
+            {
+                foreach (ElectricalPanel assignedPanel in ElectricalPanels)
+                {
+                    if (assignedPanel.Id == panelId)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                if (window is CircuitManager circuitManager)
+                                {
+                                    circuitManager.Close();
+                                    break;
+                                }
+                            }
+                            CircuitManager manager = new CircuitManager(assignedPanel);
+                            manager.Show();
+                        });
+                    }
+                }
             }
         }
 
@@ -1625,6 +1735,14 @@ namespace GMEPDesignTool
             EquipmentFilter.Text = "";
         }
 
+        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is DataGrid dataGrid && e.Key == Key.Return)
+            {
+                dataGrid.CurrentColumn = dataGrid.Columns[0];
+            }
+        }
+
         private void ClrPcker_Background_SelectedColorChanged(
             object sender,
             RoutedPropertyChangedEventArgs<Color?> e
@@ -1666,6 +1784,13 @@ namespace GMEPDesignTool
                 ""
             );
             AddElectricalLighting(electricalLighting);
+        }
+
+        public void AddNewElectricalLightingLocation_Click(object sender, RoutedEventArgs e)
+        {
+            ElectricalLightingLocationsWindow electricalLightingLocations =
+                new ElectricalLightingLocationsWindow(LightingLocations);
+            electricalLightingLocations.Show();
         }
 
         public void RemoveElectricalLighting(ElectricalLighting electricalLighting)
@@ -1714,6 +1839,14 @@ namespace GMEPDesignTool
 
                 //StartTimer();
             }
+        }
+
+        private void ElectricalLightingControl_PropertyChanged(
+            object? sender,
+            PropertyChangedEventArgs e
+        )
+        {
+            if (sender is ElectricalLightingControl control) { }
         }
 
         private void LightingViewSource_Filter(object sender, FilterEventArgs e)
@@ -1791,6 +1924,8 @@ namespace GMEPDesignTool
             }
         }
 
+        private void LightingControlsViewSource_Filter(object sender, FilterEventArgs e) { }
+
         private void LightingFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             LightingViewSource.View.Refresh();
@@ -1799,6 +1934,19 @@ namespace GMEPDesignTool
         private void LightingFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LightingViewSource.View.Refresh();
+        }
+
+        private void LightingControlsFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LightingControlsViewSource.View.Refresh();
+        }
+
+        private void LightingControlsFilter_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e
+        )
+        {
+            LightingControlsViewSource.View.Refresh();
         }
 
         private void LightingResetFilters_Click(object sender, RoutedEventArgs e)
@@ -1850,6 +1998,7 @@ namespace GMEPDesignTool
                 {
                     // Handle the new item added to the collection
                     newItem.PropertyChanged += LightingLocations_PropertyChanged;
+                    LocationNames[newItem.Id] = newItem.LocationDescription;
                 }
             }
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -1858,6 +2007,7 @@ namespace GMEPDesignTool
                 {
                     // Handle the new item added to the collection
                     removedItem.PropertyChanged -= LightingLocations_PropertyChanged;
+                    LocationNames.Remove(removedItem.Id);
                 }
             }
         }
@@ -1865,6 +2015,10 @@ namespace GMEPDesignTool
         private void LightingLocations_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //StartTimer();
+            if (sender is Location location)
+            {
+                LocationNames[location.Id] = location.LocationDescription;
+            }
         }
 
         //Transformer Functions
@@ -2164,6 +2318,7 @@ namespace GMEPDesignTool
 
         private async void SingleLine_Click(object sender, RoutedEventArgs e)
         {
+            Timer_Tick(sender, e);
             Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string relativePath = System.IO.Path.Combine(
