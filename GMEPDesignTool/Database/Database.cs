@@ -566,7 +566,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<ElectricalPanelNote> electricalPanelNotes,
             ObservableCollection<ElectricalPanelNoteRel> electricalPanelNoteRels,
             ObservableCollection<Circuit> customCircuits,
-            ObservableCollection<TimeClock> timeClocks,
+            ObservableCollection<TimeClock> timeClocks
         )
         {
             await OpenConnectionAsync();
@@ -1898,7 +1898,30 @@ namespace GMEPDesignTool.Database
             await CloseConnectionAsync();
             return locations;
         }
-
+        public async Task<ObservableCollection<TimeClock>> GetLightingTimeClocks(string projectId)
+        {
+            ObservableCollection<TimeClock> clocks = new ObservableCollection<TimeClock>();
+            string query =
+                "SELECT * FROM electrical_lighting_timeclocks WHERE project_id = @projectId";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var clock = new TimeClock();
+                clock.Id = reader.GetString("id");
+                clock.Name= reader.GetString("name");
+                clock.BypassSwitchName = reader.GetString("bypass_switch_name");
+                clock.BypassSwitchLocation = reader.GetString("bypass_switch_location");
+                clock.VoltageId = reader.GetInt32("voltage_id");
+                clock.AdjacentPanelId = reader.GetString("adjacent_panel_id");
+                clocks.Add(clock);
+            }
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
+            return clocks;
+        }
         public async Task CloneElectricalProject(string projectId, string newProjectId)
         {
             var services = await GetProjectServices(projectId);
@@ -1930,6 +1953,12 @@ namespace GMEPDesignTool.Database
                 parentIdSwitch.Add(panel.Id, Id);
                 panel.Id = Id;
                 panel.ProjectId = newProjectId;
+            }
+            foreach (var clock in clocks)
+            {
+                string Id = Guid.NewGuid().ToString();
+                //locationIdSwitch.Add(location.Id, Id);
+                clock.Id = Id;
             }
             foreach (var transformer in transformers)
             {
@@ -2020,7 +2049,8 @@ namespace GMEPDesignTool.Database
                 locations,
                 electricalPanelNotes,
                 electricalPanelNoteRels,
-                customCircuits
+                customCircuits,
+                clocks
             );
         }
     }
