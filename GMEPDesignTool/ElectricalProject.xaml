@@ -225,7 +225,7 @@
                                 </DataGridTemplateColumn>
                                 <DataGridCheckBoxColumn Header="Spec From Client" Binding="{Binding SpecSheetFromClient}" />
                                 <DataGridTextColumn Header="HP" Binding="{Binding Hp, UpdateSourceTrigger=LostFocus}"/>
-                                <DataGridComboBoxColumn Header="MCA" SelectedValueBinding="{Binding McaId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                <DataGridComboBoxColumn Header="MOCP" SelectedValueBinding="{Binding McaId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
                                         <CompositeCollection>
                                             <ComboBoxItem Content="15" Tag="1" />
@@ -369,6 +369,8 @@
                                                 <ComboBoxItem Content="8&apos; Track" Tag="24"/>
                                                 <ComboBoxItem Content="9&apos; Track" Tag="25"/>
                                                 <ComboBoxItem Content="10&apos; Track" Tag="26"/>
+                                                <ComboBoxItem Content="11&apos; Track" Tag="27"/>
+                                                <ComboBoxItem Content="12&apos; Track" Tag="28"/>
                                             </CompositeCollection>
                                         </DataGridComboBoxColumn.ItemsSource>
                                     </DataGridComboBoxColumn>
@@ -402,6 +404,7 @@
                                     </DataGridComboBoxColumn>
                                     <DataGridCheckBoxColumn Header="EM-Capable" Binding="{Binding EmCapable}" />
                                     <DataGridCheckBoxColumn Header="Photocell" Binding="{Binding HasPhotoCell}" />
+                                    <DataGridCheckBoxColumn Header="Occupancy" Binding="{Binding Occupancy}" />
                                     <DataGridComboBoxColumn Header="Location" SelectedValueBinding="{Binding LocationId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                         <DataGridComboBoxColumn.ElementStyle>
                                             <Style TargetType="{x:Type ComboBox}">
@@ -436,6 +439,17 @@
                             </StackPanel>
                             
                             <DataGrid Name="ElectricalLightingControlsDataGrid" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" ItemsSource="{Binding Source={StaticResource LightingControlsViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLightingControl,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="{Binding ColorCode}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="Green"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}"/>
                                     <DataGridComboBoxColumn Header="Driver Type" SelectedValueBinding="{Binding DriverTypeId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
@@ -447,7 +461,7 @@
                                             </CompositeCollection>
                                         </DataGridComboBoxColumn.ItemsSource>
                                     </DataGridComboBoxColumn>
-                                    <DataGridCheckBoxColumn Header="Occupancy" Binding="{Binding HasOccupancy}" />
+                                    <DataGridCheckBoxColumn Header="Occupancy" Binding="{Binding Occupancy}" />
                                 </DataGrid.Columns>
                                 
                             </DataGrid>
