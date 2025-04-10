@@ -2423,7 +2423,23 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+    public class StringLengthToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string id = value as string;
+            if (string.IsNullOrEmpty(id) || id.Length == 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException(); // Conversion back is usually not needed for Visibility
+        }
+    }
     public class MinimumValueValidationRule : ValidationRule
     {
         public int Minimum { get; set; }
