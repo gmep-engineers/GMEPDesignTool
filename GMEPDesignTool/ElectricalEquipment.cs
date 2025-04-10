@@ -38,6 +38,7 @@ namespace GMEPDesignTool
         private int loadType = 1;
         private string circuits = string.Empty;
         private DateTime dateCreated = DateTime.Now;
+        private int statusId = 1;
 
         public ElectricalEquipment(
             string id,
@@ -69,7 +70,8 @@ namespace GMEPDesignTool
             int circuitNo,
             bool isHiddenOnPlan,
             int loadType,
-            int orderNo
+            int orderNo,
+            int statusId
         )
         {
             this.id = id;
@@ -83,6 +85,7 @@ namespace GMEPDesignTool
             this.va = va;
             this.amp = fla;
             this.is3Ph = is3Ph;
+            this.statusId = statusId;
             this.specSheetId = specSheetId;
             this.aicRating = aicRating;
             this.specSheetFromClient = specSheetFromClient;
@@ -179,6 +182,18 @@ namespace GMEPDesignTool
                 {
                     qty = value;
                     OnPropertyChanged(nameof(Qty));
+                }
+            }
+        }
+        public int StatusId
+        {
+            get => statusId;
+            set
+            {
+                if (statusId != value)
+                {
+                    statusId = value;
+                    OnPropertyChanged(nameof(StatusId));
                 }
             }
         }

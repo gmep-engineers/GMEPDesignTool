@@ -41,6 +41,7 @@ namespace GMEPDesignTool
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public ObservableCollection<Location> LightingLocations { get; set; }
+        public ObservableCollection<TimeClock> TimeClocks { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
@@ -85,6 +86,7 @@ namespace GMEPDesignTool
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             ElectricalPanelNotes = new ObservableCollection<ElectricalPanelNote>();
             ElectricalPanelNoteRels = new ObservableCollection<ElectricalPanelNoteRel>();
+            TimeClocks = new ObservableCollection<TimeClock>();
             CustomCircuits = new ObservableCollection<Circuit>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
@@ -121,12 +123,14 @@ namespace GMEPDesignTool
             ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
             ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
+            ElectricalEquipments.CollectionChanged += ElectricalEquipments_CollectionChanged;
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
             ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
                 ProjectId
             );
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            TimeClocks = await ProjectView.database.GetLightingTimeClocks(ProjectId);
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
             );
@@ -263,6 +267,7 @@ namespace GMEPDesignTool
             }
         }
 
+   
         public async void Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
@@ -277,7 +282,8 @@ namespace GMEPDesignTool
                 LightingLocations,
                 ElectricalPanelNotes,
                 ElectricalPanelNoteRels,
-                CustomCircuits
+                CustomCircuits,
+                TimeClocks
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
@@ -1178,7 +1184,20 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        private void ElectricalEquipments_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+           if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalEquipment equipment in e.OldItems)
+                {
+                    equipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
+                    equipment.ParentId = "";
+                }
+            }
+        }
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
@@ -1526,7 +1545,8 @@ namespace GMEPDesignTool
                 0,
                 false,
                 1,
-                ElectricalEquipments.Count + 1
+                ElectricalEquipments.Count + 1,
+                1
             );
             AddElectricalEquipment(electricalEquipment);
         }
@@ -1591,7 +1611,8 @@ namespace GMEPDesignTool
                     0,
                     electricalEquipment.IsHiddenOnPlan,
                     electricalEquipment.LoadType,
-                    0
+                    0,
+                    electricalEquipment.StatusId
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
@@ -1983,6 +2004,24 @@ namespace GMEPDesignTool
                         ProjectView.database
                     );
                     locations.Show();
+                }
+            });
+        }
+        public void OpenTimeClocks_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+
+                if (
+                    sender is Button button
+                )
+                {
+                    TimeClocks clocks = new TimeClocks(
+                        TimeClocks,
+                        ProjectView.database,
+                        PanelNames
+                    );
+                    clocks.Show();
                 }
             });
         }
@@ -2386,7 +2425,23 @@ namespace GMEPDesignTool
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+    public class StringLengthToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string id = value as string;
+            if (string.IsNullOrEmpty(id) || id.Length == 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException(); // Conversion back is usually not needed for Visibility
+        }
+    }
     public class MinimumValueValidationRule : ValidationRule
     {
         public int Minimum { get; set; }

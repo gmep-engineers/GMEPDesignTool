@@ -16,6 +16,7 @@
         <CollectionViewSource x:Key="LightingControlsViewSource" Source="{Binding ElectricalLightingControls}" />
         <local:RoundToNearestDecimalConverter x:Key="RoundToNearestDecimalConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
     </UserControl.Resources>
     <Grid Background="White">
         <Grid.RowDefinitions>
@@ -109,6 +110,15 @@
                                         </CompositeCollection>
                                     </DataGridComboBoxColumn.ItemsSource>
                                 </DataGridComboBoxColumn>
+                                <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                    <DataGridComboBoxColumn.ItemsSource>
+                                        <CompositeCollection>
+                                            <ComboBoxItem Content="Existing" Tag="0" />
+                                            <ComboBoxItem Content="New" Tag="1" />
+                                            <ComboBoxItem Content="Relocated" Tag="2" />
+                                        </CompositeCollection>
+                                    </DataGridComboBoxColumn.ItemsSource>
+                                </DataGridComboBoxColumn>
                                 <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                     <DataGridComboBoxColumn.ItemsSource>
                                         <CompositeCollection>
@@ -156,7 +166,18 @@
                                 <DataGridTemplateColumn Header="Circuits">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Content="{Binding Path=Circuits, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="CircuitManager_Click" CommandParameter="{Binding Path=ParentId}"></Button>
+                                            <Button Content="{Binding Path=Circuits, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="CircuitManager_Click" CommandParameter="{Binding Path=ParentId}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ParentId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -172,13 +193,13 @@
                                 <DataGridTemplateColumn Header="Spec Sheet">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Click="ViewSpec" CommandParameter="{Binding}">
+                                            <Button Content="View" Click="ViewSpec" CommandParameter="{Binding}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <DataTrigger Binding="{Binding SpecSheetId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -193,10 +214,14 @@
                                             <Button Click="UploadSpec" CommandParameter="{Binding}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="Content" Value="Upload"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
-                                                                <Setter Property="Content" Value="Upload Spec"/>
+                                                                <Setter Property="Content" Value="Upload New"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -208,13 +233,13 @@
                                 <DataGridTemplateColumn Header="Delete Spec">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Click="DeleteSpec" CommandParameter="{Binding}">
+                                            <Button Background="Crimson" Foreground="White" Content="Delete" Click="DeleteSpec" CommandParameter="{Binding}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding SpecSheetId.Length}" Value="0">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <DataTrigger Binding="{Binding SpecSheetId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -305,9 +330,10 @@
                                         </Label>
                                     </StackPanel>
                                     <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
-                                        <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 250 0" VerticalAlignment="Center"/>
-                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 120 0" Content="Add Fixture" Click="AddNewElectricalLighting"/>
-                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 -120 0" Content="Add Location" Click="AddNewElectricalLightingLocation_Click"/>
+                                        <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 320 0" VerticalAlignment="Center"/>
+                                        <Button Width="100" VerticalAlignment="Center"  Margin="0 0 190 0" Content="Add Fixture" Click="AddNewElectricalLighting"/>
+                                        <Button Width="80" VerticalAlignment="Center"  Margin="0 0 -30 0" Content="Locations" Click="AddNewElectricalLightingLocation_Click"/>
+                                        <Button Width="80" VerticalAlignment="Center"  Margin="0 0 -195 0" Content="Timeclocks" Click="OpenTimeClocks_Click"/>
                                     </Grid>
                                     <Rectangle Width="9999" Height="1" Margin="0 38 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                 </Grid>
