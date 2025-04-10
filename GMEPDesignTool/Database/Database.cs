@@ -1110,7 +1110,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va WHERE id = @id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va, status_id = @statusId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -1142,13 +1142,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@loadType", equipment.LoadType);
             command.Parameters.AddWithValue("@order_no", equipment.OrderNo);
             command.Parameters.AddWithValue("@va", equipment.Va);
+            command.Parameters.AddWithValue("@statusId", equipment.StatusId);
             await command.ExecuteNonQueryAsync();
         }
 
         private async Task InsertEquipment(string projectId, ElectricalEquipment equipment)
         {
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created, status_id) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mca, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated, @statusId)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1185,6 +1186,7 @@ namespace GMEPDesignTool.Database
                 "@dateCreated",
                 equipment.DateCreated.ToString("yyyy-MM-dd HH:mm:ss.fff")
             );
+            command.Parameters.AddWithValue("@statusId", equipment.StatusId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1729,7 +1731,8 @@ namespace GMEPDesignTool.Database
                         GetSafeInt(reader, "circuit_no"),
                         GetSafeBoolean(reader, "is_hidden_on_plan"),
                         GetSafeInt(reader, "load_type"),
-                        GetSafeInt(reader, "order_no")
+                        GetSafeInt(reader, "order_no"),
+                        GetSafeInt(reader, "status_id")
                     )
                 );
 
