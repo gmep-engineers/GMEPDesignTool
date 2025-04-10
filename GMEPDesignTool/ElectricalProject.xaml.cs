@@ -41,6 +41,7 @@ namespace GMEPDesignTool
         public ObservableCollection<string> ImagePaths { get; set; }
         public Dictionary<string, string> Owners { get; set; }
         public ObservableCollection<Location> LightingLocations { get; set; }
+        public ObservableCollection<TimeClock> TimeClocks { get; set; }
         public string ProjectId { get; set; }
         public CollectionViewSource EquipmentViewSource { get; set; }
         public CollectionViewSource LightingViewSource { get; set; }
@@ -85,6 +86,7 @@ namespace GMEPDesignTool
             ElectricalTransformers = new ObservableCollection<ElectricalTransformer>();
             ElectricalPanelNotes = new ObservableCollection<ElectricalPanelNote>();
             ElectricalPanelNoteRels = new ObservableCollection<ElectricalPanelNoteRel>();
+            TimeClocks = new ObservableCollection<TimeClock>();
             CustomCircuits = new ObservableCollection<Circuit>();
             ParentNames = new ObservableDictionary<string, string>();
             PanelTransformerNames = new ObservableDictionary<string, string>();
@@ -127,6 +129,7 @@ namespace GMEPDesignTool
                 ProjectId
             );
             LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
+            TimeClocks = await ProjectView.database.GetLightingTimeClocks(ProjectId);
             ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
                 ProjectId
             );
@@ -277,7 +280,8 @@ namespace GMEPDesignTool
                 LightingLocations,
                 ElectricalPanelNotes,
                 ElectricalPanelNoteRels,
-                CustomCircuits
+                CustomCircuits,
+                TimeClocks
             );
             //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
