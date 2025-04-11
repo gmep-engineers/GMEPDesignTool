@@ -35,7 +35,6 @@ namespace GMEPDesignTool
     public partial class ProjectControl : UserControl
     {
         //public string ProjectNo { get; set; }
-
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
@@ -68,6 +67,7 @@ namespace GMEPDesignTool
                 CopyPopup.IsOpen = false;
             }
         }
+
 
         private async void DeleteVersion_Click(object sender, RoutedEventArgs e)
         {

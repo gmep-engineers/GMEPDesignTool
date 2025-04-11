@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -34,6 +35,7 @@ namespace GMEPDesignTool
             );
             MainWindowViewModel = new ViewModel(loginResponse);
             DataContext = MainWindowViewModel;
+            this.Deactivated += OnWindowDeactivated;
             InitializeComponent();
         }
 
@@ -84,6 +86,20 @@ namespace GMEPDesignTool
             {
                 Trace.WriteLine(ex);
             }
+        }
+        private static void OnWindowDeactivated(object sender, EventArgs e)
+        {
+            Console.WriteLine("Window is not active: ");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.IsActive)
+                    {
+                        Console.WriteLine("Window is active: " + window.Title);
+                    }
+                }
+            });
         }
     }
 }
