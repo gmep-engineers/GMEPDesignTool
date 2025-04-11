@@ -1625,24 +1625,6 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
-                /*if (
-                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Fla)
-                )
-                {
-                    equipment.Va = (int)
-                        Math.Ceiling(idToVoltage(equipment.Voltage) * equipment.Fla);
-                }
-                if (
-                    e.PropertyName == nameof(ElectricalEquipment.Voltage)
-                    || e.PropertyName == nameof(ElectricalEquipment.Fla)
-                    || e.PropertyName == nameof(ElectricalEquipment.ParentId)
-                    || e.PropertyName == nameof(ElectricalEquipment.Qty)
-                )
-                {
-                    //setKVAs();
-                    //setAmps();
-                }*/
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Is3Ph)
@@ -1651,16 +1633,6 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
-                /*if (e.PropertyName == nameof(ElectricalEquipment.Va))
-                {
-                    equipment.Fla = (float)
-                        Math.Round(
-                            equipment.Va / idToVoltage(equipment.Voltage),
-                            1,
-                            MidpointRounding.AwayFromZero
-                        );
-                }*/
-
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {
                     foreach (var panel in ElectricalPanels)
