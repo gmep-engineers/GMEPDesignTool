@@ -137,6 +137,13 @@ namespace GMEPDesignTool
                 viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
             }
         }
+        private void Refresh(object sender, RoutedEventArgs e)
+        {
+            ReloadElectricalProject();
+            //Reload Structural
+            //Reload Mechanical
+            //Reload Plumbing
+        }
 
         private void CopyPopup_Click(object sender, RoutedEventArgs e)
         {
