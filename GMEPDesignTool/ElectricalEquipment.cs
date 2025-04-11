@@ -663,55 +663,55 @@ namespace GMEPDesignTool
 
         public void SetFla()
         {
-            double fla = 0;
+            float fla = 0;
             double va = Convert.ToDouble(Va);
             switch (Voltage)
             {
                 case 1:
-                    fla = va / 115;
+                    fla = (float)va / 115;
                     break;
                 case 2:
-                    fla = va / 120;
+                    fla = (float)va / 120;
                     break;
                 case 3:
                     if (Pole == 3)
-                        fla = va / 208 / 1.732;
+                        fla = (float)(va / 208 / 1.732);
                     else
-                        fla = va / 208;
+                        fla = (float)va / 208;
                     break;
                 case 4:
                     if (Pole == 3)
-                        fla = va / 230 / 1.732;
+                        fla = (float)(va / 230 / 1.732);
                     else
-                        fla = va / 230;
+                        fla = (float)va / 230;
                     break;
                 case 5:
                     if (Pole == 3)
-                        fla = va / 240 / 1.732;
+                        fla = (float)(va / 240 / 1.732);
                     else
-                        fla = va / 240;
+                        fla = (float)va / 240;
                     Trace.WriteLine(va);
                     break;
                 case 6:
                     if (Pole == 3)
-                        fla = va / 277 / 1.732;
+                        fla = (float)(va / 277 / 1.732);
                     else
-                        fla = va / 277;
+                        fla = (float)va / 277;
                     break;
                 case 7:
                     if (Pole == 3)
-                        fla = va * 460 / 1.732;
+                        fla = (float)(va * 460 / 1.732);
                     else
-                        fla = va * 460;
+                        fla = (float)va * 460;
                     break;
                 case 8:
                     if (Pole == 3)
-                        fla = va / 480 / 1.732;
+                        fla = (float)(va / 480 / 1.732);
                     else
-                        fla = va / 480;
+                        fla = (float)va / 480;
                     break;
             }
-            this.va = Convert.ToInt32(va);
+            this.Fla = fla;
         }
 
         public void setVa()
@@ -763,7 +763,7 @@ namespace GMEPDesignTool
                         va = Fla * 480;
                     break;
             }
-            this.va = Convert.ToInt32(va);
+            this.Va = Convert.ToInt32(va);
         }
 
         public bool Verify()

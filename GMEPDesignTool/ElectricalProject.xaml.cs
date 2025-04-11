@@ -1625,7 +1625,7 @@ namespace GMEPDesignTool
         {
             if (sender is ElectricalEquipment equipment)
             {
-                if (
+                /*if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Fla)
                 )
@@ -1642,7 +1642,7 @@ namespace GMEPDesignTool
                 {
                     //setKVAs();
                     //setAmps();
-                }
+                }*/
                 if (
                     e.PropertyName == nameof(ElectricalEquipment.Voltage)
                     || e.PropertyName == nameof(ElectricalEquipment.Is3Ph)
@@ -1651,7 +1651,7 @@ namespace GMEPDesignTool
                 {
                     setPower();
                 }
-                if (e.PropertyName == nameof(ElectricalEquipment.Va))
+                /*if (e.PropertyName == nameof(ElectricalEquipment.Va))
                 {
                     equipment.Fla = (float)
                         Math.Round(
@@ -1659,7 +1659,7 @@ namespace GMEPDesignTool
                             1,
                             MidpointRounding.AwayFromZero
                         );
-                }
+                }*/
 
                 if (e.PropertyName == nameof(ElectricalEquipment.ParentId))
                 {
