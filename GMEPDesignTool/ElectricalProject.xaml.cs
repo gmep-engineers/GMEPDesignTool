@@ -2469,7 +2469,7 @@ namespace GMEPDesignTool
             CultureInfo culture
         )
         {
-            if (value is double doubleValue)
+            if (value is float doubleValue)
             {
                 return Math.Round(doubleValue, 1, MidpointRounding.AwayFromZero).ToString("F1");
             }
@@ -2483,7 +2483,7 @@ namespace GMEPDesignTool
             CultureInfo culture
         )
         {
-            if (double.TryParse(value.ToString(), out double doubleValue))
+            if (float.TryParse(value.ToString(), out float doubleValue))
             {
                 return Math.Round(doubleValue, 1, MidpointRounding.AwayFromZero);
             }
