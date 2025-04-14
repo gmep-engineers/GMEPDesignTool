@@ -601,7 +601,7 @@
                                         <DataGridTemplateColumn Header="Color">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay}"></xctk:ColorPicker>
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay}"/>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
