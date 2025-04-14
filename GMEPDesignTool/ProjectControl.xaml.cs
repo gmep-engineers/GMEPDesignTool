@@ -53,6 +53,8 @@ namespace GMEPDesignTool
             this.DataContext = viewModel;
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
+            Application.Current.Deactivated += Application_Deactivated;
+            Application.Current.Activated += Application_Activated;
         }
 
         private async void AddVersion_Click(object sender, RoutedEventArgs e)
@@ -102,6 +104,17 @@ namespace GMEPDesignTool
                 //Admin Tab
                 AdminTab.Content = new Admin();
             }
+        }
+        private void Application_Deactivated(object sender, EventArgs e)
+        {
+            if (viewModel?.ActiveElectricalProject != null)
+            {
+                viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
+            }
+        }
+        private void Application_Activated(object sender, EventArgs e)
+        {
+            ReloadElectricalProject();
         }
 
         public async void ReloadElectricalProject()
