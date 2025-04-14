@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using GongSolutions.Wpf.DragDrop;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace GMEPDesignTool
 {
@@ -2394,6 +2395,14 @@ namespace GMEPDesignTool
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void Notes_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button) { 
+                NotesPopup.DataContext = button.CommandParameter;
+                NotesPopup.IsOpen = true;
+            }
         }
     }
     public class StringLengthToBoolConverter : IValueConverter
