@@ -530,7 +530,7 @@
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem>
+            <TabItem Background="AliceBlue">
                 <TabItem.Header>
                     <TextBlock Text="Services/Transformers/Panels" FontWeight="Bold" Margin="0 5 0 5">
                         <TextBlock.LayoutTransform>
@@ -538,6 +538,11 @@
                         </TextBlock.LayoutTransform>
                     </TextBlock>
                 </TabItem.Header>
+                <TabControl>
+                    <TabItem Header="Services"/>
+                    <TabItem Header="Panels"/>
+                    <TabItem Header="Transformers"/>
+                </TabControl>
             </TabItem>
         </TabControl>
         <Grid Grid.RowSpan="8" Background="Transparent" Visibility="{Binding IsEditingSingleLine, Converter={StaticResource BoolToVisConverter}}">
