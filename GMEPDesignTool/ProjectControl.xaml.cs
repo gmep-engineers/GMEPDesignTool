@@ -117,15 +117,11 @@ namespace GMEPDesignTool
         }
         private async void Save(object sender, EventArgs e)
         {
-            if (!Saving)
+            if (!Saving && !Loading)
             {
                 Saving = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    while (Loading)
-                    {
-                        await Task.Delay(100);
-                    }
                     await viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
                 }
                 Saving = false;
@@ -134,16 +130,11 @@ namespace GMEPDesignTool
         public async void ReloadElectricalProject()
         {
             
-            if (!Loading)
+            if (!Loading && !Saving)
             {
                 Loading = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    while (Saving)
-                    {
-                        await Task.Delay(100);
-                    }
-
                     var loadingScreen = new LoadingScreen();
                     ElectricalTab.Content = loadingScreen;
 
