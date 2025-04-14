@@ -129,7 +129,6 @@ namespace GMEPDesignTool
         }
         public async void ReloadElectricalProject()
         {
-            
             if (!Loading && !Saving)
             {
                 Loading = true;
