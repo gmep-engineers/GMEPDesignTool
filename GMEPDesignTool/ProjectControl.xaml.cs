@@ -137,6 +137,7 @@ namespace GMEPDesignTool
                     var loadingScreen = new LoadingScreen();
                     ElectricalTab.Content = loadingScreen;
 
+                    string saveText = viewModel.SaveText;
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;
                     int sectionIndex = viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex;
                     int equiplightingIndex = viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex;
@@ -151,6 +152,7 @@ namespace GMEPDesignTool
                     viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
                     viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex = equiplightingIndex;
                     viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex = serviceTransPanelIndex;
+                    viewModel.SaveText = saveText;
                     ElectricalTab.Content = viewModel.ActiveElectricalProject;
                 }
                 Loading = false;
