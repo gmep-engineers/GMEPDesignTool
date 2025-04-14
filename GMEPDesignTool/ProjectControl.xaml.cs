@@ -39,6 +39,8 @@ namespace GMEPDesignTool
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
+        public bool Saving = false;
+        public bool Loading = false;
 
         public ProjectControl()
         {
@@ -107,31 +109,54 @@ namespace GMEPDesignTool
         }
         private void Application_Deactivated(object sender, EventArgs e)
         {
-            if (viewModel?.ActiveElectricalProject != null)
-            {
-                viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
-            }
+            Save(sender, e);
         }
         private void Application_Activated(object sender, EventArgs e)
         {
             ReloadElectricalProject();
         }
-
+        private async void Save(object sender, EventArgs e)
+        {
+            if (!Saving)
+            {
+                Saving = true;
+                if (viewModel?.ActiveElectricalProject != null)
+                {
+                    while (Loading)
+                    {
+                        await Task.Delay(100);
+                    }
+                    await viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
+                }
+                Saving = false;
+            }
+        }
         public async void ReloadElectricalProject()
         {
-            if (viewModel?.ActiveElectricalProject != null)
+            
+            if (!Loading)
             {
-                var loadingScreen = new LoadingScreen();
-                ElectricalTab.Content = loadingScreen;
+                Loading = true;
+                if (viewModel?.ActiveElectricalProject != null)
+                {
+                    while (Saving)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                string projectId = viewModel.ActiveElectricalProject.ProjectId;
-                viewModel.ActiveElectricalProject = new ElectricalProject(
-                    projectId,
-                    viewModel,
-                    this
-                );
-                await viewModel.ActiveElectricalProject.InitializeAsync();
-                ElectricalTab.Content = viewModel.ActiveElectricalProject;
+                    var loadingScreen = new LoadingScreen();
+                    ElectricalTab.Content = loadingScreen;
+
+                    string projectId = viewModel.ActiveElectricalProject.ProjectId;
+                    viewModel.ActiveElectricalProject = new ElectricalProject(
+                        projectId,
+                        viewModel,
+                        this
+                    );
+                    await viewModel.ActiveElectricalProject.InitializeAsync();
+                    ElectricalTab.Content = viewModel.ActiveElectricalProject;
+                }
+                Loading = false;
             }
         }
 
@@ -142,14 +167,7 @@ namespace GMEPDesignTool
                 Save(sender, e);
             }
         }
-
-        private void Save(object sender, RoutedEventArgs e)
-        {
-            if (viewModel?.ActiveElectricalProject != null)
-            {
-                viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
-            }
-        }
+      
         private void Refresh(object sender, RoutedEventArgs e)
         {
             ReloadElectricalProject();

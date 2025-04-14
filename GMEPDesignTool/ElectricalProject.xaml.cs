@@ -269,7 +269,7 @@ namespace GMEPDesignTool
         }
 
    
-        public async void Timer_Tick(object sender, EventArgs e)
+        public async Task Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
             await ProjectView.database.UpdateProject(
@@ -2186,7 +2186,7 @@ namespace GMEPDesignTool
                 if (timer != null)
                 {
                     timer.Stop();
-                    timer.Tick -= Timer_Tick;
+                    //timer.Tick -= Timer_Tick;
                 }
             });
         }
@@ -2329,7 +2329,7 @@ namespace GMEPDesignTool
 
         private async void SingleLine_Click(object sender, RoutedEventArgs e)
         {
-            Timer_Tick(sender, e);
+            await Timer_Tick(sender, e);
             Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string relativePath = System.IO.Path.Combine(
