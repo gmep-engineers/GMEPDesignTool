@@ -138,12 +138,19 @@ namespace GMEPDesignTool
                     ElectricalTab.Content = loadingScreen;
 
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;
+                    int sectionIndex = viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex;
+                    int equiplightingIndex = viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex;
+                    int serviceTransPanelIndex = viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex;
+
                     viewModel.ActiveElectricalProject = new ElectricalProject(
                         projectId,
                         viewModel,
                         this
                     );
                     await viewModel.ActiveElectricalProject.InitializeAsync();
+                    viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
+                    viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex = equiplightingIndex;
+                    viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex = serviceTransPanelIndex;
                     ElectricalTab.Content = viewModel.ActiveElectricalProject;
                 }
                 Loading = false;
