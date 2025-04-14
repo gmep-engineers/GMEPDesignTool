@@ -1198,6 +1198,10 @@ namespace GMEPDesignTool
                     equipment.ParentId = "";
                 }
             }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                OrderEquipment(ElectricalEquipments);
+            }
         }
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
