@@ -740,19 +740,6 @@
                                         </DataGridComboBoxColumn>
                                         <DataGridCheckBoxColumn Header="MLO" Binding="{Binding IsMlo, UpdateSourceTrigger=PropertyChanged}" />
                                         <DataGridTextColumn Binding="{Binding NumBreakers}" Header="# Breakers"/>
-                                        <DataGridTextColumn Binding="{Binding Location}" Header="Location"/>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
-                                            <DataGridComboBoxColumn.ElementStyle>
-                                                <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                                </Style>
-                                            </DataGridComboBoxColumn.ElementStyle>
-                                            <DataGridComboBoxColumn.EditingElementStyle>
-                                                <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                                                </Style>
-                                            </DataGridComboBoxColumn.EditingElementStyle>
-                                        </DataGridComboBoxColumn>
                                         <DataGridComboBoxColumn SelectedValueBinding="{Binding HighLegPhase, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" Header="High Leg Phase">
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
@@ -805,6 +792,20 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
+                                        <DataGridTextColumn Binding="{Binding Location}" Header="Location"/>
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                            <DataGridComboBoxColumn.ElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                </Style>
+                                            </DataGridComboBoxColumn.ElementStyle>
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
+                                        </DataGridComboBoxColumn>
+                                        <DataGridTextColumn Header="Distance To Parent" Binding="{Binding DistanceFromParent}" IsReadOnly="True"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Grid>
