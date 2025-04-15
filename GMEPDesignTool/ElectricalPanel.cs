@@ -563,6 +563,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalEquipment equipment)
                 {
+                    equipment.Circuits = "Assign";
                     equipment.PropertyChanged -= Equipment_PropertyChanged;
                     if (leftComponents.Contains(equipment))
                     {
@@ -597,6 +598,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalPanel panel)
                 {
+                    panel.Circuits = "Assign";
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     if (leftComponents.Contains(panel))
                     {
@@ -631,6 +633,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalTransformer transformer)
                 {
+                    transformer.Circuits = "Assign";
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     if (leftComponents.Contains(transformer))
                     {
@@ -754,16 +757,12 @@ namespace GMEPDesignTool
         {
             componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
-            equipment.Circuits = "Assign";
         }
 
         public void AssignPanel(ElectricalPanel panel)
         {
             componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
-            
-            panel.Circuits = "Assign";
-
         }
 
         public void AssignTransformer(ElectricalTransformer transformer)
@@ -771,7 +770,7 @@ namespace GMEPDesignTool
             transformer.ParentType = "PANEL ";
             componentsCollection.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
-            transformer.Circuits = "Assign";
+            
         }
 
         public void AssignSpace(bool isLeft)
