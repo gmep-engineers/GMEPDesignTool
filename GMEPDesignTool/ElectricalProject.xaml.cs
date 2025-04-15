@@ -122,6 +122,7 @@ namespace GMEPDesignTool
         public async Task InitializeAsync()
         {
             ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+            ElectricalPanels.CollectionChanged += ElectricalPanels_CollectionChanged;
             ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
             ElectricalEquipments.CollectionChanged += ElectricalEquipments_CollectionChanged;
@@ -1194,13 +1195,29 @@ namespace GMEPDesignTool
             {
                 foreach (ElectricalEquipment equipment in e.OldItems)
                 {
-                    equipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
-                    equipment.ParentId = "";
+                    RemoveElectricalEquipment(equipment);
                 }
             }
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 OrderEquipment(ElectricalEquipments);
+            }
+        }
+        private void ElectricalPanels_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanel panel in e.OldItems)
+                {
+                    RemoveElectricalPanel(panel);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+               //Change action!
             }
         }
         private void ElectricalPanelNotes_CollectionChanged(
