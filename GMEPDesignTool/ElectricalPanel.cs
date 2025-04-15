@@ -154,7 +154,6 @@ namespace GMEPDesignTool
                 if (_parentType != value)
                 {
                     this._parentType = value;
-                    DetermineCircuits();
                     OnPropertyChanged(nameof(ParentType));
                 }
             }
@@ -175,6 +174,7 @@ namespace GMEPDesignTool
                         ParentType = "";
                         ParentComponent = null;
                     }
+                    DetermineCircuits();
                     
                 }
             }
@@ -564,6 +564,7 @@ namespace GMEPDesignTool
                 if (sender is ElectricalEquipment equipment)
                 {
                     equipment.Circuits = "Assign";
+                    equipment.CircuitNo = 0;
                     equipment.PropertyChanged -= Equipment_PropertyChanged;
                     if (leftComponents.Contains(equipment))
                     {
@@ -599,6 +600,7 @@ namespace GMEPDesignTool
                 if (sender is ElectricalPanel panel)
                 {
                     panel.Circuits = "Assign";
+                    panel.CircuitNo = 0;
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     if (leftComponents.Contains(panel))
                     {
@@ -634,6 +636,7 @@ namespace GMEPDesignTool
                 if (sender is ElectricalTransformer transformer)
                 {
                     transformer.Circuits = "Assign";
+                    transformer.CircuitNo = 0;
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     if (leftComponents.Contains(transformer))
                     {
