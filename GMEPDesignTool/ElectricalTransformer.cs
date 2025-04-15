@@ -22,6 +22,8 @@ namespace GMEPDesignTool
         public ElectricalPanel ChildPanel { get; set; }
         private bool _isHiddenOnPlan;
         private bool _isWallMounted;
+        private string circuits = string.Empty;
+        private string parentType = string.Empty;
 
         public ElectricalTransformer(
             string id,
@@ -63,6 +65,7 @@ namespace GMEPDesignTool
             _isWallMounted = isWallMounted;
             _aicRating=aicRating;
             this.componentType = "Transformer";
+            DetermineCircuits();
         }
 
 
@@ -96,6 +99,32 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public override int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
+        public override int Pole
+        {
+            get => pole;
+            set
+            {
+                if (pole != value)
+                {
+                    pole = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(Pole));
+                }
+            }
+        }
 
         public int Kva
         {
@@ -122,7 +151,19 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        public string ParentType
+        {
+            get => parentType;
+            set
+            {
+                if (parentType != value)
+                {
+                    parentType = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(ParentType));
+                }
+            }
+        }
         public bool IsWallMounted
         {
             get => _isWallMounted;
@@ -148,6 +189,31 @@ namespace GMEPDesignTool
                 default:
                     Pole = 3;
                     break;
+            }
+        }
+         public void DetermineCircuits()
+        {
+           /* if (ParentType != "PANEL ")
+            {
+                Circuits = "N/A";
+                return;
+            }*/
+            if (circuitNo == 0)
+            {
+                Circuits = "Assign";
+                return;
+            }
+            if (Pole == 3)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2},{circuitNo + 4}";
+            }
+            if (Pole == 2)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2}";
+            }
+            if (Pole == 1)
+            {
+                Circuits = $"{circuitNo}";
             }
         }
         public void AddChildPanel(ElectricalPanel panel)

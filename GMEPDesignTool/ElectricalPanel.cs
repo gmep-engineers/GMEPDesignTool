@@ -761,13 +761,17 @@ namespace GMEPDesignTool
         {
             componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
+            
             panel.Circuits = "Assign";
+
         }
 
         public void AssignTransformer(ElectricalTransformer transformer)
         {
+            transformer.ParentType = "PANEL ";
             componentsCollection.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
+            transformer.Circuits = "Assign";
         }
 
         public void AssignSpace(bool isLeft)
