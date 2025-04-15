@@ -49,6 +49,8 @@ namespace GMEPDesignTool
             new ObservableCollection<ElectricalPanelNoteRel>();
 
         private bool _isRecessed;
+        private string circuits = string.Empty;
+         
 
         public ElectricalPanel(
             string id,
@@ -116,6 +118,7 @@ namespace GMEPDesignTool
             notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
             leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            DetermineCircuits();
         }
 
         public string ParentName
@@ -130,6 +133,19 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public override int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
         public string ParentType
         {
             get => _parentType;
@@ -138,6 +154,7 @@ namespace GMEPDesignTool
                 if (_parentType != value)
                 {
                     this._parentType = value;
+                    DetermineCircuits();
                     OnPropertyChanged(nameof(ParentType));
                 }
             }
@@ -169,8 +186,21 @@ namespace GMEPDesignTool
                 if (this.pole != value)
                 {
                     this.pole = value;
+                    DetermineCircuits();
                     OnPropertyChanged(nameof(Pole));
                     SetCircuitVa();
+                }
+            }
+        }
+        public override string Circuits
+        {
+            get => circuits;
+            set
+            {
+                if (circuits != value)
+                {
+                    circuits = value;
+                    OnPropertyChanged(nameof(Circuits));
                 }
             }
         }
@@ -404,6 +434,31 @@ namespace GMEPDesignTool
                     _location = value;
                     OnPropertyChanged(nameof(Location));
                 }
+            }
+        }
+        public void DetermineCircuits()
+        {
+            if (ParentType != "PANEL ")
+            {
+                Circuits = "-";
+                return;
+            }
+            if (circuitNo == 0)
+            {
+                Circuits = "Assign";
+                return;
+            }
+            if (Pole == 3)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2},{circuitNo + 4}";
+            }
+            if (Pole == 2)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2}";
+            }
+            if (Pole == 1)
+            {
+                Circuits = $"{circuitNo}";
             }
         }
 

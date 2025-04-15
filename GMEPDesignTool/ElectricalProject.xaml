@@ -805,6 +805,24 @@
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
+                                        <DataGridTemplateColumn Header="Circuits">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding Path=Circuits, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="CircuitManager_Click" CommandParameter="{Binding Path=ParentId}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding ParentId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Distance To Parent" Binding="{Binding DistanceFromParent}" IsReadOnly="True"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
