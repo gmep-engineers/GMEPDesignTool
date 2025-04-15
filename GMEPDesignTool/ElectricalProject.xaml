@@ -544,39 +544,6 @@
                             <Grid Width="Auto">
                                 <StackPanel Orientation="Vertical">
                                     <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" Margin="0 3 0 0" >
-                                        <!--<Label Content="Category" Margin="0 3 0 0"/>
-                                        <ComboBox x:Name="CategoryFilter" Height="20" Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged" SelectedValuePath="Tag">
-                                            <ComboBoxItem Content="" Tag="" />
-                                            <ComboBoxItem Content="General" Tag="1"/>
-                                            <ComboBoxItem Content="Mechanical" Tag="2"/>
-                                            <ComboBoxItem Content="Plumbing" Tag="3"/>
-                                            <ComboBoxItem Content="Kitchen" Tag="4"/>
-                                            <ComboBoxItem Content="Lighting" Tag="5"/>
-                                        </ComboBox>
-                                        <Label Content="Panel" Margin="150 3 0 0"/>
-                                        <ComboBox x:Name="PanelFilter" Height="20"  Width="80" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="190 7 0 0" ItemsSource="{Binding PanelNames}" SelectionChanged="EquipmentFilter_SelectionChanged" DisplayMemberPath="Value" SelectedValuePath="Key"/>
-                                        <Label Content="Voltage" Margin="280 3 0 0"/>
-                                        <ComboBox x:Name="VoltageFilter"  Height="20" Width="80" VerticalAlignment="Top" SelectedValuePath="Tag" SelectionChanged="EquipmentFilter_SelectionChanged" HorizontalAlignment="Left" Margin="330 7 0 0">
-                                            <ComboBoxItem Content="" Background="White" Tag="" />
-                                            <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
-                                            <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                            <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                            <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                            <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                            <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
-                                            <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
-                                        </ComboBox>
-                                        <Label Content="Phase" Margin="420 3 0 0"/>
-                                        <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
-                                            <ComboBoxItem Content="" />
-                                            <ComboBoxItem Content="1" />
-                                            <ComboBoxItem Content="3" />
-                                        </ComboBox>
-                                        <Label Content="Equip #" Margin="510 3 0 0"/>
-                                        <TextBox x:Name="EquipmentFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="560 7 0 0" Width="69" TextChanged="EquipmentFilter_TextChanged"></TextBox>
-                                        <Label Margin="670 2 0 0">
-                                            <Hyperlink x:Name="ResetFilters" TextDecorations="Underline" Foreground="Blue" Click="ResetFilters_Click" >[reset filters]</Hyperlink>
-                                        </Label>-->
                                         <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
                                             <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 150 0" VerticalAlignment="Center"/>
                                             <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalService"/>
@@ -605,7 +572,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridComboBoxColumn Header="Config" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn SelectedValueBinding="{Binding Config}"  Header="Config" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="Switchgear" Tag="1"/>
@@ -614,6 +581,112 @@
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
                                         
+                                        <DataGridComboBoxColumn SelectedValueBinding="{Binding Type}" Header="Type" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="120/208 3" Tag="1"/>
+                                                    <ComboBoxItem Content="120/240 1" Tag="2"/>
+                                                    <ComboBoxItem Content="277/480 3" Tag="3"/>
+                                                    <ComboBoxItem Content="120/240 3" Tag="4"/>
+                                                    <ComboBoxItem Content="120/208 1" Tag="5"/>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
+                                        <DataGridComboBoxColumn Header="Amps" SelectedValueBinding="{Binding Amp}" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="100" Tag="1"/>
+                                                    <ComboBoxItem Content="200" Tag="2"/>
+                                                    <ComboBoxItem Content="400" Tag="3"/>
+                                                    <ComboBoxItem Content="600" Tag="4"/>
+                                                    <ComboBoxItem Content="800" Tag="5"/>
+                                                    <ComboBoxItem Content="1000" Tag="6"/>
+                                                    <ComboBoxItem Content="1200" Tag="7"/>
+                                                    <ComboBoxItem Content="1600" Tag="8"/>
+                                                    <ComboBoxItem Content="2000" Tag="9"/>
+                                                    <ComboBoxItem Content="2200" Tag="10"/>
+                                                    <ComboBoxItem Content="3000" Tag="11"/>
+                                                    <ComboBoxItem Content="4000" Tag="12"/>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                            <DataGridComboBoxColumn.ElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                </Style>
+                                            </DataGridComboBoxColumn.ElementStyle>
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
+                                        </DataGridComboBoxColumn>
+                                        <DataGridTemplateColumn Header="Load Summary">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="Load Summary" CommandParameter="{Binding}" Click="LoadSummary_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </GroupBox>
+                    </TabItem>
+                    <TabItem Header="Panels">
+                        <GroupBox Header="Panels" Height="Auto" VerticalAlignment="Top" >
+                            <Grid Width="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" Margin="0 3 0 0" >
+                                        <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
+                                            <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 150 0" VerticalAlignment="Center"/>
+                                            <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalService"/>
+                                        </Grid>
+                                        <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    </Grid>
+                                </StackPanel>
+                                <DataGrid CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalPanelDataGrid" ItemsSource="{Binding ElectricalPanels}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="Background" Value="{Binding ColorCode}" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="Silver"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                        <DataGridTemplateColumn Header="Color" >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridComboBoxColumn Header="Config" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="Switchgear" Tag="1"/>
+                                                    <ComboBoxItem Content="Multi-Meter" Tag="2"/>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
+
                                         <DataGridComboBoxColumn Header="Type" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
@@ -643,6 +716,18 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                            <DataGridComboBoxColumn.ElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                </Style>
+                                            </DataGridComboBoxColumn.ElementStyle>
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
+                                        </DataGridComboBoxColumn>
                                         <DataGridTemplateColumn Header="Load Summary">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -666,7 +751,6 @@
                             </Grid>
                         </GroupBox>
                     </TabItem>
-                    <TabItem Header="Panels"/>
                     <TabItem Header="Transformers"/>
                 </TabControl>
             </TabItem>
