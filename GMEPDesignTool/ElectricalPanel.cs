@@ -175,6 +175,7 @@ namespace GMEPDesignTool
                         ParentType = "";
                         ParentComponent = null;
                     }
+                    
                 }
             }
         }
@@ -753,12 +754,14 @@ namespace GMEPDesignTool
         {
             componentsCollection.Add(equipment);
             equipment.PropertyChanged += Equipment_PropertyChanged;
+            equipment.Circuits = "Assign";
         }
 
         public void AssignPanel(ElectricalPanel panel)
         {
             componentsCollection.Add(panel);
             panel.PropertyChanged += Panel_PropertyChanged;
+            panel.Circuits = "Assign";
         }
 
         public void AssignTransformer(ElectricalTransformer transformer)

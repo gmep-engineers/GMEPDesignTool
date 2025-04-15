@@ -526,7 +526,6 @@ namespace GMEPDesignTool
                 {
                     parentId = value;
                     OnPropertyChanged(nameof(ParentId));
-                    Circuits = "Assign";
                 }
             }
         }
