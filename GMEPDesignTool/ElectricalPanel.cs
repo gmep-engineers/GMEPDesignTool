@@ -441,7 +441,7 @@ namespace GMEPDesignTool
         {
             if (ParentType != "PANEL ")
             {
-                Circuits = "-";
+                Circuits = "N/A";
                 return;
             }
             if (circuitNo == 0)

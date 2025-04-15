@@ -663,7 +663,7 @@
                                             <Setter Property="Background" Value="{Binding ColorCode}" />
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="Silver"/>
+                                                    <Setter Property="Background" Value="Orange"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                 </Trigger>
                                             </Style.Triggers>
