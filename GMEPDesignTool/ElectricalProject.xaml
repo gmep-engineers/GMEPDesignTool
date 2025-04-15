@@ -678,16 +678,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridComboBoxColumn Header="Config" SelectedValuePath="Tag">
-                                            <DataGridComboBoxColumn.ItemsSource>
-                                                <CompositeCollection>
-                                                    <ComboBoxItem Content="Switchgear" Tag="1"/>
-                                                    <ComboBoxItem Content="Multi-Meter" Tag="2"/>
-                                                </CompositeCollection>
-                                            </DataGridComboBoxColumn.ItemsSource>
-                                        </DataGridComboBoxColumn>
-
-                                        <DataGridComboBoxColumn Header="Type" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding Type}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="120/208 3" Tag="1"/>
@@ -698,54 +689,90 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Amps" SelectedValuePath="Tag">
+                                        <DataGridCheckBoxColumn Binding="{Binding IsRecessed}" Header="Recessed"/>
+                                        <DataGridComboBoxColumn Header="Main (A)" SelectedValueBinding="{Binding MainSize}" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMlo}" Value="True" >
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
-                                                    <ComboBoxItem Content="100" Tag="1"/>
-                                                    <ComboBoxItem Content="200" Tag="2"/>
-                                                    <ComboBoxItem Content="400" Tag="3"/>
-                                                    <ComboBoxItem Content="600" Tag="4"/>
-                                                    <ComboBoxItem Content="800" Tag="5"/>
-                                                    <ComboBoxItem Content="1000" Tag="6"/>
-                                                    <ComboBoxItem Content="1200" Tag="7"/>
-                                                    <ComboBoxItem Content="1600" Tag="8"/>
-                                                    <ComboBoxItem Content="2000" Tag="9"/>
-                                                    <ComboBoxItem Content="2200" Tag="10"/>
-                                                    <ComboBoxItem Content="3000" Tag="11"/>
-                                                    <ComboBoxItem Content="4000" Tag="12"/>
+                                                    <ComboBoxItem Content="60" Tag="1"/>
+                                                    <ComboBoxItem Content="100" Tag="2"/>
+                                                    <ComboBoxItem Content="125" Tag="3"/>
+                                                    <ComboBoxItem Content="150" Tag="4"/>
+                                                    <ComboBoxItem Content="175" Tag="5"/>
+                                                    <ComboBoxItem Content="200" Tag="6"/>
+                                                    <ComboBoxItem Content="225" Tag="7"/>
+                                                    <ComboBoxItem Content="250" Tag="8"/>
+                                                    <ComboBoxItem Content="275" Tag="9"/>
+                                                    <ComboBoxItem Content="400" Tag="10"/>
+                                                    <ComboBoxItem Content="500" Tag="11"/>
+                                                    <ComboBoxItem Content="600" Tag="12"/>
+                                                    <ComboBoxItem Content="800" Tag="13"/>
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
+                                        <DataGridComboBoxColumn Header="Bus (A)" SelectedValueBinding="{Binding BusSize}" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="60" Tag="1"/>
+                                                    <ComboBoxItem Content="100" Tag="2"/>
+                                                    <ComboBoxItem Content="125" Tag="3"/>
+                                                    <ComboBoxItem Content="150" Tag="4"/>
+                                                    <ComboBoxItem Content="175" Tag="5"/>
+                                                    <ComboBoxItem Content="200" Tag="6"/>
+                                                    <ComboBoxItem Content="225" Tag="7"/>
+                                                    <ComboBoxItem Content="250" Tag="8"/>
+                                                    <ComboBoxItem Content="275" Tag="9"/>
+                                                    <ComboBoxItem Content="400" Tag="10"/>
+                                                    <ComboBoxItem Content="500" Tag="11"/>
+                                                    <ComboBoxItem Content="600" Tag="12"/>
+                                                    <ComboBoxItem Content="800" Tag="13"/>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
+                                        <DataGridCheckBoxColumn Header="MLO" Binding="{Binding IsMlo, UpdateSourceTrigger=PropertyChanged}" />
+                                        <DataGridTextColumn Binding="{Binding NumBreakers}" Header="# Breakers"/>
+                                        <DataGridTextColumn Binding="{Binding Location}" Header="Location"/>
                                         <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
                                                 </Style>
                                             </DataGridComboBoxColumn.ElementStyle>
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
-                                        <DataGridTemplateColumn Header="Load Summary">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Content="Load Summary" CommandParameter="{Binding}" Click="LoadSummary_Click">
-                                                        <Button.Style>
-                                                            <Style TargetType="Button">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                        <DataGridComboBoxColumn Header="High Leg Phase" SelectedValueBinding="{Binding HighLegPhase, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="A" Tag='A'/>
+                                                    <ComboBoxItem Content="B" Tag='B'/>
+                                                    <ComboBoxItem Content="C" Tag='C'>
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    <DataTrigger Binding="{Binding Pole}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
-                                                        </Button.Style>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </Grid>
