@@ -155,6 +155,7 @@ namespace GMEPDesignTool
                 {
                     this._parentType = value;
                     OnPropertyChanged(nameof(ParentType));
+                    DetermineCircuits();
                 }
             }
         }
@@ -174,7 +175,6 @@ namespace GMEPDesignTool
                         ParentType = "";
                         ParentComponent = null;
                     }
-                    DetermineCircuits();
                     
                 }
             }
