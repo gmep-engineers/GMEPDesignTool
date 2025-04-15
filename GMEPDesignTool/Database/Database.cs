@@ -1453,7 +1453,7 @@ namespace GMEPDesignTool.Database
                         GetSafeString(reader, "location"),
                         GetSafeInt(reader, "voltage_id") == 4
                             ? GetSafeChar(reader, "high_leg_phase")
-                            : char.MinValue
+                            : '-'
                     )
                 );
             }

@@ -652,7 +652,7 @@
                                     <Grid Width="Auto" Height="37" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gainsboro" Margin="0 3 0 0" >
                                         <Grid Background="Gainsboro" Height="Auto" HorizontalAlignment="Right">
                                             <Rectangle Height="30" Width="1" Stroke="White"  Margin="0 0 150 0" VerticalAlignment="Center"/>
-                                            <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalService"/>
+                                            <Button Width="100" VerticalAlignment="Center"  Margin="0 0 20 0" Content="New" Click="AddNewElectricalPanel"/>
                                         </Grid>
                                         <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     </Grid>
@@ -678,7 +678,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding Type}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="120/208 3" Tag="1"/>
@@ -753,7 +753,38 @@
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="High Leg Phase" SelectedValueBinding="{Binding HighLegPhase, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn SelectedValueBinding="{Binding HighLegPhase, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" Header="High Leg Phase">
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="IsEnabled" Value="False" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Type}" Value="4" >
+                                                            <Setter Property="IsEnabled" Value="True" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
+                                            <DataGridComboBoxColumn.ElementStyle>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Type}" Value="1" >
+                                                            <Setter Property="SelectedIndex" Value="3" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Type}" Value="2" >
+                                                            <Setter Property="SelectedIndex" Value="3" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Type}" Value="3" >
+                                                            <Setter Property="SelectedIndex" Value="3" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Type}" Value="4" >
+                                                            <Setter Property="SelectedIndex" Value="1" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Type}" Value="5" >
+                                                            <Setter Property="SelectedIndex" Value="3" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridComboBoxColumn.ElementStyle>
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="A" Tag='A'/>
@@ -770,6 +801,7 @@
                                                             </Style>
                                                         </ComboBoxItem.Style>
                                                     </ComboBoxItem>
+                                                    <ComboBoxItem Content="-" Tag="-" Visibility="Collapsed"/>
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
