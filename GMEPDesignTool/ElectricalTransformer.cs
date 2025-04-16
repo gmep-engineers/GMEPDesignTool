@@ -69,6 +69,9 @@ namespace GMEPDesignTool
         }
         public ElectricalTransformer()
         {
+            loadCategory = 3;
+            SetPole();
+            this.componentType = "Transformer";
             DetermineCircuits();
         }
 

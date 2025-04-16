@@ -45,7 +45,7 @@ namespace GMEPDesignTool
         public ElectricalService()
         {
             this.amp = 1;
-            // :3 <3
+            this.componentType = "Service";
         }
 
         public int Type

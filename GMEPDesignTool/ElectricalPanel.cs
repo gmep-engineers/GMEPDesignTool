@@ -122,6 +122,14 @@ namespace GMEPDesignTool
         }
         public ElectricalPanel()
         {
+            loadCategory = 3;
+            this.componentType = "Panel";
+            SetPole();
+            PopulateCircuits(Id, ProjectId);
+            updateFlag = false;
+            notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+            leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             DetermineCircuits();
         }
         public string ParentName
