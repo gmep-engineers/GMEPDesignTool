@@ -563,7 +563,13 @@
                                         </Style>
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="15" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -669,7 +675,13 @@
                                         </Style>
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="15" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -738,7 +750,13 @@
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
                                         <DataGridCheckBoxColumn Header="MLO" Binding="{Binding IsMlo, UpdateSourceTrigger=PropertyChanged}" />
-                                        <DataGridTextColumn Binding="{Binding NumBreakers}" Header="# Breakers"/>
+                                        <DataGridTextColumn Binding="{Binding NumBreakers}" Header="# Breakers">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="2" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridComboBoxColumn SelectedValueBinding="{Binding HighLegPhase, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag" Header="High Leg Phase">
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
@@ -791,7 +809,13 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridTextColumn Binding="{Binding Location}" Header="Location"/>
+                                        <DataGridTextColumn Binding="{Binding Location}" Header="Location">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="36" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
@@ -853,7 +877,13 @@
                                         </Style>
                                     </DataGrid.RowStyle>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                                        <DataGridTextColumn Binding="{Binding Name}" Header="Name">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="7" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
