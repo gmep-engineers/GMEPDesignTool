@@ -127,7 +127,14 @@ namespace GMEPDesignTool
 
         public ElectricalEquipment()
         {
+            this.amp = fla;
+            this.lcl = va;
+            this.lml = va;
+            this.ComponentType = "Equipment";
+            DetermineLoadCategory();
+            determineEquipmentPole();
             DetermineCircuits();
+            SetPhaseVa();
         }
 
         public string Description
@@ -526,7 +533,6 @@ namespace GMEPDesignTool
                 {
                     parentId = value;
                     OnPropertyChanged(nameof(ParentId));
-                    Circuits = "Assign";
                 }
             }
         }

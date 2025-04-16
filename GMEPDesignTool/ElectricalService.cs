@@ -13,10 +13,10 @@ namespace GMEPDesignTool
 {
     public class ElectricalService : ElectricalComponent
     {
-        private int _type;
-        private int _config;
-        private int _aicRating;
-        private float _totalAmp;
+        private int _type = 1;
+        private int _config = 1;
+        private int _aicRating = 0;
+        private float _totalAmp = 0;
         public ObservableCollection<ElectricalComponent> childComponents { get; set; } = new ObservableCollection<ElectricalComponent>();
         public ObservableCollection<ElectricalTransformer> childTransformers { get; set; } = new ObservableCollection<ElectricalTransformer>();
         public ElectricalService(
@@ -41,6 +41,11 @@ namespace GMEPDesignTool
             _aicRating = aicRating;
             this.componentType = "Service";
             this.parentId = parentId;
+        }
+        public ElectricalService()
+        {
+            this.amp = 1;
+            this.componentType = "Service";
         }
 
         public int Type

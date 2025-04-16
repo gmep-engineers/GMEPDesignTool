@@ -117,15 +117,11 @@ namespace GMEPDesignTool
         }
         private async void Save(object sender, EventArgs e)
         {
-            if (!Saving)
+            if (!Saving && !Loading)
             {
                 Saving = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    while (Loading)
-                    {
-                        await Task.Delay(100);
-                    }
                     await viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
                 }
                 Saving = false;
@@ -133,27 +129,30 @@ namespace GMEPDesignTool
         }
         public async void ReloadElectricalProject()
         {
-            
-            if (!Loading)
+            if (!Loading && !Saving)
             {
                 Loading = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    while (Saving)
-                    {
-                        await Task.Delay(100);
-                    }
-
                     var loadingScreen = new LoadingScreen();
                     ElectricalTab.Content = loadingScreen;
 
+                    string saveText = viewModel.SaveText;
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;
+                    int sectionIndex = viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex;
+                    int equiplightingIndex = viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex;
+                    int serviceTransPanelIndex = viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex;
+
                     viewModel.ActiveElectricalProject = new ElectricalProject(
                         projectId,
                         viewModel,
                         this
                     );
                     await viewModel.ActiveElectricalProject.InitializeAsync();
+                    viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
+                    viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex = equiplightingIndex;
+                    viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex = serviceTransPanelIndex;
+                    viewModel.SaveText = saveText;
                     ElectricalTab.Content = viewModel.ActiveElectricalProject;
                 }
                 Loading = false;

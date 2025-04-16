@@ -122,11 +122,15 @@ namespace GMEPDesignTool
         public async Task InitializeAsync()
         {
             ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+            ElectricalPanels.CollectionChanged += ElectricalPanels_CollectionChanged;
             ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+            ElectricalServices.CollectionChanged += ElectricalServices_CollectionChanged;
             ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
             ElectricalEquipments.CollectionChanged += ElectricalEquipments_CollectionChanged;
             ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+            ElectricalTransformers.CollectionChanged += ElectricalTransformers_CollectionChanged;
             ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+            ElectricalLightings.CollectionChanged += ElectricalLightings_CollectionChanged;
             ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
                 ProjectId
             );
@@ -752,7 +756,7 @@ namespace GMEPDesignTool
                 0,
                 false,
                 "",
-                'B'
+                '-'
             );
             AddElectricalPanel(electricalPanel);
         }
@@ -1194,9 +1198,55 @@ namespace GMEPDesignTool
             {
                 foreach (ElectricalEquipment equipment in e.OldItems)
                 {
-                    equipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
-                    equipment.ParentId = "";
+                    RemoveElectricalEquipment(equipment);
                 }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach(ElectricalEquipment equipment in e.NewItems)
+                {
+                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                }
+                OrderEquipment(ElectricalEquipments);
+            }
+        }
+
+
+        private void ElectricalPanels_CollectionChanged(
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanel panel in e.OldItems)
+                {
+                    RemoveElectricalPanel(panel);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanel electricalPanel in e.NewItems)
+                {
+                    electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                    electricalPanel.leftNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.rightNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    foreach (var circuit in electricalPanel.leftCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    foreach (var circuit in electricalPanel.rightCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    electricalPanel.fillInitialSpaces();
+                }
+                GetNames();
             }
         }
         private void ElectricalPanelNotes_CollectionChanged(
@@ -1297,46 +1347,7 @@ namespace GMEPDesignTool
         {
             if (SelectedElectricalEquipment != null)
             {
-                foreach (ElectricalPanel panel in ElectricalPanels)
-                {
-                    List<int> circuitIndices = new List<int>();
-                    for (int i = 0; i < panel.rightCircuits.Count; i++)
-                    {
-                        if (panel.rightCircuits[i].equipId == SelectedElectricalEquipment.Id)
-                        {
-                            circuitIndices.Add(i);
-                        }
-                    }
-                    if (circuitIndices.Count > 0)
-                    {
-                        int offset = 0;
-                        foreach (int index in circuitIndices)
-                        {
-                            panel.rightCircuits.RemoveAt(index - offset);
-                            offset++;
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < panel.leftCircuits.Count; i++)
-                        {
-                            if (panel.leftCircuits[i].equipId == SelectedElectricalEquipment.Id)
-                            {
-                                circuitIndices.Add(i);
-                            }
-                        }
-                        if (circuitIndices.Count > 0)
-                        {
-                            int offset = 0;
-                            foreach (int index in circuitIndices)
-                            {
-                                panel.rightCircuits.RemoveAt(index - offset);
-                                offset++;
-                            }
-                        }
-                    }
-                }
-                ElectricalEquipments.Remove(SelectedElectricalEquipment);
+                RemoveElectricalEquipment(SelectedElectricalEquipment);
             }
         }
 
@@ -1431,7 +1442,28 @@ namespace GMEPDesignTool
                 RemoveElectricalService(electricalService);
             }
         }
-
+        private void ElectricalServices_CollectionChanged(
+           object sender,
+           NotifyCollectionChangedEventArgs e
+       )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalService service in e.OldItems)
+                {
+                    RemoveElectricalService(service);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalService service in e.NewItems)
+                {
+                    service.PropertyChanged += ElectricalService_PropertyChanged;
+                }
+                GetNames();
+                //OrderEquipment(ElectricalEquipments);
+            }
+        }
         private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalService service)
@@ -1807,21 +1839,32 @@ namespace GMEPDesignTool
                 RemoveElectricalLighting(electricalLighting);
             }
         }
+        private void ElectricalLightings_CollectionChanged(
+           object sender,
+           NotifyCollectionChangedEventArgs e
+       )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalLighting lighting in e.OldItems)
+                {
+                    RemoveElectricalLighting(lighting);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalLighting lighting in e.NewItems)
+                {
+                    lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
+                }
+                //OrderEquipment(ElectricalEquipments);
+            }
+        }
 
         private void ElectricalLighting_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalLighting lighting)
             {
-                if (
-                    e.PropertyName == nameof(ElectricalLighting.VoltageId)
-                    || e.PropertyName == nameof(ElectricalLighting.Wattage)
-                    || e.PropertyName == nameof(ElectricalLighting.ParentId)
-                    || e.PropertyName == nameof(ElectricalLighting.Qty)
-                )
-                {
-                    // setKVAs();
-                    // setAmps();
-                }
                 if (
                     e.PropertyName == nameof(ElectricalLighting.VoltageId)
                     || e.PropertyName == nameof(ElectricalLighting.ParentId)
@@ -2078,6 +2121,28 @@ namespace GMEPDesignTool
             )
             {
                 RemoveElectricalTransformer(electricalTransformer);
+            }
+        }
+        private void ElectricalTransformers_CollectionChanged(
+           object sender,
+           NotifyCollectionChangedEventArgs e
+       )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalTransformer transformer in e.OldItems)
+                {
+                    RemoveElectricalTransformer(transformer);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalTransformer transformer in e.NewItems)
+                {
+                    transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
+                }
+                GetNames();
+                //OrderEquipment(ElectricalEquipments);
             }
         }
 

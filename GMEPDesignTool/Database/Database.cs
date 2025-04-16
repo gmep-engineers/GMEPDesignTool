@@ -1306,7 +1306,7 @@ namespace GMEPDesignTool.Database
                 "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan, is_wall_mounted, aic_rating) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan, @isWallMounted, @aicRating)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", transformer.Id);
-            command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
+            command.Parameters.AddWithValue("@project_id", projectId);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
             command.Parameters.AddWithValue("@color_code", transformer.ColorCode);
@@ -1453,7 +1453,7 @@ namespace GMEPDesignTool.Database
                         GetSafeString(reader, "location"),
                         GetSafeInt(reader, "voltage_id") == 4
                             ? GetSafeChar(reader, "high_leg_phase")
-                            : char.MinValue
+                            : '-'
                     )
                 );
             }
