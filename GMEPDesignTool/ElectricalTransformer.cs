@@ -14,14 +14,14 @@ namespace GMEPDesignTool
 {
     public class ElectricalTransformer : ElectricalComponent
     {
-        private int _distanceFromParent;
-        private int _voltage;
-        private int _kva;
-        private bool _powered;
-        private int _aicRating;
+        private int _distanceFromParent = 0;
+        private int _voltage = 1;
+        private int _kva = 1;
+        private bool _powered = false;
+        private int _aicRating = 0;
         public ElectricalPanel ChildPanel { get; set; }
-        private bool _isHiddenOnPlan;
-        private bool _isWallMounted;
+        private bool _isHiddenOnPlan = false;
+        private bool _isWallMounted = true;
         private string circuits = string.Empty;
         private string parentType = string.Empty;
 
@@ -65,6 +65,10 @@ namespace GMEPDesignTool
             _isWallMounted = isWallMounted;
             _aicRating=aicRating;
             this.componentType = "Transformer";
+            DetermineCircuits();
+        }
+        public ElectricalTransformer()
+        {
             DetermineCircuits();
         }
 

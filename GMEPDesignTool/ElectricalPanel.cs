@@ -12,22 +12,22 @@ namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
     {
-        private int _busSize;
-        private int _mainSize;
-        private bool _isMlo;
-        private bool _isDistribution;
-        private int _numBreakers;
-        private int _distanceFromParent;
-        private int _aicRating;
-        private float _kva;
-        private float _va;
-        private int _type;
-        private bool _powered;
-        private bool _isHiddenOnPlan;
-        private string _location;
-        private string _parentName;
-        private string _parentType;
-        private char _highLegPhase;
+        private int _busSize = 1;
+        private int _mainSize = 1;
+        private bool _isMlo = true;
+        private bool _isDistribution = false;
+        private int _numBreakers = 42;
+        private int _distanceFromParent = 0;
+        private int _aicRating = 0;
+        private float _kva = 0;
+        private float _va = 0;
+        private int _type = 1;
+        private bool _powered = false;
+        private bool _isHiddenOnPlan = false;
+        private string _location = string.Empty;
+        private string _parentName = string.Empty;
+        private string _parentType = string.Empty;
+        private char _highLegPhase = '-';
 
         public ElectricalComponent ParentComponent { get; set; }
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
@@ -48,7 +48,7 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanelNoteRel> rightNotes { get; set; } =
             new ObservableCollection<ElectricalPanelNoteRel>();
 
-        private bool _isRecessed;
+        private bool _isRecessed = false;
         private string circuits = string.Empty;
          
 
@@ -120,7 +120,10 @@ namespace GMEPDesignTool
             rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             DetermineCircuits();
         }
-
+        public ElectricalPanel()
+        {
+            DetermineCircuits();
+        }
         public string ParentName
         {
             get => _parentName;
