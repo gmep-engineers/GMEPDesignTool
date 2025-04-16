@@ -20,9 +20,6 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
-        public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
-        public ElectricalLighting? SelectedElectricalLighting { get; set; }
-        public ElectricalLightingControl? SelectedElectricalLightingControl { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -1334,9 +1331,12 @@ namespace GMEPDesignTool
 
         private void RemoveSelectedElectricalEquipment_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedElectricalEquipment != null)
+            var selectedEquipment = ElectricalEquipmentDataGrid
+                .SelectedItems.Cast<ElectricalEquipment>()
+                .ToList();
+            foreach (ElectricalEquipment equipment in selectedEquipment)
             {
-                RemoveElectricalEquipment(SelectedElectricalEquipment);
+                RemoveElectricalEquipment(equipment);
             }
         }
 
