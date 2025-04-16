@@ -102,8 +102,20 @@
                                         </ContextMenu>
                                     </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Tag" Binding="{Binding EquipNo, UpdateSourceTrigger=LostFocus}"/>
-                                        <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
+                                        <DataGridTextColumn Header="Tag" Binding="{Binding EquipNo, UpdateSourceTrigger=LostFocus}">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="15" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}">
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="{x:Type TextBox}">
+                                                    <Setter Property="MaxLength" Value="25" />
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
                                         <DataGridComboBoxColumn Header="Category" SelectedValueBinding="{Binding Category,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
@@ -358,10 +370,21 @@
                                             </Style>
                                         </DataGrid.RowStyle>
                                         <DataGrid.Columns>
-
-                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}"/>
+                                            <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}">
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="{x:Type TextBox}">
+                                                        <Setter Property="MaxLength" Value="7" />
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
                                             <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
-                                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty, UpdateSourceTrigger=LostFocus}"/>
+                                            <DataGridTextColumn Header="Qty" Binding="{Binding Qty, UpdateSourceTrigger=LostFocus}">
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="{x:Type TextBox}">
+                                                        <Setter Property="MaxLength" Value="5" />
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
                                             <DataGridComboBoxColumn Header="Mounting Type" SelectedValueBinding="{Binding MountingType,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                                 <DataGridComboBoxColumn.ItemsSource>
                                                     <CompositeCollection>
@@ -406,8 +429,20 @@
                                                     </CompositeCollection>
                                                 </DataGridComboBoxColumn.ItemsSource>
                                             </DataGridComboBoxColumn>
-                                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer, UpdateSourceTrigger=LostFocus}"/>
-                                            <DataGridTextColumn Header="Model No." Binding="{Binding ModelNo, UpdateSourceTrigger=LostFocus}"/>
+                                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer, UpdateSourceTrigger=LostFocus}">
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="{x:Type TextBox}">
+                                                        <Setter Property="MaxLength" Value="36" />
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn Header="Model No." Binding="{Binding ModelNo, UpdateSourceTrigger=LostFocus}">
+                                                <DataGridTextColumn.EditingElementStyle>
+                                                    <Style TargetType="{x:Type TextBox}">
+                                                        <Setter Property="MaxLength" Value="50" />
+                                                    </Style>
+                                                </DataGridTextColumn.EditingElementStyle>
+                                            </DataGridTextColumn>
                                             <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                                 <DataGridComboBoxColumn.ItemsSource>
                                                     <CompositeCollection>
