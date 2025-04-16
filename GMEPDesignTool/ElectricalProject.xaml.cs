@@ -1234,27 +1234,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private void ElectricalEquipments_CollectionChanged(
-            object sender,
-            NotifyCollectionChangedEventArgs e
-        )
-        {
-           if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (ElectricalEquipment equipment in e.OldItems)
-                {
-                    RemoveElectricalEquipment(equipment);
-                }
-            }
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach(ElectricalEquipment equipment in e.NewItems)
-                {
-                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
-                }
-                OrderEquipment(ElectricalEquipments);
-            }
-        }
+     
 
 
        
@@ -1662,7 +1642,27 @@ namespace GMEPDesignTool
                 OrderEquipment(ElectricalEquipments);
             }
         }
-
+        private void ElectricalEquipments_CollectionChanged(
+         object sender,
+         NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalEquipment equipment in e.OldItems)
+                {
+                    RemoveElectricalEquipment(equipment);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalEquipment equipment in e.NewItems)
+                {
+                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                }
+                OrderEquipment(ElectricalEquipments);
+            }
+        }
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalEquipment equipment)
