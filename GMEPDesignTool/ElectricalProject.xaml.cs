@@ -1076,6 +1076,51 @@ namespace GMEPDesignTool
                         PanelNames.Remove(key);
                     }
                 }
+                var ServiceNamesKeys = ServiceNames.Keys.ToList();
+                foreach(var key in ServiceNamesKeys)
+                {
+                    if (!validIds.Contains(key))
+                    {
+                        ServiceNames.Remove(key);
+                    }
+                }
+            }
+        }
+        private void ElectricalPanels_CollectionChanged(
+           object sender,
+           NotifyCollectionChangedEventArgs e
+       )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanel panel in e.OldItems)
+                {
+                    RemoveElectricalPanel(panel);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanel electricalPanel in e.NewItems)
+                {
+                    electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                    electricalPanel.leftNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.rightNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    foreach (var circuit in electricalPanel.leftCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    foreach (var circuit in electricalPanel.rightCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    electricalPanel.fillInitialSpaces();
+                }
+                GetNames();
             }
         }
 
@@ -1212,43 +1257,7 @@ namespace GMEPDesignTool
         }
 
 
-        private void ElectricalPanels_CollectionChanged(
-            object sender,
-            NotifyCollectionChangedEventArgs e
-        )
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (ElectricalPanel panel in e.OldItems)
-                {
-                    RemoveElectricalPanel(panel);
-                }
-            }
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (ElectricalPanel electricalPanel in e.NewItems)
-                {
-                    electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
-                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-                    electricalPanel.leftNotes.CollectionChanged +=
-                        ElectricalPanelNoteRels_CollectionChanged;
-                    electricalPanel.rightNotes.CollectionChanged +=
-                        ElectricalPanelNoteRels_CollectionChanged;
-                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    foreach (var circuit in electricalPanel.leftCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    foreach (var circuit in electricalPanel.rightCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    electricalPanel.fillInitialSpaces();
-                }
-                GetNames();
-            }
-        }
+       
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
