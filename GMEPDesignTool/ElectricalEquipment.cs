@@ -531,7 +531,7 @@ namespace GMEPDesignTool
             {
                 if (parentId != value)
                 {
-                    parentId = value;
+                    parentId = value ?? string.Empty;
                     OnPropertyChanged(nameof(ParentId));
                 }
             }

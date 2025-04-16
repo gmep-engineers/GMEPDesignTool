@@ -169,7 +169,7 @@
                                             </DataGridTextColumn.Binding>
                                         </DataGridTextColumn>
                                         <DataGridTextColumn Header="VA" Binding="{Binding Va, UpdateSourceTrigger=LostFocus}"/>
-                                        <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -178,6 +178,7 @@
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                    <Setter Property="SelectedIndex" Value="1" />
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
@@ -650,7 +651,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -851,7 +852,7 @@
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -964,7 +965,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
