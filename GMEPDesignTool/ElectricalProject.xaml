@@ -116,6 +116,24 @@
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
+                                        <DataGridTemplateColumn Header="Color" >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                         <DataGridComboBoxColumn Header="Category" SelectedValueBinding="{Binding Category,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
@@ -379,6 +397,24 @@
                                                 </DataGridTextColumn.EditingElementStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
+                                            <DataGridTemplateColumn Header="Color" >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <xctk:ColorPicker.Style>
+                                                                <Style TargetType="xctk:ColorPicker">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </xctk:ColorPicker.Style>
+                                                        </xctk:ColorPicker>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Qty" Binding="{Binding Qty, UpdateSourceTrigger=LostFocus}">
                                                 <DataGridTextColumn.EditingElementStyle>
                                                     <Style TargetType="{x:Type TextBox}">
@@ -609,7 +645,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -721,7 +768,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -923,7 +981,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
