@@ -1283,11 +1283,10 @@ namespace GMEPDesignTool.Database
         private async Task UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, project_id = @project_id, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
+                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@id", transformer.Id);
-            command.Parameters.AddWithValue("@project_id", transformer.ProjectId);
             command.Parameters.AddWithValue("@voltage", transformer.Voltage);
             command.Parameters.AddWithValue("@distanceFromParent", transformer.DistanceFromParent);
             command.Parameters.AddWithValue("@kva", transformer.Kva);
