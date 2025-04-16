@@ -388,6 +388,11 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGrid.RowStyle>
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu Name="ElectricalLightingContextMenu">
+                                                <MenuItem Header="Remove" Click="RemoveSelectedElectricalLighting_Click"/>
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}">
                                                 <DataGridTextColumn.EditingElementStyle>
@@ -634,6 +639,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalServicesContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalServices_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>
@@ -757,6 +767,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalPanelsContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalPanels_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>
@@ -970,6 +985,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalTransformersContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalTransformers_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>

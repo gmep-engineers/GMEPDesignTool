@@ -1339,6 +1339,46 @@ namespace GMEPDesignTool
                 RemoveElectricalEquipment(equipment);
             }
         }
+        private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedLighting = ElectricalLightingDataGrid
+                .SelectedItems.Cast<ElectricalLighting>()
+                .ToList();
+            foreach (ElectricalLighting lighting in selectedLighting)
+            {
+                RemoveElectricalLighting(lighting);
+            }
+        }
+        private void RemoveSelectedElectricalServices_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedServices = ElectricalServiceDataGrid
+                .SelectedItems.Cast<ElectricalService>()
+                .ToList();
+            foreach (ElectricalService service in selectedServices)
+            {
+                RemoveElectricalService(service);
+            }
+        }
+        private void RemoveSelectedElectricalPanels_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPanels = ElectricalPanelDataGrid
+                .SelectedItems.Cast<ElectricalPanel>()
+                .ToList();
+            foreach (ElectricalPanel panel in selectedPanels)
+            {
+                RemoveElectricalPanel(panel);
+            }
+        }
+        private void RemoveSelectedElectricalTransformers_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedTransformers = ElectricalTransformerDataGrid
+                .SelectedItems.Cast<ElectricalTransformer>()
+                .ToList();
+            foreach (ElectricalTransformer transformer in selectedTransformers)
+            {
+                RemoveElectricalTransformer(transformer);
+            }
+        }
 
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
