@@ -175,7 +175,7 @@ namespace GMEPDesignTool
                         ParentType = "";
                         ParentComponent = null;
                     }
-                    
+                    DetermineCircuits();
                 }
             }
         }
