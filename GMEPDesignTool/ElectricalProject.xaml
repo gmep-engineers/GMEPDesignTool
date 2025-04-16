@@ -509,7 +509,7 @@
                                         <Border Background="White" BorderBrush="Black" BorderThickness="2" Padding="5">
                                             <Grid>
                                                 <Label Content="Notes" FontSize="15" FontWeight="Bold"/>
-                                                <TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 25 0 0"  FontSize="15" Text="{Binding Notes}"/>
+                                                <TextBox VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 25 0 0"  FontSize="15" Text="{Binding Notes}" MaxLength="127"/>
                                             </Grid>
                                         </Border>
                                     </Popup>
