@@ -164,6 +164,19 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public override string ParentId
+        {
+            get => parentId;
+            set
+            {
+                if (parentId != value)
+                {
+                    parentId = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(ParentId));
+                }
+            }
+        }
         public bool IsWallMounted
         {
             get => _isWallMounted;
@@ -193,11 +206,11 @@ namespace GMEPDesignTool
         }
          public void DetermineCircuits()
         {
-           /* if (ParentType != "PANEL ")
+            if (ParentType != "PANEL ")
             {
                 Circuits = "N/A";
                 return;
-            }*/
+            }
             if (circuitNo == 0)
             {
                 Circuits = "Assign";

@@ -563,7 +563,6 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalEquipment equipment)
                 {
-                    equipment.Circuits = "Assign";
                     equipment.CircuitNo = 0;
                     equipment.PropertyChanged -= Equipment_PropertyChanged;
                     if (leftComponents.Contains(equipment))
@@ -599,7 +598,6 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalPanel panel)
                 {
-                    panel.Circuits = "Assign";
                     panel.CircuitNo = 0;
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     if (leftComponents.Contains(panel))
@@ -635,7 +633,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalTransformer transformer)
                 {
-                    transformer.Circuits = "Assign";
+                    transformer.ParentType = "";
                     transformer.CircuitNo = 0;
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     if (leftComponents.Contains(transformer))
@@ -1457,6 +1455,7 @@ namespace GMEPDesignTool
             {
                 if (transformer.ParentId == Id)
                 {
+                    transformer.ParentType = "PANEL ";
                     temp.Add(transformer);
                     transformer.PropertyChanged += Transformer_PropertyChanged;
                 }
