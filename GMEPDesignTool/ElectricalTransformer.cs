@@ -172,6 +172,7 @@ namespace GMEPDesignTool
                 if (parentId != value)
                 {
                     parentId = value;
+                    ParentType = "";
                     DetermineCircuits();
                     OnPropertyChanged(nameof(ParentId));
                 }

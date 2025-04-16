@@ -633,7 +633,6 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalTransformer transformer)
                 {
-                    transformer.ParentType = "";
                     transformer.CircuitNo = 0;
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     if (leftComponents.Contains(transformer))
@@ -771,7 +770,6 @@ namespace GMEPDesignTool
             transformer.ParentType = "PANEL ";
             componentsCollection.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
-            
         }
 
         public void AssignSpace(bool isLeft)
