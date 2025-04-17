@@ -84,7 +84,7 @@
                                         <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     </Grid>
                                 </StackPanel>
-                                <DataGrid CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}"  SelectedItem="{Binding Path=SelectedElectricalEquipment,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                <DataGrid CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 45 0 0">
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">
                                             <Setter Property="Background" Value="{Binding ColorCode}" />
@@ -116,6 +116,24 @@
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
+                                        <DataGridTemplateColumn Header="Color" >
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                         <DataGridComboBoxColumn Header="Category" SelectedValueBinding="{Binding Category,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
@@ -169,7 +187,7 @@
                                             </DataGridTextColumn.Binding>
                                         </DataGridTextColumn>
                                         <DataGridTextColumn Header="VA" Binding="{Binding Va, UpdateSourceTrigger=LostFocus}"/>
-                                        <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -178,6 +196,7 @@
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.PanelNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                    <Setter Property="SelectedIndex" Value="1" />
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
@@ -369,6 +388,11 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGrid.RowStyle>
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu Name="ElectricalLightingContextMenu">
+                                                <MenuItem Header="Remove" Click="RemoveSelectedElectricalLighting_Click"/>
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Tag" Binding="{Binding Tag, UpdateSourceTrigger=LostFocus}">
                                                 <DataGridTextColumn.EditingElementStyle>
@@ -378,6 +402,24 @@
                                                 </DataGridTextColumn.EditingElementStyle>
                                             </DataGridTextColumn>
                                             <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
+                                            <DataGridTemplateColumn Header="Color" >
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            <xctk:ColorPicker.Style>
+                                                                <Style TargetType="xctk:ColorPicker">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </xctk:ColorPicker.Style>
+                                                        </xctk:ColorPicker>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="Qty" Binding="{Binding Qty, UpdateSourceTrigger=LostFocus}">
                                                 <DataGridTextColumn.EditingElementStyle>
                                                     <Style TargetType="{x:Type TextBox}">
@@ -597,6 +639,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalServicesContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalServices_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>
@@ -608,7 +655,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -650,7 +708,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -709,6 +767,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalPanelsContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalPanels_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>
@@ -720,7 +783,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -851,7 +925,7 @@
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
@@ -911,6 +985,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </DataGrid.RowStyle>
+                                    <DataGrid.ContextMenu>
+                                        <ContextMenu Name="ElectricalTransformersContextMenu">
+                                            <MenuItem Header="Remove" Click="RemoveSelectedElectricalTransformers_Click"/>
+                                        </ContextMenu>
+                                    </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Name}" Header="Name">
                                             <DataGridTextColumn.EditingElementStyle>
@@ -922,7 +1001,18 @@
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <xctk:ColorPicker SelectedColor="{Binding ColorCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                        <xctk:ColorPicker.Style>
+                                                            <Style TargetType="xctk:ColorPicker">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Id, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </xctk:ColorPicker.Style>
+                                                    </xctk:ColorPicker>
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
@@ -964,7 +1054,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>

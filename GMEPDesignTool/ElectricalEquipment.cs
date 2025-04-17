@@ -531,7 +531,7 @@ namespace GMEPDesignTool
             {
                 if (parentId != value)
                 {
-                    parentId = value;
+                    parentId = value ?? string.Empty;
                     OnPropertyChanged(nameof(ParentId));
                 }
             }
@@ -680,41 +680,22 @@ namespace GMEPDesignTool
                     fla = (float)va / 120;
                     break;
                 case 3:
-                    if (Pole == 3)
-                        fla = (float)(va / 208 / 1.732);
-                    else
-                        fla = (float)va / 208;
+                    fla = (float)va / 208;
                     break;
                 case 4:
-                    if (Pole == 3)
-                        fla = (float)(va / 230 / 1.732);
-                    else
-                        fla = (float)va / 230;
+                    fla = (float)va / 230;
                     break;
                 case 5:
-                    if (Pole == 3)
-                        fla = (float)(va / 240 / 1.732);
-                    else
-                        fla = (float)va / 240;
-                    Trace.WriteLine(va);
+                    fla = (float)va / 240;
                     break;
                 case 6:
-                    if (Pole == 3)
-                        fla = (float)(va / 277 / 1.732);
-                    else
-                        fla = (float)va / 277;
+                    fla = (float)va / 277;
                     break;
                 case 7:
-                    if (Pole == 3)
-                        fla = (float)(va * 460 / 1.732);
-                    else
-                        fla = (float)va * 460;
+                    fla = (float)va * 460;
                     break;
                 case 8:
-                    if (Pole == 3)
-                        fla = (float)(va / 480 / 1.732);
-                    else
-                        fla = (float)va / 480;
+                    fla = (float)va / 480;
                     break;
             }
             this.Fla = fla;
@@ -733,40 +714,22 @@ namespace GMEPDesignTool
                     va = Fla * 120;
                     break;
                 case 3:
-                    if (Pole == 3)
-                        va = Fla * 208 / 1.732;
-                    else
-                        va = Fla * 208;
+                    va = Fla * 208;
                     break;
                 case 4:
-                    if (Pole == 3)
-                        va = Fla * 230 / 1.732;
-                    else
-                        va = Fla * 230;
+                    va = Fla * 230;
                     break;
                 case 5:
-                    if (Pole == 3)
-                        va = Fla * 240 / 1.732;
-                    else
-                        va = Fla * 240;
+                    va = Fla * 240;
                     break;
                 case 6:
-                    if (Pole == 3)
-                        va = Fla * 277 / 1.732;
-                    else
-                        va = Fla * 277;
+                    va = Fla * 277;
                     break;
                 case 7:
-                    if (Pole == 3)
-                        va = Fla * 460 / 1.732;
-                    else
-                        va = Fla * 460;
+                    va = Fla * 460;
                     break;
                 case 8:
-                    if (Pole == 3)
-                        va = Fla * 480 / 1.732;
-                    else
-                        va = Fla * 480;
+                    va = Fla * 480;
                     break;
             }
             this.Va = Convert.ToInt32(va);

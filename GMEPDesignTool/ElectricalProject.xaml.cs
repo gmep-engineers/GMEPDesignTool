@@ -20,9 +20,6 @@ namespace GMEPDesignTool
     /// </summary>
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
-        public ElectricalEquipment? SelectedElectricalEquipment { get; set; }
-        public ElectricalLighting? SelectedElectricalLighting { get; set; }
-        public ElectricalLightingControl? SelectedElectricalLightingControl { get; set; }
         private DispatcherTimer timer = new DispatcherTimer();
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
@@ -1076,6 +1073,51 @@ namespace GMEPDesignTool
                         PanelNames.Remove(key);
                     }
                 }
+                var ServiceNamesKeys = ServiceNames.Keys.ToList();
+                foreach(var key in ServiceNamesKeys)
+                {
+                    if (!validIds.Contains(key))
+                    {
+                        ServiceNames.Remove(key);
+                    }
+                }
+            }
+        }
+        private void ElectricalPanels_CollectionChanged(
+           object sender,
+           NotifyCollectionChangedEventArgs e
+       )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalPanel panel in e.OldItems)
+                {
+                    RemoveElectricalPanel(panel);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanel electricalPanel in e.NewItems)
+                {
+                    electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
+                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                    electricalPanel.leftNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.rightNotes.CollectionChanged +=
+                        ElectricalPanelNoteRels_CollectionChanged;
+                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    foreach (var circuit in electricalPanel.leftCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    foreach (var circuit in electricalPanel.rightCircuits)
+                    {
+                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
+                    }
+                    electricalPanel.fillInitialSpaces();
+                }
+                GetNames();
             }
         }
 
@@ -1189,66 +1231,10 @@ namespace GMEPDesignTool
                 }
             }
         }
-        private void ElectricalEquipments_CollectionChanged(
-            object sender,
-            NotifyCollectionChangedEventArgs e
-        )
-        {
-           if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (ElectricalEquipment equipment in e.OldItems)
-                {
-                    RemoveElectricalEquipment(equipment);
-                }
-            }
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach(ElectricalEquipment equipment in e.NewItems)
-                {
-                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
-                }
-                OrderEquipment(ElectricalEquipments);
-            }
-        }
+     
 
 
-        private void ElectricalPanels_CollectionChanged(
-            object sender,
-            NotifyCollectionChangedEventArgs e
-        )
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (ElectricalPanel panel in e.OldItems)
-                {
-                    RemoveElectricalPanel(panel);
-                }
-            }
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (ElectricalPanel electricalPanel in e.NewItems)
-                {
-                    electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
-                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
-                    electricalPanel.leftNotes.CollectionChanged +=
-                        ElectricalPanelNoteRels_CollectionChanged;
-                    electricalPanel.rightNotes.CollectionChanged +=
-                        ElectricalPanelNoteRels_CollectionChanged;
-                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    foreach (var circuit in electricalPanel.leftCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    foreach (var circuit in electricalPanel.rightCircuits)
-                    {
-                        circuit.PropertyChanged += PanelCircuits_PropertyChanged;
-                    }
-                    electricalPanel.fillInitialSpaces();
-                }
-                GetNames();
-            }
-        }
+       
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
@@ -1345,9 +1331,52 @@ namespace GMEPDesignTool
 
         private void RemoveSelectedElectricalEquipment_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedElectricalEquipment != null)
+            var selectedEquipment = ElectricalEquipmentDataGrid
+                .SelectedItems.Cast<ElectricalEquipment>()
+                .ToList();
+            foreach (ElectricalEquipment equipment in selectedEquipment)
             {
-                RemoveElectricalEquipment(SelectedElectricalEquipment);
+                RemoveElectricalEquipment(equipment);
+            }
+        }
+        private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedLighting = ElectricalLightingDataGrid
+                .SelectedItems.Cast<ElectricalLighting>()
+                .ToList();
+            foreach (ElectricalLighting lighting in selectedLighting)
+            {
+                RemoveElectricalLighting(lighting);
+            }
+        }
+        private void RemoveSelectedElectricalServices_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedServices = ElectricalServiceDataGrid
+                .SelectedItems.Cast<ElectricalService>()
+                .ToList();
+            foreach (ElectricalService service in selectedServices)
+            {
+                RemoveElectricalService(service);
+            }
+        }
+        private void RemoveSelectedElectricalPanels_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPanels = ElectricalPanelDataGrid
+                .SelectedItems.Cast<ElectricalPanel>()
+                .ToList();
+            foreach (ElectricalPanel panel in selectedPanels)
+            {
+                RemoveElectricalPanel(panel);
+            }
+        }
+        private void RemoveSelectedElectricalTransformers_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedTransformers = ElectricalTransformerDataGrid
+                .SelectedItems.Cast<ElectricalTransformer>()
+                .ToList();
+            foreach (ElectricalTransformer transformer in selectedTransformers)
+            {
+                RemoveElectricalTransformer(transformer);
             }
         }
 
@@ -1653,7 +1682,27 @@ namespace GMEPDesignTool
                 OrderEquipment(ElectricalEquipments);
             }
         }
-
+        private void ElectricalEquipments_CollectionChanged(
+         object sender,
+         NotifyCollectionChangedEventArgs e
+        )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (ElectricalEquipment equipment in e.OldItems)
+                {
+                    RemoveElectricalEquipment(equipment);
+                }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalEquipment equipment in e.NewItems)
+                {
+                    equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
+                }
+                OrderEquipment(ElectricalEquipments);
+            }
+        }
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalEquipment equipment)
