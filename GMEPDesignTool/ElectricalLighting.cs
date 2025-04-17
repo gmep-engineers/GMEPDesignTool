@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         private string specSheetId = string.Empty;
         private bool hasPhotoCell = false;
         private string locationId = string.Empty;
+        private int orderNo = 1;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -57,7 +58,8 @@ namespace GMEPDesignTool
             bool specSheetFromClient,
             string specSheetId,
             bool hasPhotoCell,
-            string locationId
+            string locationId,
+            int orderNo
         )
         {
             this.id = id;
@@ -82,6 +84,7 @@ namespace GMEPDesignTool
             this.specSheetId = specSheetId;
             this.hasPhotoCell = hasPhotoCell;
             this.locationId = locationId;
+            this.orderNo = orderNo;
         }
 
         public ElectricalLighting() { }
@@ -369,7 +372,18 @@ namespace GMEPDesignTool
                 }
             }
         }
-
+        public int OrderNo
+        {
+            get => orderNo;
+            set
+            {
+                if (orderNo != value)
+                {
+                    orderNo = value;
+                    OnPropertyChanged(nameof(OrderNo));
+                }
+            }
+        }
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

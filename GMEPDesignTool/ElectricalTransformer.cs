@@ -38,7 +38,8 @@ namespace GMEPDesignTool
             int circuitNo,
             bool isHiddenOnPlan,
             bool isWallMounted,
-            int aicRating
+            int aicRating,
+            int orderNo
 
         )
         {
@@ -64,6 +65,7 @@ namespace GMEPDesignTool
             _isHiddenOnPlan = isHiddenOnPlan;
             _isWallMounted = isWallMounted;
             _aicRating=aicRating;
+            this.orderNo = orderNo;
             this.componentType = "Transformer";
             DetermineCircuits();
         }

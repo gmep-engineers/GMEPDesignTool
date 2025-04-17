@@ -375,8 +375,7 @@
                                             <Rectangle Width="9999" Height="1" Margin="0 38 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                         </Grid>
                                     </StackPanel>
-
-                                    <DataGrid Name="ElectricalLightingDataGrid" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" ItemsSource="{Binding Source={StaticResource LightingViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLighting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                    <DataGrid Name="ElectricalLightingDataGrid" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" ItemsSource="{Binding Source={StaticResource LightingViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLighting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 45 0 0">
                                         <DataGrid.RowStyle>
                                             <Style TargetType="DataGridRow">
                                                 <Setter Property="Background" Value="{Binding ColorCode}" />

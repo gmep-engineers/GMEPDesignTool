@@ -73,7 +73,8 @@ namespace GMEPDesignTool
             int circuitNo,
             bool isHiddenOnPlan,
             string location,
-            char highLegPhase
+            char highLegPhase,
+            int orderNo
         )
             : base()
         {
@@ -112,6 +113,7 @@ namespace GMEPDesignTool
             _highLegPhase = highLegPhase;
             this._location = location;
             this.componentType = "Panel";
+            this.orderNo = orderNo;
             SetPole();
             PopulateCircuits(Id, ProjectId);
             updateFlag = false;

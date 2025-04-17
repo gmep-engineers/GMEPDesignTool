@@ -28,7 +28,8 @@ namespace GMEPDesignTool
             int config,
             string colorCode,
             int aicRating,
-            string parentId
+            string parentId,
+            int orderNo
         )
         {
             this.id = id;
@@ -41,6 +42,7 @@ namespace GMEPDesignTool
             _aicRating = aicRating;
             this.componentType = "Service";
             this.parentId = parentId;
+            this.orderNo = orderNo;
         }
         public ElectricalService()
         {
