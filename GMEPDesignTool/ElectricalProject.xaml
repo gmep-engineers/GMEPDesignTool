@@ -155,7 +155,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
@@ -169,13 +169,29 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Phase" SelectedValueBinding="{Binding Is3Ph,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Phase" SelectedValueBinding="{Binding Is3Ph,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="1" Tag="False"/>
                                                     <ComboBoxItem Content="3" Tag="True"/>
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
+                                            <DataGridComboBoxColumn.EditingElementStyle>
+                                                <Style TargetType="ComboBox">
+                                                    <Setter Property="IsEnabled" Value="True"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Voltage}" Value="6">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
                                         <DataGridTextColumn Header="Amperage">
                                             <DataGridTextColumn.Binding>
