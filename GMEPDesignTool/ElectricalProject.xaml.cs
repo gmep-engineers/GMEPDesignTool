@@ -1447,9 +1447,11 @@ namespace GMEPDesignTool
                 1,
                 "White",
                 0,
-                ""
+                "",
+                ElectricalServices.Count + 1
             );
             AddElectricalService(electricalService);
+            OrderServices(ElectricalServices);
         }
 
         public void RemoveElectricalService(ElectricalService electricalService)
@@ -1490,7 +1492,7 @@ namespace GMEPDesignTool
                     service.PropertyChanged += ElectricalService_PropertyChanged;
                 }
                 GetNames();
-                //OrderEquipment(ElectricalEquipments);
+                OrderServices(ElectricalServices);
             }
         }
         private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -1611,6 +1613,7 @@ namespace GMEPDesignTool
                 1
             );
             AddElectricalEquipment(electricalEquipment);
+            OrderEquipment(ElectricalEquipments);
         }
 
         public void RemoveElectricalEquipment(ElectricalEquipment electricalEquipment)
@@ -1858,6 +1861,7 @@ namespace GMEPDesignTool
                 ElectricalLightings.Count + 1
             );
             AddElectricalLighting(electricalLighting);
+            OrderLightings(ElectricalLightings);
         }
 
         public void AddNewElectricalLightingLocation_Click(object sender, RoutedEventArgs e)
@@ -2461,6 +2465,30 @@ namespace GMEPDesignTool
                     OrderLightings(ElectricalLightings);
                 }
             }
+            if (dropInfo.Data is ElectricalService sourceItem3)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalServices.IndexOf(sourceItem3);
+
+                if (targetIndex > sourceIndex)
+                {
+                    targetIndex--;
+                }
+
+                if (sourceIndex != targetIndex)
+                {
+                    if (targetIndex > ElectricalServices.Count - 1)
+                    {
+                        targetIndex = ElectricalServices.Count - 1;
+                    }
+                    if (targetIndex < 0)
+                    {
+                        targetIndex = 0;
+                    }
+                    ElectricalServices.Move(sourceIndex, targetIndex);
+                    OrderServices(ElectricalServices);
+                }
+            }
         }
 
         void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
@@ -2478,6 +2506,15 @@ namespace GMEPDesignTool
             foreach (var lighting in lightings)
             {
                 lighting.OrderNo = index;
+                index++;
+            }
+        }
+        void OrderServices(ObservableCollection<ElectricalService> services)
+        {
+            int index = 0;
+            foreach (var service in services)
+            {
+                service.OrderNo = index;
                 index++;
             }
         }

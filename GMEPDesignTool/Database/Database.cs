@@ -900,7 +900,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateService(ElectricalService service)
         {
             string query =
-                "UPDATE electrical_services SET name = @name, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating, parent_id = @parentId WHERE id = @id";
+                "UPDATE electrical_services SET name = @name, order_no = @order_no, electrical_service_amp_rating_id = @amp, electrical_service_voltage_id = @type, electrical_service_meter_config_id = @config, color_code = @color_code, aic_rating = @aicRating, parent_id = @parentId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@name", service.Name);
             command.Parameters.AddWithValue("@amp", service.Amp);
@@ -910,13 +910,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.Parameters.AddWithValue("@parentId", service.ParentId);
+            command.Parameters.AddWithValue("@order_no", service.OrderNo);
             await command.ExecuteNonQueryAsync();
         }
 
         private async Task InsertService(string projectId, ElectricalService service)
         {
             string query =
-                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating, parent_id) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating, @parentId)";
+                "INSERT INTO electrical_services (id, project_id, name, electrical_service_amp_rating_id, electrical_service_voltage_id, electrical_service_meter_config_id, color_code, aic_rating, parent_id, order_no) VALUES (@id, @projectId, @name, @amp, @type, @config, @color_code, @aicRating, @parentId, @order_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", service.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -927,6 +928,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", service.ColorCode);
             command.Parameters.AddWithValue("@aicRating", service.AicRating);
             command.Parameters.AddWithValue("@parentId", service.ParentId);
+            command.Parameters.AddWithValue("@order_no", service.OrderNo);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1393,7 +1395,7 @@ namespace GMEPDesignTool.Database
         {
             ObservableCollection<ElectricalService> services =
                 new ObservableCollection<ElectricalService>();
-            string query = "SELECT * FROM electrical_services WHERE project_id = @projectId";
+            string query = "SELECT * FROM electrical_services WHERE project_id = @projectId ORDER BY order_no";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1410,7 +1412,8 @@ namespace GMEPDesignTool.Database
                         reader.GetInt32("electrical_service_meter_config_id"),
                         reader.GetString("color_code"),
                         reader.GetInt32("aic_rating"),
-                        reader.GetString("parent_id")
+                        reader.GetString("parent_id"),
+                        reader.GetInt32("order_no")
                     )
                 );
             }
