@@ -2155,9 +2155,11 @@ namespace GMEPDesignTool
                 0,
                 false,
                 true,
-                0
+                0,
+                ElectricalTransformers.Count + 1
             );
             AddElectricalTransformer(electricalTransformer);
+            OrderTransformers(ElectricalTransformers);
         }
 
         public void RemoveElectricalTransformer(ElectricalTransformer electricalTransformer)
@@ -2198,7 +2200,7 @@ namespace GMEPDesignTool
                     transformer.PropertyChanged += ElectricalTransformer_PropertyChanged;
                 }
                 GetNames();
-                //OrderEquipment(ElectricalEquipments);
+                OrderTransformers(ElectricalTransformers);
             }
         }
 
@@ -2516,6 +2518,30 @@ namespace GMEPDesignTool
                     OrderPanels(ElectricalPanels);
                 }
             }
+            if (dropInfo.Data is ElectricalTransformer sourceItem5)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalTransformers.IndexOf(sourceItem5);
+
+                if (targetIndex > sourceIndex)
+                {
+                    targetIndex--;
+                }
+
+                if (sourceIndex != targetIndex)
+                {
+                    if (targetIndex > ElectricalTransformers.Count - 1)
+                    {
+                        targetIndex = ElectricalTransformers.Count - 1;
+                    }
+                    if (targetIndex < 0)
+                    {
+                        targetIndex = 0;
+                    }
+                    ElectricalTransformers.Move(sourceIndex, targetIndex);
+                    OrderTransformers(ElectricalTransformers);
+                }
+            }
         }
 
         void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
@@ -2551,6 +2577,15 @@ namespace GMEPDesignTool
             foreach (var panel in panels)
             {
                 panel.OrderNo = index;
+                index++;
+            }
+        }
+        void OrderTransformers(ObservableCollection<ElectricalTransformer> transformers)
+        {
+            int index = 0;
+            foreach (var transformer in transformers)
+            {
+                transformer.OrderNo = index;
                 index++;
             }
         }

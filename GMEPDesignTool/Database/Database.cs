@@ -1289,7 +1289,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateTransformer(ElectricalTransformer transformer)
         {
             string query =
-                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating WHERE id = @id";
+                "UPDATE electrical_transformers SET parent_id = @parent_id, voltage_id = @voltage, kva_id = @kva, parent_distance = @distanceFromParent, color_code = @color_code, name = @name, circuit_no = @circuitNo, is_hidden_on_plan = @is_hidden_on_plan, is_wall_mounted = @isWallMounted, aic_rating = @aicRating, order_no = @order_no WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@parent_id", transformer.ParentId);
             command.Parameters.AddWithValue("@id", transformer.Id);
@@ -1302,13 +1302,14 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@is_hidden_on_plan", transformer.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
+            command.Parameters.AddWithValue("@order_no", transformer.OrderNo);
             await command.ExecuteNonQueryAsync();
         }
 
         private async Task InsertTransformer(string projectId, ElectricalTransformer transformer)
         {
             string query =
-                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan, is_wall_mounted, aic_rating) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan, @isWallMounted, @aicRating)";
+                "INSERT INTO electrical_transformers (id, project_id, parent_id, voltage_id, parent_distance, color_code, kva_id, name, circuit_no, is_hidden_on_plan, is_wall_mounted, aic_rating, order_no) VALUES (@id, @project_id, @parent_id, @voltage, @distanceFromParent, @color_code, @kva, @name, @circuitNo, @isHiddenOnPlan, @isWallMounted, @aicRating, @order_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", transformer.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -1322,6 +1323,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@isHiddenOnPlan", transformer.IsHiddenOnPlan);
             command.Parameters.AddWithValue("@isWallMounted", transformer.IsWallMounted);
             command.Parameters.AddWithValue("@aicRating", transformer.AicRating);
+            command.Parameters.AddWithValue("@order_no", transformer.OrderNo);
             await command.ExecuteNonQueryAsync();
         }
         private async Task InsertClock(string projectId, TimeClock clock)
@@ -1850,7 +1852,7 @@ namespace GMEPDesignTool.Database
         {
             ObservableCollection<ElectricalTransformer> transformers =
                 new ObservableCollection<ElectricalTransformer>();
-            string query = "SELECT * FROM electrical_transformers WHERE project_id = @projectId";
+            string query = "SELECT * FROM electrical_transformers WHERE project_id = @projectId ORDER BY order_no";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1881,7 +1883,10 @@ namespace GMEPDesignTool.Database
                         reader.GetBoolean("is_wall_mounted"),
                         reader.IsDBNull(reader.GetOrdinal("aic_rating"))
                             ? 0
-                            : reader.GetInt32("aic_rating")
+                            : reader.GetInt32("aic_rating"),
+                        reader.IsDBNull(reader.GetOrdinal("order_no"))
+                            ? 0
+                            : reader.GetInt32("order_no")
                     )
                 );
             }
