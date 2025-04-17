@@ -753,9 +753,11 @@ namespace GMEPDesignTool
                 0,
                 false,
                 "",
-                '-'
+                '-',
+                ElectricalPanels.Count + 1
             );
             AddElectricalPanel(electricalPanel);
+            OrderPanels(ElectricalPanels);
         }
 
         public void RemoveElectricalPanel(ElectricalPanel electricalPanel)
@@ -1118,6 +1120,7 @@ namespace GMEPDesignTool
                     electricalPanel.fillInitialSpaces();
                 }
                 GetNames();
+                OrderPanels(ElectricalPanels);
             }
         }
 
@@ -2489,6 +2492,30 @@ namespace GMEPDesignTool
                     OrderServices(ElectricalServices);
                 }
             }
+            if (dropInfo.Data is ElectricalPanel sourceItem4)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalPanels.IndexOf(sourceItem4);
+
+                if (targetIndex > sourceIndex)
+                {
+                    targetIndex--;
+                }
+
+                if (sourceIndex != targetIndex)
+                {
+                    if (targetIndex > ElectricalPanels.Count - 1)
+                    {
+                        targetIndex = ElectricalPanels.Count - 1;
+                    }
+                    if (targetIndex < 0)
+                    {
+                        targetIndex = 0;
+                    }
+                    ElectricalPanels.Move(sourceIndex, targetIndex);
+                    OrderPanels(ElectricalPanels);
+                }
+            }
         }
 
         void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
@@ -2515,6 +2542,15 @@ namespace GMEPDesignTool
             foreach (var service in services)
             {
                 service.OrderNo = index;
+                index++;
+            }
+        }
+        void OrderPanels(ObservableCollection<ElectricalPanel> panels)
+        {
+            int index = 0;
+            foreach (var panel in panels)
+            {
+                panel.OrderNo = index;
                 index++;
             }
         }
