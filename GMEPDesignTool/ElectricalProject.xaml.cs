@@ -2419,11 +2419,19 @@ namespace GMEPDesignTool
                 var targetIndex = dropInfo.InsertIndex;
                 var sourceIndex = ElectricalEquipments.IndexOf(sourceItem);
 
+                if (targetIndex > sourceIndex) {
+                    targetIndex--;
+                }
+
                 if (sourceIndex != targetIndex)
                 {
                     if (targetIndex > ElectricalEquipments.Count - 1)
                     {
                         targetIndex = ElectricalEquipments.Count - 1;
+                    }
+                    if (targetIndex < 0)
+                    {
+                        targetIndex = 0;
                     }
                     ElectricalEquipments.Move(sourceIndex, targetIndex);
                     OrderEquipment(ElectricalEquipments);
@@ -2434,11 +2442,20 @@ namespace GMEPDesignTool
                 var targetIndex = dropInfo.InsertIndex;
                 var sourceIndex = ElectricalLightings.IndexOf(sourceItem2);
 
+                if (targetIndex > sourceIndex)
+                {
+                    targetIndex--;
+                }
+
                 if (sourceIndex != targetIndex)
                 {
                     if (targetIndex > ElectricalLightings.Count - 1)
                     {
                         targetIndex = ElectricalLightings.Count - 1;
+                    }
+                    if (targetIndex < 0)
+                    {
+                        targetIndex = 0;
                     }
                     ElectricalLightings.Move(sourceIndex, targetIndex);
                     OrderLightings(ElectricalLightings);
