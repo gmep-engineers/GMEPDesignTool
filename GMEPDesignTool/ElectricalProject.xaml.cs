@@ -1823,7 +1823,6 @@ namespace GMEPDesignTool
         ) { }
 
         //Lighting Functions
-
         public void AddElectricalLighting(ElectricalLighting electricalLighting)
         {
             electricalLighting.PropertyChanged += ElectricalLighting_PropertyChanged;
@@ -1855,7 +1854,8 @@ namespace GMEPDesignTool
                 false,
                 "",
                 false,
-                ""
+                "",
+                ElectricalLightings.Count + 1
             );
             AddElectricalLighting(electricalLighting);
         }
@@ -1906,7 +1906,7 @@ namespace GMEPDesignTool
                 {
                     lighting.PropertyChanged += ElectricalLighting_PropertyChanged;
                 }
-                //OrderEquipment(ElectricalEquipments);
+                OrderLightings(ElectricalLightings);
             }
         }
 
@@ -2429,6 +2429,21 @@ namespace GMEPDesignTool
                     OrderEquipment(ElectricalEquipments);
                 }
             }
+            if (dropInfo.Data is ElectricalLighting sourceItem2)
+            {
+                var targetIndex = dropInfo.InsertIndex;
+                var sourceIndex = ElectricalLightings.IndexOf(sourceItem2);
+
+                if (sourceIndex != targetIndex)
+                {
+                    if (targetIndex > ElectricalLightings.Count - 1)
+                    {
+                        targetIndex = ElectricalLightings.Count - 1;
+                    }
+                    ElectricalLightings.Move(sourceIndex, targetIndex);
+                    OrderLightings(ElectricalLightings);
+                }
+            }
         }
 
         void OrderEquipment(ObservableCollection<ElectricalEquipment> equipments)
@@ -2437,6 +2452,15 @@ namespace GMEPDesignTool
             foreach (var equipment in equipments)
             {
                 equipment.OrderNo = index;
+                index++;
+            }
+        }
+        void OrderLightings(ObservableCollection<ElectricalLighting> lightings)
+        {
+            int index = 0;
+            foreach (var lighting in lightings)
+            {
+                lighting.OrderNo = index;
                 index++;
             }
         }

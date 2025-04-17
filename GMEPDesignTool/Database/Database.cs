@@ -1193,7 +1193,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateLighting(ElectricalLighting lighting)
         {
             string query =
-                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty, has_photocell = @hasPhotoCell, location_id = @locationId WHERE id = @id";
+                "UPDATE electrical_lighting SET notes = @notes, model_no = @model_no, order_no = @order_no, parent_id = @parent_id, voltage_id = @voltageId, color_code = @colorCode, mounting_type_id = @mountingType, occupancy=@occupancy, manufacturer = @manufacturer, wattage = @wattage, em_capable = @em_capable, tag = @tag, symbol_id = @symbolId, description=@description, driver_type_id = @driverTypeId, spec_sheet_from_client=@specFromClient, spec_sheet_id=@specSheetId, qty = @qty, has_photocell = @hasPhotoCell, location_id = @locationId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@model_no", lighting.ModelNo);
             command.Parameters.AddWithValue("@parent_id", lighting.ParentId);
@@ -1215,6 +1215,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@qty", lighting.Qty);
             command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
             command.Parameters.AddWithValue("@locationId", lighting.LocationId);
+            command.Parameters.AddWithValue("@order_no", lighting.OrderNo);
 
             await command.ExecuteNonQueryAsync();
         }
@@ -1236,7 +1237,7 @@ namespace GMEPDesignTool.Database
         private async Task InsertLighting(string projectId, ElectricalLighting lighting)
         {
             string query =
-                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty, has_photocell, location_id) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty, @hasPhotoCell, @locationId)";
+                "INSERT INTO electrical_lighting (id, project_id, notes, model_no, parent_id, voltage_id, color_code, mounting_type_id, occupancy, manufacturer, wattage, em_capable, tag, symbol_id, description, driver_type_id, spec_sheet_from_client, spec_sheet_id, qty, has_photocell, location_id, order_no) VALUES (@id, @project_id, @notes, @model_no, @parent_id, @voltageId, @colorCode, @mountingType, @occupancy, @manufacturer, @wattage, @em_capable, @tag, @symbolId, @description, @driverTypeId, @specFromClient, @specSheetId, @qty, @hasPhotoCell, @locationId, @order_no)";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", lighting.Id);
             command.Parameters.AddWithValue("@project_id", projectId);
@@ -1259,6 +1260,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@qty", lighting.Qty);
             command.Parameters.AddWithValue("@hasPhotoCell", lighting.HasPhotoCell);
             command.Parameters.AddWithValue("@locationId", lighting.LocationId);
+            command.Parameters.AddWithValue("@order_no", lighting.OrderNo);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1746,7 +1748,7 @@ namespace GMEPDesignTool.Database
         {
             ObservableCollection<ElectricalLighting> lightings =
                 new ObservableCollection<ElectricalLighting>();
-            string query = "SELECT * FROM electrical_lighting WHERE project_id = @projectId";
+            string query = "SELECT * FROM electrical_lighting WHERE project_id = @projectId ORDER BY order_no";
             await OpenConnectionAsync();
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1795,7 +1797,10 @@ namespace GMEPDesignTool.Database
                         reader.IsDBNull(reader.GetOrdinal("has_photocell"))
                             ? false
                             : reader.GetBoolean("has_photocell"),
-                        reader.GetString("location_id")
+                        reader.GetString("location_id"),
+                        reader.IsDBNull(reader.GetOrdinal("order_no"))
+                            ? 0
+                            : reader.GetInt32("order_no")
                     )
                 );
             }
