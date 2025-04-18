@@ -126,6 +126,7 @@ namespace GMEPDesignTool
             determineEquipmentPole();
             DetermineCircuits();
             SetPhaseVa();
+            SetConnectionSymbol();
         }
 
         public ElectricalEquipment()
@@ -238,6 +239,7 @@ namespace GMEPDesignTool
                     OnPropertyChanged(nameof(Voltage));
                     determineEquipmentPole();
                     setVa();
+                    SetConnectionSymbol();
                 }
             }
         }
@@ -562,6 +564,23 @@ namespace GMEPDesignTool
             get => dateCreated;
         }
 
+        public void SetConnectionSymbol()
+        {
+            if (Voltage == 1 || Voltage == 2)
+            {
+              if (ConnectionSymbolId == 2 || ConnectionSymbolId == 4 || ConnectionSymbolId == 5 || ConnectionSymbolId == 9 || ConnectionSymbolId == 12)
+              {
+                    ConnectionSymbolId = 1;
+              }
+            }
+            else
+            {
+                if (ConnectionSymbolId != 2 && ConnectionSymbolId != 4 && ConnectionSymbolId != 5 && ConnectionSymbolId != 9 && ConnectionSymbolId != 12)
+                {
+                    ConnectionSymbolId = 2;
+                }
+            }
+        }
         public void SetPhaseVa()
         {
             determineEquipmentPole();
