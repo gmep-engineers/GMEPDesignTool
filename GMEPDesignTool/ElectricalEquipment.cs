@@ -39,6 +39,7 @@ namespace GMEPDesignTool
         private string circuits = string.Empty;
         private DateTime dateCreated = DateTime.Now;
         private int statusId = 1;
+        private int connectionSymbolId = 1;
 
         public ElectricalEquipment(
             string id,
@@ -71,7 +72,8 @@ namespace GMEPDesignTool
             bool isHiddenOnPlan,
             int loadType,
             int orderNo,
-            int statusId
+            int statusId,
+            int connectionSymbolId
         )
         {
             this.id = id;
@@ -117,6 +119,7 @@ namespace GMEPDesignTool
             this.BLcl = 0;
             this.CLcl = 0;
             this.componentType = "Equipment";
+            this.connectionSymbolId = connectionSymbolId;
             this.orderNo = orderNo;
             DetermineLoadCategory();
             //DetermineLoadTypes();
@@ -178,6 +181,19 @@ namespace GMEPDesignTool
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
                     OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        public int ConnectionSymbolId
+        {
+            get => connectionSymbolId;
+            set
+            {
+                if (connectionSymbolId != value)
+                {
+                    connectionSymbolId = value;
+                    OnPropertyChanged(nameof(ConnectionSymbolId));
                 }
             }
         }
