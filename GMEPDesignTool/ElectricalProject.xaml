@@ -723,18 +723,6 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Parent" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
-                                            <DataGridComboBoxColumn.ElementStyle>
-                                                <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-                                                </Style>
-                                            </DataGridComboBoxColumn.ElementStyle>
-                                            <DataGridComboBoxColumn.EditingElementStyle>
-                                                <Style TargetType="{x:Type ComboBox}">
-                                                    <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ServiceNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                                                </Style>
-                                            </DataGridComboBoxColumn.EditingElementStyle>
-                                        </DataGridComboBoxColumn>
                                         <DataGridTemplateColumn Header="Load Summary">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -949,6 +937,7 @@
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                    <Setter Property="IsEnabled" Value="False"/>
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
@@ -1078,6 +1067,7 @@
                                             <DataGridComboBoxColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
                                                     <Setter Property="ItemsSource" Value="{Binding Path=DataContext.ParentNames, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                                                    <Setter Property="IsEnabled" Value="False"/>
                                                 </Style>
                                             </DataGridComboBoxColumn.EditingElementStyle>
                                         </DataGridComboBoxColumn>
