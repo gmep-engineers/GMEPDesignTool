@@ -15,6 +15,7 @@
         <CollectionViewSource x:Key="LightingViewSource" Source="{Binding ElectricalLightings}" />
         <CollectionViewSource x:Key="LightingControlsViewSource" Source="{Binding ElectricalLightingControls}" />
         <local:RoundToNearestDecimalConverter x:Key="RoundToNearestDecimalConverter"/>
+        <local:RoundToNearestIntegerConverter x:Key="RoundToNearestIntegerConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
         <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
     </UserControl.Resources>
@@ -202,7 +203,7 @@
                                                 </Binding>
                                             </DataGridTextColumn.Binding>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="VA" Binding="{Binding Va, UpdateSourceTrigger=LostFocus}"/>
+                                        <DataGridTextColumn Header="VA" Binding="{Binding Va, Converter={StaticResource RoundToNearestIntegerConverter}, UpdateSourceTrigger=LostFocus}"/>
                                         <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
