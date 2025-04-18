@@ -1719,7 +1719,7 @@ namespace GMEPDesignTool.Database
                         GetSafeString(reader, "parent_id"),
                         GetSafeInt(reader, "voltage_id"),
                         GetSafeFloat(reader, "fla"),
-                        GetSafeInt(reader, "va"),
+                        GetSafeFloat(reader, "va"),
                         GetSafeBoolean(reader, "is_three_phase"),
                         GetSafeString(reader, "spec_sheet_id"),
                         GetSafeInt(reader, "aic_rating"),

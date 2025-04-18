@@ -33,7 +33,7 @@ namespace GMEPDesignTool
         private bool powered = false;
         private bool hasPlug = true;
         private bool lockingConnector = false;
-        private int va = 0;
+        private float va = 0;
         private bool isHiddenOnPlan = false;
         private int loadType = 1;
         private string circuits = string.Empty;
@@ -49,7 +49,7 @@ namespace GMEPDesignTool
             string parentId,
             int voltage,
             float fla,
-            int va,
+            float va,
             bool is3Ph,
             string specSheetId,
             int aicRating,
@@ -458,7 +458,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Va
+        public float Va
         {
             get => va;
             set
@@ -674,32 +674,32 @@ namespace GMEPDesignTool
         public void SetFla()
         {
             float fla = 0;
-            double va = Convert.ToDouble(Va);
+            float va = Va;
             switch (Voltage)
             {
                 case 1:
-                    fla = (float)va / 115;
+                    fla = va / 115;
                     break;
                 case 2:
-                    fla = (float)va / 120;
+                    fla = va / 120;
                     break;
                 case 3:
-                    fla = (float)va / 208;
+                    fla = va / 208;
                     break;
                 case 4:
-                    fla = (float)va / 230;
+                    fla = va / 230;
                     break;
                 case 5:
-                    fla = (float)va / 240;
+                    fla = va / 240;
                     break;
                 case 6:
-                    fla = (float)va / 277;
+                    fla = va / 277;
                     break;
                 case 7:
-                    fla = (float)va * 460;
+                    fla = va * 460;
                     break;
                 case 8:
-                    fla = (float)va / 480;
+                    fla = va / 480;
                     break;
             }
             this.Fla = fla;
@@ -707,7 +707,7 @@ namespace GMEPDesignTool
 
         public void setVa()
         {
-            double va = 0;
+            float va = 0;
 
             switch (Voltage)
             {
@@ -736,7 +736,7 @@ namespace GMEPDesignTool
                     va = Fla * 480;
                     break;
             }
-            this.Va = Convert.ToInt32(va);
+            this.Va = va;
         }
 
         public bool Verify()

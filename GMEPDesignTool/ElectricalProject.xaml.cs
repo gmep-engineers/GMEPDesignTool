@@ -2733,6 +2733,36 @@ namespace GMEPDesignTool
             return value;
         }
     }
+    public class RoundToNearestIntegerConverter : IValueConverter
+    {
+        public object Convert(
+            object value,
+            System.Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
+        {
+            if (value is float doubleValue)
+            {
+                return ((int)Math.Round(doubleValue)).ToString();
+            }
+            return value;
+        }
+
+        public object ConvertBack(
+            object value,
+            System.Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
+        {
+            if (float.TryParse(value.ToString(), out float doubleValue))
+            {
+                return ((int)Math.Round(doubleValue));
+            }
+            return value;
+        }
+    }
 
     [Serializable]
     public class ObservableKeyValuePair<TKey, TValue> : INotifyPropertyChanged
