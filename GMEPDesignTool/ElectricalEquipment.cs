@@ -215,6 +215,10 @@ namespace GMEPDesignTool
                 if (voltage != value)
                 {
                     voltage = value;
+                    if (voltage == 1 || voltage == 2 || voltage == 6)
+                    {
+                        Is3Ph = false;
+                    }
                     OnPropertyChanged(nameof(Voltage));
                     determineEquipmentPole();
                     setVa();
