@@ -159,21 +159,231 @@
                                         <DataGridComboBoxColumn Header="ConnectionSymbol" SelectedValueBinding="{Binding ConnectionSymbolId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
-                                                    <ComboBoxItem Content="Duplex" Tag="1"/>
-                                                    <ComboBoxItem Content="NEMA" Tag="2"/>
-                                                    <ComboBoxItem Content="Quad" Tag="3"/>
-                                                    <ComboBoxItem Content="J-Box" Tag="4"/>
-                                                    <ComboBoxItem Content="Disconnect" Tag="5"/>
-                                                    <ComboBoxItem Content="Dedicated Duplex" Tag="6"/>
-                                                    <ComboBoxItem Content="Duplex W/ Data" Tag="7"/>
-                                                    <ComboBoxItem Content="Quad W/ Data" Tag="8"/>
-                                                    <ComboBoxItem Content="J-Box W/ Switch" Tag="9"/>
-                                                    <ComboBoxItem Content="Floor Duplex" Tag="10"/>
-                                                    <ComboBoxItem Content="Floor Dedicated Duplex" Tag="11"/>
-                                                    <ComboBoxItem Content="Floor NEMA" Tag="12"/>
-                                                    <ComboBoxItem Content="Floor Quad" Tag="13"/>
-                                                    <ComboBoxItem Content="Floor Duplex W/ Data" Tag="14"/>
-                                                    <ComboBoxItem Content="Floor Quad W/ Data" Tag="15"/>
+                                                    <ComboBoxItem Content="Duplex" Tag="1">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="NEMA" Tag="2">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Quad" Tag="3">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="J-Box" Tag="4">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Disconnect" Tag="5">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Dedicated Duplex" Tag="6">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger> 
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Duplex W/ Data" Tag="7">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger> 
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Quad W/ Data" Tag="8">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="J-Box W/ Switch" Tag="9">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor Duplex" Tag="10">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor Dedicated Duplex" Tag="11">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor NEMA" Tag="12">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor Quad" Tag="13">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor Duplex W/ Data" Tag="14">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
+                                                    <ComboBoxItem Content="Floor Quad W/ Data" Tag="15">
+                                                        <ComboBoxItem.Style>
+                                                            <Style TargetType="ComboBoxItem">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="1">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Voltage}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ComboBoxItem.Style>
+                                                    </ComboBoxItem>
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
