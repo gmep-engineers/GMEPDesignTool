@@ -156,7 +156,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="ConnectionSymbol" SelectedValueBinding="{Binding ConnectionSymbolId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Connection" SelectedValueBinding="{Binding ConnectionSymbolId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="Duplex" Tag="1">
