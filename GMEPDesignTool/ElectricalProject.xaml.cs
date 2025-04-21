@@ -2631,6 +2631,7 @@ namespace GMEPDesignTool
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         CreateNoWindow = false,
+                        Verb = "runas"
                     };
 
                     Process process = new Process
@@ -2638,8 +2639,8 @@ namespace GMEPDesignTool
                         StartInfo = startInfo,
                         EnableRaisingEvents = true,
                     };
-
                     timer.Stop();
+                    Debug.WriteLine("Meowzers.");
                     await Task.Run(() => process.Start());
                     await process.WaitForExitAsync();
 
