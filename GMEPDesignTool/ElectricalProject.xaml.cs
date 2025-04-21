@@ -1613,6 +1613,7 @@ namespace GMEPDesignTool
                 false,
                 1,
                 ElectricalEquipments.Count + 1,
+                1,
                 1
             );
             AddElectricalEquipment(electricalEquipment);
@@ -1680,7 +1681,8 @@ namespace GMEPDesignTool
                     electricalEquipment.IsHiddenOnPlan,
                     electricalEquipment.LoadType,
                     0,
-                    electricalEquipment.StatusId
+                    electricalEquipment.StatusId,
+                    electricalEquipment.ConnectionSymbolId
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
