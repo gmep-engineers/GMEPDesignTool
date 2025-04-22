@@ -109,11 +109,17 @@ namespace GMEPDesignTool
         }
         private void Application_Deactivated(object sender, EventArgs e)
         {
-            Save(sender, e);
+            if (viewModel.SaveText != "LOCKED")
+            {
+                Save(sender, e);
+            }
         }
         private void Application_Activated(object sender, EventArgs e)
         {
-            ReloadElectricalProject();
+            if (viewModel.SaveText != "LOCKED")
+            {
+                ReloadElectricalProject();
+            }
         }
         private async void Save(object sender, EventArgs e)
         {

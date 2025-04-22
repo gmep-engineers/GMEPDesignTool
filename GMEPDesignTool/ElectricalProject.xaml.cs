@@ -2645,6 +2645,7 @@ namespace GMEPDesignTool
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
                         ParentControl.ReloadElectricalProject();
                     });
                 }
