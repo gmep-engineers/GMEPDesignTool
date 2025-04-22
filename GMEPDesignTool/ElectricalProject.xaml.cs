@@ -2607,7 +2607,7 @@ namespace GMEPDesignTool
                 "GMEPNodeGraph.exe"
             );
             string filePath = System.IO.Path.Combine(userProfile, relativePath);
-            string arguments = ProjectView.ProjectNo.ToString() + " 1";
+            string arguments = ProjectView.ProjectNo.ToString() + " " + ProjectView.SelectedVersion.ToString();
 
             if (File.Exists(filePath))
             {
@@ -2645,6 +2645,7 @@ namespace GMEPDesignTool
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
                         ParentControl.ReloadElectricalProject();
                     });
                 }
