@@ -2010,6 +2010,11 @@ namespace GMEPDesignTool.Database
                     lighting.LocationId = locationIdSwitch[lighting.LocationId];
                 }
             }
+            foreach(var control in lightingControls)
+            {
+                string Id = Guid.NewGuid().ToString();
+                control.Id = Id;
+            }
             foreach (var note in electricalPanelNotes)
             {
                 string Id = Guid.NewGuid().ToString();

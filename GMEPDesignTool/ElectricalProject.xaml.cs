@@ -2607,7 +2607,7 @@ namespace GMEPDesignTool
                 "GMEPNodeGraph.exe"
             );
             string filePath = System.IO.Path.Combine(userProfile, relativePath);
-            string arguments = ProjectView.ProjectNo.ToString() + " 1";
+            string arguments = ProjectView.ProjectNo.ToString() + " " + ProjectView.SelectedVersion.ToString();
 
             if (File.Exists(filePath))
             {
