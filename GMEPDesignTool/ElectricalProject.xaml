@@ -574,8 +574,13 @@
                         </GroupBox>
                     </TabItem>
                     <TabItem Header="Lighting">
-                        <StackPanel>
-                            <GroupBox Header="Lighting Fixtures" Height="Auto" VerticalAlignment="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <GroupBox Grid.Row="0" Header="Lighting Fixtures" Height="Auto" VerticalAlignment="Top">
                                 <Grid>
                                     <StackPanel Orientation="Vertical">
                                         <Grid Background="Gainsboro">
@@ -804,7 +809,8 @@
                                     </Popup>
                                 </Grid>
                             </GroupBox>
-                            <GroupBox Header="Lighting Controls" Height="Auto" VerticalAlignment="Top">
+                            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Background="LightGray"/>
+                            <GroupBox Grid.Row="2" Header="Lighting Controls" Height="Auto" VerticalAlignment="Top">
                                 <Grid>
                                     <StackPanel Orientation="Vertical">
                                         <Grid Background="Gainsboro">
@@ -849,7 +855,7 @@
                                     </DataGrid>
                                 </Grid>
                             </GroupBox>
-                        </StackPanel>
+                        </Grid>
                     </TabItem>
                 </TabControl>
             </TabItem>
