@@ -766,7 +766,7 @@
                                             <DataGridCheckBoxColumn Header="EM-Capable" Binding="{Binding EmCapable}" />
                                             <DataGridCheckBoxColumn Header="Photocell" Binding="{Binding HasPhotoCell}" />
                                             <DataGridCheckBoxColumn Header="Occupancy" Binding="{Binding Occupancy}" />
-                                            <DataGridComboBoxColumn Header="Location" SelectedValueBinding="{Binding LocationId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
+                                            <DataGridComboBoxColumn Header="Location" IsReadOnly="True" SelectedValueBinding="{Binding LocationId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                                 <DataGridComboBoxColumn.ElementStyle>
                                                     <Style TargetType="{x:Type ComboBox}">
                                                         <Setter Property="ItemsSource" Value="{Binding Path=DataContext.LocationNames, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
