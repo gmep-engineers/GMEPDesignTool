@@ -39,6 +39,8 @@ namespace GMEPDesignTool
         //public ElectricalProject ElectricalProject { get; set; }
 
         ProjectControlViewModel viewModel;
+        public bool Saving = false;
+        public bool Loading = false;
 
         public ProjectControl()
         {
@@ -53,6 +55,8 @@ namespace GMEPDesignTool
             this.DataContext = viewModel;
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
+            Application.Current.Deactivated += Application_Deactivated;
+            Application.Current.Activated += Application_Activated;
         }
 
         private async void AddVersion_Click(object sender, RoutedEventArgs e)
@@ -103,22 +107,61 @@ namespace GMEPDesignTool
                 AdminTab.Content = new Admin();
             }
         }
-
+        private void Application_Deactivated(object sender, EventArgs e)
+        {
+            if (viewModel.SaveText != "LOCKED")
+            {
+                Save(sender, e);
+            }
+        }
+        private void Application_Activated(object sender, EventArgs e)
+        {
+            if (viewModel.SaveText != "LOCKED")
+            {
+                ReloadElectricalProject();
+            }
+        }
+        private async void Save(object sender, EventArgs e)
+        {
+            if (!Saving && !Loading)
+            {
+                Saving = true;
+                if (viewModel?.ActiveElectricalProject != null)
+                {
+                    await viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
+                }
+                Saving = false;
+            }
+        }
         public async void ReloadElectricalProject()
         {
-            if (viewModel?.ActiveElectricalProject != null)
+            if (!Loading && !Saving)
             {
-                var loadingScreen = new LoadingScreen();
-                ElectricalTab.Content = loadingScreen;
+                Loading = true;
+                if (viewModel?.ActiveElectricalProject != null)
+                {
+                    var loadingScreen = new LoadingScreen();
+                    ElectricalTab.Content = loadingScreen;
 
-                string projectId = viewModel.ActiveElectricalProject.ProjectId;
-                viewModel.ActiveElectricalProject = new ElectricalProject(
-                    projectId,
-                    viewModel,
-                    this
-                );
-                await viewModel.ActiveElectricalProject.InitializeAsync();
-                ElectricalTab.Content = viewModel.ActiveElectricalProject;
+                    string saveText = viewModel.SaveText;
+                    string projectId = viewModel.ActiveElectricalProject.ProjectId;
+                    int sectionIndex = viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex;
+                    int equiplightingIndex = viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex;
+                    int serviceTransPanelIndex = viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex;
+
+                    viewModel.ActiveElectricalProject = new ElectricalProject(
+                        projectId,
+                        viewModel,
+                        this
+                    );
+                    await viewModel.ActiveElectricalProject.InitializeAsync();
+                    viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
+                    viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex = equiplightingIndex;
+                    viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex = serviceTransPanelIndex;
+                    viewModel.SaveText = saveText;
+                    ElectricalTab.Content = viewModel.ActiveElectricalProject;
+                }
+                Loading = false;
             }
         }
 
@@ -129,13 +172,13 @@ namespace GMEPDesignTool
                 Save(sender, e);
             }
         }
-
-        private void Save(object sender, RoutedEventArgs e)
+      
+        private void Refresh(object sender, RoutedEventArgs e)
         {
-            if (viewModel?.ActiveElectricalProject != null)
-            {
-                viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
-            }
+            ReloadElectricalProject();
+            //Reload Structural
+            //Reload Mechanical
+            //Reload Plumbing
         }
 
         private void CopyPopup_Click(object sender, RoutedEventArgs e)

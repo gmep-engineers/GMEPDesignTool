@@ -33,11 +33,13 @@ namespace GMEPDesignTool
         private bool powered = false;
         private bool hasPlug = true;
         private bool lockingConnector = false;
-        private int va = 0;
+        private float va = 0;
         private bool isHiddenOnPlan = false;
         private int loadType = 1;
         private string circuits = string.Empty;
         private DateTime dateCreated = DateTime.Now;
+        private int statusId = 1;
+        private int connectionSymbolId = 1;
 
         public ElectricalEquipment(
             string id,
@@ -48,7 +50,7 @@ namespace GMEPDesignTool
             string parentId,
             int voltage,
             float fla,
-            int va,
+            float va,
             bool is3Ph,
             string specSheetId,
             int aicRating,
@@ -69,7 +71,9 @@ namespace GMEPDesignTool
             int circuitNo,
             bool isHiddenOnPlan,
             int loadType,
-            int orderNo
+            int orderNo,
+            int statusId,
+            int connectionSymbolId
         )
         {
             this.id = id;
@@ -83,6 +87,7 @@ namespace GMEPDesignTool
             this.va = va;
             this.amp = fla;
             this.is3Ph = is3Ph;
+            this.statusId = statusId;
             this.specSheetId = specSheetId;
             this.aicRating = aicRating;
             this.specSheetFromClient = specSheetFromClient;
@@ -114,17 +119,26 @@ namespace GMEPDesignTool
             this.BLcl = 0;
             this.CLcl = 0;
             this.componentType = "Equipment";
+            this.connectionSymbolId = connectionSymbolId;
             this.orderNo = orderNo;
             DetermineLoadCategory();
             //DetermineLoadTypes();
             determineEquipmentPole();
             DetermineCircuits();
             SetPhaseVa();
+            SetConnectionSymbol();
         }
 
         public ElectricalEquipment()
         {
+            this.amp = fla;
+            this.lcl = va;
+            this.lml = va;
+            this.ComponentType = "Equipment";
+            DetermineLoadCategory();
+            determineEquipmentPole();
             DetermineCircuits();
+            SetPhaseVa();
         }
 
         public string Description
@@ -136,6 +150,7 @@ namespace GMEPDesignTool
                 {
                     description = value;
                     OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
@@ -166,6 +181,20 @@ namespace GMEPDesignTool
                 {
                     equipNo = value;
                     OnPropertyChanged(nameof(EquipNo));
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        public int ConnectionSymbolId
+        {
+            get => connectionSymbolId;
+            set
+            {
+                if (connectionSymbolId != value)
+                {
+                    connectionSymbolId = value;
+                    OnPropertyChanged(nameof(ConnectionSymbolId));
                 }
             }
         }
@@ -182,6 +211,18 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public int StatusId
+        {
+            get => statusId;
+            set
+            {
+                if (statusId != value)
+                {
+                    statusId = value;
+                    OnPropertyChanged(nameof(StatusId));
+                }
+            }
+        }
 
         public int Voltage
         {
@@ -191,9 +232,14 @@ namespace GMEPDesignTool
                 if (voltage != value)
                 {
                     voltage = value;
+                    if (voltage == 1 || voltage == 2 || voltage == 6)
+                    {
+                        Is3Ph = false;
+                    }
                     OnPropertyChanged(nameof(Voltage));
                     determineEquipmentPole();
                     setVa();
+                    SetConnectionSymbol();
                 }
             }
         }
@@ -430,7 +476,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public int Va
+        public float Va
         {
             get => va;
             set
@@ -453,6 +499,7 @@ namespace GMEPDesignTool
                 {
                     pole = value;
                     SetPhaseVa();
+                    DetermineCircuits();
                     OnPropertyChanged(nameof(Pole));
                 }
             }
@@ -506,9 +553,8 @@ namespace GMEPDesignTool
             {
                 if (parentId != value)
                 {
-                    parentId = value;
+                    parentId = value ?? string.Empty;
                     OnPropertyChanged(nameof(ParentId));
-                    Circuits = "Assign";
                 }
             }
         }
@@ -518,6 +564,23 @@ namespace GMEPDesignTool
             get => dateCreated;
         }
 
+        public void SetConnectionSymbol()
+        {
+            if (Voltage == 1 || Voltage == 2)
+            {
+              if (ConnectionSymbolId == 2 || ConnectionSymbolId == 4 || ConnectionSymbolId == 5 || ConnectionSymbolId == 9 || ConnectionSymbolId == 12)
+              {
+                    ConnectionSymbolId = 1;
+              }
+            }
+            else
+            {
+                if (ConnectionSymbolId != 2 && ConnectionSymbolId != 4 && ConnectionSymbolId != 5 && ConnectionSymbolId != 9 && ConnectionSymbolId != 12)
+                {
+                    ConnectionSymbolId = 2;
+                }
+            }
+        }
         public void SetPhaseVa()
         {
             determineEquipmentPole();
@@ -645,8 +708,8 @@ namespace GMEPDesignTool
 
         public void SetFla()
         {
-            double fla = 0;
-            double va = Convert.ToDouble(Va);
+            float fla = 0;
+            float va = Va;
             switch (Voltage)
             {
                 case 1:
@@ -656,49 +719,30 @@ namespace GMEPDesignTool
                     fla = va / 120;
                     break;
                 case 3:
-                    if (Pole == 3)
-                        fla = va / 208 / 1.732;
-                    else
-                        fla = va / 208;
+                    fla = va / 208;
                     break;
                 case 4:
-                    if (Pole == 3)
-                        fla = va / 230 / 1.732;
-                    else
-                        fla = va / 230;
+                    fla = va / 230;
                     break;
                 case 5:
-                    if (Pole == 3)
-                        fla = va / 240 / 1.732;
-                    else
-                        fla = va / 240;
-                    Trace.WriteLine(va);
+                    fla = va / 240;
                     break;
                 case 6:
-                    if (Pole == 3)
-                        fla = va / 277 / 1.732;
-                    else
-                        fla = va / 277;
+                    fla = va / 277;
                     break;
                 case 7:
-                    if (Pole == 3)
-                        fla = va * 460 / 1.732;
-                    else
-                        fla = va * 460;
+                    fla = va * 460;
                     break;
                 case 8:
-                    if (Pole == 3)
-                        fla = va / 480 / 1.732;
-                    else
-                        fla = va / 480;
+                    fla = va / 480;
                     break;
             }
-            this.va = Convert.ToInt32(va);
+            this.Fla = fla;
         }
 
         public void setVa()
         {
-            double va = 0;
+            float va = 0;
 
             switch (Voltage)
             {
@@ -709,43 +753,25 @@ namespace GMEPDesignTool
                     va = Fla * 120;
                     break;
                 case 3:
-                    if (Pole == 3)
-                        va = Fla * 208 / 1.732;
-                    else
-                        va = Fla * 208;
+                    va = Fla * 208;
                     break;
                 case 4:
-                    if (Pole == 3)
-                        va = Fla * 230 / 1.732;
-                    else
-                        va = Fla * 230;
+                    va = Fla * 230;
                     break;
                 case 5:
-                    if (Pole == 3)
-                        va = Fla * 240 / 1.732;
-                    else
-                        va = Fla * 240;
+                    va = Fla * 240;
                     break;
                 case 6:
-                    if (Pole == 3)
-                        va = Fla * 277 / 1.732;
-                    else
-                        va = Fla * 277;
+                    va = Fla * 277;
                     break;
                 case 7:
-                    if (Pole == 3)
-                        va = Fla * 460 / 1.732;
-                    else
-                        va = Fla * 460;
+                    va = Fla * 460;
                     break;
                 case 8:
-                    if (Pole == 3)
-                        va = Fla * 480 / 1.732;
-                    else
-                        va = Fla * 480;
+                    va = Fla * 480;
                     break;
             }
-            this.va = Convert.ToInt32(va);
+            this.Va = va;
         }
 
         public bool Verify()

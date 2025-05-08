@@ -12,22 +12,22 @@ namespace GMEPDesignTool
 {
     public class ElectricalPanel : ElectricalComponent
     {
-        private int _busSize;
-        private int _mainSize;
-        private bool _isMlo;
-        private bool _isDistribution;
-        private int _numBreakers;
-        private int _distanceFromParent;
-        private int _aicRating;
-        private float _kva;
-        private float _va;
-        private int _type;
-        private bool _powered;
-        private bool _isHiddenOnPlan;
-        private string _location;
-        private string _parentName;
-        private string _parentType;
-        private char _highLegPhase;
+        private int _busSize = 1;
+        private int _mainSize = 1;
+        private bool _isMlo = true;
+        private bool _isDistribution = false;
+        private int _numBreakers = 42;
+        private int _distanceFromParent = 0;
+        private int _aicRating = 0;
+        private float _kva = 0;
+        private float _va = 0;
+        private int _type = 1;
+        private bool _powered = false;
+        private bool _isHiddenOnPlan = false;
+        private string _location = string.Empty;
+        private string _parentName = string.Empty;
+        private string _parentType = string.Empty;
+        private char _highLegPhase = '-';
 
         public ElectricalComponent ParentComponent { get; set; }
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
@@ -48,7 +48,9 @@ namespace GMEPDesignTool
         public ObservableCollection<ElectricalPanelNoteRel> rightNotes { get; set; } =
             new ObservableCollection<ElectricalPanelNoteRel>();
 
-        private bool _isRecessed;
+        private bool _isRecessed = false;
+        private string circuits = string.Empty;
+         
 
         public ElectricalPanel(
             string id,
@@ -71,7 +73,8 @@ namespace GMEPDesignTool
             int circuitNo,
             bool isHiddenOnPlan,
             string location,
-            char highLegPhase
+            char highLegPhase,
+            int orderNo
         )
             : base()
         {
@@ -110,14 +113,27 @@ namespace GMEPDesignTool
             _highLegPhase = highLegPhase;
             this._location = location;
             this.componentType = "Panel";
+            this.orderNo = orderNo;
             SetPole();
             PopulateCircuits(Id, ProjectId);
             updateFlag = false;
             notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
             leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            DetermineCircuits();
         }
-
+        public ElectricalPanel()
+        {
+            loadCategory = 3;
+            this.componentType = "Panel";
+            SetPole();
+            PopulateCircuits(Id, ProjectId);
+            updateFlag = false;
+            notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+            leftNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
+            DetermineCircuits();
+        }
         public string ParentName
         {
             get => _parentName;
@@ -130,6 +146,19 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public override int CircuitNo
+        {
+            get => circuitNo;
+            set
+            {
+                if (circuitNo != value)
+                {
+                    circuitNo = value;
+                    DetermineCircuits();
+                    OnPropertyChanged(nameof(CircuitNo));
+                }
+            }
+        }
         public string ParentType
         {
             get => _parentType;
@@ -139,6 +168,7 @@ namespace GMEPDesignTool
                 {
                     this._parentType = value;
                     OnPropertyChanged(nameof(ParentType));
+                    DetermineCircuits();
                 }
             }
         }
@@ -149,7 +179,7 @@ namespace GMEPDesignTool
             {
                 if (this.parentId != value)
                 {
-                    this.parentId = value ?? "";
+                    this.parentId = value ?? string.Empty;
                     OnPropertyChanged(nameof(ParentId));
                     if (ParentComponent != null && string.IsNullOrEmpty(value))
                     {
@@ -158,6 +188,7 @@ namespace GMEPDesignTool
                         ParentType = "";
                         ParentComponent = null;
                     }
+                    DetermineCircuits();
                 }
             }
         }
@@ -169,8 +200,21 @@ namespace GMEPDesignTool
                 if (this.pole != value)
                 {
                     this.pole = value;
+                    DetermineCircuits();
                     OnPropertyChanged(nameof(Pole));
                     SetCircuitVa();
+                }
+            }
+        }
+        public override string Circuits
+        {
+            get => circuits;
+            set
+            {
+                if (circuits != value)
+                {
+                    circuits = value;
+                    OnPropertyChanged(nameof(Circuits));
                 }
             }
         }
@@ -406,6 +450,31 @@ namespace GMEPDesignTool
                 }
             }
         }
+        public void DetermineCircuits()
+        {
+            if (ParentType != "PANEL ")
+            {
+                Circuits = "N/A";
+                return;
+            }
+            if (circuitNo == 0)
+            {
+                Circuits = "Assign";
+                return;
+            }
+            if (Pole == 3)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2},{circuitNo + 4}";
+            }
+            if (Pole == 2)
+            {
+                Circuits = $"{circuitNo},{circuitNo + 2}";
+            }
+            if (Pole == 1)
+            {
+                Circuits = $"{circuitNo}";
+            }
+        }
 
         public void SetPole()
         {
@@ -507,6 +576,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalEquipment equipment)
                 {
+                    equipment.CircuitNo = 0;
                     equipment.PropertyChanged -= Equipment_PropertyChanged;
                     if (leftComponents.Contains(equipment))
                     {
@@ -541,6 +611,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalPanel panel)
                 {
+                    panel.CircuitNo = 0;
                     panel.PropertyChanged -= Panel_PropertyChanged;
                     if (leftComponents.Contains(panel))
                     {
@@ -575,6 +646,7 @@ namespace GMEPDesignTool
             {
                 if (sender is ElectricalTransformer transformer)
                 {
+                    transformer.CircuitNo = 0;
                     transformer.PropertyChanged -= Transformer_PropertyChanged;
                     if (leftComponents.Contains(transformer))
                     {
@@ -708,6 +780,7 @@ namespace GMEPDesignTool
 
         public void AssignTransformer(ElectricalTransformer transformer)
         {
+            transformer.ParentType = "PANEL ";
             componentsCollection.Add(transformer);
             transformer.PropertyChanged += Transformer_PropertyChanged;
         }
@@ -1393,6 +1466,7 @@ namespace GMEPDesignTool
             {
                 if (transformer.ParentId == Id)
                 {
+                    transformer.ParentType = "PANEL ";
                     temp.Add(transformer);
                     transformer.PropertyChanged += Transformer_PropertyChanged;
                 }
