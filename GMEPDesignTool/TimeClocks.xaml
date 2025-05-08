@@ -37,13 +37,8 @@
                     <DataGridComboBoxColumn Header="Voltage" Width="*" SelectedValueBinding="{Binding VoltageId}" SelectedValuePath="Tag">
                         <DataGridComboBoxColumn.ItemsSource>
                             <x:Array Type="{x:Type ComboBoxItem}">
-                                <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
                                 <ComboBoxItem Content="120" Background="PaleGoldenrod" Tag="2"/>
-                                <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
-                                <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
-                                <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
-                                <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
+                                <ComboBoxItem Content="277" Background="Lavender" Tag="6"/>
                             </x:Array>
                         </DataGridComboBoxColumn.ItemsSource>
                     </DataGridComboBoxColumn>

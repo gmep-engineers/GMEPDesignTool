@@ -64,8 +64,9 @@
                                             <ComboBoxItem Content="208" Background="PaleGreen" Tag="3"/>
                                             <ComboBoxItem Content="230" Background="PaleTurquoise" Tag="4"/>
                                             <ComboBoxItem Content="240" Background="SkyBlue" Tag="5"/>
-                                            <ComboBoxItem Content="460" Background="Thistle" Tag="6"/>
-                                            <ComboBoxItem Content="480" Background="Plum" Tag="7"/>
+                                            <ComboBoxItem Content="277" Background="Lavender" Tag="6"/>
+                                            <ComboBoxItem Content="460" Background="Thistle" Tag="7"/>
+                                            <ComboBoxItem Content="480" Background="Plum" Tag="8"/>
                                         </ComboBox>
                                         <Label Content="Phase" Margin="420 3 0 0"/>
                                         <ComboBox x:Name="PhaseFilter" Height="20" Width="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="460 7 0 0" SelectionChanged="EquipmentFilter_SelectionChanged">
