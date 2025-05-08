@@ -351,6 +351,10 @@
                                                 <ComboBoxItem Content="4&quot; Round" Tag="6"/>
                                                 <ComboBoxItem Content="6&quot; Round" Tag="7"/>
                                                 <ComboBoxItem Content="8&quot; Round" Tag="8"/>
+                                                <ComboBoxItem Content="EM (Bug Eye)" Tag="9"/>
+                                                <ComboBoxItem Content="EM Exit (Sign Only)" Tag="10"/>
+                                                <ComboBoxItem Content="EM Exit Light Combo" Tag="11"/>
+                                                <!--
                                                 <ComboBoxItem Content="Decorative Round 6&quot;" Tag="9"/>
                                                 <ComboBoxItem Content="Decorative Round 8&quot;" Tag="10"/>
                                                 <ComboBoxItem Content="Decorative Round 10&quot;" Tag="11"/>
@@ -371,6 +375,7 @@
                                                 <ComboBoxItem Content="10&apos; Track" Tag="26"/>
                                                 <ComboBoxItem Content="11&apos; Track" Tag="27"/>
                                                 <ComboBoxItem Content="12&apos; Track" Tag="28"/>
+                                                -->
                                             </CompositeCollection>
                                         </DataGridComboBoxColumn.ItemsSource>
                                     </DataGridComboBoxColumn>
