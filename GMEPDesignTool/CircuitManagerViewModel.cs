@@ -166,6 +166,12 @@ namespace GMEPDesignTool
             get => highLegPhase;
             set => SetProperty(ref highLegPhase, value);
         }
+        public int statusId;
+        public int StatusId
+        {
+            get => statusId;
+            set => SetProperty(ref statusId, value);
+        }
 
         public CircuitManagerViewModel(ElectricalPanel panel)
         {
@@ -193,6 +199,7 @@ namespace GMEPDesignTool
             parentName = panel.ParentName;
             parentType = panel.ParentType;
             _location = panel.Location;
+            statusId = panel.StatusId;
             wire = determineWire(panel.Type);
             busRating = setBusRating(panel.BusSize);
             MainRating = setMainRating(panel);
@@ -297,6 +304,11 @@ namespace GMEPDesignTool
             {
                 HighLegPhase = Panel.HighLegPhase;
                 OnPropertyChanged(nameof(HighLegPhase));
+            }
+            if (e.PropertyName == nameof(ElectricalPanel.StatusId))
+            {
+                StatusId = Panel.StatusId;
+                OnPropertyChanged(nameof(StatusId));
             }
         }
 

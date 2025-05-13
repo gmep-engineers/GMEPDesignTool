@@ -491,6 +491,18 @@
                             <DataGrid x:Name="LeftCircuitGrid" IsReadOnly="False" CanUserAddRows="False" CanUserDeleteRows="False" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Toggle Existing Breaker" Click="LeftCircuitGrid_ToggleExistingBreaker">
+                                            <MenuItem.Style>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding StatusId}" Value="1">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </MenuItem.Style>
+                                        </MenuItem>
                                         <MenuItem Header="Toggle Custom Description" Click="LeftCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="LeftCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">
@@ -809,6 +821,18 @@
                             <DataGrid x:Name="RightCircuitGrid" BorderThickness="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" Grid.Column="2" ItemsSource="{Binding RightCircuits}" AutoGenerateColumns="False" RowHeight="28" IsReadOnly="False" CanUserDeleteRows="False" CanUserAddRows="False" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Toggle Existing Breaker" Click="RightCircuitGrid_ToggleExistingBreaker">
+                                            <MenuItem.Style>
+                                                <Style TargetType="MenuItem">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding StatusId}" Value="1">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </MenuItem.Style>
+                                        </MenuItem>
                                         <MenuItem Header="Toggle Custom Description" Click="RightCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="RightCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">

@@ -754,7 +754,8 @@ namespace GMEPDesignTool
                 false,
                 "",
                 '-',
-                ElectricalPanels.Count + 1
+                ElectricalPanels.Count + 1,
+                1
             );
             AddElectricalPanel(electricalPanel);
             OrderPanels(ElectricalPanels);
