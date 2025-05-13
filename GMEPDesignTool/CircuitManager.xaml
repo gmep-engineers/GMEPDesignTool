@@ -491,6 +491,7 @@
                             <DataGrid x:Name="LeftCircuitGrid" IsReadOnly="False" CanUserAddRows="False" CanUserDeleteRows="False" BorderThickness="0" Grid.Column="0" FontFamily="Roboto Mono" HeadersVisibility="None" Margin="0 0 0 0" ItemsSource="{Binding LeftCircuits}" AutoGenerateColumns="False" RowHeight="28" AlternationCount="{Binding Pole}">
                                 <DataGrid.ContextMenu>
                                     <ContextMenu>
+                                        <MenuItem Header="Toggle Existing Breaker" Click="LeftCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Description" Click="LeftCircuitGrid_ToggleCustomDescription"/>
                                         <MenuItem Header="Toggle Custom Breaker Size" Click="LeftCircuitGrid_ToggleCustomBreakerSize"/>
                                         <MenuItem Header="Place Note">

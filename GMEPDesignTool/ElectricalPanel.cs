@@ -28,6 +28,7 @@ namespace GMEPDesignTool
         private string _parentName = string.Empty;
         private string _parentType = string.Empty;
         private char _highLegPhase = '-';
+        private int _statusId = 1;
 
         public ElectricalComponent ParentComponent { get; set; }
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
@@ -74,7 +75,8 @@ namespace GMEPDesignTool
             bool isHiddenOnPlan,
             string location,
             char highLegPhase,
-            int orderNo
+            int orderNo,
+            int statusId
         )
             : base()
         {
@@ -97,6 +99,7 @@ namespace GMEPDesignTool
             _type = type;
             _powered = powered;
             _isRecessed = isRecessed;
+            _statusId = statusId;
             phaseAVa = 0;
             phaseBVa = 0;
             phaseCVa = 0;
@@ -189,6 +192,18 @@ namespace GMEPDesignTool
                         ParentComponent = null;
                     }
                     DetermineCircuits();
+                }
+            }
+        }
+        public int StatusId
+        {
+            get => _statusId;
+            set
+            {
+                if (_statusId != value)
+                {
+                    _statusId = value;
+                    OnPropertyChanged(nameof(StatusId));
                 }
             }
         }
