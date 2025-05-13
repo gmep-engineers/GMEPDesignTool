@@ -40,6 +40,7 @@ namespace GMEPDesignTool
         private DateTime dateCreated = DateTime.Now;
         private int statusId = 1;
         private int connectionSymbolId = 1;
+        private int numConvDuplex = 0;
 
         public ElectricalEquipment(
             string id,
@@ -73,7 +74,8 @@ namespace GMEPDesignTool
             int loadType,
             int orderNo,
             int statusId,
-            int connectionSymbolId
+            int connectionSymbolId,
+            int numConvDuplex
         )
         {
             this.id = id;
@@ -120,6 +122,7 @@ namespace GMEPDesignTool
             this.CLcl = 0;
             this.componentType = "Equipment";
             this.connectionSymbolId = connectionSymbolId;
+            this.numConvDuplex = numConvDuplex;
             this.orderNo = orderNo;
             DetermineLoadCategory();
             //DetermineLoadTypes();
@@ -195,6 +198,19 @@ namespace GMEPDesignTool
                 {
                     connectionSymbolId = value;
                     OnPropertyChanged(nameof(ConnectionSymbolId));
+                }
+            }
+        }
+
+        public int NumConvDuplex
+        {
+            get => numConvDuplex;
+            set
+            {
+                if (numConvDuplex != value)
+                {
+                    numConvDuplex = value;
+                    OnPropertyChanged(nameof(NumConvDuplex));
                 }
             }
         }
@@ -568,19 +584,32 @@ namespace GMEPDesignTool
         {
             if (Voltage == 1 || Voltage == 2)
             {
-              if (ConnectionSymbolId == 2 || ConnectionSymbolId == 4 || ConnectionSymbolId == 5 || ConnectionSymbolId == 9 || ConnectionSymbolId == 12)
-              {
+                if (
+                    ConnectionSymbolId == 2
+                    || ConnectionSymbolId == 4
+                    || ConnectionSymbolId == 5
+                    || ConnectionSymbolId == 9
+                    || ConnectionSymbolId == 12
+                )
+                {
                     ConnectionSymbolId = 1;
-              }
+                }
             }
             else
             {
-                if (ConnectionSymbolId != 2 && ConnectionSymbolId != 4 && ConnectionSymbolId != 5 && ConnectionSymbolId != 9 && ConnectionSymbolId != 12)
+                if (
+                    ConnectionSymbolId != 2
+                    && ConnectionSymbolId != 4
+                    && ConnectionSymbolId != 5
+                    && ConnectionSymbolId != 9
+                    && ConnectionSymbolId != 12
+                )
                 {
                     ConnectionSymbolId = 2;
                 }
             }
         }
+
         public void SetPhaseVa()
         {
             determineEquipmentPole();

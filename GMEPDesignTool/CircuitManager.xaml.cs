@@ -33,6 +33,7 @@ namespace GMEPDesignTool
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
             Panel = panel;
+            Panel.SetKitchenDemandFactor();
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
         }

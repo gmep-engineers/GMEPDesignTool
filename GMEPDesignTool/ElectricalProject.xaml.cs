@@ -269,7 +269,6 @@ namespace GMEPDesignTool
             }
         }
 
-   
         public async Task Timer_Tick(object sender, EventArgs e)
         {
             ProjectView.SaveText = "*SAVING*";
@@ -1077,7 +1076,7 @@ namespace GMEPDesignTool
                     }
                 }
                 var ServiceNamesKeys = ServiceNames.Keys.ToList();
-                foreach(var key in ServiceNamesKeys)
+                foreach (var key in ServiceNamesKeys)
                 {
                     if (!validIds.Contains(key))
                     {
@@ -1086,10 +1085,11 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         private void ElectricalPanels_CollectionChanged(
-           object sender,
-           NotifyCollectionChangedEventArgs e
-       )
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -1103,13 +1103,16 @@ namespace GMEPDesignTool
                 foreach (ElectricalPanel electricalPanel in e.NewItems)
                 {
                     electricalPanel.PropertyChanged += ElectricalPanel_PropertyChanged;
-                    electricalPanel.notes.CollectionChanged += ElectricalPanelNotes_CollectionChanged;
+                    electricalPanel.notes.CollectionChanged +=
+                        ElectricalPanelNotes_CollectionChanged;
                     electricalPanel.leftNotes.CollectionChanged +=
                         ElectricalPanelNoteRels_CollectionChanged;
                     electricalPanel.rightNotes.CollectionChanged +=
                         ElectricalPanelNoteRels_CollectionChanged;
-                    electricalPanel.leftCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
-                    electricalPanel.rightCircuits.CollectionChanged += PanelCircuits_CollectionChanged;
+                    electricalPanel.leftCircuits.CollectionChanged +=
+                        PanelCircuits_CollectionChanged;
+                    electricalPanel.rightCircuits.CollectionChanged +=
+                        PanelCircuits_CollectionChanged;
                     foreach (var circuit in electricalPanel.leftCircuits)
                     {
                         circuit.PropertyChanged += PanelCircuits_PropertyChanged;
@@ -1235,10 +1238,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-     
 
-
-       
         private void ElectricalPanelNotes_CollectionChanged(
             object sender,
             NotifyCollectionChangedEventArgs e
@@ -1343,6 +1343,7 @@ namespace GMEPDesignTool
                 RemoveElectricalEquipment(equipment);
             }
         }
+
         private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
         {
             var selectedLighting = ElectricalLightingDataGrid
@@ -1353,6 +1354,7 @@ namespace GMEPDesignTool
                 RemoveElectricalLighting(lighting);
             }
         }
+
         private void RemoveSelectedElectricalServices_Click(object sender, RoutedEventArgs e)
         {
             var selectedServices = ElectricalServiceDataGrid
@@ -1363,6 +1365,7 @@ namespace GMEPDesignTool
                 RemoveElectricalService(service);
             }
         }
+
         private void RemoveSelectedElectricalPanels_Click(object sender, RoutedEventArgs e)
         {
             var selectedPanels = ElectricalPanelDataGrid
@@ -1373,6 +1376,7 @@ namespace GMEPDesignTool
                 RemoveElectricalPanel(panel);
             }
         }
+
         private void RemoveSelectedElectricalTransformers_Click(object sender, RoutedEventArgs e)
         {
             var selectedTransformers = ElectricalTransformerDataGrid
@@ -1477,10 +1481,11 @@ namespace GMEPDesignTool
                 RemoveElectricalService(electricalService);
             }
         }
+
         private void ElectricalServices_CollectionChanged(
-           object sender,
-           NotifyCollectionChangedEventArgs e
-       )
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -1499,6 +1504,7 @@ namespace GMEPDesignTool
                 OrderServices(ElectricalServices);
             }
         }
+
         private void ElectricalService_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalService service)
@@ -1615,7 +1621,8 @@ namespace GMEPDesignTool
                 1,
                 ElectricalEquipments.Count + 1,
                 1,
-                1
+                1,
+                0
             );
             AddElectricalEquipment(electricalEquipment);
             OrderEquipment(ElectricalEquipments);
@@ -1683,7 +1690,8 @@ namespace GMEPDesignTool
                     electricalEquipment.LoadType,
                     0,
                     electricalEquipment.StatusId,
-                    electricalEquipment.ConnectionSymbolId
+                    electricalEquipment.ConnectionSymbolId,
+                    electricalEquipment.NumConvDuplex
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
@@ -1691,9 +1699,10 @@ namespace GMEPDesignTool
                 OrderEquipment(ElectricalEquipments);
             }
         }
+
         private void ElectricalEquipments_CollectionChanged(
-         object sender,
-         NotifyCollectionChangedEventArgs e
+            object sender,
+            NotifyCollectionChangedEventArgs e
         )
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -1712,6 +1721,7 @@ namespace GMEPDesignTool
                 OrderEquipment(ElectricalEquipments);
             }
         }
+
         private void ElectricalEquipment_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is ElectricalEquipment equipment)
@@ -1898,10 +1908,11 @@ namespace GMEPDesignTool
                 RemoveElectricalLighting(electricalLighting);
             }
         }
+
         private void ElectricalLightings_CollectionChanged(
-           object sender,
-           NotifyCollectionChangedEventArgs e
-       )
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -2081,14 +2092,12 @@ namespace GMEPDesignTool
                 }
             });
         }
+
         public void OpenTimeClocks_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-
-                if (
-                    sender is Button button
-                )
+                if (sender is Button button)
                 {
                     TimeClocks clocks = new TimeClocks(
                         TimeClocks,
@@ -2184,10 +2193,11 @@ namespace GMEPDesignTool
                 RemoveElectricalTransformer(electricalTransformer);
             }
         }
+
         private void ElectricalTransformers_CollectionChanged(
-           object sender,
-           NotifyCollectionChangedEventArgs e
-       )
+            object sender,
+            NotifyCollectionChangedEventArgs e
+        )
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -2431,7 +2441,8 @@ namespace GMEPDesignTool
                 var targetIndex = dropInfo.InsertIndex;
                 var sourceIndex = ElectricalEquipments.IndexOf(sourceItem);
 
-                if (targetIndex > sourceIndex) {
+                if (targetIndex > sourceIndex)
+                {
                     targetIndex--;
                 }
 
@@ -2556,6 +2567,7 @@ namespace GMEPDesignTool
                 index++;
             }
         }
+
         void OrderLightings(ObservableCollection<ElectricalLighting> lightings)
         {
             int index = 0;
@@ -2565,6 +2577,7 @@ namespace GMEPDesignTool
                 index++;
             }
         }
+
         void OrderServices(ObservableCollection<ElectricalService> services)
         {
             int index = 0;
@@ -2574,6 +2587,7 @@ namespace GMEPDesignTool
                 index++;
             }
         }
+
         void OrderPanels(ObservableCollection<ElectricalPanel> panels)
         {
             int index = 0;
@@ -2583,6 +2597,7 @@ namespace GMEPDesignTool
                 index++;
             }
         }
+
         void OrderTransformers(ObservableCollection<ElectricalTransformer> transformers)
         {
             int index = 0;
@@ -2608,7 +2623,8 @@ namespace GMEPDesignTool
                 "GMEPNodeGraph.exe"
             );
             string filePath = System.IO.Path.Combine(userProfile, relativePath);
-            string arguments = ProjectView.ProjectNo.ToString() + " " + ProjectView.SelectedVersion.ToString();
+            string arguments =
+                ProjectView.ProjectNo.ToString() + " " + ProjectView.SelectedVersion.ToString();
 
             if (File.Exists(filePath))
             {
@@ -2666,12 +2682,14 @@ namespace GMEPDesignTool
 
         private void Notes_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button) { 
+            if (sender is Button button)
+            {
                 NotesPopup.DataContext = button.CommandParameter;
                 NotesPopup.IsOpen = true;
             }
         }
     }
+
     public class StringLengthToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2684,11 +2702,17 @@ namespace GMEPDesignTool
             return true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            CultureInfo culture
+        )
         {
             throw new NotSupportedException(); // Conversion back is usually not needed for Visibility
         }
     }
+
     public class MinimumValueValidationRule : ValidationRule
     {
         public int Minimum { get; set; }
@@ -2737,6 +2761,7 @@ namespace GMEPDesignTool
             return value;
         }
     }
+
     public class RoundToNearestIntegerConverter : IValueConverter
     {
         public object Convert(

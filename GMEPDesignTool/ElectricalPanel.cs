@@ -29,6 +29,7 @@ namespace GMEPDesignTool
         private string _parentType = string.Empty;
         private char _highLegPhase = '-';
         private int _statusId = 1;
+        private double _kitchenDemandFactor = 1;
 
         public ElectricalComponent ParentComponent { get; set; }
         public ObservableCollection<ElectricalComponent> componentsCollection { get; set; } =
@@ -51,7 +52,6 @@ namespace GMEPDesignTool
 
         private bool _isRecessed = false;
         private string circuits = string.Empty;
-         
 
         public ElectricalPanel(
             string id,
@@ -125,6 +125,7 @@ namespace GMEPDesignTool
             rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             DetermineCircuits();
         }
+
         public ElectricalPanel()
         {
             loadCategory = 3;
@@ -137,6 +138,7 @@ namespace GMEPDesignTool
             rightNotes.CollectionChanged += ElectricalPanelNoteRels_CollectionChanged;
             DetermineCircuits();
         }
+
         public string ParentName
         {
             get => _parentName;
@@ -465,6 +467,20 @@ namespace GMEPDesignTool
                 }
             }
         }
+
+        public double KitchenDemandFactor
+        {
+            get => _kitchenDemandFactor;
+            set
+            {
+                if (_kitchenDemandFactor != value)
+                {
+                    _kitchenDemandFactor = value;
+                    OnPropertyChanged(nameof(KitchenDemandFactor));
+                }
+            }
+        }
+
         public void DetermineCircuits()
         {
             if (ParentType != "PANEL ")
@@ -867,6 +883,193 @@ namespace GMEPDesignTool
             }
         }
 
+        public void SetKitchenDemandFactor()
+        {
+            string noteText =
+                "THE KITCHEN DEMAND FACTOR IS BEING APPLIED TO THE KITCHEN EQUIPMENT (NEC 220.56).";
+            string noteId = string.Empty;
+            string tag = string.Empty;
+            int numKitchenItems = 0;
+            List<(int, int)> leftKitchenCircuits = new List<(int, int)>();
+            List<(int, int)> rightKitchenCircuits = new List<(int, int)>();
+            foreach (var component in leftComponents)
+            {
+                if (component.GetType() == typeof(ElectricalEquipment))
+                {
+                    ElectricalEquipment eq = (ElectricalEquipment)component;
+                    if (eq.Category == 4)
+                    {
+                        numKitchenItems++;
+                        leftKitchenCircuits.Add((eq.CircuitNo, eq.Pole));
+                    }
+                }
+            }
+            foreach (var component in rightComponents)
+            {
+                if (component.GetType() == typeof(ElectricalEquipment))
+                {
+                    ElectricalEquipment eq = (ElectricalEquipment)component;
+                    if (eq.Category == 4)
+                    {
+                        numKitchenItems++;
+                        rightKitchenCircuits.Add((eq.CircuitNo, eq.Pole));
+                    }
+                }
+            }
+            if (numKitchenItems == 1 || numKitchenItems == 2)
+            {
+                KitchenDemandFactor = 1;
+            }
+            else if (numKitchenItems == 3)
+            {
+                KitchenDemandFactor = 0.9;
+            }
+            else if (numKitchenItems == 4)
+            {
+                KitchenDemandFactor = 0.8;
+            }
+            else if (numKitchenItems == 5)
+            {
+                KitchenDemandFactor = 0.7;
+            }
+            else if (numKitchenItems >= 6)
+            {
+                KitchenDemandFactor = 0.65;
+            }
+            else
+            {
+                KitchenDemandFactor = 1;
+            }
+            if (numKitchenItems > 0)
+            {
+                bool addNote = true;
+                foreach (ElectricalPanelNote note in notes)
+                {
+                    if (note.Note.ToUpper().Contains("KITCHEN DEMAND"))
+                    {
+                        addNote = false;
+                        noteId = note.Id;
+                        tag = note.Tag;
+                    }
+                }
+                if (addNote)
+                {
+                    noteId = Guid.NewGuid().ToString();
+                    tag = (notes.Count + 1).ToString();
+                    notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+                }
+                int i = 0;
+
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("KITCHEN DEMAND")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("KITCHEN DEMAND")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                foreach ((int, int) leftKitchenCircuit in leftKitchenCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        leftKitchenCircuit.Item1,
+                        leftKitchenCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    leftNotes.Add(newNoteRel);
+                }
+                foreach ((int, int) rightKitchenCircuit in rightKitchenCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        rightKitchenCircuit.Item1,
+                        rightKitchenCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    rightNotes.Add(newNoteRel);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("KITCHEN DEMAND")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("KITCHEN DEMAND")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < notes.Count)
+                {
+                    if (
+                        notes[i].Note.Contains("KITCHEN DEMAND")
+                        || String.IsNullOrEmpty(notes[i].Note)
+                    )
+                    {
+                        notes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+        }
+
         public void SetCircuitVa()
         {
             ErrorMessages.Remove("child-errors");
@@ -936,6 +1139,16 @@ namespace GMEPDesignTool
                                 {
                                     lmlValue = component.ALml;
                                 }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
+                                }
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
@@ -944,6 +1157,16 @@ namespace GMEPDesignTool
                                 {
                                     lmlValue = component.BLml;
                                 }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
+                                }
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
@@ -951,6 +1174,16 @@ namespace GMEPDesignTool
                                 if (lmlIsLarger)
                                 {
                                     lmlValue = component.CLml;
+                                }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
                                 }
                                 break;
                         }
@@ -1050,6 +1283,16 @@ namespace GMEPDesignTool
                                 {
                                     lmlValue = component.ALml;
                                 }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
+                                }
                                 break;
                             case 1:
                                 addedValue = (int)component.PhaseBVA;
@@ -1058,6 +1301,16 @@ namespace GMEPDesignTool
                                 {
                                     lmlValue = component.BLml;
                                 }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
+                                }
                                 break;
                             case 2:
                                 addedValue = (int)component.PhaseCVA;
@@ -1065,6 +1318,16 @@ namespace GMEPDesignTool
                                 if (lmlIsLarger)
                                 {
                                     lmlValue = component.CLml;
+                                }
+                                if (
+                                    component.GetType() == typeof(ElectricalEquipment)
+                                    && KitchenDemandFactor < 1
+                                )
+                                {
+                                    ElectricalEquipment equipment = (ElectricalEquipment)component;
+                                    addedValue = Convert.ToInt32(
+                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                    );
                                 }
                                 break;
                         }
@@ -1530,6 +1793,7 @@ namespace GMEPDesignTool
                 CurrentRightCircuit += 2;
             }
             SetCircuitNumbers();
+            SetKitchenDemandFactor();
             SetCircuitVa();
         }
 
@@ -1544,6 +1808,7 @@ namespace GMEPDesignTool
                 rightComponents.Add(new Space());
             }
             SetCircuitNumbers();
+            SetKitchenDemandFactor();
             SetCircuitVa();
         }
 

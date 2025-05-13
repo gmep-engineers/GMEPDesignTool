@@ -1422,7 +1422,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*"/>
+                            <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
