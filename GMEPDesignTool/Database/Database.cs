@@ -943,7 +943,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdatePanel(ElectricalPanel panel)
         {
             string query =
-                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, order_no = @order_no, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, high_leg_phase = @highLegPhase, load_amperage = @amp, kva = @kva WHERE id = @id";
+                "UPDATE electrical_panels SET bus_amp_rating_id = @bus, main_amp_rating_id = @main, order_no = @order_no, is_distribution = @is_distribution, voltage_id = @type, num_breakers = @numBreakers, parent_distance = @distanceFromParent, aic_rating = @aicRating, name = @name, color_code = @color_code, parent_id = @parent_id, is_recessed = @is_recessed, is_mlo = @is_mlo, circuit_no = @circuit_no, is_hidden_on_plan = @is_hidden_on_plan, location = @location, high_leg_phase = @highLegPhase, load_amperage = @amp, kva = @kva, status_id = @statusId WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@bus", panel.BusSize);
             command.Parameters.AddWithValue("@main", panel.MainSize);
@@ -965,6 +965,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@amp", panel.Amp);
             command.Parameters.AddWithValue("@kva", panel.Kva);
             command.Parameters.AddWithValue("@order_no", panel.OrderNo);
+            command.Parameters.AddWithValue("@statusId", panel.StatusId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1480,7 +1481,8 @@ namespace GMEPDesignTool.Database
                         GetSafeInt(reader, "voltage_id") == 4
                             ? GetSafeChar(reader, "high_leg_phase")
                             : '-',
-                        GetSafeInt(reader, "order_no")
+                        GetSafeInt(reader, "order_no"),
+                        GetSafeInt(reader, "status_id")
                     )
                 );
             }

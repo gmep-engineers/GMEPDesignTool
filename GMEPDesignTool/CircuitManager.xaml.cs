@@ -113,6 +113,7 @@ namespace GMEPDesignTool
             }
         }
 
+
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid
@@ -183,6 +184,89 @@ namespace GMEPDesignTool
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
+        }
+        private void LeftCircuitGrid_ToggleExistingBreaker(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
+            if (
+                sender is MenuItem menuItem
+            )
+            {
+                if (selectedItems.Any())
+                {
+                    var firstItem = selectedItems.First();
+                    var lastItem = selectedItems.Last();
+                    var range =
+                        (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
+
+                    var noteText = "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
+
+                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+
+                    if (existingBreakerNote == null)
+                    {
+                        // Only add if it does not exist
+                        existingBreakerNote = new ElectricalPanelNote()
+                        {
+                            Note = noteText,
+                        };
+                        viewModel.ElectricalPanelNotes.Add(existingBreakerNote);
+                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                    }
+
+                    var newNote = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        existingBreakerNote.ProjectId,
+                        Panel.Id,
+                        existingBreakerNote.Id,
+                        existingBreakerNote.Note,
+                        0,
+                        0,
+                        0,
+                        existingBreakerNote.Tag
+                    );
+                    newNote.CircuitNo = firstItem.Number;
+                    newNote.Length = range;
+
+                    List<ElectricalPanelNoteRel> existingNodes = new List<ElectricalPanelNoteRel>();
+                    int startCircuit = newNote.CircuitNo;
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1) * 2;
+
+                    foreach (var note in viewModel.LeftNotes)
+                    {
+                        int startCircuit2 = note.CircuitNo;
+                        int endCircuit2 = note.CircuitNo + (note.Length - 1) * 2;
+                        if (
+                            (startCircuit <= endCircuit2 && endCircuit >= startCircuit2)
+                            || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit)
+                        )
+                        {
+                            existingNodes.Add(note);
+                        }
+                    }
+
+                    List<ElectricalPanelNoteRel> existingNodes2 = existingNodes
+                        .OrderBy(note => note.Stack)
+                        .ToList();
+
+                    if (existingNodes2.Count > 0)
+                    {
+                        for (int i = 0; i <= existingNodes2.Last().Stack + 1; i++)
+                        {
+                            var node = existingNodes2.Find(note => note.Stack == i);
+                            if (node == null)
+                            {
+                                newNote.Stack = i;
+                                break;
+                            }
+                        }
+                    }
+                    viewModel.LeftNotes.Add(newNote);
+                }
+            }
         }
 
         private void LeftCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
@@ -335,6 +419,90 @@ namespace GMEPDesignTool
             }
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
+        }
+        private void RightCircuitGrid_ToggleExistingBreaker(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number)
+                .ToList();
+            if (
+                sender is MenuItem menuItem
+            )
+            {
+                if (selectedItems.Any())
+                {
+                    var firstItem = selectedItems.First();
+                    var lastItem = selectedItems.Last();
+                    var range =
+                        (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
+
+                    var noteText = "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
+
+                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+
+                    if (existingBreakerNote == null)
+                    {
+                        // Only add if it does not exist
+                        existingBreakerNote = new ElectricalPanelNote()
+                        {
+                            Note = noteText,
+                        };
+                        viewModel.ElectricalPanelNotes.Add(existingBreakerNote);
+                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                    }
+
+                    var newNote = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        existingBreakerNote.ProjectId,
+                        Panel.Id,
+                        existingBreakerNote.Id,
+                        existingBreakerNote.Note,
+                        0,
+                        0,
+                        0,
+                        existingBreakerNote.Tag
+                    );
+                    newNote.CircuitNo = firstItem.Number;
+                    newNote.Length = range;
+
+                    List<ElectricalPanelNoteRel> existingNotes = new List<ElectricalPanelNoteRel>();
+                    int startCircuit = newNote.CircuitNo;
+                    int endCircuit = newNote.CircuitNo + (newNote.Length - 1) * 2;
+
+                    foreach (var note in viewModel.RightNotes)
+                    {
+                        int startCircuit2 = note.CircuitNo;
+                        int endCircuit2 = note.CircuitNo + (note.Length - 1) * 2;
+                        if (
+                            (startCircuit <= endCircuit2 && endCircuit >= startCircuit2)
+                            || (startCircuit2 <= endCircuit && endCircuit2 >= startCircuit)
+                        )
+                        {
+                            existingNotes.Add(note);
+                        }
+                    }
+
+                    List<ElectricalPanelNoteRel> existingNotes2 = existingNotes
+                        .OrderBy(note => note.Stack)
+                        .ToList();
+
+                    if (existingNotes2.Count > 0)
+                    {
+                        for (int i = 0; i <= existingNotes2.Last().Stack + 1; i++)
+                        {
+                            var node = existingNotes2.Find(note => note.Stack == i);
+                            if (node == null)
+                            {
+                                newNote.Stack = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    viewModel.RightNotes.Add(newNote);
+                }
+            }
         }
 
         private void RightCircuitGrid_DeleteNotes(object sender, RoutedEventArgs e)
