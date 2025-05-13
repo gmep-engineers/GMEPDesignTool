@@ -521,6 +521,7 @@ namespace GMEPDesignTool
                     sourceCollection.RemoveAt(sourceIndex);
                     targetCollection.Insert(targetIndex, sourceItem);
                     Panel.SetCircuitNumbers();
+                    Panel.SetKitchenDemandFactor();
                     Panel.SetCircuitVa();
                 }
             }
