@@ -216,6 +216,11 @@ namespace GMEPDesignTool
             setPower();
             this.Unloaded += new RoutedEventHandler(Project_Unloaded);
 
+            List<string> panelIds = new List<string>();
+            List<string> transformerIds = new List<string>();
+            List<string> serviceIds = new List<string>();
+
+
             List<Tuple<string, ElectricalPanel>> panelParentIds =
                 new List<Tuple<string, ElectricalPanel>>();
 
@@ -241,6 +246,7 @@ namespace GMEPDesignTool
                         panelParentId.Item2.AssignParentComponent(transformer);
                     }
                 }
+                transformerIds.Add(transformer.Id);
             }
             foreach (var panel in ElectricalPanels)
             {
@@ -251,6 +257,7 @@ namespace GMEPDesignTool
                         panelParentId.Item2.AssignParentComponent(panel);
                     }
                 }
+                panelIds.Add(panel.Id);
             }
             foreach (var service in ElectricalServices)
             {
@@ -266,7 +273,32 @@ namespace GMEPDesignTool
                         panelParentId.Item2.AssignParentComponent(service);
                     }
                 }
+                serviceIds.Add(service.Id);
             }
+
+            //checking if any parentids were changed by the single line node diagram
+            foreach(var transformer in ElectricalTransformers)
+            {
+                if (transformer.ParentId != null && !panelIds.Contains(transformer.ParentId) && !serviceIds.Contains(transformer.ParentId))
+                {
+                    transformer.ParentId = "";
+                }
+            }
+            foreach (var panel in ElectricalPanels)
+            {
+                if (panel.ParentId != null && !panelIds.Contains(panel.ParentId) && !serviceIds.Contains(panel.ParentId) && !transformerIds.Contains(panel.ParentId))
+                {
+                    panel.ParentId = "";
+                }
+            }
+            foreach (var equipment in ElectricalEquipments)
+            {
+                if (equipment.ParentId != null && !panelIds.Contains(equipment.ParentId) && !transformerIds.Contains(equipment.ParentId))
+                {
+                    equipment.ParentId = "";
+                }
+            }
+
         }
 
    
