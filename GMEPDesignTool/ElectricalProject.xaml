@@ -1048,8 +1048,8 @@
                                         <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
-                                                    <ComboBoxItem Content="Existing" Tag="1"/>
-                                                    <ComboBoxItem Content="New" Tag="2"/>
+                                                    <ComboBoxItem Content="New" Tag="1"/>
+                                                    <ComboBoxItem Content="Existing" Tag="2"/>
                                                     <ComboBoxItem Content="Relocated" Tag="3"/>
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
