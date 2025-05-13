@@ -282,6 +282,7 @@ namespace GMEPDesignTool
                 if (transformer.ParentId != null && !panelIds.Contains(transformer.ParentId) && !serviceIds.Contains(transformer.ParentId))
                 {
                     transformer.ParentId = "";
+                    transformer.CircuitNo = 0;
                 }
             }
             foreach (var panel in ElectricalPanels)
@@ -289,6 +290,7 @@ namespace GMEPDesignTool
                 if (panel.ParentId != null && !panelIds.Contains(panel.ParentId) && !serviceIds.Contains(panel.ParentId) && !transformerIds.Contains(panel.ParentId))
                 {
                     panel.ParentId = "";
+                    panel.CircuitNo = 0;
                 }
             }
             foreach (var equipment in ElectricalEquipments)
@@ -296,6 +298,7 @@ namespace GMEPDesignTool
                 if (equipment.ParentId != null && !panelIds.Contains(equipment.ParentId) && !transformerIds.Contains(equipment.ParentId))
                 {
                     equipment.ParentId = "";
+                    equipment.CircuitNo = 0;
                 }
             }
 
