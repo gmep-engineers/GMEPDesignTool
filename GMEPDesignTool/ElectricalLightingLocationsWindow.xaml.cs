@@ -9,12 +9,12 @@ namespace GMEPDesignTool
 {
     partial class ElectricalLightingLocationsWindow : Window
     {
-        ElectricalLightingLocationsViewModel viewModel { get; set; }
+        ElectricalLightingLocationsViewModel ViewModel { get; set; }
 
         public ElectricalLightingLocationsWindow(ObservableCollection<Location> LightingLocations)
         {
-            viewModel = new ElectricalLightingLocationsViewModel(LightingLocations);
-            this.DataContext = viewModel;
+            ViewModel = new ElectricalLightingLocationsViewModel(LightingLocations);
+            this.DataContext = ViewModel;
             InitializeComponent();
         }
 
@@ -23,9 +23,9 @@ namespace GMEPDesignTool
             RoutedEventArgs e
         )
         {
-            if (viewModel.SelectedLocation != null)
+            if (ViewModel.SelectedLocation != null)
             {
-                viewModel.LightingLocations.Remove(viewModel.SelectedLocation);
+                ViewModel.LightingLocations.Remove(ViewModel.SelectedLocation);
             }
         }
     }

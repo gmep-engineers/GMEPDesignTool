@@ -28,11 +28,14 @@ namespace GMEPDesignTool
         CircuitManagerViewModel viewModel { get; set; }
         ElectricalPanel Panel { get; set; }
 
-        public CircuitManager(ElectricalPanel panel)
+        Database.Database GmepDb { get; set; }
+
+        public CircuitManager(ElectricalPanel panel, Database.Database database)
         {
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
             Panel = panel;
+            GmepDb = database;
             Panel.SetKitchenDemandFactor();
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
@@ -113,7 +116,6 @@ namespace GMEPDesignTool
             }
         }
 
-
         private void LeftCircuitGrid_AddNote(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid
@@ -185,15 +187,14 @@ namespace GMEPDesignTool
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
         }
+
         private void LeftCircuitGrid_ToggleExistingBreaker(object sender, RoutedEventArgs e)
         {
             var selectedItems = LeftCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number)
                 .ToList();
-            if (
-                sender is MenuItem menuItem
-            )
+            if (sender is MenuItem menuItem)
             {
                 if (selectedItems.Any())
                 {
@@ -202,19 +203,21 @@ namespace GMEPDesignTool
                     var range =
                         (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
-                    var noteText = "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
+                    var noteText =
+                        "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
 
-                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n =>
+                        n.Note == noteText
+                    );
 
                     if (existingBreakerNote == null)
                     {
                         // Only add if it does not exist
-                        existingBreakerNote = new ElectricalPanelNote()
-                        {
-                            Note = noteText,
-                        };
+                        existingBreakerNote = new ElectricalPanelNote() { Note = noteText };
                         viewModel.ElectricalPanelNotes.Add(existingBreakerNote);
-                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n =>
+                            n.Note == noteText
+                        );
                     }
 
                     var newNote = new ElectricalPanelNoteRel(
@@ -296,6 +299,32 @@ namespace GMEPDesignTool
                     viewModel.LeftNotes.Remove(note);
                 }
             }
+        }
+
+        private void LeftCircuitGrid_MiniBreakerOptions(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+
+            Circuit circuit = selectedItems.First();
+            IEnumerable<ElectricalComponent> eq = Panel.componentsCollection.Where(c =>
+                c.GetType() == typeof(ElectricalEquipment)
+            );
+            ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
+                GmepDb,
+                eq,
+                Panel.Id,
+                Panel.Name,
+                circuit.Number,
+                circuit.MiniBreakerEquipAId,
+                circuit.MiniBreakerEquipAId,
+                circuit.MiniBreakerSizeA,
+                circuit.MiniBreakerSizeB,
+                circuit.MiniBreakerInterlockA,
+                circuit.MiniBreakerInterlockB
+            );
+            window.Show();
         }
 
         private void RightCircuitGrid_ToggleCustomDescription(object sender, RoutedEventArgs e)
@@ -420,15 +449,14 @@ namespace GMEPDesignTool
             var listBox2 = sender as ListBox;
             listBox2.SelectedValue = null;
         }
+
         private void RightCircuitGrid_ToggleExistingBreaker(object sender, RoutedEventArgs e)
         {
             var selectedItems = RightCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number)
                 .ToList();
-            if (
-                sender is MenuItem menuItem
-            )
+            if (sender is MenuItem menuItem)
             {
                 if (selectedItems.Any())
                 {
@@ -437,19 +465,21 @@ namespace GMEPDesignTool
                     var range =
                         (int)Math.Ceiling((double)(lastItem.Number - firstItem.Number) / 2) + 1;
 
-                    var noteText = "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
+                    var noteText =
+                        "DENOTES EXISTING CIRCUIT BREAKER TO REMAIN; ALL OTHERS ARE NEW TO MATCH EXISTING.";
 
-                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                    var existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n =>
+                        n.Note == noteText
+                    );
 
                     if (existingBreakerNote == null)
                     {
                         // Only add if it does not exist
-                        existingBreakerNote = new ElectricalPanelNote()
-                        {
-                            Note = noteText,
-                        };
+                        existingBreakerNote = new ElectricalPanelNote() { Note = noteText };
                         viewModel.ElectricalPanelNotes.Add(existingBreakerNote);
-                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n => n.Note == noteText);
+                        existingBreakerNote = viewModel.ElectricalPanelNotes.FirstOrDefault(n =>
+                            n.Note == noteText
+                        );
                     }
 
                     var newNote = new ElectricalPanelNoteRel(
@@ -532,6 +562,32 @@ namespace GMEPDesignTool
                     viewModel.RightNotes.Remove(note);
                 }
             }
+        }
+
+        private void RightCircuitGrid_MiniBreakerOptions(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+
+            Circuit circuit = selectedItems.First();
+            IEnumerable<ElectricalComponent> eq = Panel.componentsCollection.Where(c =>
+                c.GetType() == typeof(ElectricalEquipment)
+            );
+            ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
+                GmepDb,
+                eq,
+                Panel.Id,
+                Panel.Name,
+                circuit.Number,
+                circuit.MiniBreakerEquipAId,
+                circuit.MiniBreakerEquipAId,
+                circuit.MiniBreakerSizeA,
+                circuit.MiniBreakerSizeB,
+                circuit.MiniBreakerInterlockA,
+                circuit.MiniBreakerInterlockB
+            );
+            window.Show();
         }
 
         private void Component_MouseDoubleClick(object sender, MouseButtonEventArgs e)
