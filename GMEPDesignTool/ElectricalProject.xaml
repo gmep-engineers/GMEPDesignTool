@@ -761,7 +761,7 @@
                                                     </Style>
                                                 </DataGridTextColumn.EditingElementStyle>
                                             </DataGridTextColumn>
-                                            <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding VoltageId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                                 <DataGridComboBoxColumn.ItemsSource>
                                                     <CompositeCollection>
                                                         <ComboBoxItem Content="120" Tag="2"/>
