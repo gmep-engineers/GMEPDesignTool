@@ -24,16 +24,11 @@ namespace GMEPDesignTool
 
         public ElectricalPanelMiniBreakerWindow(
             Database.Database database,
-            IEnumerable<ElectricalComponent> unassignedEquipment,
+            ObservableCollection<ElectricalComponent> unassignedEquipment,
             string panelId,
             string panelName,
-            int circuitNo,
-            string equipIdA = "",
-            string equipIdB = "",
-            int breakerSizeA = 20,
-            int breakerSizeB = 20,
-            bool interlockA = false,
-            bool interlockB = false
+            Circuit circuit,
+            Circuit? nextCircuit
         )
         {
             ViewModel = new ElectricalPanelMiniBreakerViewModel(
@@ -41,13 +36,8 @@ namespace GMEPDesignTool
                 unassignedEquipment,
                 panelId,
                 panelName,
-                circuitNo,
-                equipIdA,
-                equipIdB,
-                breakerSizeA,
-                breakerSizeB,
-                interlockA,
-                interlockB
+                circuit,
+                nextCircuit
             );
             DataContext = ViewModel;
 

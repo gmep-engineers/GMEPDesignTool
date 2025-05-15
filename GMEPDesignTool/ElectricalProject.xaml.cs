@@ -24,7 +24,7 @@ namespace GMEPDesignTool
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
-        public ObservableCollection<Circuit> MiniBreakers { get; set; }
+        public ObservableCollection<Circuit> ElectricalPanelMiniBreakers { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -142,7 +142,8 @@ namespace GMEPDesignTool
             );
             Owners = await ProjectView.database.getOwners();
             CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
-            MiniBreakers = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
+            ElectricalPanelMiniBreakers =
+                await ProjectView.database.GetProjectElectricalPanelMiniBreakers(ProjectId);
 
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
@@ -184,7 +185,6 @@ namespace GMEPDesignTool
                 }
                 AssignElectricalPanelNoteRels(panel);
                 AssignCustomCircuits(panel);
-                AssignMiniBreakers(panel);
             }
             foreach (var equipment in ElectricalEquipments)
             {
@@ -315,6 +315,10 @@ namespace GMEPDesignTool
                     equipment.ParentId = "";
                     equipment.CircuitNo = 0;
                 }
+            }
+            for (int i = 0; i < ElectricalPanels.Count; i++)
+            {
+                AssignMiniBreakers(ElectricalPanels[i]); // HERE test
             }
         }
 
@@ -897,8 +901,9 @@ namespace GMEPDesignTool
 
         public void AssignMiniBreakers(ElectricalPanel panel)
         {
-            var filteredCircuits = MiniBreakers.Where(m => m.PanelId == panel.id).ToList();
-
+            var filteredCircuits = ElectricalPanelMiniBreakers
+                .Where(m => m.PanelId == panel.id)
+                .ToList();
             foreach (Circuit circuit in filteredCircuits)
             {
                 if (circuit.Number % 2 == 0)
@@ -914,6 +919,21 @@ namespace GMEPDesignTool
                         PanelCircuits_PropertyChanged;
                     panel.leftCircuits[(circuit.Number - 1) / 2] = circuit;
                     circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                }
+                int i = 0;
+                while (i < panel.componentsCollection.Count)
+                {
+                    if (
+                        panel.componentsCollection[i].Id == circuit.MiniBreakerEquipAId
+                        || panel.componentsCollection[i].Id == circuit.MiniBreakerEquipBId
+                    )
+                    {
+                        panel.componentsCollection.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
                 }
             }
         }
@@ -1697,6 +1717,7 @@ namespace GMEPDesignTool
                 ElectricalEquipments.Count + 1,
                 1,
                 1,
+                0,
                 0
             );
             AddElectricalEquipment(electricalEquipment);
@@ -1766,7 +1787,8 @@ namespace GMEPDesignTool
                     0,
                     electricalEquipment.StatusId,
                     electricalEquipment.ConnectionSymbolId,
-                    electricalEquipment.NumConvDuplex
+                    electricalEquipment.NumConvDuplex,
+                    0
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);

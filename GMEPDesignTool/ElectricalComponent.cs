@@ -37,6 +37,7 @@ namespace GMEPDesignTool
         public string componentType = string.Empty;
         public int orderNo = 1;
         public bool updateFlag = false;
+        public int circuitHalf = 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

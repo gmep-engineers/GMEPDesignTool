@@ -14,7 +14,7 @@
         <ComboBox ItemsSource="{Binding Path=UnassignedEquipment}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=EquipAId}" HorizontalAlignment="Left" Margin="101,42,0,0" VerticalAlignment="Top" Width="120"/>
         <Label  Content="Equipment B" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
         <ComboBox ItemsSource="{Binding Path=UnassignedEquipment}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=EquipBId}" HorizontalAlignment="Left" Margin="101,68,0,0" VerticalAlignment="Top" Width="120"/>
-        <CheckBox Content="Interlock with the B-half of the next circuit's mini breaker" HorizontalAlignment="Left" Margin="241,46,0,0" VerticalAlignment="Top" IsChecked="{Binding InterlockAToNextB}"/>
+        <CheckBox Content="Interlock with the B-half of the next circuit's mini breaker" HorizontalAlignment="Left" Margin="240,46,0,0" VerticalAlignment="Top" IsChecked="{Binding InterlockAToNextB}"/>
         <CheckBox Content="Interlock with the A-half of the next circuit's mini breaker" HorizontalAlignment="Left" Margin="240,72,0,0" VerticalAlignment="Top" IsChecked="{Binding InterlockBToNextA}"/>
         <Button Content="Delete Mini Breaker" HorizontalAlignment="Left" Margin="452,115,0,0" VerticalAlignment="Top" Click="DeleteMiniBreakerButton_Click"/>
     </Grid>

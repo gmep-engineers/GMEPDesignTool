@@ -308,21 +308,16 @@ namespace GMEPDesignTool
                 .OrderBy(circuit => circuit.Number);
 
             Circuit circuit = selectedItems.First();
-            IEnumerable<ElectricalComponent> eq = Panel.componentsCollection.Where(c =>
-                c.GetType() == typeof(ElectricalEquipment)
-            );
+            Circuit? nextCircuit = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .FirstOrDefault(c => c.Number == circuit.Number + 2);
             ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
                 GmepDb,
-                eq,
+                Panel.componentsCollection,
                 Panel.Id,
                 Panel.Name,
-                circuit.Number,
-                circuit.MiniBreakerEquipAId,
-                circuit.MiniBreakerEquipAId,
-                circuit.MiniBreakerSizeA,
-                circuit.MiniBreakerSizeB,
-                circuit.MiniBreakerInterlockA,
-                circuit.MiniBreakerInterlockB
+                circuit,
+                nextCircuit
             );
             window.Show();
         }
@@ -571,21 +566,17 @@ namespace GMEPDesignTool
                 .OrderBy(circuit => circuit.Number);
 
             Circuit circuit = selectedItems.First();
-            IEnumerable<ElectricalComponent> eq = Panel.componentsCollection.Where(c =>
-                c.GetType() == typeof(ElectricalEquipment)
-            );
+            Circuit? nextCircuit = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .FirstOrDefault(c => c.Number == circuit.Number + 2);
+
             ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
                 GmepDb,
-                eq,
+                Panel.componentsCollection,
                 Panel.Id,
                 Panel.Name,
-                circuit.Number,
-                circuit.MiniBreakerEquipAId,
-                circuit.MiniBreakerEquipAId,
-                circuit.MiniBreakerSizeA,
-                circuit.MiniBreakerSizeB,
-                circuit.MiniBreakerInterlockA,
-                circuit.MiniBreakerInterlockB
+                circuit,
+                nextCircuit
             );
             window.Show();
         }

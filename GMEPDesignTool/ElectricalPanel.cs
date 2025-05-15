@@ -836,6 +836,10 @@ namespace GMEPDesignTool
 
             foreach (var component in leftComponents)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 component.CircuitNo = leftCircuitIndex * 2 + 1;
                 leftCircuitIndex += component.Pole;
                 if (component is Space && (component.CircuitNo / 2) + 1 > leftCircuits.Count)
@@ -852,6 +856,10 @@ namespace GMEPDesignTool
 
             foreach (var component in rightComponents)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 component.CircuitNo = rightCircuitIndex * 2 + 2;
                 rightCircuitIndex += component.Pole;
                 if (component is Space && (component.CircuitNo / 2) > rightCircuits.Count)
@@ -1754,6 +1762,10 @@ namespace GMEPDesignTool
             int CurrentRightCircuit = 2;
             foreach (var component in temp)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 if (component.ParentId == Id)
                 {
                     if (component.CircuitNo == 0)

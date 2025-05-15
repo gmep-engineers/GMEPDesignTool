@@ -75,7 +75,8 @@ namespace GMEPDesignTool
             int orderNo,
             int statusId,
             int connectionSymbolId,
-            int numConvDuplex
+            int numConvDuplex,
+            int circuitHalf
         )
         {
             this.id = id;
@@ -124,6 +125,7 @@ namespace GMEPDesignTool
             this.connectionSymbolId = connectionSymbolId;
             this.numConvDuplex = numConvDuplex;
             this.orderNo = orderNo;
+            this.circuitHalf = circuitHalf;
             DetermineLoadCategory();
             //DetermineLoadTypes();
             determineEquipmentPole();
@@ -694,10 +696,26 @@ namespace GMEPDesignTool
             if (Pole == 2)
             {
                 Circuits = $"{circuitNo},{circuitNo + 2}";
+                if (circuitHalf == 1)
+                {
+                    Circuits = $"{circuitNo}A,{circuitNo + 2}B";
+                }
+                if (circuitHalf == 2)
+                {
+                    Circuits = $"{circuitNo}B,{circuitNo + 2}A";
+                }
             }
             if (Pole == 1)
             {
                 Circuits = $"{circuitNo}";
+                if (circuitHalf == 1)
+                {
+                    Circuits = $"{circuitNo}A";
+                }
+                if (circuitHalf == 2)
+                {
+                    Circuits = $"{circuitNo}B";
+                }
             }
         }
 
