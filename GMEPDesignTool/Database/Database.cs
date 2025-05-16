@@ -2124,14 +2124,12 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("interlockB", interlockB);
             command.Parameters.AddWithValue("id", id);
             command.ExecuteNonQuery();
-            Trace.WriteLine("circuitNo " + circuitNo);
             query =
                 @"UPDATE electrical_equipment SET circuit_no = @circuitNo, circuit_half = @circuitHalf WHERE id = @equipAId";
             command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("circuitNo", circuitNo);
             command.Parameters.AddWithValue("circuitHalf", 1);
             command.Parameters.AddWithValue("@equipAId", equipAId);
-            Trace.WriteLine(command.CommandText);
             command.ExecuteNonQuery();
             query =
                 @"UPDATE electrical_equipment SET circuit_no = @circuitNo, circuit_half = @circuitHalf WHERE id = @equipBId";

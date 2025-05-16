@@ -143,7 +143,6 @@ namespace GMEPDesignTool
             int vaB = 0;
             int voltA = 0;
             int voltB = 0;
-            Trace.WriteLine("CircuitNo " + CircuitNo.ToString());
             (descA, descB, vaA, vaB, voltA, voltB) = GmepDb.UpdateElectricalPanelMiniBreaker(
                 Id,
                 EquipAId,
