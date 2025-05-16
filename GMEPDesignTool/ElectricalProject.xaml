@@ -852,6 +852,11 @@
                                     </StackPanel>
 
                                     <DataGrid Name="ElectricalLightingControlsDataGrid" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" ItemsSource="{Binding Source={StaticResource LightingControlsViewSource}}"  SelectedItem="{Binding Path=SelectedElectricalLightingControl,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                        <DataGrid.ContextMenu>
+                                            <ContextMenu Name="ElectricalLightingControlsContextMenu">
+                                                <MenuItem Header="Remove" Click="RemoveSelectedElectricalLightingControls_Click"/>
+                                            </ContextMenu>
+                                        </DataGrid.ContextMenu>
                                         <DataGrid.RowStyle>
                                             <Style TargetType="DataGridRow">
                                                 <Setter Property="Background" Value="{Binding ColorCode}" />

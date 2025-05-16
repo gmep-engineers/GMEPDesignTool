@@ -1427,57 +1427,95 @@ namespace GMEPDesignTool
 
         private void RemoveSelectedElectricalEquipment_Click(object sender, RoutedEventArgs e)
         {
-            var selectedEquipment = ElectricalEquipmentDataGrid
-                .SelectedItems.Cast<ElectricalEquipment>()
-                .ToList();
-            foreach (ElectricalEquipment equipment in selectedEquipment)
+            try
             {
-                RemoveElectricalEquipment(equipment);
+                var selectedEquipment = ElectricalEquipmentDataGrid
+                    .SelectedItems.Cast<ElectricalEquipment>()
+                    .ToList();
+                foreach (ElectricalEquipment equipment in selectedEquipment)
+                {
+                    RemoveElectricalEquipment(equipment);
+                }
             }
+            catch { }
         }
 
         private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
         {
-            var selectedLighting = ElectricalLightingDataGrid
-                .SelectedItems.Cast<ElectricalLighting>()
-                .ToList();
-            foreach (ElectricalLighting lighting in selectedLighting)
+            try
             {
-                RemoveElectricalLighting(lighting);
+                var selectedLighting = ElectricalLightingDataGrid
+                    .SelectedItems.Cast<ElectricalLighting>()
+                    .ToList();
+                foreach (ElectricalLighting lighting in selectedLighting)
+                {
+                    RemoveElectricalLighting(lighting);
+                }
             }
+            catch { }
+        }
+
+        private void RemoveSelectedElectricalLightingControls_Click(
+            object sender,
+            RoutedEventArgs e
+        )
+        {
+            try
+            {
+                var selectedLightingControls = ElectricalLightingControlsDataGrid
+                    .SelectedItems.Cast<ElectricalLightingControl>()
+                    .ToList();
+                foreach (ElectricalLightingControl control in selectedLightingControls)
+                {
+                    RemoveElectricalLightingControl(control);
+                }
+            }
+            catch { }
         }
 
         private void RemoveSelectedElectricalServices_Click(object sender, RoutedEventArgs e)
         {
-            var selectedServices = ElectricalServiceDataGrid
-                .SelectedItems.Cast<ElectricalService>()
-                .ToList();
-            foreach (ElectricalService service in selectedServices)
+            try
             {
-                RemoveElectricalService(service);
+                var selectedServices = ElectricalServiceDataGrid
+                    .SelectedItems.Cast<ElectricalService>()
+                    .ToList();
+                foreach (ElectricalService service in selectedServices)
+                {
+                    RemoveElectricalService(service);
+                }
             }
+            catch { }
         }
 
         private void RemoveSelectedElectricalPanels_Click(object sender, RoutedEventArgs e)
         {
-            var selectedPanels = ElectricalPanelDataGrid
-                .SelectedItems.Cast<ElectricalPanel>()
-                .ToList();
-            foreach (ElectricalPanel panel in selectedPanels)
+            try
             {
-                RemoveElectricalPanel(panel);
+                var selectedPanels = ElectricalPanelDataGrid
+                    .SelectedItems.Cast<ElectricalPanel>()
+                    .ToList();
+                foreach (ElectricalPanel panel in selectedPanels)
+                {
+                    RemoveElectricalPanel(panel);
+                }
             }
+            catch { }
         }
 
         private void RemoveSelectedElectricalTransformers_Click(object sender, RoutedEventArgs e)
         {
-            var selectedTransformers = ElectricalTransformerDataGrid
-                .SelectedItems.Cast<ElectricalTransformer>()
-                .ToList();
-            foreach (ElectricalTransformer transformer in selectedTransformers)
+            try
             {
-                RemoveElectricalTransformer(transformer);
+                var selectedTransformers = ElectricalTransformerDataGrid
+                    .SelectedItems.Cast<ElectricalTransformer>()
+                    .ToList();
+                foreach (ElectricalTransformer transformer in selectedTransformers)
+                {
+                    RemoveElectricalTransformer(transformer);
+                }
             }
+            catch { }
         }
 
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
@@ -1993,6 +2031,12 @@ namespace GMEPDesignTool
             electricalLighting.PropertyChanged -= ElectricalLighting_PropertyChanged;
             ElectricalLightings.Remove(electricalLighting);
             //StartTimer();
+        }
+
+        public void RemoveElectricalLightingControl(ElectricalLightingControl control)
+        {
+            control.PropertyChanged -= ElectricalLightingControl_PropertyChanged;
+            ElectricalLightingControls.Remove(control);
         }
 
         public void DeleteSelectedElectricalLighting(object sender, EventArgs e)
