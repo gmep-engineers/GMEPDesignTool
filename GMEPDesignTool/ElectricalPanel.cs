@@ -836,6 +836,10 @@ namespace GMEPDesignTool
 
             foreach (var component in leftComponents)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 component.CircuitNo = leftCircuitIndex * 2 + 1;
                 leftCircuitIndex += component.Pole;
                 if (component is Space && (component.CircuitNo / 2) + 1 > leftCircuits.Count)
@@ -852,6 +856,10 @@ namespace GMEPDesignTool
 
             foreach (var component in rightComponents)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 component.CircuitNo = rightCircuitIndex * 2 + 2;
                 rightCircuitIndex += component.Pole;
                 if (component is Space && (component.CircuitNo / 2) > rightCircuits.Count)
@@ -1754,6 +1762,10 @@ namespace GMEPDesignTool
             int CurrentRightCircuit = 2;
             foreach (var component in temp)
             {
+                if (component.circuitHalf == 2)
+                {
+                    continue;
+                }
                 if (component.ParentId == Id)
                 {
                     if (component.CircuitNo == 0)
@@ -1957,6 +1969,15 @@ namespace GMEPDesignTool
         public string errorMessage;
         public string equipId;
 
+        private string miniBreakerEquipAId;
+        private string miniBreakerEquipBId;
+        private int miniBreakerSizeA;
+        private int miniBreakerSizeB;
+        private bool miniBreakerInterlockA;
+        private bool miniBreakerInterlockB;
+        private int miniBreakerVaA;
+        private int miniBreakerVaB;
+
         public Circuit(
             string _id,
             string _panelId,
@@ -1968,7 +1989,15 @@ namespace GMEPDesignTool
             string _description,
             int _loadCategory,
             bool _customBreakerSize,
-            bool _customDescription
+            bool _customDescription,
+            string _miniBreakerEquipAId = "",
+            string _miniBreakerEquipBId = "",
+            int _miniBreakerSizeA = 0,
+            int _miniBreakerSizeB = 0,
+            bool _miniBreakerInterlockA = false,
+            bool _miniBreakerInterlockB = false,
+            int _miniBreakerVaA = 0,
+            int _miniBreakerVaB = 0
         )
         {
             number = _number;
@@ -1983,6 +2012,15 @@ namespace GMEPDesignTool
             customDescription = _customDescription;
             errorMessage = "";
             equipId = string.Empty;
+
+            miniBreakerEquipAId = _miniBreakerEquipAId;
+            miniBreakerEquipBId = _miniBreakerEquipBId;
+            miniBreakerSizeA = _miniBreakerSizeA;
+            miniBreakerSizeB = _miniBreakerSizeB;
+            miniBreakerInterlockA = _miniBreakerInterlockA;
+            miniBreakerInterlockB = _miniBreakerInterlockB;
+            miniBreakerVaA = _miniBreakerVaA;
+            miniBreakerVaB = _miniBreakerVaB;
         }
 
         public string Id
@@ -2093,6 +2131,86 @@ namespace GMEPDesignTool
             {
                 errorMessage = value;
                 OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        public string MiniBreakerEquipAId
+        {
+            get => miniBreakerEquipAId;
+            set
+            {
+                miniBreakerEquipAId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string MiniBreakerEquipBId
+        {
+            get => miniBreakerEquipBId;
+            set
+            {
+                miniBreakerEquipBId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MiniBreakerSizeA
+        {
+            get => miniBreakerSizeA;
+            set
+            {
+                miniBreakerSizeA = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MiniBreakerSizeB
+        {
+            get => miniBreakerSizeB;
+            set
+            {
+                miniBreakerSizeB = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool MiniBreakerInterlockA
+        {
+            get => miniBreakerInterlockA;
+            set
+            {
+                miniBreakerInterlockA = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool MiniBreakerInterlockB
+        {
+            get => miniBreakerInterlockB;
+            set
+            {
+                miniBreakerInterlockB = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MiniBreakerVaA
+        {
+            get => miniBreakerVaA;
+            set
+            {
+                miniBreakerVaA = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MiniBreakerVaB
+        {
+            get => miniBreakerVaB;
+            set
+            {
+                miniBreakerVaB = value;
+                OnPropertyChanged();
             }
         }
 

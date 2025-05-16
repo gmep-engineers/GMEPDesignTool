@@ -1125,7 +1125,7 @@ namespace GMEPDesignTool.Database
         private async Task UpdateEquipment(ElectricalEquipment equipment)
         {
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va, status_id = @statusId, connection_symbol_id = @connectionSymbolId, num_conv_duplex = @numConvDuplex WHERE id = @id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mca = @mca, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va, status_id = @statusId, connection_symbol_id = @connectionSymbolId, num_conv_duplex = @numConvDuplex, circuit_half = @circuitHalf WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -1160,6 +1160,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@statusId", equipment.StatusId);
             command.Parameters.AddWithValue("@connectionSymbolId", equipment.ConnectionSymbolId);
             command.Parameters.AddWithValue("@numConvDuplex", equipment.NumConvDuplex);
+            command.Parameters.AddWithValue("@circuitHalf", equipment.circuitHalf);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1716,6 +1717,75 @@ namespace GMEPDesignTool.Database
             return customCircuits;
         }
 
+        public async Task<ObservableCollection<Circuit>> GetProjectElectricalPanelMiniBreakers(
+            string projectId
+        )
+        {
+            ObservableCollection<Circuit> miniBreakers = new ObservableCollection<Circuit>();
+            string query =
+                @"
+                SELECT
+                electrical_panel_mini_breakers.id,
+                electrical_panel_mini_breakers.panel_id,
+                electrical_panel_mini_breakers.circuit_no,
+                electrical_panel_mini_breakers.equip_a_id,
+                electrical_panel_mini_breakers.equip_b_id,
+                electrical_panel_mini_breakers.breaker_size_a,
+                electrical_panel_mini_breakers.breaker_size_b,
+                electrical_panel_mini_breakers.interlock_a_to_next_b,
+                electrical_panel_mini_breakers.interlock_b_to_next_a,
+                equip_a.va as va_a,
+                equip_b.va as va_b,
+                equip_a.description as description_a,
+                equip_b.description as description_b,
+                equip_a.equip_no as equip_no_a,
+                equip_b.equip_no as equip_no_b
+                FROM electrical_panel_mini_breakers
+                LEFT JOIN electrical_equipment as equip_a ON equip_a.id = electrical_panel_mini_breakers.equip_a_id
+                LEFT JOIN electrical_equipment as equip_b ON equip_b.id = electrical_panel_mini_breakers.equip_b_id
+                WHERE electrical_panel_mini_breakers.project_id = @projectId
+                ";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                miniBreakers.Add(
+                    new Circuit(
+                        GetSafeString(reader, "id"),
+                        GetSafeString(reader, "panel_id"),
+                        projectId,
+                        string.Empty,
+                        GetSafeInt(reader, "circuit_no"),
+                        GetSafeInt(reader, "va_a") + GetSafeInt(reader, "va_b"),
+                        2020,
+                        GetSafeString(reader, "equip_no_a")
+                            + "-"
+                            + GetSafeString(reader, "description_a")
+                            + ";"
+                            + GetSafeString(reader, "equip_no_b")
+                            + "-"
+                            + GetSafeString(reader, "description_b"),
+                        0,
+                        false,
+                        false,
+                        GetSafeString(reader, "equip_a_id"),
+                        GetSafeString(reader, "equip_b_id"),
+                        GetSafeInt(reader, "breaker_size_a"),
+                        GetSafeInt(reader, "breaker_size_b"),
+                        GetSafeBoolean(reader, "interlock_a_to_next_b"),
+                        GetSafeBoolean(reader, "interlock_b_to_next_a"),
+                        GetSafeInt(reader, "va_a"),
+                        GetSafeInt(reader, "va_b")
+                    )
+                );
+            }
+            await reader.CloseAsync();
+            await CloseConnectionAsync();
+            return miniBreakers;
+        }
+
         public async Task<ObservableCollection<ElectricalEquipment>> GetProjectEquipment(
             string projectId
         )
@@ -1763,7 +1833,8 @@ namespace GMEPDesignTool.Database
                         GetSafeInt(reader, "order_no"),
                         GetSafeInt(reader, "status_id"),
                         GetSafeInt(reader, "connection_symbol_id"),
-                        GetSafeInt(reader, "num_conv_duplex")
+                        GetSafeInt(reader, "num_conv_duplex"),
+                        GetSafeInt(reader, "circuit_half")
                     )
                 );
 
@@ -1964,6 +2035,165 @@ namespace GMEPDesignTool.Database
             await reader.CloseAsync();
             await CloseConnectionAsync();
             return clocks;
+        }
+
+        public string CreateElectricalPanelMiniBreaker(string panelId, int circuitNo)
+        {
+            string projectId = string.Empty;
+            string id = Guid.NewGuid().ToString();
+            string query = "SELECT project_id FROM electrical_panels WHERE id = @panelId";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("panelId", panelId);
+            MySqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                projectId = GetSafeString(reader, "project_id");
+            }
+            reader.Close();
+            if (string.IsNullOrEmpty(projectId))
+            {
+                CloseConnection();
+                return string.Empty;
+            }
+            query =
+                @"
+                INSERT INTO
+                electrical_panel_mini_breakers
+                (id, project_id, panel_id, circuit_no) 
+                VALUES
+                (@id, @projectId, @panelId, @circuitNo)";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("id", id);
+            command.Parameters.AddWithValue("projectId", projectId);
+            command.Parameters.AddWithValue("panelId", panelId);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
+            command.ExecuteNonQuery();
+            CloseConnection();
+            return id;
+        }
+
+        public string GetElectricalPanelMiniBreakerId(string panelId, int circuitNo)
+        {
+            string id = string.Empty;
+            string query =
+                "SELECT id FROM electrical_panel_mini_breakers WHERE panel_id = @panelId AND circuit_no = @circuitNo";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("panelId", panelId);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
+            MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+            if (reader.Read())
+            {
+                id = GetSafeString(reader, "id");
+            }
+            reader.Close();
+            CloseConnection();
+            return id;
+        }
+
+        public (string, string, int, int, int, int) UpdateElectricalPanelMiniBreaker(
+            string id,
+            string equipAId,
+            string equipBId,
+            int breakerSizeA,
+            int breakerSizeB,
+            bool interlockA,
+            bool interlockB,
+            int circuitNo
+        )
+        {
+            string query =
+                @"
+                UPDATE electrical_panel_mini_breakers
+                SET 
+                equip_a_id = @equipAId,
+                equip_b_id = @equipBId,
+                breaker_size_a = @breakerSizeA,
+                breaker_size_b = @breakerSizeB,
+                interlock_a_to_next_b = @interlockA,
+                interlock_b_to_next_a = @interlockB
+                WHERE id = @id";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("equipAId", equipAId);
+            command.Parameters.AddWithValue("equipBId", equipBId);
+            command.Parameters.AddWithValue("breakerSizeA", breakerSizeA);
+            command.Parameters.AddWithValue("breakerSizeB", breakerSizeB);
+            command.Parameters.AddWithValue("interlockA", interlockA);
+            command.Parameters.AddWithValue("interlockB", interlockB);
+            command.Parameters.AddWithValue("id", id);
+            command.ExecuteNonQuery();
+            query =
+                @"UPDATE electrical_equipment SET circuit_no = @circuitNo, circuit_half = @circuitHalf WHERE id = @equipAId";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
+            command.Parameters.AddWithValue("circuitHalf", 1);
+            command.Parameters.AddWithValue("@equipAId", equipAId);
+            command.ExecuteNonQuery();
+            query =
+                @"UPDATE electrical_equipment SET circuit_no = @circuitNo, circuit_half = @circuitHalf WHERE id = @equipBId";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
+            command.Parameters.AddWithValue("circuitHalf", 2);
+            command.Parameters.AddWithValue("@equipBId", equipBId);
+            command.ExecuteNonQuery();
+
+            query =
+                @"
+                SELECT
+                equip_a.equip_no as no_a,
+                equip_a.description as desc_a,
+                equip_a.va as va_a,
+                equip_a.voltage_id as volt_a,
+                equip_b.equip_no as no_b,
+                equip_b.description as desc_b,
+                equip_b.va as va_b,
+                equip_b.voltage_id as volt_b
+                FROM electrical_panel_mini_breakers
+                LEFT JOIN electrical_equipment as equip_a ON electrical_panel_mini_breakers.equip_a_id = equip_a.id
+                LEFT JOIN electrical_equipment as equip_b ON electrical_panel_mini_breakers.equip_b_id = equip_b.id
+                WHERE equip_a.id = @equipAId AND equip_b.id = @equipBId
+                ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("equipAId", equipAId);
+            command.Parameters.AddWithValue("equipBId", equipBId);
+            MySqlDataReader reader = command.ExecuteReader();
+            string noA = string.Empty;
+            string descA = string.Empty;
+            int vaA = 0;
+            int voltA = 0;
+            string noB = string.Empty;
+            string descB = string.Empty;
+            int vaB = 0;
+            int voltB = 0;
+            if (reader.Read())
+            {
+                noA = GetSafeString(reader, "no_a");
+                descA = GetSafeString(reader, "desc_a");
+                vaA = GetSafeInt(reader, "va_a");
+                voltA = GetSafeInt(reader, "volt_a");
+                noB = GetSafeString(reader, "no_b");
+                descB = GetSafeString(reader, "desc_b");
+                vaB = GetSafeInt(reader, "va_b");
+                voltB = GetSafeInt(reader, "volt_b");
+            }
+            reader.Close();
+            CloseConnection();
+            return ($"{noA}-{descA}", $"{noB}-{descB}", vaA, vaB, voltA, voltB);
+        }
+
+        public void DeleteElectricalPanelMiniBreaker(string id)
+        {
+            string query =
+                @"
+                DELETE FROM electrical_panel_mini_breakers WHERE id = @id
+                ";
+            OpenConnection();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("id", id);
+            command.ExecuteNonQuery();
+            CloseConnection();
         }
 
         public async Task CloneElectricalProject(string projectId, string newProjectId)

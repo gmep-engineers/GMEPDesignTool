@@ -24,6 +24,7 @@ namespace GMEPDesignTool
         private ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
+        public ObservableCollection<Circuit> ElectricalPanelMiniBreakers { get; set; }
         public ObservableCollection<ElectricalService> ElectricalServices { get; set; }
         public ObservableCollection<ElectricalEquipment> ElectricalEquipments { get; set; }
         public ObservableCollection<ElectricalLighting> ElectricalLightings { get; set; }
@@ -141,6 +142,8 @@ namespace GMEPDesignTool
             );
             Owners = await ProjectView.database.getOwners();
             CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
+            ElectricalPanelMiniBreakers =
+                await ProjectView.database.GetProjectElectricalPanelMiniBreakers(ProjectId);
 
             ParentNames.Add("", "");
             PanelTransformerNames.Add("", "");
@@ -220,7 +223,6 @@ namespace GMEPDesignTool
             List<string> transformerIds = new List<string>();
             List<string> serviceIds = new List<string>();
 
-
             List<Tuple<string, ElectricalPanel>> panelParentIds =
                 new List<Tuple<string, ElectricalPanel>>();
 
@@ -277,9 +279,13 @@ namespace GMEPDesignTool
             }
 
             //checking if any parentids were changed by the single line node diagram
-            foreach(var transformer in ElectricalTransformers)
+            foreach (var transformer in ElectricalTransformers)
             {
-                if (transformer.ParentId != null && !panelIds.Contains(transformer.ParentId) && !serviceIds.Contains(transformer.ParentId))
+                if (
+                    transformer.ParentId != null
+                    && !panelIds.Contains(transformer.ParentId)
+                    && !serviceIds.Contains(transformer.ParentId)
+                )
                 {
                     transformer.ParentId = "";
                     transformer.CircuitNo = 0;
@@ -287,7 +293,12 @@ namespace GMEPDesignTool
             }
             foreach (var panel in ElectricalPanels)
             {
-                if (panel.ParentId != null && !panelIds.Contains(panel.ParentId) && !serviceIds.Contains(panel.ParentId) && !transformerIds.Contains(panel.ParentId))
+                if (
+                    panel.ParentId != null
+                    && !panelIds.Contains(panel.ParentId)
+                    && !serviceIds.Contains(panel.ParentId)
+                    && !transformerIds.Contains(panel.ParentId)
+                )
                 {
                     panel.ParentId = "";
                     panel.CircuitNo = 0;
@@ -295,13 +306,20 @@ namespace GMEPDesignTool
             }
             foreach (var equipment in ElectricalEquipments)
             {
-                if (equipment.ParentId != null && !panelIds.Contains(equipment.ParentId) && !transformerIds.Contains(equipment.ParentId))
+                if (
+                    equipment.ParentId != null
+                    && !panelIds.Contains(equipment.ParentId)
+                    && !transformerIds.Contains(equipment.ParentId)
+                )
                 {
                     equipment.ParentId = "";
                     equipment.CircuitNo = 0;
                 }
             }
-
+            for (int i = 0; i < ElectricalPanels.Count; i++)
+            {
+                AssignMiniBreakers(ElectricalPanels[i]); // HERE test
+            }
         }
 
         public async Task Timer_Tick(object sender, EventArgs e)
@@ -881,6 +899,45 @@ namespace GMEPDesignTool
             }
         }
 
+        public void AssignMiniBreakers(ElectricalPanel panel)
+        {
+            var filteredCircuits = ElectricalPanelMiniBreakers
+                .Where(m => m.PanelId == panel.id)
+                .ToList();
+            foreach (Circuit circuit in filteredCircuits)
+            {
+                if (circuit.Number % 2 == 0)
+                {
+                    panel.rightCircuits[(circuit.Number - 2) / 2].PropertyChanged -=
+                        PanelCircuits_PropertyChanged;
+                    panel.rightCircuits[(circuit.Number - 2) / 2] = circuit;
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                }
+                else
+                {
+                    panel.rightCircuits[(circuit.Number - 1) / 2].PropertyChanged -=
+                        PanelCircuits_PropertyChanged;
+                    panel.leftCircuits[(circuit.Number - 1) / 2] = circuit;
+                    circuit.PropertyChanged += panel.Circuit_PropertyChanged;
+                }
+                int i = 0;
+                while (i < panel.componentsCollection.Count)
+                {
+                    if (
+                        panel.componentsCollection[i].Id == circuit.MiniBreakerEquipAId
+                        || panel.componentsCollection[i].Id == circuit.MiniBreakerEquipBId
+                    )
+                    {
+                        panel.componentsCollection.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+        }
+
         private float idToVoltage(int voltageId)
         {
             int voltage = 0;
@@ -1439,7 +1496,7 @@ namespace GMEPDesignTool
                         }
                     }
 
-                    CircuitManager manager = new CircuitManager(panel);
+                    CircuitManager manager = new CircuitManager(panel, ProjectView.database);
                     manager.Show();
                 });
             }
@@ -1462,7 +1519,10 @@ namespace GMEPDesignTool
                                     break;
                                 }
                             }
-                            CircuitManager manager = new CircuitManager(assignedPanel);
+                            CircuitManager manager = new CircuitManager(
+                                assignedPanel,
+                                ProjectView.database
+                            );
                             manager.Show();
                         });
                     }
@@ -1657,6 +1717,7 @@ namespace GMEPDesignTool
                 ElectricalEquipments.Count + 1,
                 1,
                 1,
+                0,
                 0
             );
             AddElectricalEquipment(electricalEquipment);
@@ -1726,7 +1787,8 @@ namespace GMEPDesignTool
                     0,
                     electricalEquipment.StatusId,
                     electricalEquipment.ConnectionSymbolId,
-                    electricalEquipment.NumConvDuplex
+                    electricalEquipment.NumConvDuplex,
+                    0
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);

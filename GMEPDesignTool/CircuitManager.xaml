@@ -518,6 +518,7 @@
                                             </ListBox>
                                         </MenuItem>
                                         <MenuItem Header="Delete Notes" Click="LeftCircuitGrid_DeleteNotes"/>
+                                        <MenuItem Header="Mini Breaker Options" Click="LeftCircuitGrid_MiniBreakerOptions" />
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
@@ -848,6 +849,7 @@
                                             </ListBox>
                                         </MenuItem>
                                         <MenuItem Header="Delete Notes" Click="RightCircuitGrid_DeleteNotes"/>
+                                        <MenuItem Header="Mini Breaker Options" Click="RightCircuitGrid_MiniBreakerOptions" />
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
