@@ -532,6 +532,15 @@ namespace GMEPDesignTool
                 if (sourceIndex != -1)
                 {
                     sourceCollection.RemoveAt(sourceIndex);
+                    if (sourceCollection != ComponentsCollection)
+                    {
+                        sourceCollection.Insert(sourceIndex, new Space());
+                    }
+                    if (targetItem != null && targetItem.Name == "Space")
+                    {
+                        targetCollection.RemoveAt(targetIndex);
+                    }
+
                     targetCollection.Insert(targetIndex, sourceItem);
                     Panel.SetCircuitNumbers();
                     Panel.SetKitchenDemandFactor();

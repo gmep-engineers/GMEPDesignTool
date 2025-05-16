@@ -196,9 +196,16 @@ namespace GMEPDesignTool
             int i = 0;
             while (i < UnassignedEquipment.Count())
             {
-                if (UnassignedEquipment[i].Id == EquipAId || UnassignedEquipment[i].Id == EquipBId)
+                if (UnassignedEquipment[i].Id == EquipAId)
                 {
                     UnassignedEquipment[i].CircuitNo = CircuitNo;
+                    UnassignedEquipment[i].circuitHalf = 1;
+                    UnassignedEquipment.RemoveAt(i);
+                }
+                else if (UnassignedEquipment[i].Id == EquipBId)
+                {
+                    UnassignedEquipment[i].CircuitNo = CircuitNo;
+                    UnassignedEquipment[i].circuitHalf = 2;
                     UnassignedEquipment.RemoveAt(i);
                 }
                 else
@@ -210,7 +217,7 @@ namespace GMEPDesignTool
 
         public void Delete()
         {
-            GmepDb.DeleteElectricalPanelMiniBreaker(Id);
+            GmepDb.DeleteElectricalPanelMiniBreaker(PanelId, CircuitNo);
             Id = string.Empty;
             Circuit.Description = "Space";
             Circuit.Va = 0;

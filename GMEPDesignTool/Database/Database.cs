@@ -2183,15 +2183,24 @@ namespace GMEPDesignTool.Database
             return ($"{noA}-{descA}", $"{noB}-{descB}", vaA, vaB, voltA, voltB);
         }
 
-        public void DeleteElectricalPanelMiniBreaker(string id)
+        public void DeleteElectricalPanelMiniBreaker(string panelId, int circuitNo)
         {
             string query =
                 @"
-                DELETE FROM electrical_panel_mini_breakers WHERE id = @id
+                DELETE FROM electrical_panel_mini_breakers WHERE panel_id = @panelId AND circuit_no = @circuitNo
                 ";
             OpenConnection();
             MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("id", id);
+            command.Parameters.AddWithValue("panelId", panelId);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
+            command.ExecuteNonQuery();
+            query =
+                @"
+                UPDATE electrical_equipment SET circuit_no = 0, circuit_half = 0 WHERE parent_id = @panelId AND circuit_no = @circuitNo
+                ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("panelId", panelId);
+            command.Parameters.AddWithValue("circuitNo", circuitNo);
             command.ExecuteNonQuery();
             CloseConnection();
         }
