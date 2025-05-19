@@ -19,7 +19,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
         <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
     </UserControl.Resources>
-    <Grid Background="White">
+    <Grid Background="White" IsEnabled="{Binding Path=IsEnabled}">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
@@ -1381,6 +1381,16 @@
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="Project Locked" FontWeight="Bold" FontSize="30" Foreground="Crimson" HorizontalAlignment="Center" VerticalAlignment="Top" />
                     <TextBlock Text="ELECTRICAL PROJECT IS BEING EDITED IN SINGLE LINE, EXIT SINGLE LINE TO RESUME" FontWeight="Bold" FontSize="15" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Bottom"/>
+                </StackPanel>
+                <Image Source="/WarningSign.png" HorizontalAlignment="Right" VerticalAlignment="Top" Height="100"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.RowSpan="8" Background="Transparent" Visibility="{Binding IsAlreadyOpen, Converter={StaticResource BoolToVisConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Source="/WarningSign.png" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100"/>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Project already opened by" FontWeight="Bold" FontSize="30" Foreground="Crimson" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                    <TextBlock Text="{Binding EmployeeName}" FontWeight="Bold" FontSize="15" Margin="0 10 0 0" HorizontalAlignment="Center"  VerticalAlignment="Bottom"/>
                 </StackPanel>
                 <Image Source="/WarningSign.png" HorizontalAlignment="Right" VerticalAlignment="Top" Height="100"/>
             </StackPanel>

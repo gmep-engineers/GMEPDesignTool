@@ -41,6 +41,8 @@ namespace GMEPDesignTool
         ProjectControlViewModel viewModel;
         public bool Saving = false;
         public bool Loading = false;
+        public string EmployeeId = string.Empty;
+        public string SessionId = string.Empty;
 
         public ProjectControl()
         {
@@ -53,6 +55,8 @@ namespace GMEPDesignTool
             viewModel = new ProjectControlViewModel(projectNo, loginResponse);
             await viewModel.InitializeProjectControlViewModel();
             this.DataContext = viewModel;
+            EmployeeId = loginResponse.EmployeeId;
+            SessionId = loginResponse.SessionId;
             string projectId = viewModel.ProjectIds.First().Value;
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
             Application.Current.Deactivated += Application_Deactivated;
@@ -98,7 +102,9 @@ namespace GMEPDesignTool
                 viewModel.ActiveElectricalProject = new ElectricalProject(
                     newprojectId,
                     viewModel,
-                    this
+                    this,
+                    EmployeeId,
+                    SessionId
                 );
                 await viewModel.ActiveElectricalProject.InitializeAsync();
                 ElectricalTab.Content = viewModel.ActiveElectricalProject;
@@ -107,6 +113,7 @@ namespace GMEPDesignTool
                 AdminTab.Content = new Admin();
             }
         }
+
         private void Application_Deactivated(object sender, EventArgs e)
         {
             if (viewModel.SaveText != "LOCKED")
@@ -114,6 +121,7 @@ namespace GMEPDesignTool
                 Save(sender, e);
             }
         }
+
         private void Application_Activated(object sender, EventArgs e)
         {
             if (viewModel.SaveText != "LOCKED")
@@ -121,6 +129,7 @@ namespace GMEPDesignTool
                 ReloadElectricalProject();
             }
         }
+
         private async void Save(object sender, EventArgs e)
         {
             if (!Saving && !Loading)
@@ -128,11 +137,12 @@ namespace GMEPDesignTool
                 Saving = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    await viewModel.ActiveElectricalProject.Timer_Tick(sender, e);
+                    await viewModel.ActiveElectricalProject.SaveProject();
                 }
                 Saving = false;
             }
         }
+
         public async void ReloadElectricalProject()
         {
             if (!Loading && !Saving)
@@ -146,18 +156,28 @@ namespace GMEPDesignTool
                     string saveText = viewModel.SaveText;
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;
                     int sectionIndex = viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex;
-                    int equiplightingIndex = viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex;
-                    int serviceTransPanelIndex = viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex;
+                    int equiplightingIndex = viewModel
+                        .ActiveElectricalProject
+                        .EquipmentLightingTabs
+                        .SelectedIndex;
+                    int serviceTransPanelIndex = viewModel
+                        .ActiveElectricalProject
+                        .ServiceTransPanelTabs
+                        .SelectedIndex;
 
                     viewModel.ActiveElectricalProject = new ElectricalProject(
                         projectId,
                         viewModel,
-                        this
+                        this,
+                        EmployeeId,
+                        SessionId
                     );
                     await viewModel.ActiveElectricalProject.InitializeAsync();
                     viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
-                    viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex = equiplightingIndex;
-                    viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex = serviceTransPanelIndex;
+                    viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex =
+                        equiplightingIndex;
+                    viewModel.ActiveElectricalProject.ServiceTransPanelTabs.SelectedIndex =
+                        serviceTransPanelIndex;
                     viewModel.SaveText = saveText;
                     ElectricalTab.Content = viewModel.ActiveElectricalProject;
                 }
@@ -172,7 +192,7 @@ namespace GMEPDesignTool
                 Save(sender, e);
             }
         }
-      
+
         private void Refresh(object sender, RoutedEventArgs e)
         {
             ReloadElectricalProject();

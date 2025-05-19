@@ -43,6 +43,7 @@ namespace GMEPDesignTool
         public ulong? PhoneNumber { get; set; }
         public uint? Extension { get; set; }
         public string EmailAddress { get; set; }
+        public string EmployeeId { get; set; }
     }
 
     public partial class LoginWindow : Window

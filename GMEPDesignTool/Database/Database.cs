@@ -2341,6 +2341,82 @@ namespace GMEPDesignTool.Database
                 clocks
             );
         }
+
+        public async Task<(string, string)> CheckActiveSessionOnDiscipline(
+            string projectNo,
+            int disciplineId
+        )
+        {
+            string activeUserName = string.Empty;
+            string activeUserId = string.Empty;
+            string query =
+                @"
+                  SELECT last_accessed, employee_id, first_name, last_name
+                  FROM sessions
+                  LEFT JOIN employees ON employees.id = sessions.employee_id
+                  LEFT JOIN contacts ON employees.contact_id = contacts.id
+                  WHERE project_no = @projectNo AND discipline_id = @disciplineId 
+                  ORDER BY last_accessed DESC
+                ";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("projectNo", projectNo);
+            command.Parameters.AddWithValue("disciplineId", disciplineId);
+
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            if (reader.Read())
+            {
+                DateTime lastAccessed = GetSafeDateTime(reader, "last_accessed");
+
+                Trace.WriteLine((DateTime.Now - lastAccessed).TotalSeconds);
+                if ((DateTime.Now - lastAccessed).TotalSeconds < 16)
+                {
+                    activeUserId = GetSafeString(reader, "employee_id");
+                    activeUserName =
+                        GetSafeString(reader, "first_name")
+                        + " "
+                        + GetSafeString(reader, "last_name");
+                }
+            }
+            await CloseConnectionAsync();
+
+            Trace.WriteLine(activeUserName);
+            return (activeUserId, activeUserName);
+        }
+
+        public async Task UpdateSession(string sessionId, string projectNo, int disciplineId)
+        {
+            string id = Guid.NewGuid().ToString();
+            string query =
+                @"
+                UPDATE sessions SET discipline_id = @disciplineId, project_no = @projectNo
+                WHERE id = @sessionId
+                ";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("disciplineId", disciplineId);
+            command.Parameters.AddWithValue("projectNo", projectNo);
+            command.Parameters.AddWithValue("sessionId", sessionId);
+            await command.ExecuteNonQueryAsync();
+            await CloseConnectionAsync();
+        }
+
+        public async Task UpdateSessionLastAccessedDate(string sessionId)
+        {
+            string query =
+                @"
+                UPDATE sessions SET last_accessed = @lastAccessed WHERE id = @id
+                ";
+            await OpenConnectionAsync();
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("id", sessionId);
+            command.Parameters.AddWithValue(
+                "lastAccessed",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            );
+            await command.ExecuteNonQueryAsync();
+            await CloseConnectionAsync();
+        }
     }
 
     public class S3

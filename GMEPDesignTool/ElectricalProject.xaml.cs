@@ -65,10 +65,96 @@ namespace GMEPDesignTool
             }
         }
 
+        private bool isEnabled = true;
+        public bool IsEnabled
+        {
+            get => isEnabled;
+            set
+            {
+                if (isEnabled != value)
+                {
+                    isEnabled = value;
+                    OnPropertyChanged(nameof(IsEnabled));
+                }
+            }
+        }
+
+        private bool isAlreadyOpen;
+        public bool IsAlreadyOpen
+        {
+            get => isAlreadyOpen;
+            set
+            {
+                if (isAlreadyOpen != value)
+                {
+                    isAlreadyOpen = value;
+                    OnPropertyChanged(nameof(IsAlreadyOpen));
+                }
+            }
+        }
+
+        private DateTime lastActive;
+        public DateTime LastActive
+        {
+            get => lastActive;
+            set
+            {
+                if (lastActive != value)
+                {
+                    lastActive = value;
+                    OnPropertyChanged(nameof(LastActive));
+                }
+            }
+        }
+
+        private string sessionId;
+        public string SessionId
+        {
+            get => sessionId;
+            set
+            {
+                if (sessionId != value)
+                {
+                    sessionId = value;
+                    OnPropertyChanged(nameof(SessionId));
+                }
+            }
+        }
+
+        private string employeeId;
+        public string EmployeeId
+        {
+            get => employeeId;
+            set
+            {
+                if (employeeId != value)
+                {
+                    employeeId = value;
+                    OnPropertyChanged(nameof(EmployeeId));
+                }
+            }
+        }
+
+        private string employeeName;
+        public string EmployeeName
+        {
+            get => employeeName;
+            set
+            {
+                if (employeeName != value)
+                {
+                    employeeName = value;
+                    OnPropertyChanged(nameof(EmployeeName));
+                }
+            }
+        }
+
         public ElectricalProject(
             string projectId,
             ProjectControlViewModel projectView,
-            ProjectControl parent
+            ProjectControl parent,
+            string employeeId,
+            string sessionId
         )
         {
             InitializeComponent();
@@ -96,6 +182,9 @@ namespace GMEPDesignTool
             LightingLocations = new ObservableCollection<Location>();
             Owners = new Dictionary<string, string>();
             isEditingSingleLine = false;
+            isEnabled = false;
+            this.employeeId = employeeId;
+            this.SessionId = sessionId;
 
             // Initialize ViewSources
             EquipmentViewSource =
@@ -210,10 +299,10 @@ namespace GMEPDesignTool
 
             this.DataContext = this;
 
-            //timer = new DispatcherTimer();
-            //timer.Interval = TimeSpan.FromSeconds(15);
-            //timer.Tick += Timer_Tick;
-            //timer.Start();
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(15);
+            timer.Tick += Timer_Tick;
+            timer.Start();
             ProjectView.SaveText = "";
             GetNames();
             setPower();
@@ -318,12 +407,33 @@ namespace GMEPDesignTool
             }
             for (int i = 0; i < ElectricalPanels.Count; i++)
             {
-                AssignMiniBreakers(ElectricalPanels[i]); // HERE test
+                AssignMiniBreakers(ElectricalPanels[i]);
+            }
+            string activeUserId;
+            string activeUsername;
+            (activeUserId, activeUsername) =
+                await ProjectView.database.CheckActiveSessionOnDiscipline(ProjectView.ProjectNo, 3);
+            if (string.IsNullOrEmpty(activeUsername) || activeUserId == EmployeeId)
+            {
+                await ProjectView.database.UpdateSession(SessionId, ProjectView.ProjectNo, 3);
+                LastActive = DateTime.Now;
+                IsEnabled = true;
+                IsAlreadyOpen = false;
+            }
+            else
+            {
+                IsEnabled = false;
+                EmployeeName = activeUsername;
+                IsAlreadyOpen = true;
             }
         }
 
-        public async Task Timer_Tick(object sender, EventArgs e)
+        public async Task SaveProject()
         {
+            if (!IsEnabled)
+            {
+                return;
+            }
             ProjectView.SaveText = "*SAVING*";
             await ProjectView.database.UpdateProject(
                 ProjectId,
@@ -339,16 +449,19 @@ namespace GMEPDesignTool
                 CustomCircuits,
                 TimeClocks
             );
-            //timer.Stop();
             ProjectView.SaveText = "Last Save: " + DateTime.Now.ToString();
         }
 
-        /*private void StartTimer()
+        public async void Timer_Tick(object sender, EventArgs e)
+        {
+            await ProjectView.database.UpdateSessionLastAccessedDate(SessionId);
+        }
+
+        private void StartTimer()
         {
             timer.Stop();
             timer.Start();
-            //ProjectView.SaveText = "*SAVING*";
-        }*/
+        }
 
         public void setPower()
         {
@@ -2751,7 +2864,7 @@ namespace GMEPDesignTool
 
         private async void SingleLine_Click(object sender, RoutedEventArgs e)
         {
-            await Timer_Tick(sender, e);
+            await SaveProject();
             Application.Current.Dispatcher.Invoke(() => IsEditingSingleLine = true);
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string relativePath = System.IO.Path.Combine(

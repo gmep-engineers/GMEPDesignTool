@@ -7,7 +7,8 @@
         xmlns:uc="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
         Title="GMEP Design Tool" Height="450" Width="800" WindowState="Maximized"
-        Icon="/gmep.ico">
+        Icon="/gmep.ico"
+        Closing="EndSession">
  
     <Grid Margin="0,0,0,-6">
 
