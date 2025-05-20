@@ -1153,9 +1153,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                             case 1:
@@ -1171,9 +1172,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                             case 2:
@@ -1189,9 +1191,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                         }
@@ -1297,9 +1300,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                             case 1:
@@ -1315,9 +1319,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                             case 2:
@@ -1333,9 +1338,10 @@ namespace GMEPDesignTool
                                 )
                                 {
                                     ElectricalEquipment equipment = (ElectricalEquipment)component;
-                                    addedValue = Convert.ToInt32(
-                                        Convert.ToDouble(addedValue) * KitchenDemandFactor
-                                    );
+                                    if (equipment.Category == 4)
+                                        addedValue = Convert.ToInt32(
+                                            Convert.ToDouble(addedValue) * KitchenDemandFactor
+                                        );
                                 }
                                 break;
                         }
