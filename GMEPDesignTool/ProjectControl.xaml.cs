@@ -126,7 +126,8 @@ namespace GMEPDesignTool
         {
             if (viewModel.SaveText != "LOCKED")
             {
-                ReloadElectricalProject();
+                // Uncomment this to reinstate auto-reload on window focus
+                //ReloadElectricalProject();
             }
         }
 
@@ -150,8 +151,8 @@ namespace GMEPDesignTool
                 Loading = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    var loadingScreen = new LoadingScreen();
-                    ElectricalTab.Content = loadingScreen;
+                    //var loadingScreen = new LoadingScreen();
+                    //ElectricalTab.Content = loadingScreen;
 
                     string saveText = viewModel.SaveText;
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;
@@ -172,6 +173,7 @@ namespace GMEPDesignTool
                         EmployeeId,
                         SessionId
                     );
+
                     await viewModel.ActiveElectricalProject.InitializeAsync();
                     viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
                     viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex =

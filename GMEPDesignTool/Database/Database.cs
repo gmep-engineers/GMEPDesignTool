@@ -26,41 +26,44 @@ namespace GMEPDesignTool.Database
         public string ConnectionString { get; set; }
         public MySqlConnection Connection { get; set; }
 
+        public MySqlConnection SessionConnection { get; set; }
+
         public Database(string sqlConnectionString)
         {
             ConnectionString = sqlConnectionString;
             Connection = new MySqlConnection(ConnectionString);
+            SessionConnection = new MySqlConnection(ConnectionString);
         }
 
-        public void OpenConnection()
+        public void OpenConnection(MySqlConnection conn)
         {
-            if (Connection.State == System.Data.ConnectionState.Closed)
+            if (conn.State == System.Data.ConnectionState.Closed)
             {
-                Connection.Open();
+                conn.Open();
             }
         }
 
-        public void CloseConnection()
+        public void CloseConnection(MySqlConnection conn)
         {
-            if (Connection.State == System.Data.ConnectionState.Open)
+            if (conn.State == System.Data.ConnectionState.Open)
             {
-                Connection.Close();
+                conn.Close();
             }
         }
 
-        public async Task OpenConnectionAsync()
+        public async Task OpenConnectionAsync(MySqlConnection conn)
         {
-            if (Connection.State == System.Data.ConnectionState.Closed)
+            if (conn.State == System.Data.ConnectionState.Closed)
             {
-                await Connection.OpenAsync();
+                await conn.OpenAsync();
             }
         }
 
-        public async Task CloseConnectionAsync()
+        public async Task CloseConnectionAsync(MySqlConnection conn)
         {
-            if (Connection.State == System.Data.ConnectionState.Open)
+            if (conn.State == System.Data.ConnectionState.Open)
             {
-                await Connection.CloseAsync();
+                await conn.CloseAsync();
             }
         }
 
@@ -161,7 +164,7 @@ namespace GMEPDesignTool.Database
             SELECT e.passhash
             FROM employees e 
             WHERE e.username = @username";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@username", userName);
             MySqlDataReader reader = command.ExecuteReader();
@@ -173,7 +176,7 @@ namespace GMEPDesignTool.Database
                 hashedPassword = reader.GetString("passhash");
                 result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
             }
-            CloseConnection();
+            CloseConnection(Connection);
             return result;
         }
 
@@ -207,7 +210,7 @@ namespace GMEPDesignTool.Database
                 LEFT JOIN phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
                 ORDER BY last_name ASC
                 ";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -232,13 +235,13 @@ namespace GMEPDesignTool.Database
                     )
                 );
             }
-            CloseConnection();
+            CloseConnection(Connection);
             return employees;
         }
 
         public void SaveEmployee(Employee employee)
         {
-            OpenConnection();
+            OpenConnection(Connection);
             var query =
                 @"
                     UPDATE employees SET
@@ -360,7 +363,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@contactId", employee.ContactId);
             command.ExecuteNonQuery();
 
-            CloseConnection();
+            CloseConnection(Connection);
         }
 
         public void SetEmployeePassword(string employeeId, string password)
@@ -368,18 +371,18 @@ namespace GMEPDesignTool.Database
             string query = "UPDATE employees SET passhash = @passhash WHERE id = @id";
             string salt = BCrypt.Net.BCrypt.GenerateSalt(10);
             string passhash = BCrypt.Net.BCrypt.HashPassword(password, salt);
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@passhash", passhash);
             command.Parameters.AddWithValue("@id", employeeId);
             command.ExecuteNonQuery();
-            CloseConnection();
+            CloseConnection(Connection);
         }
 
         public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -404,7 +407,7 @@ namespace GMEPDesignTool.Database
                 projectIds.Add(1, id);
             }
 
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
             return projectIds;
         }
@@ -415,7 +418,7 @@ namespace GMEPDesignTool.Database
         )
         {
             string query = "SELECT id, version FROM projects WHERE gmep_project_no = @projectNo";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectNo", projectNo);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -454,7 +457,7 @@ namespace GMEPDesignTool.Database
                 projectIds.Add(projectIds.Last().Key + 1, id);
             }
 
-            CloseConnection();
+            CloseConnection(Connection);
             return projectIds;
         }
 
@@ -463,7 +466,7 @@ namespace GMEPDesignTool.Database
             string projectId
         )
         {
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             string[] tables = new string[]
             {
                 "electrical_panels",
@@ -514,7 +517,7 @@ namespace GMEPDesignTool.Database
                 await insertCommand.ExecuteNonQueryAsync();
                 projectIds.Add(1, id);
             }
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return projectIds;
         }
 
@@ -524,7 +527,7 @@ namespace GMEPDesignTool.Database
 
             try
             {
-                await OpenConnectionAsync();
+                await OpenConnectionAsync(Connection);
 
                 string query = "SELECT id, name FROM owners";
 
@@ -547,7 +550,7 @@ namespace GMEPDesignTool.Database
             }
             finally
             {
-                await CloseConnectionAsync();
+                await CloseConnectionAsync(Connection);
             }
 
             return owners;
@@ -569,7 +572,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<TimeClock> timeClocks
         )
         {
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             await UpdateServices(projectId, services);
             await UpdatePanels(projectId, panels);
             await UpdateEquipments(projectId, equipments);
@@ -582,7 +585,7 @@ namespace GMEPDesignTool.Database
             await UpdateCustomCircuits(projectId, customCircuits);
             await UpdateTimeClocks(projectId, timeClocks);
 
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
         }
 
         private async Task UpdateServices(
@@ -1419,7 +1422,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalService>();
             string query =
                 "SELECT * FROM electrical_services WHERE project_id = @projectId ORDER BY order_no";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1441,7 +1444,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return services;
         }
 
@@ -1451,7 +1454,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalPanel>();
             string query =
                 "SELECT * FROM electrical_panels WHERE project_id = @projectId ORDER BY order_no";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1488,7 +1491,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return panels;
         }
 
@@ -1514,7 +1517,7 @@ namespace GMEPDesignTool.Database
                 WHERE electrical_panel_note_panel_rel.panel_id = @panelId
                 ORDER BY electrical_panel_notes.date
                 ";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@panelId", panelId);
             MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
@@ -1540,7 +1543,7 @@ namespace GMEPDesignTool.Database
                 noteRels.Add(noteRel);
             }
             reader.Close();
-            CloseConnection();
+            CloseConnection(Connection);
             return noteRels;
         }
 
@@ -1566,7 +1569,7 @@ namespace GMEPDesignTool.Database
                 WHERE electrical_panel_note_panel_rel.project_id = @projectId
                 ORDER BY electrical_panel_note_panel_rel.panel_id, electrical_panel_notes.date
                 ";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1598,7 +1601,7 @@ namespace GMEPDesignTool.Database
                 noteRels.Add(noteRel);
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return noteRels;
         }
 
@@ -1615,7 +1618,7 @@ namespace GMEPDesignTool.Database
                 WHERE project_id = @projectId
                 ORDER BY id
                 ";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1636,7 +1639,7 @@ namespace GMEPDesignTool.Database
                 notes.Add(note);
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return notes;
         }
 
@@ -1660,7 +1663,7 @@ namespace GMEPDesignTool.Database
                 WHERE electrical_panel_note_panel_rel.panel_id = @panelId
                 ORDER BY electrical_panel_notes.date
                 ";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@panelId", panelId);
             MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
@@ -1683,7 +1686,7 @@ namespace GMEPDesignTool.Database
                 }
             }
             reader.Close();
-            CloseConnection();
+            CloseConnection(Connection);
             return notes;
         }
 
@@ -1692,7 +1695,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<Circuit> customCircuits = new ObservableCollection<Circuit>();
             string query =
                 "SELECT * FROM electrical_panel_custom_circuits WHERE project_id = @projectId";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1713,7 +1716,7 @@ namespace GMEPDesignTool.Database
                     )
                 );
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return customCircuits;
         }
 
@@ -1745,7 +1748,7 @@ namespace GMEPDesignTool.Database
                 LEFT JOIN electrical_equipment as equip_b ON equip_b.id = electrical_panel_mini_breakers.equip_b_id
                 WHERE electrical_panel_mini_breakers.project_id = @projectId
                 ";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1782,7 +1785,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return miniBreakers;
         }
 
@@ -1794,7 +1797,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalEquipment>();
             string query =
                 "SELECT * FROM electrical_equipment WHERE project_id = @projectId ORDER BY order_no, date_created";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1839,7 +1842,7 @@ namespace GMEPDesignTool.Database
                 );
 
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return equipments;
         }
 
@@ -1851,7 +1854,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalLighting>();
             string query =
                 "SELECT * FROM electrical_lighting WHERE project_id = @projectId ORDER BY order_no";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1908,7 +1911,7 @@ namespace GMEPDesignTool.Database
             }
 
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return lightings;
         }
 
@@ -1920,7 +1923,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalLightingControl>();
             string query =
                 "SELECT * FROM electrical_lighting_controls WHERE project_id = @projectId";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1936,7 +1939,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return controls;
         }
 
@@ -1948,7 +1951,7 @@ namespace GMEPDesignTool.Database
                 new ObservableCollection<ElectricalTransformer>();
             string query =
                 "SELECT * FROM electrical_transformers WHERE project_id = @projectId ORDER BY order_no";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -1986,7 +1989,7 @@ namespace GMEPDesignTool.Database
                 );
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return transformers;
         }
 
@@ -1995,7 +1998,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<Location> locations = new ObservableCollection<Location>();
             string query =
                 "SELECT * FROM electrical_lighting_locations WHERE project_id = @projectId";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -2008,7 +2011,7 @@ namespace GMEPDesignTool.Database
                 locations.Add(location);
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return locations;
         }
 
@@ -2017,7 +2020,7 @@ namespace GMEPDesignTool.Database
             ObservableCollection<TimeClock> clocks = new ObservableCollection<TimeClock>();
             string query =
                 "SELECT * FROM electrical_lighting_timeclocks WHERE project_id = @projectId";
-            await OpenConnectionAsync();
+            await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -2033,7 +2036,7 @@ namespace GMEPDesignTool.Database
                 clocks.Add(clock);
             }
             await reader.CloseAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(Connection);
             return clocks;
         }
 
@@ -2042,7 +2045,7 @@ namespace GMEPDesignTool.Database
             string projectId = string.Empty;
             string id = Guid.NewGuid().ToString();
             string query = "SELECT project_id FROM electrical_panels WHERE id = @panelId";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("panelId", panelId);
             MySqlDataReader reader = command.ExecuteReader();
@@ -2053,7 +2056,7 @@ namespace GMEPDesignTool.Database
             reader.Close();
             if (string.IsNullOrEmpty(projectId))
             {
-                CloseConnection();
+                CloseConnection(Connection);
                 return string.Empty;
             }
             query =
@@ -2069,7 +2072,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("panelId", panelId);
             command.Parameters.AddWithValue("circuitNo", circuitNo);
             command.ExecuteNonQuery();
-            CloseConnection();
+            CloseConnection(Connection);
             return id;
         }
 
@@ -2078,7 +2081,7 @@ namespace GMEPDesignTool.Database
             string id = string.Empty;
             string query =
                 "SELECT id FROM electrical_panel_mini_breakers WHERE panel_id = @panelId AND circuit_no = @circuitNo";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("panelId", panelId);
             command.Parameters.AddWithValue("circuitNo", circuitNo);
@@ -2088,7 +2091,7 @@ namespace GMEPDesignTool.Database
                 id = GetSafeString(reader, "id");
             }
             reader.Close();
-            CloseConnection();
+            CloseConnection(Connection);
             return id;
         }
 
@@ -2114,7 +2117,7 @@ namespace GMEPDesignTool.Database
                 interlock_a_to_next_b = @interlockA,
                 interlock_b_to_next_a = @interlockB
                 WHERE id = @id";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("equipAId", equipAId);
             command.Parameters.AddWithValue("equipBId", equipBId);
@@ -2179,7 +2182,7 @@ namespace GMEPDesignTool.Database
                 voltB = GetSafeInt(reader, "volt_b");
             }
             reader.Close();
-            CloseConnection();
+            CloseConnection(Connection);
             return ($"{noA}-{descA}", $"{noB}-{descB}", vaA, vaB, voltA, voltB);
         }
 
@@ -2189,7 +2192,7 @@ namespace GMEPDesignTool.Database
                 @"
                 DELETE FROM electrical_panel_mini_breakers WHERE panel_id = @panelId AND circuit_no = @circuitNo
                 ";
-            OpenConnection();
+            OpenConnection(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("panelId", panelId);
             command.Parameters.AddWithValue("circuitNo", circuitNo);
@@ -2202,7 +2205,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("panelId", panelId);
             command.Parameters.AddWithValue("circuitNo", circuitNo);
             command.ExecuteNonQuery();
-            CloseConnection();
+            CloseConnection(Connection);
         }
 
         public async Task CloneElectricalProject(string projectId, string newProjectId)
@@ -2358,8 +2361,8 @@ namespace GMEPDesignTool.Database
                   WHERE project_no = @projectNo AND discipline_id = @disciplineId 
                   ORDER BY last_accessed DESC
                 ";
-            await OpenConnectionAsync();
-            MySqlCommand command = new MySqlCommand(query, Connection);
+            await OpenConnectionAsync(SessionConnection);
+            MySqlCommand command = new MySqlCommand(query, SessionConnection);
             command.Parameters.AddWithValue("projectNo", projectNo);
             command.Parameters.AddWithValue("disciplineId", disciplineId);
 
@@ -2368,7 +2371,6 @@ namespace GMEPDesignTool.Database
             {
                 DateTime lastAccessed = GetSafeDateTime(reader, "last_accessed");
 
-                Trace.WriteLine((DateTime.Now - lastAccessed).TotalSeconds);
                 if ((DateTime.Now - lastAccessed).TotalSeconds < 16)
                 {
                     activeUserId = GetSafeString(reader, "employee_id");
@@ -2376,11 +2378,26 @@ namespace GMEPDesignTool.Database
                         GetSafeString(reader, "first_name")
                         + " "
                         + GetSafeString(reader, "last_name");
+
+                    await reader.CloseAsync();
+                }
+                else
+                {
+                    await reader.CloseAsync();
+                    query =
+                        @"DELETE FROM sessions WHERE project_no = @projectNo AND discipline_id = @disciplineId";
+                    command = new MySqlCommand(query, SessionConnection);
+                    command.Parameters.AddWithValue("projectNo", projectNo);
+                    command.Parameters.AddWithValue("disciplineId", disciplineId);
+                    await command.ExecuteNonQueryAsync();
                 }
             }
-            await CloseConnectionAsync();
+            else
+            {
+                await reader.CloseAsync();
+            }
+            await CloseConnectionAsync(SessionConnection);
 
-            Trace.WriteLine(activeUserName);
             return (activeUserId, activeUserName);
         }
 
@@ -2392,13 +2409,13 @@ namespace GMEPDesignTool.Database
                 UPDATE sessions SET discipline_id = @disciplineId, project_no = @projectNo
                 WHERE id = @sessionId
                 ";
-            await OpenConnectionAsync();
-            MySqlCommand command = new MySqlCommand(query, Connection);
+            await OpenConnectionAsync(SessionConnection);
+            MySqlCommand command = new MySqlCommand(query, SessionConnection);
             command.Parameters.AddWithValue("disciplineId", disciplineId);
             command.Parameters.AddWithValue("projectNo", projectNo);
             command.Parameters.AddWithValue("sessionId", sessionId);
             await command.ExecuteNonQueryAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(SessionConnection);
         }
 
         public async Task UpdateSessionLastAccessedDate(string sessionId)
@@ -2407,15 +2424,15 @@ namespace GMEPDesignTool.Database
                 @"
                 UPDATE sessions SET last_accessed = @lastAccessed WHERE id = @id
                 ";
-            await OpenConnectionAsync();
-            MySqlCommand command = new MySqlCommand(query, Connection);
+            await OpenConnectionAsync(SessionConnection);
+            MySqlCommand command = new MySqlCommand(query, SessionConnection);
             command.Parameters.AddWithValue("id", sessionId);
             command.Parameters.AddWithValue(
                 "lastAccessed",
                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             );
             await command.ExecuteNonQueryAsync();
-            await CloseConnectionAsync();
+            await CloseConnectionAsync(SessionConnection);
         }
     }
 
