@@ -1590,6 +1590,48 @@ namespace GMEPDesignTool
 
         public int DetermineBreakerSize(ElectricalComponent component)
         {
+            if (component.GetType() == typeof(ElectricalEquipment))
+            {
+                ElectricalEquipment equip = (ElectricalEquipment)component;
+                if (equip.MocpId > 0)
+                {
+                    switch (equip.MocpId)
+                    {
+                        case 1:
+                            return 15;
+                        case 2:
+                            return 20;
+                        case 3:
+                            return 25;
+                        case 4:
+                            return 30;
+                        case 5:
+                            return 35;
+                        case 6:
+                            return 40;
+                        case 7:
+                            return 45;
+                        case 8:
+                            return 50;
+                        case 9:
+                            return 60;
+                        case 10:
+                            return 70;
+                        case 11:
+                            return 80;
+                        case 12:
+                            return 90;
+                        case 13:
+                            return 100;
+                        case 14:
+                            return 110;
+                        case 15:
+                            return 125;
+                        case 16:
+                            return 150;
+                    }
+                }
+            }
             var breakerSize = component.Amp * 1.25;
 
             if (component is Space)

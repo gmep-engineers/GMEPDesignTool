@@ -1925,7 +1925,7 @@ namespace GMEPDesignTool
                     false,
                     electricalEquipment.Connection,
                     electricalEquipment.Description,
-                    electricalEquipment.McaId,
+                    electricalEquipment.MocpId,
                     electricalEquipment.Hp,
                     electricalEquipment.HasPlug,
                     electricalEquipment.LockingConnector,

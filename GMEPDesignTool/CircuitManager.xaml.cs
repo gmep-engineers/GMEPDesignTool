@@ -37,6 +37,7 @@ namespace GMEPDesignTool
             Panel = panel;
             GmepDb = database;
             Panel.SetKitchenDemandFactor();
+            Panel.SetCircuitVa();
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
         }

@@ -554,9 +554,10 @@
                                         </DataGridTemplateColumn>
                                         <DataGridCheckBoxColumn Header="Spec From Client" Binding="{Binding SpecSheetFromClient}" />
                                         <DataGridTextColumn Header="HP" Binding="{Binding Hp, UpdateSourceTrigger=LostFocus}"/>
-                                        <DataGridComboBoxColumn Header="MOCP" SelectedValueBinding="{Binding McaId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="MOCP" SelectedValueBinding="{Binding MocpId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
+                                                    <ComboBoxItem Content="" Tag="0" />
                                                     <ComboBoxItem Content="15" Tag="1" />
                                                     <ComboBoxItem Content="20" Tag="2"/>
                                                     <ComboBoxItem Content="25" Tag="3"/>

@@ -25,7 +25,7 @@ namespace GMEPDesignTool
         int category = 1;
         int connection = 1;
         private string description = string.Empty;
-        private int mcaId = 1;
+        private int mocpId = 0;
         private string hp = string.Empty;
         private float width = 0;
         private float depth = 0;
@@ -62,7 +62,7 @@ namespace GMEPDesignTool
             bool powered,
             int connection,
             string description,
-            int mcaId,
+            int mocpId,
             string hp,
             bool hasPlug,
             bool lockingConnector,
@@ -100,7 +100,7 @@ namespace GMEPDesignTool
             this.powered = powered;
             this.connection = connection;
             this.description = description;
-            this.mcaId = mcaId;
+            this.mocpId = mocpId;
             this.hp = hp;
             this.hasPlug = hasPlug;
             this.lockingConnector = lockingConnector;
@@ -420,15 +420,15 @@ namespace GMEPDesignTool
             }
         }
 
-        public int McaId
+        public int MocpId
         {
-            get => mcaId;
+            get => mocpId;
             set
             {
-                if (mcaId != value)
+                if (mocpId != value)
                 {
-                    mcaId = value;
-                    OnPropertyChanged(nameof(McaId));
+                    mocpId = value;
+                    OnPropertyChanged(nameof(MocpId));
                 }
             }
         }
