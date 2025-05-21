@@ -2911,6 +2911,7 @@ namespace GMEPDesignTool
                     };
 
                     timer.Stop();
+                    await SaveProject();
                     await Task.Run(() => process.Start());
                     await process.WaitForExitAsync();
 

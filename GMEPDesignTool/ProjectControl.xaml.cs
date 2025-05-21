@@ -116,10 +116,10 @@ namespace GMEPDesignTool
 
         private void Application_Deactivated(object sender, EventArgs e)
         {
-            if (viewModel.SaveText != "LOCKED")
-            {
-                Save(sender, e);
-            }
+            //if (viewModel.SaveText != "LOCKED")
+            //{
+            //    Save(sender, e);
+            //}
         }
 
         private void Application_Activated(object sender, EventArgs e)
@@ -151,8 +151,8 @@ namespace GMEPDesignTool
                 Loading = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    //var loadingScreen = new LoadingScreen();
-                    //ElectricalTab.Content = loadingScreen;
+                    var loadingScreen = new LoadingScreen();
+                    ElectricalTab.Content = loadingScreen;
 
                     string saveText = viewModel.SaveText;
                     string projectId = viewModel.ActiveElectricalProject.ProjectId;

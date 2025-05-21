@@ -1191,7 +1191,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@color_code", equipment.ColorCode);
             command.Parameters.AddWithValue("@connection", equipment.Connection);
             command.Parameters.AddWithValue("@description", equipment.Description);
-            command.Parameters.AddWithValue("@mocpId", equipment.MocpId);
+            command.Parameters.AddWithValue("@mocp_id", equipment.MocpId);
             command.Parameters.AddWithValue("@hp", equipment.Hp);
             command.Parameters.AddWithValue("@has_plug", equipment.HasPlug);
             command.Parameters.AddWithValue("@locking_connector", equipment.LockingConnector);
