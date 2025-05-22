@@ -28,21 +28,24 @@ namespace GMEPDesignTool
         CircuitManagerViewModel viewModel { get; set; }
         ElectricalPanel Panel { get; set; }
 
-        Database.Database GmepDb { get; set; }
+        ProjectControlViewModel ProjectControlViewModel { get; set; }
 
-        public CircuitManager(ElectricalPanel panel, Database.Database database)
+        public CircuitManager(
+            ElectricalPanel panel,
+            ProjectControlViewModel projectControlViewModel
+        )
         {
             InitializeComponent();
             viewModel = new CircuitManagerViewModel(panel);
             Panel = panel;
-            GmepDb = database;
+            ProjectControlViewModel = projectControlViewModel;
             Panel.SetKitchenDemandFactor();
             Panel.SetCircuitVa();
             this.DataContext = viewModel;
             this.Closed += CircuitManager_Closed;
         }
 
-        private void CircuitManager_Closed(object sender, EventArgs e)
+        private async void CircuitManager_Closed(object sender, EventArgs e)
         {
             // Unsubscribe from any events
             if (viewModel.Panel != null)
@@ -313,7 +316,7 @@ namespace GMEPDesignTool
                 .SelectedItems.Cast<Circuit>()
                 .FirstOrDefault(c => c.Number == circuit.Number + 2);
             ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
-                GmepDb,
+                ProjectControlViewModel.database,
                 Panel.componentsCollection,
                 Panel.Id,
                 Panel.Name,
@@ -572,7 +575,7 @@ namespace GMEPDesignTool
                 .FirstOrDefault(c => c.Number == circuit.Number + 2);
 
             ElectricalPanelMiniBreakerWindow window = new ElectricalPanelMiniBreakerWindow(
-                GmepDb,
+                ProjectControlViewModel.database,
                 Panel.componentsCollection,
                 Panel.Id,
                 Panel.Name,

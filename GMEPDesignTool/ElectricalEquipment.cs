@@ -154,6 +154,10 @@ namespace GMEPDesignTool
                 if (description != value)
                 {
                     description = value;
+                    if (description.Length > 25)
+                    {
+                        description = description.Substring(0, 25);
+                    }
                     OnPropertyChanged(nameof(Description));
                     OnPropertyChanged(nameof(Name));
                 }

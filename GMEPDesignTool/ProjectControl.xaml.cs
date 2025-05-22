@@ -138,7 +138,14 @@ namespace GMEPDesignTool
                 Saving = true;
                 if (viewModel?.ActiveElectricalProject != null)
                 {
-                    await viewModel.ActiveElectricalProject.SaveProject();
+                    try
+                    {
+                        await viewModel.ActiveElectricalProject.SaveProject();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
                 Saving = false;
             }
@@ -173,8 +180,14 @@ namespace GMEPDesignTool
                         EmployeeId,
                         SessionId
                     );
-
-                    await viewModel.ActiveElectricalProject.InitializeAsync();
+                    try
+                    {
+                        await viewModel.ActiveElectricalProject.InitializeAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                     viewModel.ActiveElectricalProject.SectionTabs.SelectedIndex = sectionIndex;
                     viewModel.ActiveElectricalProject.EquipmentLightingTabs.SelectedIndex =
                         equiplightingIndex;

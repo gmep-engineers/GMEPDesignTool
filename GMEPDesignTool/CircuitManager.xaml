@@ -523,6 +523,7 @@
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                        <!--
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
@@ -543,6 +544,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGridTextColumn.EditingElementStyle>
+                                        -->
                                     </DataGridTextColumn>
                                     <DataGridTemplateColumn Width="*" Header="ɸA">
                                         <DataGridTemplateColumn.CellTemplate>
@@ -1050,6 +1052,7 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTextColumn Width="3*" Binding="{Binding Description}">
+                                        <!--
                                         <DataGridTextColumn.CellStyle>
                                             <Style TargetType="DataGridCell">
                                                 <Style.Triggers>
@@ -1070,6 +1073,7 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </DataGridTextColumn.EditingElementStyle>
+                                        -->
                                     </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>

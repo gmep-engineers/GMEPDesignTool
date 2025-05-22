@@ -920,7 +920,8 @@ namespace GMEPDesignTool
                 "",
                 '-',
                 ElectricalPanels.Count + 1,
-                1
+                1,
+                ProjectView.database
             );
             AddElectricalPanel(electricalPanel);
             OrderPanels(ElectricalPanels);
@@ -1647,7 +1648,7 @@ namespace GMEPDesignTool
                         }
                     }
 
-                    CircuitManager manager = new CircuitManager(panel, ProjectView.database);
+                    CircuitManager manager = new CircuitManager(panel, ProjectView);
                     manager.Show();
                 });
             }
@@ -1670,10 +1671,7 @@ namespace GMEPDesignTool
                                     break;
                                 }
                             }
-                            CircuitManager manager = new CircuitManager(
-                                assignedPanel,
-                                ProjectView.database
-                            );
+                            CircuitManager manager = new CircuitManager(assignedPanel, ProjectView);
                             manager.Show();
                         });
                     }
