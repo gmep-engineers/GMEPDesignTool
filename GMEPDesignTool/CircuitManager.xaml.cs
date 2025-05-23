@@ -17,6 +17,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 
 namespace GMEPDesignTool
 {
@@ -612,6 +614,290 @@ namespace GMEPDesignTool
                     PanelPopup.IsOpen = false;
                     TransformerPopup.IsOpen = false;
                     e.Handled = true;
+                }
+            }
+        }
+
+        private async void AddSpareBreaker1pLeft_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i++)
+                        {
+                            Spare spare = new Spare(
+                                1,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.leftComponents.Add(spare);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void AddSpareBreaker2pLeft_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i += 2)
+                        {
+                            if (i == selectedItems.Count() - 1)
+                            {
+                                return;
+                            }
+                            Spare spare = new Spare(
+                                2,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).Number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+
+                            selectedItems.ElementAt(i + 1).Description = "---";
+                            selectedItems.ElementAt(i + 1).BreakerSize = 2;
+
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.leftComponents.Add(spare);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void AddSpareBreaker3pLeft_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = LeftCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i += 3)
+                        {
+                            if (i == selectedItems.Count() - 2)
+                            {
+                                return;
+                            }
+                            Spare spare = new Spare(
+                                3,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+
+                            selectedItems.ElementAt(i + 1).Description = "---";
+                            selectedItems.ElementAt(i + 2).Description = "---";
+                            selectedItems.ElementAt(i + 2).BreakerSize = 3;
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.leftComponents.Add(spare);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void AddSpareBreaker1pRight_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i++)
+                        {
+                            Spare spare = new Spare(
+                                1,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.rightComponents.Add(spare);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void AddSpareBreaker2pRight_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i += 2)
+                        {
+                            if (i == selectedItems.Count() - 1)
+                            {
+                                return;
+                            }
+                            Spare spare = new Spare(
+                                2,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).Number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+
+                            selectedItems.ElementAt(i + 1).Description = "---";
+                            selectedItems.ElementAt(i + 1).BreakerSize = 2;
+
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.rightComponents.Add(spare);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void AddSpareBreaker3pRight_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItems = RightCircuitGrid
+                .SelectedItems.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+            if (sender is MenuItem item)
+            {
+                string mocpIdStr = item.Tag.ToString();
+                int mocpId;
+                if (int.TryParse(mocpIdStr, out mocpId))
+                {
+                    string mocpStr = item.Header.ToString().Replace("A", "");
+                    int mocp;
+                    if (int.TryParse(mocpStr, out mocp))
+                    {
+                        for (int i = 0; i < selectedItems.Count(); i += 3)
+                        {
+                            if (i == selectedItems.Count() - 2)
+                            {
+                                return;
+                            }
+                            Spare spare = new Spare(
+                                3,
+                                mocpId,
+                                Panel,
+                                selectedItems.ElementAt(i).number
+                            );
+                            selectedItems.ElementAt(i).EquipId = spare.Id;
+                            selectedItems.ElementAt(i).Description = spare.EquipNo;
+                            selectedItems.ElementAt(i).BreakerSize = mocp;
+
+                            selectedItems.ElementAt(i + 1).Description = "---";
+                            selectedItems.ElementAt(i + 2).Description = "---";
+                            selectedItems.ElementAt(i + 2).BreakerSize = 3;
+                            MySqlConnection conn = new MySqlConnection(
+                                Panel.Database.ConnectionString
+                            );
+                            await Panel.Database.OpenConnectionAsync(conn);
+                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                            await Panel.Database.CloseConnectionAsync(conn);
+                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                                spare
+                            );
+                            Panel.rightComponents.Add(spare);
+                        }
+                    }
                 }
             }
         }

@@ -519,6 +519,64 @@
                                         </MenuItem>
                                         <MenuItem Header="Delete Notes" Click="LeftCircuitGrid_DeleteNotes"/>
                                         <MenuItem Header="Mini Breaker Options" Click="LeftCircuitGrid_MiniBreakerOptions" />
+                                        <MenuItem Header="Make Spare Breaker">
+                                            <MenuItem Header="1 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker1pLeft_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker1pLeft_Click" />
+                                            </MenuItem>
+                                            <MenuItem Header="2 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker2pLeft_Click" />
+                                                <MenuItem Header="60A" Tag="9" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="70A" Tag="10" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="80A" Tag="11" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="90A" Tag="12" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="100A" Tag="13" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="110A" Tag="14" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="125A" Tag="15" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="150A" Tag="16" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="175A" Tag="17" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="200A" Tag="18" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="225A" Tag="19" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="250A" Tag="20" Click="AddSpareBreaker2pLeft_Click"  />
+                                                <MenuItem Header="300A" Tag="21" Click="AddSpareBreaker2pLeft_Click"  />
+                                            </MenuItem>
+                                            <MenuItem Header="3 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker3pLeft_Click" />
+                                                <MenuItem Header="60A" Tag="9" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="70A" Tag="10" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="80A" Tag="11" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="90A" Tag="12" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="100A" Tag="13" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="110A" Tag="14" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="125A" Tag="15" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="150A" Tag="16" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="175A" Tag="17" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="200A" Tag="18" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="225A" Tag="19" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="250A" Tag="20" Click="AddSpareBreaker3pLeft_Click"  />
+                                                <MenuItem Header="300A" Tag="21" Click="AddSpareBreaker3pLeft_Click"  />
+                                            </MenuItem>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>
@@ -852,6 +910,64 @@
                                         </MenuItem>
                                         <MenuItem Header="Delete Notes" Click="RightCircuitGrid_DeleteNotes"/>
                                         <MenuItem Header="Mini Breaker Options" Click="RightCircuitGrid_MiniBreakerOptions" />
+                                        <MenuItem Header="Make Spare Breaker">
+                                            <MenuItem Header="1 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker1pRight_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker1pRight_Click" />
+                                            </MenuItem>
+                                            <MenuItem Header="2 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker2pRight_Click" />
+                                                <MenuItem Header="60A" Tag="9" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="70A" Tag="10" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="80A" Tag="11" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="90A" Tag="12" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="100A" Tag="13" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="110A" Tag="14" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="125A" Tag="15" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="150A" Tag="16" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="175A" Tag="17" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="200A" Tag="18" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="225A" Tag="19" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="250A" Tag="20" Click="AddSpareBreaker2pRight_Click"  />
+                                                <MenuItem Header="300A" Tag="21" Click="AddSpareBreaker2pRight_Click"  />
+                                            </MenuItem>
+                                            <MenuItem Header="3 Pole">
+                                                <MenuItem Header="15A" Tag="1" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="20A" Tag="2" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="25A" Tag="3" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="30A" Tag="4" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="35A" Tag="5" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="40A" Tag="6" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="45A" Tag="7" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="50A" Tag="8" Click="AddSpareBreaker3pRight_Click" />
+                                                <MenuItem Header="60A" Tag="9" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="70A" Tag="10" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="80A" Tag="11" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="90A" Tag="12" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="100A" Tag="13" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="110A" Tag="14" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="125A" Tag="15" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="150A" Tag="16" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="175A" Tag="17" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="200A" Tag="18" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="225A" Tag="19" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="250A" Tag="20" Click="AddSpareBreaker3pRight_Click"  />
+                                                <MenuItem Header="300A" Tag="21" Click="AddSpareBreaker3pRight_Click"  />
+                                            </MenuItem>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
                                 <DataGrid.Columns>

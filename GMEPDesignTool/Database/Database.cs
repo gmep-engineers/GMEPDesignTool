@@ -1188,7 +1188,7 @@ namespace GMEPDesignTool.Database
                 conn = Connection;
             }
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created, status_id, connection_symbol_id, num_conv_duplex, phase_a_va, phase_b_va, phase_c_va) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mocp_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated, @statusId, @connectionSymbolId, @numConvDuplex, @phaseAVa, @phaseBVa, @phaseCVa)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created, status_id, connection_symbol_id, num_conv_duplex, phase_a_va, phase_b_va, phase_c_va, mocp_id) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mocp_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated, @statusId, @connectionSymbolId, @numConvDuplex, @phaseAVa, @phaseBVa, @phaseCVa, @mocp_id)";
             MySqlCommand command = new MySqlCommand(query, conn);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1231,6 +1231,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@phaseAVa", equipment.PhaseAVA);
             command.Parameters.AddWithValue("@phaseBVa", equipment.PhaseBVA);
             command.Parameters.AddWithValue("@phaseCVa", equipment.PhaseCVA);
+            command.Parameters.AddWithValue("@mocpId", equipment.MocpId);
             await command.ExecuteNonQueryAsync();
         }
 

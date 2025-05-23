@@ -879,6 +879,10 @@ namespace GMEPDesignTool
                     ElectricalEquipment equip = (ElectricalEquipment)comp;
                     equip.EquipNo = equipNo;
                     equip.Description = equipDescription;
+                    if (equip.Category == 0)
+                    {
+                        equip.Category = 1;
+                    }
                     if (equipVa > 0)
                     {
                         equip.Va = equipVa;
@@ -921,6 +925,13 @@ namespace GMEPDesignTool
                 && sender is Circuit circuitDescription
             )
             {
+                if (
+                    circuitDescription.Description.ToLower().Replace("-", "").Trim() == "spare"
+                    || circuitDescription.Description == "---"
+                )
+                {
+                    return;
+                }
                 ElectricalComponent comp = leftComponents.FirstOrDefault(c =>
                     c.CircuitNo == circuitDescription.Number
                 );
@@ -2904,6 +2915,33 @@ namespace GMEPDesignTool
             Pole = 1;
             Name = "Space";
             this.componentType = "Space";
+        }
+    }
+
+    public class Spare : ElectricalEquipment
+    {
+        public Spare(int pole, int mocpId, ElectricalPanel panel, int circuitNo)
+        {
+            Voltage = 2;
+            if (pole == 3)
+            {
+                Is3Ph = true;
+                Voltage = 3;
+            }
+            if (pole == 2)
+            {
+                Voltage = 3;
+            }
+            Pole = pole;
+            MocpId = mocpId;
+            EquipNo = "Spare";
+            componentType = "Spare";
+            Va = 0;
+            ParentId = panel.Id;
+            StatusId = panel.StatusId;
+            CircuitNo = circuitNo;
+            Category = 0;
+            LoadCategory = 0;
         }
     }
 }

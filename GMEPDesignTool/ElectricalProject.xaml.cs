@@ -21,7 +21,7 @@ namespace GMEPDesignTool
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
         private DispatcherTimer timer = new DispatcherTimer();
-        private ProjectControl ParentControl { get; set; }
+        public ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
         public ObservableCollection<Circuit> ElectricalPanelMiniBreakers { get; set; }
@@ -2030,6 +2030,10 @@ namespace GMEPDesignTool
             {
                 // Replace "FilterString" with the actual filter string
                 bool isAccepted = true;
+                if (equipment.Category == 0)
+                {
+                    isAccepted = false;
+                }
                 if (
                     !string.IsNullOrEmpty(EquipmentFilter.Text)
                     && (
