@@ -1135,7 +1135,7 @@ namespace GMEPDesignTool.Database
                 conn = Connection;
             }
             string query =
-                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mocp_id = @mocpId, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va, status_id = @statusId, connection_symbol_id = @connectionSymbolId, num_conv_duplex = @numConvDuplex, circuit_half = @circuitHalf WHERE id = @id";
+                "UPDATE electrical_equipment SET description = @description, equip_no = @equip_no, parent_id = @parent_id, owner_id = @owner, voltage_id = @voltage, fla = @fla, is_three_phase = @is_3ph, spec_sheet_id = @spec_sheet_id, aic_rating = @aic_rating, spec_sheet_from_client = @spec_sheet_from_client, parent_distance=@distanceFromParent, category_id=@category, color_code = @color_code, connection_type_id = @connection, mocp_id = @mocpId, hp = @hp, has_plug = @has_plug, locking_connector = @locking_connector, width=@width, depth=@depth, height=@height, circuit_no=@circuit_no, is_hidden_on_plan=@is_hidden_on_plan, load_type = @loadType, order_no = @order_no, va=@va, status_id = @statusId, connection_symbol_id = @connectionSymbolId, num_conv_duplex = @numConvDuplex, circuit_half = @circuitHalf, phase_a_va = @phaseAVa, phase_b_va = @phaseBVa, phase_c_va = @phaseCVa WHERE id = @id";
             MySqlCommand command = new MySqlCommand(query, conn);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@equip_no", equipment.EquipNo);
@@ -1171,6 +1171,9 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@connectionSymbolId", equipment.ConnectionSymbolId);
             command.Parameters.AddWithValue("@numConvDuplex", equipment.NumConvDuplex);
             command.Parameters.AddWithValue("@circuitHalf", equipment.circuitHalf);
+            command.Parameters.AddWithValue("@phaseAVa", equipment.PhaseAVA);
+            command.Parameters.AddWithValue("@phaseBVa", equipment.PhaseBVA);
+            command.Parameters.AddWithValue("@phaseCVa", equipment.PhaseCVA);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1185,7 +1188,7 @@ namespace GMEPDesignTool.Database
                 conn = Connection;
             }
             string query =
-                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created, status_id, connection_symbol_id, num_conv_duplex) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mocp_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated, @statusId, @connectionSymbolId, @numConvDuplex)";
+                "INSERT INTO electrical_equipment (id, project_id, equip_no, parent_id, owner_id, voltage_id, fla, is_three_phase, spec_sheet_id, aic_rating, spec_sheet_from_client, parent_distance, category_id, color_code, connection_type_id, description, mca, hp, has_plug, locking_connector, width, depth, height, circuit_no, is_hidden_on_plan, load_type, order_no, va, date_created, status_id, connection_symbol_id, num_conv_duplex, phase_a_va, phase_b_va, phase_c_va) VALUES (@id, @projectId, @equip_no, @parent_id, @owner, @voltage, @fla, @is_3ph, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @distanceFromParent, @category, @color_code, @connection, @description, @mocp_id, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @loadType, @order_no, @va, @dateCreated, @statusId, @connectionSymbolId, @numConvDuplex, @phaseAVa, @phaseBVa, @phaseCVa)";
             MySqlCommand command = new MySqlCommand(query, conn);
             command.Parameters.AddWithValue("@id", equipment.Id);
             command.Parameters.AddWithValue("@projectId", projectId);
@@ -1225,6 +1228,9 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@statusId", equipment.StatusId);
             command.Parameters.AddWithValue("@connectionSymbolId", equipment.ConnectionSymbolId);
             command.Parameters.AddWithValue("@numConvDuplex", equipment.NumConvDuplex);
+            command.Parameters.AddWithValue("@phaseAVa", equipment.PhaseAVA);
+            command.Parameters.AddWithValue("@phaseBVa", equipment.PhaseBVA);
+            command.Parameters.AddWithValue("@phaseCVa", equipment.PhaseCVA);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -1853,7 +1859,10 @@ namespace GMEPDesignTool.Database
                         GetSafeInt(reader, "status_id"),
                         GetSafeInt(reader, "connection_symbol_id"),
                         GetSafeInt(reader, "num_conv_duplex"),
-                        GetSafeInt(reader, "circuit_half")
+                        GetSafeInt(reader, "circuit_half"),
+                        GetSafeFloat(reader, "phase_a_va"),
+                        GetSafeFloat(reader, "phase_b_va"),
+                        GetSafeFloat(reader, "phase_c_va")
                     )
                 );
 

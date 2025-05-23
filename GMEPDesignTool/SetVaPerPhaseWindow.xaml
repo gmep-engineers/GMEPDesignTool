@@ -1,0 +1,19 @@
+﻿<Window x:Class="GMEPDesignTool.SetVaPerPhaseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Set VA Per Phase" Height="180" Width="422">
+    <Grid Margin="0,0,0,-6">
+        <TextBox HorizontalAlignment="Left" Margin="10,42,0,0" TextWrapping="Wrap" Text="{Binding PhaseA}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.5,0.448"/>
+        <TextBox HorizontalAlignment="Left" Margin="135,42,0,0" TextWrapping="Wrap" Text="{Binding PhaseB}" VerticalAlignment="Top" Width="120"/>
+        <TextBox Visibility="{Binding ShowCPhase}" HorizontalAlignment="Left" Margin="260,42,0,0" TextWrapping="Wrap" Text="{Binding PhaseC}" VerticalAlignment="Top" Width="120"/>
+        <Button Content="OK" Click="OkButton_Click" HorizontalAlignment="Left" Margin="170,85,0,0" VerticalAlignment="Top" Height="25" Width="50"/>
+        <Button Content="Reset" HorizontalAlignment="Left" Margin="332,106,0,0" VerticalAlignment="Top" Click="ResetButton_Click" Height="30" Width="48"/>
+        <Label Content="A" HorizontalAlignment="Left" Margin="61,16,0,0" VerticalAlignment="Top"/>
+        <Label Content="B" HorizontalAlignment="Left" Margin="187,16,0,0" VerticalAlignment="Top"/>
+        <Label Visibility="{Binding ShowCPhase}" Content="C" HorizontalAlignment="Left" Margin="311,16,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>

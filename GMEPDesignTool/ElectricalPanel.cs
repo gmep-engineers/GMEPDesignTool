@@ -856,7 +856,10 @@ namespace GMEPDesignTool
                     this.StatusId,
                     1,
                     0,
-                    0
+                    0,
+                    -1,
+                    -1,
+                    -1
                 );
                 circ.EquipId = equip.Id;
                 comp = equip;
