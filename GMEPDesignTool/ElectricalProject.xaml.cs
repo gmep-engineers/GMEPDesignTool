@@ -1561,7 +1561,7 @@ namespace GMEPDesignTool
                 var selectedEquipment = ElectricalEquipmentDataGrid
                     .SelectedItems.Cast<ElectricalEquipment>()
                     .ToList();
-                if (selectedEquipment.Count > 0)
+                if (selectedEquipment.Count > 0 && selectedEquipment[0].Pole > 1)
                 {
                     SetVaPerPhaseWindow setVaPerPhaseWindow = new SetVaPerPhaseWindow(
                         selectedEquipment[0]
