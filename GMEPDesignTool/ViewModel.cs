@@ -149,6 +149,9 @@ namespace GMEPDesignTool
 
         private readonly DelegateCommand _openEmployeesWindowCommand;
         public ICommand OpenEmployeesWindowCommand => _openEmployeesWindowCommand;
+
+        private readonly DelegateCommand _openAboutWindowCommand;
+        public ICommand OpenAboutWindowCommand => _openAboutWindowCommand;
         public ObservableCollection<TabItem> Tabs { get; set; }
 
         public ViewModel(LoginResponse loginResponse)
@@ -160,6 +163,7 @@ namespace GMEPDesignTool
                 OpenEmployeesWindow,
                 CanOpenEmployeesWindow
             );
+            _openAboutWindowCommand = new DelegateCommand(OpenAboutWindow, CanOpenAboutWindow);
             Name = loginResponse.FirstName + " " + loginResponse.LastName;
             EmailAddress = loginResponse.EmailAddress;
             PhoneNumber = loginResponse.PhoneNumber;
@@ -201,6 +205,17 @@ namespace GMEPDesignTool
                 return true;
             }
             return false;
+        }
+
+        private void OpenAboutWindow(object commandParameter)
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.Show();
+        }
+
+        private bool CanOpenAboutWindow(object commandParameter)
+        {
+            return true;
         }
 
         public async void OpenProject(string projectNo)

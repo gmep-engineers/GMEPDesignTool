@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
 using System.Windows.Controls;
+using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Tls.Crypto;
 
 namespace GMEPDesignTool
@@ -53,6 +54,8 @@ namespace GMEPDesignTool
         private bool _isRecessed = false;
         private string circuits = string.Empty;
 
+        public Database.Database Database;
+
         public ElectricalPanel(
             string id,
             string projectId,
@@ -76,10 +79,12 @@ namespace GMEPDesignTool
             string location,
             char highLegPhase,
             int orderNo,
-            int statusId
+            int statusId,
+            Database.Database database
         )
             : base()
         {
+            this.Database = database;
             this.id = id;
             _busSize = busSize;
             _mainSize = mainSize;
@@ -529,7 +534,6 @@ namespace GMEPDesignTool
         public void PopulateCircuits(string id, string projectId)
         {
             int totalCircuits = leftCircuits.Count + rightCircuits.Count;
-
             while (totalCircuits < NumBreakers)
             {
                 if (totalCircuits % 2 == 0)
@@ -750,6 +754,149 @@ namespace GMEPDesignTool
             }
         }
 
+        private async void CreateEquipFromPanelSchedule(ElectricalComponent comp, Circuit circ)
+        {
+            string equipNo = string.Empty;
+            string equipDescription = string.Empty;
+            string equipId = string.Empty;
+            bool is3Phase = false;
+            int voltageId = 2;
+            int equipVa = 0;
+            if (circ.Description.Contains(" - "))
+            {
+                equipNo = circ.Description.Split(" - ")[0];
+                equipDescription = circ.Description.Split(" - ")[1];
+            }
+            else
+            {
+                equipDescription = circ.Description;
+            }
+
+            equipId = circ.equipId;
+            if (circ.Description.ToLower().EndsWith("va"))
+            {
+                string[] vaStringArr = circ.Description.Split(' ');
+                if (vaStringArr.Length > 0)
+                {
+                    Int32.TryParse(
+                        vaStringArr[vaStringArr.Length - 1].ToLower().Replace("va", ""),
+                        out equipVa
+                    );
+                    if (equipVa > 0)
+                    {
+                        equipDescription = equipDescription.Replace(
+                            vaStringArr[vaStringArr.Length - 1],
+                            ""
+                        );
+                    }
+                }
+            }
+            if (
+                circ.Description.ToLower().EndsWith("2p")
+                || circ.Description.ToLower().EndsWith("3p")
+            )
+            {
+                voltageId = 3;
+                string[] stringArr = circ.Description.ToLower().Split(' ');
+                if (stringArr.Length > 0 && stringArr[stringArr.Length - 1].Contains("/"))
+                {
+                    string vaString = stringArr[stringArr.Length - 1].Split('/')[0];
+                    string poleString = stringArr[stringArr.Length - 1].Split('/')[1];
+                    if (poleString == "3p")
+                    {
+                        is3Phase = true;
+                    }
+                    Int32.TryParse(vaString.Replace("va", ""), out equipVa);
+                    if (equipVa > 0)
+                    {
+                        equipDescription = equipDescription.Replace(
+                            stringArr[stringArr.Length - 1],
+                            ""
+                        );
+                    }
+                }
+            }
+            if (
+                comp.Name == "Space"
+                && circ.Description != "Space"
+                && !string.IsNullOrEmpty(circ.Description)
+            )
+            {
+                ElectricalEquipment equip = new ElectricalEquipment(
+                    Guid.NewGuid().ToString(),
+                    ProjectId,
+                    "",
+                    equipNo,
+                    1,
+                    this.Id,
+                    voltageId,
+                    (float)Convert.ToDouble(equipVa) / 120,
+                    equipVa,
+                    is3Phase,
+                    "",
+                    0,
+                    false,
+                    -1,
+                    1,
+                    "#FFFFFFFF",
+                    true,
+                    1,
+                    equipDescription,
+                    0,
+                    "",
+                    true,
+                    false,
+                    0,
+                    0,
+                    0,
+                    circ.Number,
+                    false,
+                    1,
+                    0,
+                    this.StatusId,
+                    1,
+                    0,
+                    0,
+                    -1,
+                    -1,
+                    -1
+                );
+                circ.EquipId = equip.Id;
+                comp = equip;
+                MySqlConnection conn = new MySqlConnection(Database.ConnectionString);
+                await Database.OpenConnectionAsync(conn);
+                await Database.InsertEquipment(ProjectId, equip, conn);
+                await Database.CloseConnectionAsync(conn);
+            }
+            else if (
+                equipId == circ.EquipId
+                && !string.IsNullOrEmpty(circ.Description)
+                && circ.Description != "Space"
+            )
+            {
+                if (comp.GetType() == typeof(ElectricalEquipment))
+                {
+                    ElectricalEquipment equip = (ElectricalEquipment)comp;
+                    equip.EquipNo = equipNo;
+                    equip.Description = equipDescription;
+                    if (equip.Category == 0)
+                    {
+                        equip.Category = 1;
+                    }
+                    if (equipVa > 0)
+                    {
+                        equip.Va = equipVa;
+                        equip.Fla = (float)Convert.ToDouble(equipVa) / 120;
+                    }
+                    comp = equip;
+                    MySqlConnection conn = new MySqlConnection(Database.ConnectionString);
+                    await Database.OpenConnectionAsync(conn);
+                    await Database.UpdateEquipment(equip, conn);
+                    await Database.CloseConnectionAsync(conn);
+                }
+            }
+        }
+
         public void Circuit_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Circuit.CustomBreakerSize) && sender is Circuit circuit)
@@ -771,6 +918,36 @@ namespace GMEPDesignTool
                 if (circuit3.CustomBreakerSize)
                 {
                     checkCircuitErrors();
+                }
+            }
+            if (
+                e.PropertyName == nameof(Circuit.Description)
+                && sender is Circuit circuitDescription
+            )
+            {
+                if (
+                    circuitDescription.Description.ToLower().Replace("-", "").Trim() == "spare"
+                    || circuitDescription.Description == "---"
+                )
+                {
+                    return;
+                }
+                ElectricalComponent comp = leftComponents.FirstOrDefault(c =>
+                    c.CircuitNo == circuitDescription.Number
+                );
+                if (comp != null)
+                {
+                    CreateEquipFromPanelSchedule(comp, circuitDescription);
+                }
+                else
+                {
+                    comp = rightComponents.FirstOrDefault(c =>
+                        c.CircuitNo == circuitDescription.Number
+                    );
+                    if (comp != null)
+                    {
+                        CreateEquipFromPanelSchedule(comp, circuitDescription);
+                    }
                 }
             }
         }
@@ -2738,6 +2915,33 @@ namespace GMEPDesignTool
             Pole = 1;
             Name = "Space";
             this.componentType = "Space";
+        }
+    }
+
+    public class Spare : ElectricalEquipment
+    {
+        public Spare(int pole, int mocpId, ElectricalPanel panel, int circuitNo)
+        {
+            Voltage = 2;
+            if (pole == 3)
+            {
+                Is3Ph = true;
+                Voltage = 3;
+            }
+            if (pole == 2)
+            {
+                Voltage = 3;
+            }
+            Pole = pole;
+            MocpId = mocpId;
+            EquipNo = "Spare";
+            componentType = "Spare";
+            Va = 0;
+            ParentId = panel.Id;
+            StatusId = panel.StatusId;
+            CircuitNo = circuitNo;
+            Category = 0;
+            LoadCategory = 0;
         }
     }
 }

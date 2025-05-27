@@ -76,7 +76,10 @@ namespace GMEPDesignTool
             int statusId,
             int connectionSymbolId,
             int numConvDuplex,
-            int circuitHalf
+            int circuitHalf,
+            float phaseAVa,
+            float phaseBVa,
+            float phaseCVa
         )
         {
             this.id = id;
@@ -112,9 +115,9 @@ namespace GMEPDesignTool
             this.loadType = loadType;
             this.lcl = va;
             this.lml = va;
-            this.phaseAVa = 0;
-            this.phaseBVa = 0;
-            this.phaseCVa = 0;
+            this.phaseAVa = phaseAVa;
+            this.phaseBVa = phaseBVa;
+            this.phaseCVa = phaseCVa;
             this.ALml = 0;
             this.BLml = 0;
             this.CLml = 0;
@@ -154,6 +157,10 @@ namespace GMEPDesignTool
                 if (description != value)
                 {
                     description = value;
+                    if (description.Length > 25)
+                    {
+                        description = description.Substring(0, 25);
+                    }
                     OnPropertyChanged(nameof(Description));
                     OnPropertyChanged(nameof(Name));
                 }
@@ -614,6 +621,13 @@ namespace GMEPDesignTool
 
         public void SetPhaseVa()
         {
+            if (PhaseAVA != -1 || PhaseBVA != -1 || PhaseCVA != -1)
+            {
+                if (PhaseAVA != PhaseBVA || (PhaseAVA != PhaseCVA && PhaseCVA > -1))
+                {
+                    return;
+                }
+            }
             determineEquipmentPole();
             double vaTemp = Va;
             switch (Pole)

@@ -103,6 +103,7 @@
                                     <DataGrid.ContextMenu>
                                         <ContextMenu Name="ElectricalEquipmentContextMenu">
                                             <MenuItem Header="Remove" Click="RemoveSelectedElectricalEquipment_Click"/>
+                                            <MenuItem Header="Set VA Per Phase" Click="SetVaPerPhase_Click"/>
                                         </ContextMenu>
                                     </DataGrid.ContextMenu>
                                     <DataGrid.Columns>

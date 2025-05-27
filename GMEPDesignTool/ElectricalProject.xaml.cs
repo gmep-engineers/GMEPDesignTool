@@ -21,7 +21,7 @@ namespace GMEPDesignTool
     public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
     {
         private DispatcherTimer timer = new DispatcherTimer();
-        private ProjectControl ParentControl { get; set; }
+        public ProjectControl ParentControl { get; set; }
         public ObservableCollection<ElectricalPanel> ElectricalPanels { get; set; }
         public ObservableCollection<Circuit> CustomCircuits { get; set; }
         public ObservableCollection<Circuit> ElectricalPanelMiniBreakers { get; set; }
@@ -920,7 +920,8 @@ namespace GMEPDesignTool
                 "",
                 '-',
                 ElectricalPanels.Count + 1,
-                1
+                1,
+                ProjectView.database
             );
             AddElectricalPanel(electricalPanel);
             OrderPanels(ElectricalPanels);
@@ -1553,6 +1554,24 @@ namespace GMEPDesignTool
             catch { }
         }
 
+        private void SetVaPerPhase_Click(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                var selectedEquipment = ElectricalEquipmentDataGrid
+                    .SelectedItems.Cast<ElectricalEquipment>()
+                    .ToList();
+                if (selectedEquipment.Count > 0 && selectedEquipment[0].Pole > 1)
+                {
+                    SetVaPerPhaseWindow setVaPerPhaseWindow = new SetVaPerPhaseWindow(
+                        selectedEquipment[0]
+                    );
+                    setVaPerPhaseWindow.Show();
+                }
+            }
+            catch { }
+        }
+
         private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1647,7 +1666,7 @@ namespace GMEPDesignTool
                         }
                     }
 
-                    CircuitManager manager = new CircuitManager(panel, ProjectView.database);
+                    CircuitManager manager = new CircuitManager(panel, ProjectView);
                     manager.Show();
                 });
             }
@@ -1660,22 +1679,26 @@ namespace GMEPDesignTool
                 {
                     if (assignedPanel.Id == panelId)
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        try
                         {
-                            foreach (Window window in Application.Current.Windows)
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                if (window is CircuitManager circuitManager)
+                                foreach (Window window in Application.Current.Windows)
                                 {
-                                    circuitManager.Close();
-                                    break;
+                                    if (window is CircuitManager circuitManager)
+                                    {
+                                        circuitManager.Close();
+                                        break;
+                                    }
                                 }
-                            }
-                            CircuitManager manager = new CircuitManager(
-                                assignedPanel,
-                                ProjectView.database
-                            );
-                            manager.Show();
-                        });
+                                CircuitManager manager = new CircuitManager(
+                                    assignedPanel,
+                                    ProjectView
+                                );
+                                manager.Show();
+                            });
+                        }
+                        catch (Exception ex) { }
                     }
                 }
             }
@@ -1869,7 +1892,10 @@ namespace GMEPDesignTool
                 1,
                 1,
                 0,
-                0
+                0,
+                -1,
+                -1,
+                -1
             );
             AddElectricalEquipment(electricalEquipment);
             OrderEquipment(ElectricalEquipments);
@@ -1939,7 +1965,10 @@ namespace GMEPDesignTool
                     electricalEquipment.StatusId,
                     electricalEquipment.ConnectionSymbolId,
                     electricalEquipment.NumConvDuplex,
-                    0
+                    0,
+                    -1,
+                    -1,
+                    -1
                 );
                 equipment.PropertyChanged += ElectricalEquipment_PropertyChanged;
                 int newOrder = ElectricalEquipments.IndexOf(electricalEquipment);
@@ -2001,6 +2030,10 @@ namespace GMEPDesignTool
             {
                 // Replace "FilterString" with the actual filter string
                 bool isAccepted = true;
+                if (equipment.Category == 0)
+                {
+                    isAccepted = false;
+                }
                 if (
                     !string.IsNullOrEmpty(EquipmentFilter.Text)
                     && (

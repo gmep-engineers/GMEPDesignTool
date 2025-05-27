@@ -69,7 +69,7 @@ namespace GMEPDesignTool
             this.modelNo = modelNo;
             this.qty = qty;
             this.occupancy = occupancy;
-            this.wattage = wattage;
+            this.wattage = Math.Round(wattage, 1);
             this.emCapable = emCapable;
             this.mountingType = mountingType;
             this.tag = tag;
@@ -187,7 +187,7 @@ namespace GMEPDesignTool
             {
                 if (wattage != value)
                 {
-                    wattage = value;
+                    wattage = Math.Round(value, 1);
                     OnPropertyChanged(nameof(Wattage));
                 }
             }
@@ -384,6 +384,7 @@ namespace GMEPDesignTool
                 }
             }
         }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
