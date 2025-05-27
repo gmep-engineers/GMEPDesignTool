@@ -928,6 +928,7 @@ namespace GMEPDesignTool
                 if (
                     circuitDescription.Description.ToLower().Replace("-", "").Trim() == "spare"
                     || circuitDescription.Description == "---"
+                    || String.IsNullOrEmpty(circuitDescription.Description)
                 )
                 {
                     return;
@@ -937,6 +938,10 @@ namespace GMEPDesignTool
                 );
                 if (comp != null)
                 {
+                    if (comp.Name == circuitDescription.Description)
+                    {
+                        return;
+                    }
                     CreateEquipFromPanelSchedule(comp, circuitDescription);
                 }
                 else
@@ -946,6 +951,10 @@ namespace GMEPDesignTool
                     );
                     if (comp != null)
                     {
+                        if (comp.Name == circuitDescription.Description)
+                        {
+                            return;
+                        }
                         CreateEquipFromPanelSchedule(comp, circuitDescription);
                     }
                 }
