@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.RightsManagement;
 using System.Windows.Controls;
+using Amazon.S3.Model;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Tls.Crypto;
 
@@ -1305,6 +1306,11 @@ namespace GMEPDesignTool
             Kva = 0;
             RootKva = 0;
             int phaseIndex = 0;
+
+            List<(int, int)> leftLclCircuits = new List<(int, int)>();
+            List<(int, int)> rightLclCircuits = new List<(int, int)>();
+            List<(int, int)> leftLmlCircuits = new List<(int, int)>();
+            List<(int, int)> rightLmlCircuits = new List<(int, int)>();
             foreach (var component in leftComponents)
             {
                 DetermineComponentErrors(component);
@@ -1445,10 +1451,19 @@ namespace GMEPDesignTool
                         }
                         phaseIndex++;
                     }
+                    if (component.Lcl > 0)
+                    {
+                        // create note
+                        leftLclCircuits.Add((component.CircuitNo, component.Pole));
+                    }
+
                     Lcl += component.Lcl;
                     if (lmlIsLarger)
                     {
                         Lml = component.Lml;
+                        leftLmlCircuits.Clear();
+                        rightLmlCircuits.Clear();
+                        leftLmlCircuits.Add((component.CircuitNo, component.Pole));
                     }
                 }
             }
@@ -1590,13 +1605,287 @@ namespace GMEPDesignTool
                         }
                         phaseIndex++;
                     }
+                    if (component.Lcl > 0)
+                    {
+                        // create note
+                        rightLclCircuits.Add((component.CircuitNo, component.Pole));
+                    }
                     Lcl += component.Lcl;
                     if (lmlIsLarger)
                     {
                         Lml = component.Lml;
+
+                        leftLmlCircuits.Clear();
+                        rightLmlCircuits.Clear();
+                        rightLmlCircuits.Add((component.CircuitNo, component.Pole));
                     }
                 }
             }
+
+            string noteId = string.Empty;
+            string tag = string.Empty;
+            if (Lcl > 0)
+            {
+                bool addNote = true;
+                string noteText =
+                    "THE BREAKER IS A LONG CONTINUOUS LOAD (LCL) TAKEN AT 125% OF ITS CURRENT DRAW (NEC 210.19(A)(1)). ";
+                foreach (ElectricalPanelNote note in notes)
+                {
+                    if (note.Note.ToUpper().Contains("LONG CONTINUOUS LOAD (LCL)"))
+                    {
+                        addNote = false;
+                        noteId = note.Id;
+                        tag = note.Tag;
+                    }
+                }
+                if (addNote)
+                {
+                    noteId = Guid.NewGuid().ToString();
+                    tag = (notes.Count + 1).ToString();
+                    notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+                }
+                int i = 0;
+
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("LONG CONTINUOUS LOAD (LCL)")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("LONG CONTINUOUS LOAD (LCL)")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                foreach ((int, int) leftLclCircuit in leftLclCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        leftLclCircuit.Item1,
+                        leftLclCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    leftNotes.Add(newNoteRel);
+                }
+                foreach ((int, int) rightLclCircuit in rightLclCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        rightLclCircuit.Item1,
+                        rightLclCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    rightNotes.Add(newNoteRel);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("LONG CONTINUOUS LOAD (LCL)")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("LONG CONTINUOUS LOAD (LCL)")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < notes.Count)
+                {
+                    if (
+                        notes[i].Note.Contains("LONG CONTINUOUS LOAD (LCL)")
+                        || String.IsNullOrEmpty(notes[i].Note)
+                    )
+                    {
+                        notes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+
+            if (Lml > 0)
+            {
+                bool addNote = true;
+                string noteText =
+                    "THE BREAKER IS THE LARGEST MOTOR LOAD (LML) TAKEN AT 125% OF ITS FULL-LOAD CURRENT RATING (NEC 430.24(1)).";
+                foreach (ElectricalPanelNote note in notes)
+                {
+                    if (note.Note.ToUpper().Contains("LARGEST MOTOR LOAD (LML)"))
+                    {
+                        addNote = false;
+                        noteId = note.Id;
+                        tag = note.Tag;
+                    }
+                }
+                if (addNote)
+                {
+                    noteId = Guid.NewGuid().ToString();
+                    tag = (notes.Count + 1).ToString();
+                    notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+                }
+                int i = 0;
+
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("LARGEST MOTOR LOAD (LML)")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("LARGEST MOTOR LOAD (LML)")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                foreach ((int, int) leftLmlCircuit in leftLmlCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        leftLmlCircuit.Item1,
+                        leftLmlCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    leftNotes.Add(newNoteRel);
+                }
+                foreach ((int, int) rightLmlCircuit in rightLmlCircuits)
+                {
+                    ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
+                        Guid.NewGuid().ToString(),
+                        ProjectId,
+                        Id,
+                        noteId,
+                        noteText,
+                        rightLmlCircuit.Item1,
+                        rightLmlCircuit.Item2,
+                        0,
+                        tag
+                    );
+                    rightNotes.Add(newNoteRel);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (i < leftNotes.Count)
+                {
+                    if (
+                        leftNotes[i].NoteText.Contains("LARGEST MOTOR LOAD (LML)")
+                        || String.IsNullOrEmpty(leftNotes[i].NoteText)
+                    )
+                    {
+                        leftNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < rightNotes.Count)
+                {
+                    if (
+                        rightNotes[i].NoteText.Contains("LARGEST MOTOR LOAD (LML)")
+                        || String.IsNullOrEmpty(rightNotes[i].NoteText)
+                    )
+                    {
+                        rightNotes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                i = 0;
+                while (i < notes.Count)
+                {
+                    if (
+                        notes[i].Note.Contains("LARGEST MOTOR LOAD (LML)")
+                        || String.IsNullOrEmpty(notes[i].Note)
+                    )
+                    {
+                        notes.RemoveAt(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+
             //CalculateLcl();
             // CalculateLml();
             Va = Kva;
