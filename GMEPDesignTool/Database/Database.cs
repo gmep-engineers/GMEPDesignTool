@@ -9,6 +9,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Xml.Linq;
@@ -18,6 +19,7 @@ using Amazon.S3.Model;
 using BCrypt.Net;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace GMEPDesignTool.Database
 {
@@ -2553,6 +2555,131 @@ namespace GMEPDesignTool.Database
             command.ExecuteNonQuery();
 
             CloseConnection(Connection);
+        }
+
+        public bool CreateEmployee(
+            string username,
+            string password,
+            string emailAddr,
+            string firstName,
+            string lastName,
+            ulong? phoneNumber,
+            uint? extension,
+            DateTime hireDate,
+            string employeeId,
+            string entityId,
+            string contactId,
+            string emailAddressId,
+            string phoneNumberId
+        )
+        {
+            OpenConnection(Connection);
+            string query = "SELECT username FROM employees WHERE username = @username";
+
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@username", username);
+
+            MySqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                MessageBox.Show($"A entry for {username} already exists.");
+                reader.Close();
+                return false;
+            }
+            reader.Close();
+
+            var salt = BCrypt.Net.BCrypt.GenerateSalt(10);
+            var passhash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+
+            string emailAddrEntityRelId = Guid.NewGuid().ToString();
+            string phoneNumberEntityRelId = Guid.NewGuid().ToString();
+
+            query = "INSERT INTO entities (id) VALUES (@entityId)";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@entityId", entityId);
+            command.ExecuteNonQuery();
+
+            string gmepCompanyId = "cbc78dfd-7728-4162-a5f2-17e71b112f53";
+            query =
+                @"
+                INSERT INTO contacts (id, entity_id, first_name, last_name, company_id)
+                VALUES (@id, @entityId, @firstName, @lastName, @companyId)
+                ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", contactId);
+            command.Parameters.AddWithValue("@entityId", entityId);
+            command.Parameters.AddWithValue("@firstName", firstName);
+            command.Parameters.AddWithValue("@lastName", lastName);
+            command.Parameters.AddWithValue("@companyId", gmepCompanyId);
+            command.ExecuteNonQuery();
+
+            query =
+                @"
+                INSERT INTO email_addresses (id, email_address)
+                VALUES (@id, @emailAddress)
+                ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", emailAddressId);
+            command.Parameters.AddWithValue("@emailAddress", emailAddr);
+            command.ExecuteNonQuery();
+
+            query =
+                @"
+                INSERT INTO email_addr_entity_rel (id, email_address_id, entity_id, is_primary)
+                VALUES (@id, @emailAddressId, @entityId, @isPrimary)
+                ";
+            command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", emailAddrEntityRelId);
+            command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
+            command.Parameters.AddWithValue("@entityId", entityId);
+            command.Parameters.AddWithValue("@isPrimary", 1);
+            command.ExecuteNonQuery();
+
+            if (phoneNumber != null && phoneNumber != 0)
+            {
+                query =
+                    @"
+                INSERT INTO phone_numbers (id, phone_number, calling_code, extension)
+                VALUES (@id, @phoneNumber, @callingCode, @extension)
+                ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", phoneNumberId);
+                command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+                command.Parameters.AddWithValue("@callingCode", 1);
+                command.Parameters.AddWithValue("@extension", extension);
+                command.ExecuteNonQuery();
+
+                query =
+                    @"
+                INSERT INTO phone_number_entity_rel (id, phone_number_id, entity_id, is_primary)
+                VALUES (@id, @phoneNumberId, @entityId, @isPrimary)
+                ";
+                command = new MySqlCommand(query, Connection);
+                command.Parameters.AddWithValue("@id", phoneNumberEntityRelId);
+                command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
+                command.Parameters.AddWithValue("@entityId", entityId);
+                command.Parameters.AddWithValue("@isPrimary", 1);
+                command.ExecuteNonQuery();
+            }
+
+            query =
+                @"
+                INSERT INTO employees (id, contact_id, employee_title_id, employee_access_level_id, hire_date, username, passhash)
+                VALUES (@id, @contactId, @employeeTitleId, @employeeAccessLevel, @hireDate, @username, @passhash)
+                ";
+
+            command = new MySqlCommand(query, Connection);
+
+            command.Parameters.AddWithValue("@id", employeeId);
+            command.Parameters.AddWithValue("@contactId", contactId);
+            command.Parameters.AddWithValue("@employeeTitleId", 0);
+            command.Parameters.AddWithValue("@employeeAccessLevel", 0);
+            command.Parameters.AddWithValue("@hireDate", hireDate);
+            command.Parameters.AddWithValue("@username", username);
+            command.Parameters.AddWithValue("@passhash", passhash);
+            command.ExecuteNonQuery();
+            CloseConnection(Connection);
+            return true;
         }
     }
 

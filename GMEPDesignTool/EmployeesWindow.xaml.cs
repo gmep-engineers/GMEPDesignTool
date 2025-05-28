@@ -23,7 +23,7 @@ namespace GMEPDesignTool
 
     public partial class EmployeesWindow : Window
     {
-        EmployeesViewModel EmployeesViewModel { get; set; }
+        public EmployeesViewModel EmployeesViewModel { get; set; }
         LoginResponse LoginResponse { get; set; }
 
         public EmployeesWindow(LoginResponse loginResponse)
@@ -42,6 +42,12 @@ namespace GMEPDesignTool
         public void SaveClick(object sender, RoutedEventArgs e)
         {
             EmployeesViewModel.Save();
+        }
+
+        public void AddUserClick(object sender, RoutedEventArgs e)
+        {
+            AddEmployeeWindow addEmployeeWindow = new AddEmployeeWindow(LoginResponse, this);
+            addEmployeeWindow.Show();
         }
     }
 }
