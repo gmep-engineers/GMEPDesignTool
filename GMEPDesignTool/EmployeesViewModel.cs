@@ -365,7 +365,7 @@ namespace GMEPDesignTool
         Manager,
     }
 
-    class EmployeesViewModel : ViewModelBase
+    public class EmployeesViewModel : ViewModelBase
     {
         public List<Employee> Employees { get; set; }
         public Database.Database Database { get; set; }
