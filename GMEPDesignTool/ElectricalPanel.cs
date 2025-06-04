@@ -930,6 +930,7 @@ namespace GMEPDesignTool
                     circuitDescription.Description.ToLower().Replace("-", "").Trim() == "spare"
                     || circuitDescription.Description == "---"
                     || String.IsNullOrEmpty(circuitDescription.Description)
+                    || circuitDescription.Description.Contains(';')
                 )
                 {
                     return;
@@ -1023,9 +1024,9 @@ namespace GMEPDesignTool
 
             foreach (var component in leftComponents)
             {
-                if (component.circuitHalf == 2)
+                if (component.BComponent != null)
                 {
-                    continue;
+                    component.BComponent.CircuitNo = leftCircuitIndex * 2 + 1;
                 }
                 component.CircuitNo = leftCircuitIndex * 2 + 1;
                 leftCircuitIndex += component.Pole;
@@ -1043,9 +1044,9 @@ namespace GMEPDesignTool
 
             foreach (var component in rightComponents)
             {
-                if (component.circuitHalf == 2)
+                if (component.BComponent != null)
                 {
-                    continue;
+                    component.BComponent.CircuitNo = rightCircuitIndex * 2 + 2;
                 }
                 component.CircuitNo = rightCircuitIndex * 2 + 2;
                 rightCircuitIndex += component.Pole;
@@ -2285,35 +2286,68 @@ namespace GMEPDesignTool
             int CurrentRightCircuit = 2;
             foreach (var component in temp)
             {
-                if (component.circuitHalf == 2)
-                {
-                    continue;
-                }
+                bool hasAComponent = false;
                 if (component.ParentId == Id)
                 {
-                    if (component.CircuitNo == 0)
+                    if (component.circuitHalf > 0)
                     {
-                        componentsCollection.Add(component);
-                    }
-                    else if (component.CircuitNo % 2 != 0)
-                    {
-                        while (CurrentLeftCircuit < component.CircuitNo)
+                        if (component.circuitHalf == 1)
                         {
-                            AssignSpace(true);
-                            CurrentLeftCircuit += 2;
+                            foreach (var c in temp)
+                            {
+                                if (
+                                    c.CircuitNo == component.CircuitNo
+                                    && c.circuitHalf == 2
+                                    && !c.Name.Contains(component.Name)
+                                )
+                                {
+                                    component.BComponent = c;
+                                }
+                            }
                         }
-                        leftComponents.Add(component);
-                        CurrentLeftCircuit += (component.Pole * 2);
-                    }
-                    else
-                    {
-                        while (CurrentRightCircuit < component.CircuitNo)
+                        if (component.circuitHalf == 2)
                         {
-                            AssignSpace(false);
-                            CurrentRightCircuit += 2;
+                            foreach (var c in temp)
+                            {
+                                if (c.CircuitNo == component.CircuitNo && c.circuitHalf == 1)
+                                {
+                                    c.BComponent = component;
+                                    hasAComponent = true;
+                                }
+                            }
+                            if (!hasAComponent)
+                            {
+                                Spare s = new Spare(1, 2, this, component.CircuitNo);
+                                s.BComponent = component;
+                            }
                         }
-                        rightComponents.Add(component);
-                        CurrentRightCircuit += (component.Pole * 2);
+                    }
+                    if (!hasAComponent)
+                    {
+                        if (component.CircuitNo == 0)
+                        {
+                            componentsCollection.Add(component);
+                        }
+                        else if (component.CircuitNo % 2 != 0)
+                        {
+                            while (CurrentLeftCircuit < component.CircuitNo)
+                            {
+                                AssignSpace(true);
+                                CurrentLeftCircuit += 2;
+                            }
+                            leftComponents.Add(component);
+                            CurrentLeftCircuit += (component.Pole * 2);
+                        }
+                        else
+                        {
+                            while (CurrentRightCircuit < component.CircuitNo)
+                            {
+                                AssignSpace(false);
+                                CurrentRightCircuit += 2;
+                            }
+                            rightComponents.Add(component);
+                            CurrentRightCircuit += (component.Pole * 2);
+                        }
                     }
                 }
             }
