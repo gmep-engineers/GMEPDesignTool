@@ -168,7 +168,14 @@ namespace GMEPDesignTool
         }
         public override string Name
         {
-            get => equipNo + " - " + description;
+            get
+            {
+                if (BComponent != null)
+                {
+                    return equipNo + " - " + description + ";" + BComponent.Name;
+                }
+                return equipNo + " - " + description;
+            }
         }
 
         public string Owner

@@ -38,6 +38,7 @@ namespace GMEPDesignTool
         public int orderNo = 1;
         public bool updateFlag = false;
         public int circuitHalf = 0;
+        public ElectricalComponent? BComponent;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -158,7 +159,14 @@ namespace GMEPDesignTool
         }
         public virtual float PhaseAVA
         {
-            get => phaseAVa;
+            get
+            {
+                if (BComponent != null)
+                {
+                    return phaseAVa + BComponent.PhaseAVA;
+                }
+                return phaseAVa;
+            }
             set
             {
                 if (phaseAVa != value)
@@ -170,7 +178,14 @@ namespace GMEPDesignTool
         }
         public virtual float PhaseBVA
         {
-            get => phaseBVa;
+            get
+            {
+                if (BComponent != null)
+                {
+                    return phaseBVa + BComponent.PhaseBVA;
+                }
+                return phaseBVa;
+            }
             set
             {
                 if (phaseBVa != value)
@@ -182,7 +197,14 @@ namespace GMEPDesignTool
         }
         public virtual float PhaseCVA
         {
-            get => phaseCVa;
+            get
+            {
+                if (BComponent != null)
+                {
+                    return phaseCVa + BComponent.PhaseCVA;
+                }
+                return phaseCVa;
+            }
             set
             {
                 if (phaseCVa != value)

@@ -1652,6 +1652,7 @@ namespace GMEPDesignTool
 
         private void CircuitManager_Click(object sender, RoutedEventArgs e)
         {
+            SaveProject();
             var man = CustomCircuits;
             if (sender is Button button && button.CommandParameter is ElectricalPanel panel)
             {
@@ -1695,6 +1696,7 @@ namespace GMEPDesignTool
                                     assignedPanel,
                                     ProjectView
                                 );
+
                                 manager.Show();
                             });
                         }
