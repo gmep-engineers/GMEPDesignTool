@@ -111,6 +111,11 @@ namespace GMEPDesignTool
 
                 //Admin Tab
                 AdminTab.Content = new Admin();
+                //Plumbing Tab
+                
+                var plumbingControl = new PlumbingProject("1");
+                PlumbingTab.Content = plumbingControl;
+
             }
         }
 
