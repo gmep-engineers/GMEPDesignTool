@@ -111,6 +111,10 @@ namespace GMEPDesignTool
 
                 //Admin Tab
                 AdminTab.Content = new Admin();
+
+                viewModel.ActivePlumbingProject = new PlumbingProject(newprojectId);
+                await viewModel.ActivePlumbingProject.InitializeAsync();
+                PlumbingTab.Content = viewModel.ActivePlumbingProject;
             }
         }
 
