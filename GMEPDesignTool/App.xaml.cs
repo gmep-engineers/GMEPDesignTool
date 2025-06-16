@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using GMEPDesignTool.Properties;
 using MySql.Data.MySqlClient;
 
 namespace GMEPDesignTool
@@ -19,8 +20,8 @@ namespace GMEPDesignTool
             AllocConsole();
 
             Console.WriteLine("Console window opened!");
-            //string connectionString =
-            //    "server=gmep-design-tool-test.ch8c88cauy2x.us-west-1.rds.amazonaws.com;port=3306;user id=admin;password=f51Vu3o5Qlc140r;database=gmep-design-tool;pooling=false";
+            //string connectionString =GMEPDesignTool.Properties.Settings.Default.ConnectionString;
+
             //var db = new Database.Database(connectionString);
 
             //var fixtures = await db.GetPlumbingFixturesByProjectId("1");
@@ -30,7 +31,7 @@ namespace GMEPDesignTool
             //    Console.WriteLine($"{fixture.Name} -{fixture.Description} - {fixture.HotWater}- {fixture.Model}");
             //}
 
-            Console.WriteLine(new PlumbingProject("0"));
+            Console.WriteLine(new PlumbingProject("1"));
 
             Console.WriteLine("end");
 
