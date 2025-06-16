@@ -11,4 +11,12 @@ namespace GMEPDesignTool
   {
   }
 
+            Console.WriteLine("Console window opened!");
+            //test output in console
+            Console.WriteLine(new PlumbingProject("1"));
+
+            Console.WriteLine("end");
+
+        }
+    }
 }

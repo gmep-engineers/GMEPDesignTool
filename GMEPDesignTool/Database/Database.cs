@@ -159,6 +159,82 @@ namespace GMEPDesignTool.Database
             return DateTime.MinValue;
         }
 
+        public async Task<ObservableCollection<PlumbingFixtureDisplay>> GetPlumbingFixturesByProjectId(string projectId)
+        {
+            ObservableCollection<PlumbingFixtureDisplay> fixtures =
+                new ObservableCollection<PlumbingFixtureDisplay>();
+            string query = @"
+            SELECT 
+                plumbing_fixture_types.abbreviation,
+                plumbing_fixtures.number,
+                plumbing_fixture_catalog.description,
+                plumbing_fixture_types.name,
+                plumbing_fixture_catalog.make,
+                plumbing_fixture_catalog.model,
+                plumbing_fixture_catalog.trap,
+                plumbing_fixture_catalog.waste,
+                plumbing_fixture_catalog.vent,
+                plumbing_fixture_catalog.cold_water,
+                plumbing_fixture_catalog.hot_water,
+                plumbing_fixture_catalog.fixture_demand,
+                plumbing_fixture_catalog.hot_demand,
+                plumbing_fixture_catalog.dfu
+            FROM plumbing_fixtures
+            LEFT JOIN plumbing_fixture_catalog ON plumbing_fixture_catalog.id = plumbing_fixtures.catalog_id
+            LEFT JOIN plumbing_fixture_types ON plumbing_fixture_types.id = plumbing_fixture_catalog.type_id
+            WHERE plumbing_fixtures.project_id = @projectId";
+            //    string query = @"
+            //SELECT 
+            //    plumbing_fixture_types.abbreviation,
+            //    plumbing_fixtures.number,
+            //    plumbing_fixture_catalog.description,
+            //    plumbing_fixture_types.name,
+            //    plumbing_fixture_catalog.make,
+            //    plumbing_fixture_catalog.model,
+            //    plumbing_fixture_catalog.trap,
+            //    plumbing_fixture_catalog.waste,
+            //    plumbing_fixture_catalog.vent,
+            //    plumbing_fixture_catalog.cold_water,
+            //    plumbing_fixture_catalog.hot_water,
+            //    plumbing_fixture_catalog.fixture_demand,
+            //    plumbing_fixture_catalog.hot_demand,
+            //    plumbing_fixture_catalog.dfu
+            //FROM plumbing_fixtures
+            //LEFT JOIN plumbing_fixture_catalog ON plumbing_fixture_catalog.id = plumbing_fixtures.catalog_id
+            //LEFT JOIN plumbing_fixture_types ON plumbing_fixture_types.id = plumbing_fixture_catalog.type_id
+            //WHERE plumbing_fixtures.number = 1";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                fixtures.Add(
+                    new PlumbingFixtureDisplay
+                    {
+                        Abbreviation = GetSafeString(reader, "abbreviation"),
+                        Number = GetSafeInt(reader, "number"),
+                        Description = GetSafeString(reader, "description"),
+                        Name = GetSafeString(reader, "name"),
+                        Make = GetSafeString(reader, "make"),
+                        Model = GetSafeString(reader, "model"),
+                        Trap = GetSafeFloat(reader, "trap"),
+                        Waste = GetSafeFloat(reader, "waste"),
+                        Vent = GetSafeFloat(reader, "vent"),
+                        ColdWater = GetSafeFloat(reader, "cold_water"),
+                        HotWater = GetSafeFloat(reader, "hot_water"),
+                        FixtureDemand = GetSafeFloat(reader, "fixture_demand"),
+                        HotDemand = GetSafeFloat(reader, "hot_demand"),
+                        DFU = GetSafeInt(reader, "dfu")
+                    });
+            }
+
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return fixtures;
+        }
+
+
         public bool LoginUser(string userName, string password)
         {
             string query =
