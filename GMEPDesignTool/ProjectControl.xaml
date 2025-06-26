@@ -19,7 +19,7 @@
                 <Grid Background="White"/>
             </TabItem>
             <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top"/>
-            <TabItem Header="Plumbing" Visibility="Visible">
+            <TabItem x:Name="PlumbingTab" Header="Plumbing" Visibility="Visible">
                 <Grid Background="DarkMagenta"/>
             </TabItem>
             <TabItem Header="" Visibility="Hidden">
