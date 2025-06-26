@@ -18,8 +18,8 @@
             <TabItem Header="Mechanical" Visibility="Visible">
                 <Grid Background="White"/>
             </TabItem>
-            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Margin="-2,-2,-2,0" Height="20" VerticalAlignment="Top"/>
-            <TabItem x:Name="PlumbingTab" Header="Plumbing" Visibility="Visible" Height="20" Margin="-2,-2,-2,0" VerticalAlignment="Top">
+            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top"/>
+            <TabItem x:Name="PlumbingTab" Header="Plumbing" Visibility="Visible">
                 <Grid Background="DarkMagenta"/>
             </TabItem>
             <TabItem x:Name="AdminTab" Header="Admin" Visibility="Visible" Height="20" Margin="-2,-2,-2,0" VerticalAlignment="Top"/>

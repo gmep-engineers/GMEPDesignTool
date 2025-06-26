@@ -11,24 +11,30 @@ namespace GMEPDesignTool
     public partial class PlumbingProject : UserControl
     {
         private readonly Database.Database _db;
-        
-        public ObservableCollection<PlumbingFixtureDisplay> Fixtures { get; set; } = new();
-        
-        public PlumbingProject( string projectId)
+
+        private string ProjectId;
+
+        public ObservableCollection<PlumbingFixture> PlumbingFixtures { get; set; } = new();
+
+        public PlumbingProject(string projectId)
         {
             InitializeComponent();
+            ProjectId = projectId;
             DataContext = this;
-            _db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
-            LoadData(projectId);
+            _db = new Database.Database(
+                GMEPDesignTool.Properties.Settings.Default.ConnectionString
+            );
         }
 
-        private async void LoadData(string projectId)
+        public async Task InitializeAsync()
         {
-            var results = await _db.GetPlumbingFixturesByProjectId(projectId);
+            var results = await _db.GetPlumbingFixturesByProjectId(ProjectId);
             foreach (var item in results)
             {
-                Console.WriteLine($"{item.Name} -{item.Description} - {item.HotWater}- {item.Model}");
-                Fixtures.Add(item);
+                Console.WriteLine(
+                    $"{item.Name} -{item.Description} - {item.HotWater}- {item.Model}"
+                );
+                PlumbingFixtures.Add(item);
             }
         }
     }

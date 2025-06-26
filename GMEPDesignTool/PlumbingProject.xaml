@@ -24,7 +24,7 @@
                 <DataGridTextColumn Header="DFU" Binding="{Binding DFU}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
-        
-            
+
+
     </Grid>
 </UserControl>
