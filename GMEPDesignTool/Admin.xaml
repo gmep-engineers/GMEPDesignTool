@@ -6,7 +6,30 @@
              xmlns:local="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="AliceBlue">
-            
+    <Grid Margin="20,40,10,0" >
+        <Grid.RowDefinitions >
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Project No#" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="0" x:Name="EquipmentFilter" Margin="89,0,468,10" Text="{Binding ProjectNo}" />
+        <Label Grid.Row="1" Content="Name" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="1"  Margin="89,0,468,10"  Text="{Binding ProjectName}"/>
+        <Label Grid.Row="2" Content="Street Address" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="2" Margin="89,0,468,10" />
+        <Label Grid.Row="3" Content="City" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="3" Margin="89,0,468,10" />
+        <Label Grid.Row="4" Content="State" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="4" Margin="89,0,468,10" />
+        <Label Grid.Row="5" Content="Post Code" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="5" Margin="89,0,468,10" />
+        <Label Grid.Row="6" Content="Project Path" Margin="0,0,0,10"/>
+        <TextBox Grid.Row="6" Margin="89,0,468,10" />
     </Grid>
 </UserControl>

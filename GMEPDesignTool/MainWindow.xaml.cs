@@ -65,6 +65,7 @@ namespace GMEPDesignTool
             if (r.IsMatch(projectNo))
             {
                 MainWindowViewModel.OpenProject(projectNo);
+                Console.WriteLine(projectNo); //test
             }
         }
 

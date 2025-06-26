@@ -20,16 +20,6 @@ namespace GMEPDesignTool
             AllocConsole();
 
             Console.WriteLine("Console window opened!");
-            //string connectionString =GMEPDesignTool.Properties.Settings.Default.ConnectionString;
-
-            //var db = new Database.Database(connectionString);
-
-            //var fixtures = await db.GetPlumbingFixturesByProjectId("1");
-
-            //foreach (var fixture in fixtures)
-            //{
-            //    Console.WriteLine($"{fixture.Name} -{fixture.Description} - {fixture.HotWater}- {fixture.Model}");
-            //}
 
             Console.WriteLine(new PlumbingProject("1"));
 

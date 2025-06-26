@@ -18,20 +18,14 @@
             <TabItem Header="Mechanical" Visibility="Visible">
                 <Grid Background="White"/>
             </TabItem>
-            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Height="20" VerticalAlignment="Top"/>
-            <TabItem x:Name="PlumbingTab" Header="Plumbing" Visibility="Visible">
+            <TabItem x:Name="ElectricalTab" Header="Electrical" Visibility="Visible" Margin="-2,-2,-2,0" Height="20" VerticalAlignment="Top"/>
+            <TabItem x:Name="PlumbingTab" Header="Plumbing" Visibility="Visible" Height="20" Margin="-2,-2,-2,0" VerticalAlignment="Top">
                 <Grid Background="DarkMagenta"/>
             </TabItem>
-            <TabItem Header="" Visibility="Hidden">
-                <Grid Background="DarkMagenta"/>
-            </TabItem>
-            <TabItem x:Name="AdminTab" Header="Admin" Visibility="Visible"/>
-            <!--<TabItem Header="Info" Visibility="Visible">
-                <Grid Background="Gainsboro"/>
-            </TabItem>-->
+            <TabItem x:Name="AdminTab" Header="Admin" Visibility="Visible" Height="20" Margin="-2,-2,-2,0" VerticalAlignment="Top"/>
         </TabControl>
        
-        <Grid Background="White" Height="22" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Grid Background="White" Height="20" Margin="0 0 4 0" HorizontalAlignment="Right" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button  Click="Refresh" Margin="0 0 10 2" Width="50">
                     <Image Source="/refresh.png" Width="20"/>

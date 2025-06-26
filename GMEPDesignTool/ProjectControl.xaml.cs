@@ -61,6 +61,8 @@ namespace GMEPDesignTool
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
             Application.Current.Deactivated += Application_Deactivated;
             Application.Current.Activated += Application_Activated;
+            
+
         }
 
         private async void AddVersion_Click(object sender, RoutedEventArgs e)

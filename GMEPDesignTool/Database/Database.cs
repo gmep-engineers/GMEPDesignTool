@@ -159,6 +159,44 @@ namespace GMEPDesignTool.Database
             return DateTime.MinValue;
         }
 
+
+        public async Task<AdminModel> GetAdminByProjectNumber(string projectNo)
+        {
+            AdminModel adminModel = null;
+            string query = @"
+                        SELECT gmep_project_no,
+                        gmep_project_name,
+                        street_address,
+                        city,
+                        state,
+                        postal_code, 
+                        directory 
+                        FROM projects WHERE gmep_project_no = @projectNo";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectNo", projectNo);
+            using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    adminModel = new AdminModel
+                    {
+                        ProjectNo = reader["gmep_project_no"]?.ToString(),
+                        ProjectName = reader["gmep_project_name"]?.ToString(),
+                        StreetAddress = reader["street_address"]?.ToString(),
+                        City = reader["city"]?.ToString(),
+                        State = reader["state"]?.ToString(),
+                        PostalCode = reader["postal_code"]?.ToString(),
+                        Directory = reader["directory"]?.ToString()
+                    };
+                }
+            }
+
+            await CloseConnectionAsync(Connection);
+            return adminModel;
+        }
+
+
         public async Task<ObservableCollection<PlumbingFixtureDisplay>> GetPlumbingFixturesByProjectId(string projectId)
         {
             ObservableCollection<PlumbingFixtureDisplay> fixtures =

@@ -114,13 +114,14 @@
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=LostFocus}">
+                                        <DataGridTextColumn Header="projectId" Binding="{Binding ProjectId, UpdateSourceTrigger=LostFocus}">
                                             <DataGridTextColumn.EditingElementStyle>
                                                 <Style TargetType="{x:Type TextBox}">
                                                     <Setter Property="MaxLength" Value="25" />
                                                 </Style>
                                             </DataGridTextColumn.EditingElementStyle>
                                         </DataGridTextColumn>
+                                        
                                         <DataGridTemplateColumn Header="Color" >
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>

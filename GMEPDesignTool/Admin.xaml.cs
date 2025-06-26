@@ -24,5 +24,10 @@ namespace GMEPDesignTool
         {
             InitializeComponent();
         }
+
+        private void EquipmentFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

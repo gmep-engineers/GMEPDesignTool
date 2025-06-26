@@ -23,6 +23,7 @@ namespace GMEPDesignTool
         public async Task InitializeProjectControlViewModel()
         {
             projectIds = await database.GetProjectIds(ProjectNo);
+            
         }
 
         private string saveText;
@@ -116,5 +117,17 @@ namespace GMEPDesignTool
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private AdminModel _projectInfo;
+        public AdminModel ProjectInfo
+        {
+            get => _projectInfo;
+            set
+            {
+                _projectInfo = value;
+                OnPropertyChanged(nameof(ProjectInfo));
+            }
+        }
+
     }
 }

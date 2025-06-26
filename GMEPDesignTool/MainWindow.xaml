@@ -9,7 +9,7 @@
         Title="GMEP Design Tool" Height="450" Width="800" WindowState="Maximized"
         Icon="/gmep.ico"
         Closing="EndSession">
- 
+
     <Grid Margin="0,0,0,-6">
 
         <Grid Visibility="Hidden">
@@ -21,16 +21,8 @@
         </Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top" Visibility="Visible">
-                <MenuItem Header="_Project">
-                    <MenuItem Header="_Export"/>
-                    <MenuItem Header="_Open"/>
-                    <MenuItem Header="_Close"/>
-                </MenuItem>
-                <MenuItem Header="_Edit">
-                    <MenuItem Header="_Cut"/>
-                    <MenuItem Header="_Copy"/>
-                    <MenuItem Header="_Paste"/>
-                </MenuItem>
+                 
+                
                 <MenuItem Header="_Admin" Visibility="{Binding AdminMenuVisible}">
                     <MenuItem Header="_Users" Command="{Binding OpenEmployeesWindowCommand}"/>
                 </MenuItem>
@@ -47,10 +39,14 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="SlateGray" Margin="0,21,10,0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="118*"/>
+                    <ColumnDefinition Width="237*"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBox KeyUp="SearchBox_KeyUp" HorizontalAlignment="Stretch"  Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
+                <TextBox KeyUp="SearchBox_KeyUp"  Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
                 <ListView x:Name="ProjectList" Margin="10,44,10,180" Grid.ColumnSpan="2" ItemsSource="{Binding SearchResultKeys}">
-                    
+
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenProject"/>
@@ -58,16 +54,16 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
 
-                <Button Width="75" Height="23" Content="Search" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="11,11,11,0" Command="{Binding GetSearchResultsCommand}"/>
+                <Button Width="75" Height="23" Content="Search" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,11,11,0" Command="{Binding GetSearchResultsCommand}" Grid.Column="1"/>
 
 
-                <Rectangle HorizontalAlignment="Stretch" Height="65" Margin="10,0,10,15" Stroke="White" VerticalAlignment="Bottom"/>
-                <Image HorizontalAlignment="Left" Height="55" Margin="15,0,15,20" VerticalAlignment="Bottom" Width="60" RenderTransformOrigin="0.518,0.74" Source="/GMEPE-LogoTransparent.png" Stretch="Fill" Cursor="Hand" />
-                <Label Content="{Binding Path=Name}" HorizontalAlignment="Left" Margin="80,0,10,52" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="{Binding Path=EmailAddress}" HorizontalAlignment="Left" Margin="80,0,10,36" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="{Binding Path=PhoneNumber, TargetNullValue={}}" ContentStringFormat="{}{0:(###) ###-####}"  HorizontalAlignment="Left" Margin="80,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="{Binding Path=ExtensionLabel, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="168,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
-                <Label Content="{Binding Path=Extension, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="190,0,10,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Rectangle Height="65" Margin="10,0,10,15" Stroke="White" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+                <Image HorizontalAlignment="Left" Height="55" Margin="15,0,0,20" VerticalAlignment="Bottom" Width="60" RenderTransformOrigin="0.518,0.74" Source="/GMEPE-LogoTransparent.png" Stretch="Fill" Cursor="Hand" />
+                <Label Content="{Binding Path=Name}" HorizontalAlignment="Left" Margin="80,0,0,52" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=EmailAddress}" HorizontalAlignment="Left" Margin="80,0,0,36" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=PhoneNumber, TargetNullValue={}}" ContentStringFormat="{}{0:(###) ###-####}"  HorizontalAlignment="Left" Margin="80,0,0,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White"/>
+                <Label Content="{Binding Path=ExtensionLabel, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="50,0,0,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White" Grid.Column="1"/>
+                <Label Content="{Binding Path=Extension, TargetNullValue={}}"  HorizontalAlignment="Left" Margin="72,0,0,19" VerticalAlignment="Bottom" RenderTransformOrigin="0.528,0.565" Foreground="White" Grid.Column="1"/>
 
 
             </Grid>
@@ -91,7 +87,7 @@
                                             <TextBlock Text="  " Grid.Column="1"/>
 
                                             <TextBlock x:Name="CloseButton" Grid.Column="2" MouseUp="MainWindowCloseProject" >
-                                                ❎
+                                                
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="Gray" />
@@ -114,7 +110,7 @@
                             <TextBlock Text="{Binding Header}" />
                         </DataTemplate>
                     </TabControl.ItemTemplate>
-  
+
                 </TabControl>
             </Grid>
         </Grid>
