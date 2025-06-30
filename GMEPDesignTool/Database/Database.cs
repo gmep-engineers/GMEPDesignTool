@@ -226,7 +226,7 @@ namespace GMEPDesignTool.Database
         }
 
 
-        public async Task<ObservableCollection<PlumbingModel>> GetPlumbingFixturesByProjectId(string projectId)
+        public async Task<ObservableCollection<PlumbingModel>> GetPlumbingModelByProjectId(string projectId)
         {
             ObservableCollection<PlumbingModel> fixtures = new ObservableCollection<PlumbingModel>();
             string query = @"

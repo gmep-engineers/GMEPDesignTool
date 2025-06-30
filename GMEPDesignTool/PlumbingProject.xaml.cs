@@ -24,7 +24,7 @@ namespace GMEPDesignTool
 
         private async void LoadData(string projectId)
         {
-            var results = await _db.GetPlumbingFixturesByProjectId(projectId);
+            var results = await _db.GetPlumbingModelByProjectId(projectId);
             foreach (var item in results)
             {
                 Console.WriteLine($"{item.Name} -{item.Description} - {item.HotWater}- {item.Model}");
