@@ -21,7 +21,6 @@ namespace GMEPDesignTool
 
             Console.WriteLine("Console window opened!");
 
-            Console.WriteLine(new PlumbingProject("1"));
 
             Console.WriteLine("end");
 
