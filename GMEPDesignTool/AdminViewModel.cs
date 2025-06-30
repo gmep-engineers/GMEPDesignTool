@@ -13,7 +13,7 @@ namespace GMEPDesignTool
     class AdminViewModel : INotifyPropertyChanged
     {
 
-        public string projectNo;
+        private string projectNo;
 
         public string ProjectNo
         {
@@ -29,7 +29,7 @@ namespace GMEPDesignTool
         }
 
 
-        public string projectName;
+        private string projectName;
 
         public string ProjectName
         {
@@ -44,7 +44,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string streetaddress;
+        private string streetaddress;
         public string StreetAddress
         {
             get => streetaddress;
@@ -57,7 +57,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string city;
+        private string city;
         public string City
         {
             get => city;
@@ -79,7 +79,7 @@ namespace GMEPDesignTool
                                           "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
 
 
-        public string state;
+        private string state;
         public string State
         {
             get => state;
@@ -92,7 +92,7 @@ namespace GMEPDesignTool
                 }
             }
         }
-        public string postalCode;
+        private string postalCode;
         public string PostalCode
         {
             get => postalCode;
@@ -106,7 +106,7 @@ namespace GMEPDesignTool
             }
         }
 
-        public string fileDictionary;
+        private string fileDictionary;
         public string FileDictionary
         {
             get => fileDictionary;
