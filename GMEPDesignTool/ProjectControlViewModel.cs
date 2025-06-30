@@ -23,6 +23,7 @@ namespace GMEPDesignTool
         public async Task InitializeProjectControlViewModel()
         {
             projectIds = await database.GetProjectIds(ProjectNo);
+
         }
 
         private string saveText;
@@ -96,19 +97,8 @@ namespace GMEPDesignTool
             }
         }
 
-        private PlumbingProject activePlumbingProject;
-        public PlumbingProject ActivePlumbingProject
-        {
-            get { return activePlumbingProject; }
-            set
-            {
-                if (activePlumbingProject != value)
-                {
-                    activePlumbingProject = value;
-                    OnPropertyChanged(nameof(ActivePlumbingProject));
-                }
-            }
-        }
+
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -116,5 +106,8 @@ namespace GMEPDesignTool
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        
+
     }
 }

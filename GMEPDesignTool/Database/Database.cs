@@ -1,5 +1,6 @@
 ﻿using System;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -158,6 +159,127 @@ namespace GMEPDesignTool.Database
             }
             return DateTime.MinValue;
         }
+
+
+        public async Task<AdminModel> GetAdminByProjectId(string projectId)
+        {
+            AdminModel adminModel = null;
+            string query = @"
+                        SELECT gmep_project_no,
+                        gmep_project_name,
+                        street_address,
+                        city,
+                        state,
+                        postal_code, 
+                        directory 
+                        FROM projects WHERE id = @projectId";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
+            {
+                if (await reader.ReadAsync())
+                {
+                    adminModel = new AdminModel
+                    {
+                        ProjectNo = GetSafeString(reader, "gmep_project_no"),
+                        ProjectName = GetSafeString(reader, "gmep_project_name"),
+                        StreetAddress = GetSafeString(reader, "street_address"),
+                        City = GetSafeString(reader, "city"),
+                        State = GetSafeString(reader, "state"),
+                        PostalCode = GetSafeString(reader, "postal_code"),
+                        Directory = GetSafeString(reader, "directory"),
+                    };
+                }
+            }
+
+            await CloseConnectionAsync(Connection);
+            return adminModel;
+        }
+
+        public async Task UpdateAdminProject(AdminModel model, string projectId)
+        {
+
+            string query = @"
+            UPDATE projects
+            SET gmep_project_name = @name,
+                street_address = @address,
+                city = @city,
+                state = @state,
+                postal_code = @postalCode,
+                directory  = @directory
+            WHERE id = @projectId";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@name", model.ProjectName);
+            command.Parameters.AddWithValue("@address", model.StreetAddress);
+            command.Parameters.AddWithValue("@city", model.City);
+            command.Parameters.AddWithValue("@state", model.State);
+            command.Parameters.AddWithValue("@postalCode", model.PostalCode);
+            command.Parameters.AddWithValue("@directory", model.Directory);
+            command.Parameters.AddWithValue("@projectNo", model.ProjectNo);
+
+            await command.ExecuteNonQueryAsync();
+            command.Dispose();
+            await CloseConnectionAsync(Connection);
+        }
+
+
+        public async Task<ObservableCollection<PlumbingModel>> GetPlumbingModelByProjectId(string projectId)
+        {
+            ObservableCollection<PlumbingModel> fixtures = new ObservableCollection<PlumbingModel>();
+            string query = @"
+        SELECT 
+            plumbing_fixture_types.abbreviation,
+            plumbing_fixtures.number,
+            plumbing_fixture_catalog.description,
+            plumbing_fixture_types.name,
+            plumbing_fixture_catalog.make,
+            plumbing_fixture_catalog.model,
+            plumbing_fixture_catalog.trap,
+            plumbing_fixture_catalog.waste,
+            plumbing_fixture_catalog.vent,
+            plumbing_fixture_catalog.cold_water,
+            plumbing_fixture_catalog.hot_water,
+            plumbing_fixture_catalog.fixture_demand,
+            plumbing_fixture_catalog.hot_demand,
+            plumbing_fixture_catalog.dfu
+        FROM plumbing_fixtures
+        LEFT JOIN plumbing_fixture_catalog ON plumbing_fixture_catalog.id = plumbing_fixtures.catalog_id
+        LEFT JOIN plumbing_fixture_types ON plumbing_fixture_types.id = plumbing_fixture_catalog.type_id
+        WHERE plumbing_fixtures.project_id = @projectId";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                fixtures.Add(
+                    new PlumbingModel
+                    {
+                        Abbreviation = GetSafeString(reader, "abbreviation"),
+                        Number = GetSafeInt(reader, "number"),
+                        Description = GetSafeString(reader, "description"),
+                        Name = GetSafeString(reader, "name"),
+                        Make = GetSafeString(reader, "make"),
+                        Model = GetSafeString(reader, "model"),
+                        Trap = GetSafeFloat(reader, "trap"),
+                        Waste = GetSafeFloat(reader, "waste"),
+                        Vent = GetSafeFloat(reader, "vent"),
+                        ColdWater = GetSafeFloat(reader, "cold_water"),
+                        HotWater = GetSafeFloat(reader, "hot_water"),
+                        FixtureDemand = GetSafeFloat(reader, "fixture_demand"),
+                        HotDemand = GetSafeFloat(reader, "hot_demand"),
+                        DFU = GetSafeInt(reader, "dfu")
+                    });
+            }
+
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return fixtures;
+        }
+
 
         public bool LoginUser(string userName, string password)
         {
@@ -2680,65 +2802,6 @@ namespace GMEPDesignTool.Database
             command.ExecuteNonQuery();
             CloseConnection(Connection);
             return true;
-        }
-
-        public async Task<ObservableCollection<PlumbingFixture>> GetPlumbingFixturesByProjectId(
-            string projectId
-        )
-        {
-            ObservableCollection<PlumbingFixture> fixtures =
-                new ObservableCollection<PlumbingFixture>();
-            string query =
-                @"
-                SELECT 
-                plumbing_fixture_types.abbreviation,
-                plumbing_fixtures.number,
-                plumbing_fixture_catalog.description,
-                plumbing_fixture_types.name,
-                plumbing_fixture_catalog.make,
-                plumbing_fixture_catalog.model,
-                plumbing_fixture_catalog.trap,
-                plumbing_fixture_catalog.waste,
-                plumbing_fixture_catalog.vent,
-                plumbing_fixture_catalog.cold_water,
-                plumbing_fixture_catalog.hot_water,
-                plumbing_fixture_catalog.fixture_demand,
-                plumbing_fixture_catalog.hot_demand,
-                plumbing_fixture_catalog.dfu
-                FROM plumbing_fixtures
-                LEFT JOIN plumbing_fixture_catalog ON plumbing_fixture_catalog.id = plumbing_fixtures.catalog_id
-                LEFT JOIN plumbing_fixture_types ON plumbing_fixture_types.id = plumbing_fixture_catalog.type_id
-                WHERE plumbing_fixtures.project_id = @projectId";
-            await OpenConnectionAsync(Connection);
-            MySqlCommand command = new MySqlCommand(query, Connection);
-            command.Parameters.AddWithValue("@projectId", projectId);
-            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                fixtures.Add(
-                    new PlumbingFixture
-                    {
-                        Abbreviation = GetSafeString(reader, "abbreviation"),
-                        Number = GetSafeInt(reader, "number"),
-                        Description = GetSafeString(reader, "description"),
-                        Name = GetSafeString(reader, "name"),
-                        Make = GetSafeString(reader, "make"),
-                        Model = GetSafeString(reader, "model"),
-                        Trap = GetSafeFloat(reader, "trap"),
-                        Waste = GetSafeFloat(reader, "waste"),
-                        Vent = GetSafeFloat(reader, "vent"),
-                        ColdWater = GetSafeFloat(reader, "cold_water"),
-                        HotWater = GetSafeFloat(reader, "hot_water"),
-                        FixtureDemand = GetSafeFloat(reader, "fixture_demand"),
-                        HotDemand = GetSafeFloat(reader, "hot_demand"),
-                        DFU = GetSafeInt(reader, "dfu"),
-                    }
-                );
-            }
-
-            await reader.CloseAsync();
-            await CloseConnectionAsync(Connection);
-            return fixtures;
         }
     }
 

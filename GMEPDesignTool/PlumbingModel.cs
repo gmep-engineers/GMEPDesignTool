@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class PlumbingFixture
+    public class PlumbingModel
     {
         public string Abbreviation { get; set; }
         public int Number { get; set; }

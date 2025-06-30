@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+
 using System.Windows.Controls;
+
 
 namespace GMEPDesignTool
 {
@@ -10,29 +12,23 @@ namespace GMEPDesignTool
     {
         private readonly Database.Database _db;
 
-        private string ProjectId;
-
-        public ObservableCollection<PlumbingFixture> PlumbingFixtures { get; set; } = new();
+        public ObservableCollection<PlumbingModel> Fixtures { get; set; } = new();
 
         public PlumbingProject(string projectId)
         {
             InitializeComponent();
-            ProjectId = projectId;
             DataContext = this;
-            _db = new Database.Database(
-                GMEPDesignTool.Properties.Settings.Default.ConnectionString
-            );
+            _db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
+            LoadData(projectId);
         }
 
-        public async Task InitializeAsync()
+        private async void LoadData(string projectId)
         {
-            var results = await _db.GetPlumbingFixturesByProjectId(ProjectId);
+            var results = await _db.GetPlumbingModelByProjectId(projectId);
             foreach (var item in results)
             {
-                Console.WriteLine(
-                    $"{item.Name} -{item.Description} - {item.HotWater}- {item.Model}"
-                );
-                PlumbingFixtures.Add(item);
+                Console.WriteLine($"{item.Name} -{item.Description} - {item.HotWater}- {item.Model}");
+                Fixtures.Add(item);
             }
         }
     }
