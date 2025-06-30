@@ -87,7 +87,7 @@
                                             <TextBlock Text="  " Grid.Column="1"/>
 
                                             <TextBlock x:Name="CloseButton" Grid.Column="2" MouseUp="MainWindowCloseProject" >
-
+                                                ❎
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="Gray" />
