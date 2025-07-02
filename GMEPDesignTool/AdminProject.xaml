@@ -17,7 +17,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    
+
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Background="LightGray" Margin="0,0,0,10">
                     <Label Content="Project Information" VerticalAlignment="Center" FontSize="16"  FontWeight="Bold"/>
@@ -51,30 +51,30 @@
                     <TextBox Grid.Row="5" Margin="100,0,0,10"  Text="{Binding PostalCode}"/>
                     <Label Grid.Row="6" Content="Project Path" Margin="0,0,0,10"/>
                     <TextBox Grid.Row="6" Margin="100,0,0,10"  Text="{Binding FileDictionary}" TextChanged="TextBox_TextChanged" />
-                    <Button Grid.Row="7" Content="save" Click="saveAdminProject" Width="77" HorizontalAlignment="Center" FontSize="16" />
+                    <Button Grid.Row="7" Content="save" Click="saveAdminProject" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
-                
+
             </Grid>
         </Border>
         <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5" Margin="0,10,0,10" CornerRadius="2">
-                <Grid Grid.Row="1"  >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+            <Grid Grid.Row="1"  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Orientation="Horizontal"  Background="LightGray" Margin="1,1,1,10">
-                        <Label Content="Proposals" VerticalAlignment="Center" Width="132" FontSize="16"  FontWeight="Bold"/>
-                        <Button Content="Add" Width="77" Margin="10"/>
-                    </StackPanel>
-                    <DataGrid x:Name="MyDataGrid" Grid.Row="1" SelectionChanged="MyDataGrid_SelectionChanged">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Date" Width="*" />
-                            <DataGridTextColumn Header="Scope"  Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                <StackPanel Grid.Row="0" Orientation="Horizontal"  Background="LightGray" Margin="1,1,1,10">
+                    <Label Content="Proposals" VerticalAlignment="Center" Width="132" FontSize="16"  FontWeight="Bold"/>
+                    <Button Content="Add"  Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
+                </StackPanel>
+                <DataGrid x:Name="MyDataGrid" Grid.Row="1" SelectionChanged="MyDataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Width="*" />
+                        <DataGridTextColumn Header="Scope"  Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
 
-                </Grid>
+            </Grid>
         </Border>
 
 
