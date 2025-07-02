@@ -86,5 +86,10 @@ namespace GMEPDesignTool
         {
 
         }
+
+        private void MyDataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
