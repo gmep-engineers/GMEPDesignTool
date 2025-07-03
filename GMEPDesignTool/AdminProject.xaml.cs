@@ -53,6 +53,8 @@ namespace GMEPDesignTool
                         {
                             ProjectNo = adminViewModel.ProjectNo,
                             ProjectName = adminViewModel.ProjectName,
+                            Client = adminViewModel.Client,
+                            Architect = adminViewModel.Architect,
                             StreetAddress = adminViewModel.StreetAddress,
                             City = adminViewModel.City,
                             State = adminViewModel.State,
@@ -75,21 +77,6 @@ namespace GMEPDesignTool
                 Saving = false;
                 Console.WriteLine("save end");
             }
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void MyDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void MyDataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
 }

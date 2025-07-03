@@ -10,6 +10,8 @@ namespace GMEPDesignTool
     {
         public string ProjectId { get; set; }
         public string ProjectNo { get; set; }
+        public string Client { get; set; }
+        public string Architect { get; set; }
         public string ProjectName { get; set; }
         public string StreetAddress { get; set; }
         public string City { get; set; }

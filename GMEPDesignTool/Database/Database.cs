@@ -165,8 +165,11 @@ namespace GMEPDesignTool.Database
         {
             AdminModel adminModel = null;
             string query = @"
-                        SELECT gmep_project_no,
+                        SELECT 
+                        gmep_project_no,
                         gmep_project_name,
+                        client,
+                        architect,
                         street_address,
                         city,
                         state,
@@ -184,6 +187,8 @@ namespace GMEPDesignTool.Database
                     {
                         ProjectNo = GetSafeString(reader, "gmep_project_no"),
                         ProjectName = GetSafeString(reader, "gmep_project_name"),
+                        Client = GetSafeString(reader, "client"),
+                        Architect = GetSafeString(reader, "architect"),
                         StreetAddress = GetSafeString(reader, "street_address"),
                         City = GetSafeString(reader, "city"),
                         State = GetSafeString(reader, "state"),
@@ -204,6 +209,8 @@ namespace GMEPDesignTool.Database
             UPDATE projects
             SET gmep_project_name = @name,
                 street_address = @address,
+                client = @client,
+                architect = @architect,
                 city = @city,
                 state = @state,
                 postal_code = @postalCode,
@@ -213,12 +220,15 @@ namespace GMEPDesignTool.Database
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             command.Parameters.AddWithValue("@name", model.ProjectName);
+            command.Parameters.AddWithValue("@client", model.Client);
+            command.Parameters.AddWithValue("@architect", model.Architect);
             command.Parameters.AddWithValue("@address", model.StreetAddress);
             command.Parameters.AddWithValue("@city", model.City);
             command.Parameters.AddWithValue("@state", model.State);
             command.Parameters.AddWithValue("@postalCode", model.PostalCode);
             command.Parameters.AddWithValue("@directory", model.Directory);
             command.Parameters.AddWithValue("@projectNo", model.ProjectNo);
+          
 
             await command.ExecuteNonQueryAsync();
             command.Dispose();

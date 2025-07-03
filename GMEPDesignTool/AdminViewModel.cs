@@ -43,6 +43,35 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private string client;
+
+        public string Client
+        {
+            get => client;
+            set
+            {
+                if (client != value)
+                {
+                    client = value;
+                    OnPropertyChanged(nameof(Client));
+                }
+            }
+        }
+
+        private string architect;
+
+        public string Architect
+        {
+            get => architect;
+            set
+            {
+                if (architect != value)
+                {
+                    architect = value;
+                    OnPropertyChanged(nameof(Architect));
+                }
+            }
+        }
 
         private string streetaddress;
         public string StreetAddress
@@ -133,6 +162,8 @@ namespace GMEPDesignTool
             AdminModel ProjectInfo = await db.GetAdminByProjectId(projectId);
             ProjectNo = ProjectInfo.ProjectNo;
             ProjectName = ProjectInfo.ProjectName;
+            Client = ProjectInfo.Client;
+            Architect = ProjectInfo.Architect;
             StreetAddress = ProjectInfo.StreetAddress;
             City = ProjectInfo.City;
             State = ProjectInfo.State;
