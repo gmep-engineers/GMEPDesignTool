@@ -35,7 +35,6 @@ namespace GMEPDesignTool
             InitializeComponent();
             adminViewModel = new AdminViewModel(projectId);
             this.DataContext = adminViewModel;
-            Console.WriteLine("AdminProjectName: " + adminViewModel.projectName);
             ProjectId = projectId;
 
         }
@@ -54,6 +53,8 @@ namespace GMEPDesignTool
                         {
                             ProjectNo = adminViewModel.ProjectNo,
                             ProjectName = adminViewModel.ProjectName,
+                            Client = adminViewModel.Client,
+                            Architect = adminViewModel.Architect,
                             StreetAddress = adminViewModel.StreetAddress,
                             City = adminViewModel.City,
                             State = adminViewModel.State,
@@ -77,7 +78,5 @@ namespace GMEPDesignTool
                 Console.WriteLine("save end");
             }
         }
-
-
     }
 }
