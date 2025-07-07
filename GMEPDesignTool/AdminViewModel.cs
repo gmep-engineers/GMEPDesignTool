@@ -149,6 +149,59 @@ namespace GMEPDesignTool
             }
         }
 
+        private bool isCheckedS;
+        public bool IsCheckedS
+        {
+            get => isCheckedS;
+            set
+            {
+                if (isCheckedS != value)
+                {
+                    isCheckedS = value;
+                    OnPropertyChanged(nameof(IsCheckedS));
+                }
+            }
+        }
+
+        private bool isCheckedM;
+        public bool IsCheckedM
+        {
+            get => isCheckedM;
+            set
+            {
+                if (isCheckedM != value)
+                {
+                    isCheckedM = value;
+                    OnPropertyChanged(nameof(IsCheckedM));
+                }
+            }
+        }
+        private bool isCheckedE;
+        public bool IsCheckedE
+        {
+            get => isCheckedE;
+            set
+            {
+                if (isCheckedE != value)
+                {
+                    isCheckedE = value;
+                    OnPropertyChanged(nameof(IsCheckedE));
+                }
+            }
+        }
+        private bool isCheckedP;
+        public bool IsCheckedP
+        {
+            get => isCheckedP;
+            set
+            {
+                if (isCheckedP != value)
+                {
+                    isCheckedP = value;
+                    OnPropertyChanged(nameof(IsCheckedP));
+                }
+            }
+        }
 
         public AdminViewModel(string projectId)
 
@@ -169,7 +222,8 @@ namespace GMEPDesignTool
             State = ProjectInfo.State;
             PostalCode = ProjectInfo.PostalCode;
             FileDictionary = ProjectInfo.Directory;
-            Console.WriteLine("LoadProjectInfoAsync complete : " + ProjectName);
+            IsCheckedS = ProjectInfo.IsCheckedS;
+            Console.WriteLine("LoadProjectInfoAsync complete S: " + IsCheckedS);
         }
 
 

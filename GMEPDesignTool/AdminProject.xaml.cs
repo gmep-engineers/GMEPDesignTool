@@ -59,11 +59,16 @@ namespace GMEPDesignTool
                             City = adminViewModel.City,
                             State = adminViewModel.State,
                             PostalCode = adminViewModel.PostalCode,
-                            Directory = adminViewModel.FileDictionary
+                            Directory = adminViewModel.FileDictionary,
+                            IsCheckedS = adminViewModel.IsCheckedS,
+                            IsCheckedM = adminViewModel.IsCheckedM,
+                            IsCheckedE = adminViewModel.IsCheckedE,
+                            IsCheckedP = adminViewModel.IsCheckedP
                         };
 
                         var db = new Database.Database(Properties.Settings.Default.ConnectionString);
                         await db.UpdateAdminProject(model, ProjectId);
+                        Console.WriteLine("s:"+ model.IsCheckedS);
                         Console.WriteLine("save successed");
 
                         MessageBox.Show("Project updated successfully.");

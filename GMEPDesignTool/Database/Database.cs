@@ -174,11 +174,16 @@ namespace GMEPDesignTool.Database
                         city,
                         state,
                         postal_code, 
-                        directory 
+                        directory,
+                        s,
+                        m,
+                        e,
+                        p
                         FROM projects WHERE id = @projectId";
             await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
+            
             using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
             {
                 if (await reader.ReadAsync())
@@ -194,9 +199,14 @@ namespace GMEPDesignTool.Database
                         State = GetSafeString(reader, "state"),
                         PostalCode = GetSafeString(reader, "postal_code"),
                         Directory = GetSafeString(reader, "directory"),
+                        IsCheckedS = GetSafeBoolean(reader, "s"),
+                        IsCheckedM = GetSafeBoolean(reader, "m"),
+                        IsCheckedE = GetSafeBoolean(reader, "e"),
+                        IsCheckedP = GetSafeBoolean(reader, "p")
                     };
                 }
             }
+            
 
             await CloseConnectionAsync(Connection);
             return adminModel;
@@ -214,7 +224,11 @@ namespace GMEPDesignTool.Database
                 city = @city,
                 state = @state,
                 postal_code = @postalCode,
-                directory  = @directory
+                directory  = @directory,
+                s = @s,
+                m = @m,
+                e = @e,
+                p = @p
             WHERE id = @projectId";
             await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -228,7 +242,11 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@postalCode", model.PostalCode);
             command.Parameters.AddWithValue("@directory", model.Directory);
             command.Parameters.AddWithValue("@projectNo", model.ProjectNo);
-          
+            command.Parameters.AddWithValue("@s", model.IsCheckedS);
+            command.Parameters.AddWithValue("@m", model.IsCheckedM);
+            command.Parameters.AddWithValue("@e", model.IsCheckedE);
+            command.Parameters.AddWithValue("@p", model.IsCheckedP);
+
 
             await command.ExecuteNonQueryAsync();
             command.Dispose();
