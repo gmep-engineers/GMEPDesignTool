@@ -12,7 +12,6 @@ namespace GMEPDesignTool
 {
     class AdminViewModel : INotifyPropertyChanged
     {
-
         private string projectNo;
 
         public string ProjectNo
@@ -27,7 +26,6 @@ namespace GMEPDesignTool
                 }
             }
         }
-
 
         private string projectName;
 
@@ -101,12 +99,59 @@ namespace GMEPDesignTool
         }
 
         public ObservableCollection<string> States { get; set; } =
-        new ObservableCollection<string> { "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-                                          "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-                                          "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-                                          "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-                                          "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"};
-
+            new ObservableCollection<string>
+            {
+                "AL",
+                "AK",
+                "AZ",
+                "AR",
+                "CA",
+                "CO",
+                "CT",
+                "DE",
+                "FL",
+                "GA",
+                "HI",
+                "ID",
+                "IL",
+                "IN",
+                "IA",
+                "KS",
+                "KY",
+                "LA",
+                "ME",
+                "MD",
+                "MA",
+                "MI",
+                "MN",
+                "MS",
+                "MO",
+                "MT",
+                "NE",
+                "NV",
+                "NH",
+                "NJ",
+                "NM",
+                "NY",
+                "NC",
+                "ND",
+                "OH",
+                "OK",
+                "OR",
+                "PA",
+                "RI",
+                "SC",
+                "SD",
+                "TN",
+                "TX",
+                "UT",
+                "VT",
+                "VA",
+                "WA",
+                "WV",
+                "WI",
+                "WY",
+            };
 
         private string state;
         public string State
@@ -213,19 +258,19 @@ namespace GMEPDesignTool
                     descriptions = value;
                     OnPropertyChanged(nameof(Descriptions));
                 }
-
             }
         }
 
         public AdminViewModel(string projectId)
-
         {
             LoadProjectInfoAsync(projectId);
         }
 
         private async void LoadProjectInfoAsync(string projectId)
         {
-            var db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
+            var db = new Database.Database(
+                GMEPDesignTool.Properties.Settings.Default.ConnectionString
+            );
             AdminModel ProjectInfo = await db.GetAdminByProjectId(projectId);
             ProjectNo = ProjectInfo.ProjectNo;
             ProjectName = ProjectInfo.ProjectName;
@@ -243,10 +288,9 @@ namespace GMEPDesignTool
             Descriptions = ProjectInfo.Descriptions;
         }
 
-
-
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        protected void OnPropertyChanged(string name) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

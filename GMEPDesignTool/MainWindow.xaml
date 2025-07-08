@@ -39,11 +39,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="SlateGray" Margin="0,21,10,0" Grid.ColumnSpan="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="118*"/>
-                    <ColumnDefinition Width="237*"/>
-                </Grid.ColumnDefinitions>
-
+                
                 <TextBox KeyUp="SearchBox_KeyUp"  Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
                 <ListView x:Name="ProjectList" Margin="10,44,10,180" Grid.ColumnSpan="2" ItemsSource="{Binding SearchResultKeys}">
 

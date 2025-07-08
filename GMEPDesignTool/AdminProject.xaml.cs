@@ -30,15 +30,18 @@ namespace GMEPDesignTool
         private bool Loading = false;
         private AdminViewModel adminViewModel;
         private string ProjectId;
-        public AdminProject(string projectId)
+        private LoginResponse loginResponse;
+
+        public AdminProject(string projectId, LoginResponse loginResponse)
         {
             InitializeComponent();
             adminViewModel = new AdminViewModel(projectId);
+            this.loginResponse = loginResponse;
             this.DataContext = adminViewModel;
             ProjectId = projectId;
-
         }
-        private async void saveAdminProject(object sender, RoutedEventArgs e)
+
+        private async void SaveAdminProject(object sender, RoutedEventArgs e)
         {
             if (!Saving && !Loading)
             {
@@ -64,12 +67,14 @@ namespace GMEPDesignTool
                             IsCheckedM = adminViewModel.IsCheckedM,
                             IsCheckedE = adminViewModel.IsCheckedE,
                             IsCheckedP = adminViewModel.IsCheckedP,
-                            Descriptions = adminViewModel.Descriptions
+                            Descriptions = adminViewModel.Descriptions,
                         };
 
-                        var db = new Database.Database(Properties.Settings.Default.ConnectionString);
+                        var db = new Database.Database(
+                            Properties.Settings.Default.ConnectionString
+                        );
                         await db.UpdateAdminProject(model, ProjectId);
-                        Console.WriteLine("s:"+ model.IsCheckedS);
+                        Console.WriteLine("s:" + model.IsCheckedS);
                         Console.WriteLine("save successed");
 
                         MessageBox.Show("Project updated successfully.");
@@ -83,6 +88,15 @@ namespace GMEPDesignTool
                 Saving = false;
                 Console.WriteLine("save end");
             }
+        }
+
+        private void OpenSelectProposalTypeWindow(object sender, RoutedEventArgs e)
+        {
+            SelectProposalTypeWindow selectProposalTypeWindow = new SelectProposalTypeWindow(
+                loginResponse,
+                ProjectId
+            );
+            selectProposalTypeWindow.Show();
         }
     }
 }

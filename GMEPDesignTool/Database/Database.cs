@@ -160,11 +160,11 @@ namespace GMEPDesignTool.Database
             return DateTime.MinValue;
         }
 
-
         public async Task<AdminModel> GetAdminByProjectId(string projectId)
         {
             AdminModel adminModel = null;
-            string query = @"
+            string query =
+                @"
                         SELECT 
                         gmep_project_no,
                         gmep_project_name,
@@ -184,7 +184,7 @@ namespace GMEPDesignTool.Database
             await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
-            
+
             using (MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync())
             {
                 if (await reader.ReadAsync())
@@ -204,11 +204,10 @@ namespace GMEPDesignTool.Database
                         IsCheckedM = GetSafeBoolean(reader, "m"),
                         IsCheckedE = GetSafeBoolean(reader, "e"),
                         IsCheckedP = GetSafeBoolean(reader, "p"),
-                        Descriptions = GetSafeString(reader, "descriptions")
+                        Descriptions = GetSafeString(reader, "descriptions"),
                     };
                 }
             }
-            
 
             await CloseConnectionAsync(Connection);
             return adminModel;
@@ -216,8 +215,8 @@ namespace GMEPDesignTool.Database
 
         public async Task UpdateAdminProject(AdminModel model, string projectId)
         {
-
-            string query = @"
+            string query =
+                @"
             UPDATE projects
             SET gmep_project_name = @name,
                 street_address = @address,
@@ -251,17 +250,19 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@p", model.IsCheckedP);
             command.Parameters.AddWithValue("@descriptions", model.Descriptions);
 
-
             await command.ExecuteNonQueryAsync();
             command.Dispose();
             await CloseConnectionAsync(Connection);
         }
 
-
-        public async Task<ObservableCollection<PlumbingModel>> GetPlumbingModelByProjectId(string projectId)
+        public async Task<ObservableCollection<PlumbingModel>> GetPlumbingModelByProjectId(
+            string projectId
+        )
         {
-            ObservableCollection<PlumbingModel> fixtures = new ObservableCollection<PlumbingModel>();
-            string query = @"
+            ObservableCollection<PlumbingModel> fixtures =
+                new ObservableCollection<PlumbingModel>();
+            string query =
+                @"
         SELECT 
             plumbing_fixture_types.abbreviation,
             plumbing_fixtures.number,
@@ -303,15 +304,15 @@ namespace GMEPDesignTool.Database
                         HotWater = GetSafeFloat(reader, "hot_water"),
                         FixtureDemand = GetSafeFloat(reader, "fixture_demand"),
                         HotDemand = GetSafeFloat(reader, "hot_demand"),
-                        DFU = GetSafeInt(reader, "dfu")
-                    });
+                        DFU = GetSafeInt(reader, "dfu"),
+                    }
+                );
             }
 
             await reader.CloseAsync();
             await CloseConnectionAsync(Connection);
             return fixtures;
         }
-
 
         public bool LoginUser(string userName, string password)
         {
@@ -2834,6 +2835,27 @@ namespace GMEPDesignTool.Database
             command.ExecuteNonQuery();
             CloseConnection(Connection);
             return true;
+        }
+
+        public string CreateProposal(string employeeId, int typeId, string projectId)
+        {
+            string id = Guid.NewGuid().ToString();
+            ;
+            string query =
+                @"
+                INSERT INTO proposals (id, project_id, type_id, employee_id)
+                VALUES (@id, @projectId, @typeId, @employeeId)
+                ";
+
+            OpenConnection(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@id", id);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            command.Parameters.AddWithValue("@typeId", typeId);
+            command.Parameters.AddWithValue("@employeeId", employeeId);
+            command.ExecuteNonQuery();
+            CloseConnection(Connection);
+            return id;
         }
     }
 
