@@ -35,6 +35,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Content="Project No#"  Margin="0,0,0,10" Width="auto"/>
@@ -58,14 +59,16 @@
                     <TextBox Grid.Row="7" Margin="100,0,0,10"  Text="{Binding PostalCode}"/>
                     <Label Grid.Row="8" Content="Project Path" Margin="0,0,0,10"/>
                     <TextBox Grid.Row="8" Margin="100,0,0,10"  Text="{Binding FileDictionary}"/>
-                    <StackPanel Grid.Row="9" Orientation="Horizontal" >
+                    <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="0,0,0,10">
                         <Label>Scope</Label>
                         <CheckBox Content="S" Margin="100,10,0,0" IsChecked="{Binding IsCheckedS}"/>
                         <CheckBox Content="M" Margin="50,10,0,0"  IsChecked="{Binding IsCheckedM}"/>
                         <CheckBox Content="E" Margin="50,10,0,0" IsChecked="{Binding IsCheckedE}"/>
                         <CheckBox Content="P" Margin="50,10,0,0" IsChecked="{Binding IsCheckedP}"/>
                     </StackPanel>
-                    <Button Grid.Row="10" Content="save" Click="saveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
+                    <Label Grid.Row="10" Content="Descriptions" Margin="0,0,0,10" />
+                    <TextBox Grid.Row="10" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
+                    <Button Grid.Row="11" Content="save" Click="saveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
 
             </Grid>

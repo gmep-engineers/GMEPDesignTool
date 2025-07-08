@@ -22,6 +22,7 @@ namespace GMEPDesignTool
         public bool IsCheckedM { get; set; }
         public bool IsCheckedE { get; set; }
         public bool IsCheckedP { get; set; }
+        public string Descriptions { get; set; }
 
     }
 }

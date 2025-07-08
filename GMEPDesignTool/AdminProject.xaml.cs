@@ -63,7 +63,8 @@ namespace GMEPDesignTool
                             IsCheckedS = adminViewModel.IsCheckedS,
                             IsCheckedM = adminViewModel.IsCheckedM,
                             IsCheckedE = adminViewModel.IsCheckedE,
-                            IsCheckedP = adminViewModel.IsCheckedP
+                            IsCheckedP = adminViewModel.IsCheckedP,
+                            Descriptions = adminViewModel.Descriptions
                         };
 
                         var db = new Database.Database(Properties.Settings.Default.ConnectionString);

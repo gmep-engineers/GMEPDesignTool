@@ -178,7 +178,8 @@ namespace GMEPDesignTool.Database
                         s,
                         m,
                         e,
-                        p
+                        p,
+                        descriptions
                         FROM projects WHERE id = @projectId";
             await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -202,7 +203,8 @@ namespace GMEPDesignTool.Database
                         IsCheckedS = GetSafeBoolean(reader, "s"),
                         IsCheckedM = GetSafeBoolean(reader, "m"),
                         IsCheckedE = GetSafeBoolean(reader, "e"),
-                        IsCheckedP = GetSafeBoolean(reader, "p")
+                        IsCheckedP = GetSafeBoolean(reader, "p"),
+                        Descriptions = GetSafeString(reader, "descriptions")
                     };
                 }
             }
@@ -228,7 +230,8 @@ namespace GMEPDesignTool.Database
                 s = @s,
                 m = @m,
                 e = @e,
-                p = @p
+                p = @p,
+                descriptions = @descriptions
             WHERE id = @projectId";
             await OpenConnectionAsync(Connection);
             MySqlCommand command = new MySqlCommand(query, Connection);
@@ -246,6 +249,7 @@ namespace GMEPDesignTool.Database
             command.Parameters.AddWithValue("@m", model.IsCheckedM);
             command.Parameters.AddWithValue("@e", model.IsCheckedE);
             command.Parameters.AddWithValue("@p", model.IsCheckedP);
+            command.Parameters.AddWithValue("@descriptions", model.Descriptions);
 
 
             await command.ExecuteNonQueryAsync();

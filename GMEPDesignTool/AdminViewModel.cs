@@ -202,6 +202,20 @@ namespace GMEPDesignTool
                 }
             }
         }
+        private string descriptions;
+        public string Descriptions
+        {
+            get => descriptions;
+            set
+            {
+                if (descriptions != value)
+                {
+                    descriptions = value;
+                    OnPropertyChanged(nameof(Descriptions));
+                }
+
+            }
+        }
 
         public AdminViewModel(string projectId)
 
@@ -226,6 +240,7 @@ namespace GMEPDesignTool
             IsCheckedM = ProjectInfo.IsCheckedM;
             IsCheckedE = ProjectInfo.IsCheckedE;
             IsCheckedP = ProjectInfo.IsCheckedP;
+            Descriptions = ProjectInfo.Descriptions;
         }
 
 
