@@ -18,6 +18,11 @@ namespace GMEPDesignTool
         public string State { get; set; }
         public string PostalCode { get; set; }
         public string Directory { get; set; }
+        public bool IsCheckedS { get; set; }
+        public bool IsCheckedM { get; set; }
+        public bool IsCheckedE { get; set; }
+        public bool IsCheckedP { get; set; }
+        public string Descriptions { get; set; }
 
     }
 }

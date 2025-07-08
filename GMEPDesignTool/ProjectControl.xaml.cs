@@ -118,7 +118,7 @@ namespace GMEPDesignTool
                 AdminTab.Content = new AdminProject(newprojectId);
 
 
-                Console.WriteLine("newprojectId : " + newprojectId);
+                Console.WriteLine(" AdminTab.Content newprojectId : " + newprojectId);
                 //Plumbing Tab
 
 
