@@ -223,7 +223,9 @@ namespace GMEPDesignTool
             PostalCode = ProjectInfo.PostalCode;
             FileDictionary = ProjectInfo.Directory;
             IsCheckedS = ProjectInfo.IsCheckedS;
-            Console.WriteLine("LoadProjectInfoAsync complete S: " + IsCheckedS);
+            IsCheckedM = ProjectInfo.IsCheckedM;
+            IsCheckedE = ProjectInfo.IsCheckedE;
+            IsCheckedP = ProjectInfo.IsCheckedP;
         }
 
 
