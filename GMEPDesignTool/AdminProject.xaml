@@ -84,10 +84,11 @@
                     <Label Content="Proposals" VerticalAlignment="Center" Width="132" FontSize="16"  FontWeight="Bold"/>
                     <Button Content="Add"  Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
                 </StackPanel>
-                <DataGrid x:Name="MyDataGrid" Grid.Row="1" >
+                <DataGrid x:Name="MyDataGrid" Grid.Row="1" ItemsSource="">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date" Width="*" />
-                        <DataGridTextColumn Header="Scope" Width="*"/>
+                        <DataGridTextColumn Header="Date Created" Width="*" />
+                        <DataGridTextColumn Header="Type" Width="*"/>
+                        <DataGridTextColumn Header="Created By" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
