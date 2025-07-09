@@ -30,13 +30,29 @@ namespace GMEPDesignTool
         private bool Loading = false;
         private AdminViewModel adminViewModel;
         private string ProjectId;
+        private readonly Database.Database db;
+        
+
+        public ObservableCollection<AdminModel> Fixtures { get; set; } = new();
         public AdminProject(string projectId)
         {
             InitializeComponent();
             adminViewModel = new AdminViewModel(projectId);
             this.DataContext = adminViewModel;
             ProjectId = projectId;
+            db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
+            LoadData();
 
+        }
+        private async void LoadData()
+        {
+            var results = await db.GetProposals();
+            foreach (var item in results)
+            {
+                Console.WriteLine($"{item.DateCreated} -{item.Type} - {item.CreatedBy}");
+                Fixtures.Add(item);
+            }
+            MyDataGrid.ItemsSource = Fixtures;
         }
         private async void saveAdminProject(object sender, RoutedEventArgs e)
         {
@@ -67,7 +83,6 @@ namespace GMEPDesignTool
                             Descriptions = adminViewModel.Descriptions
                         };
 
-                        var db = new Database.Database(Properties.Settings.Default.ConnectionString);
                         await db.UpdateAdminProject(model, ProjectId);
                         Console.WriteLine("s:"+ model.IsCheckedS);
                         Console.WriteLine("save successed");
@@ -83,6 +98,11 @@ namespace GMEPDesignTool
                 Saving = false;
                 Console.WriteLine("save end");
             }
+        }
+
+        private void MyDataGrid_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+
         }
     }
 }

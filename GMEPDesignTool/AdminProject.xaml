@@ -5,15 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GMEPDesignTool"
              mc:Ignorable="d" 
-             d:DesignHeight="546" d:DesignWidth="800">
-        <Grid Margin="20,40,10,0" Background="White" >
+             d:DesignHeight="805" d:DesignWidth="797">
+    
+        <Grid Margin="20,40,10,0" Background="White">
 
         <Grid.RowDefinitions >
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Border Grid.Row="0" BorderBrush="Black" BorderThickness="0.5"  CornerRadius="2">
-            <Grid Grid.Row="0" Margin="0,1,1,10">
+            <Grid Grid.Row="0" Margin="0,1,1,10" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -70,9 +72,11 @@
                     <TextBox Grid.Row="10" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
                     <Button Grid.Row="11" Content="save" Click="saveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
-
             </Grid>
+           
         </Border>
+        </ScrollViewer>
+
         <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5" Margin="0,10,0,10" CornerRadius="2">
             <Grid Grid.Row="1"  >
                 <Grid.RowDefinitions>
@@ -83,12 +87,13 @@
                 <StackPanel Grid.Row="0" Orientation="Horizontal"  Background="LightGray" Margin="1,1,1,10">
                     <Label Content="Proposals" VerticalAlignment="Center" Width="132" FontSize="16"  FontWeight="Bold"/>
                     <Button Content="Add"  Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
+                
                 </StackPanel>
-                <DataGrid x:Name="MyDataGrid" Grid.Row="1" ItemsSource="">
+                    <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="200" ItemsSource="{Binding Fixtures}" AutoGenerateColumns="False" >
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Date Created" Width="*" />
-                        <DataGridTextColumn Header="Type" Width="*"/>
-                        <DataGridTextColumn Header="Created By" Width="*"/>
+                        <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
+                        <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
+                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding CreatedBy}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

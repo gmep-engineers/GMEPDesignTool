@@ -160,7 +160,35 @@ namespace GMEPDesignTool.Database
             return DateTime.MinValue;
         }
 
+        public async Task<ObservableCollection<AdminModel>> GetProposals()
+        {
+            ObservableCollection<AdminModel> fixtures = new ObservableCollection<AdminModel>();
+            string query = @"
+                        SELECT 
+                            proposals.date_created AS date_created,
+                            proposal_types.type AS type,
+                            employees.username AS username            
+                        FROM proposals
+                        LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
+                        LEFT JOIN employees ON proposals.employee_id = employees.id";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                fixtures.Add(
+                    new AdminModel
+                    {
+                        DateCreated = GetSafeDateTime(reader, "date_created"),
+                        Type = GetSafeString(reader, "type"),
+                        CreatedBy = GetSafeString(reader, "username")
+                    });
+            }
 
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return fixtures;
+        }
         public async Task<AdminModel> GetAdminByProjectId(string projectId)
         {
             AdminModel adminModel = null;

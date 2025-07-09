@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,11 @@ namespace GMEPDesignTool
         public bool IsCheckedE { get; set; }
         public bool IsCheckedP { get; set; }
         public string Descriptions { get; set; }
+
+        public DateTime DateCreated { get; set; }
+        public string Type { get; set; }
+        public string CreatedBy { get; set; }
+
 
     }
 }
