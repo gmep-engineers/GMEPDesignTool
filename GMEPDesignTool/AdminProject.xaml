@@ -10,7 +10,7 @@
         <Grid Margin="20,40,10,0" Background="White">
 
         <Grid.RowDefinitions >
-            <RowDefinition Height="400"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="300"/>
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
@@ -89,7 +89,7 @@
                     <Button Content="Add"  Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
                 
                 </StackPanel>
-                <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="200"  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="230"  ScrollViewer.VerticalScrollBarVisibility="Auto"
           ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Fixtures}" AutoGenerateColumns="False" >
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
