@@ -8,11 +8,13 @@ namespace GMEPDesignTool
 {
     public class Proposal
     {
-        public string Id;
-        public string ProjectId;
-        public DateTime DateCreated;
-        public string Type;
-        public string EmployeeUsername;
+        public string Id { get; set; }
+        public string ProjectId { get; set; }
+        public DateTime DateCreated { get; set; }
+        public string Type { get; set; }
+        public string EmployeeUsername { get; set; }
+
+        public Proposal() { }
 
         public Proposal(
             string id,

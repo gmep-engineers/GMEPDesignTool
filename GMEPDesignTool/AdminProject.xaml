@@ -90,11 +90,11 @@
                 
                 </StackPanel>
                 <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="230"  ScrollViewer.VerticalScrollBarVisibility="Auto"
-          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Fixtures}" AutoGenerateColumns="False" >
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Proposals}" AutoGenerateColumns="False" >
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding CreatedBy}"/>
+                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

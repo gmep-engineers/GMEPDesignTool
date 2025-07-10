@@ -33,7 +33,7 @@ namespace GMEPDesignTool
         private readonly Database.Database db;
         
 
-        public ObservableCollection<AdminModel> Fixtures { get; set; } = new();
+        public ObservableCollection<Proposal> Proposals { get; set; } = new();
         public AdminProject(string projectId)
         {
             InitializeComponent();
@@ -49,10 +49,10 @@ namespace GMEPDesignTool
             var results = await db.GetProposals();
             foreach (var item in results)
             {
-                Console.WriteLine($"{item.DateCreated} -{item.Type} - {item.CreatedBy}");
-                Fixtures.Add(item);
+                Console.WriteLine($"{item.DateCreated} -{item.Type} - {item.EmployeeUsername}");
+                Proposals.Add(item);
             }
-            MyDataGrid.ItemsSource = Fixtures;
+            MyDataGrid.ItemsSource = Proposals;
         }
         private async void saveAdminProject(object sender, RoutedEventArgs e)
         {

@@ -217,51 +217,6 @@ namespace GMEPDesignTool
             }
         }
 
-        private string dateCreated;
-        public string DateCreated
-        {
-            get => dateCreated;
-            set
-            {
-                if (dateCreated != value)
-                {
-                    dateCreated = value;
-                    OnPropertyChanged(nameof(DateCreated));
-                }
-
-            }
-        }
-
-        private string ProposalType;
-        public string proposalType
-        {
-            get => proposalType;
-            set
-            {
-                if (proposalType != value)
-                {
-                    proposalType = value;
-                    OnPropertyChanged(nameof(ProposalType));
-                }
-
-            }
-        }
-
-        private string CreatedBy;
-        public string createdBy
-        {
-            get => createdBy;
-            set
-            {
-                if (createdBy != value)
-                {
-                    createdBy = value;
-                    OnPropertyChanged(nameof(CreatedBy));
-                }
-
-            }
-        }
-
         public AdminViewModel(string projectId)
 
         {
