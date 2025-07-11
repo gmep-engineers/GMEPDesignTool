@@ -31,10 +31,11 @@ namespace GMEPDesignTool
         private AdminViewModel adminViewModel;
         private string ProjectId;
         private readonly Database.Database db;
+        private LoginResponse loginResponse;
 
         public ObservableCollection<Proposal> Proposals { get; set; } = new();
 
-        public AdminProject(string projectId)
+        public AdminProject(string projectId, LoginResponse loginResponse)
         {
             InitializeComponent();
             adminViewModel = new AdminViewModel(projectId);
@@ -56,7 +57,7 @@ namespace GMEPDesignTool
             MyDataGrid.ItemsSource = Proposals;
         }
 
-        private async void saveAdminProject(object sender, RoutedEventArgs e)
+        private async void SaveAdminProject(object sender, RoutedEventArgs e)
         {
             if (!Saving && !Loading)
             {
