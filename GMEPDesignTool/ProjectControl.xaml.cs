@@ -49,7 +49,9 @@ namespace GMEPDesignTool
             InitializeComponent();
             //InitializeProject(projectNo);
         }
+
         private LoginResponse _loginResponse;
+
         public async Task InitializeProject(string projectNo, LoginResponse loginResponse)
         {
             viewModel = new ProjectControlViewModel(projectNo, loginResponse);
@@ -63,8 +65,6 @@ namespace GMEPDesignTool
             viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
             Application.Current.Deactivated += Application_Deactivated;
             Application.Current.Activated += Application_Activated;
-
-
         }
 
         private async void AddVersion_Click(object sender, RoutedEventArgs e)
@@ -115,15 +115,13 @@ namespace GMEPDesignTool
 
                 //Admin Tab
 
-                AdminTab.Content = new AdminProject(newprojectId);
-
+                AdminTab.Content = new AdminProject(newprojectId, _loginResponse);
 
                 Console.WriteLine(" AdminTab.Content newprojectId : " + newprojectId);
                 //Plumbing Tab
 
 
                 PlumbingTab.Content = new PlumbingProject(newprojectId);
-
             }
         }
 
@@ -162,7 +160,6 @@ namespace GMEPDesignTool
                 }
                 Saving = false;
             }
-
         }
 
         public async void ReloadElectricalProject()

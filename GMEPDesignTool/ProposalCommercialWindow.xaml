@@ -1,0 +1,48 @@
+﻿<Window x:Class="GMEPDesignTool.ProposalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="ProposalWindow" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Structural">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox IsChecked="{Binding StructuralGeoReport}" Content="Review geotechnical report and define foundation type" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralFramingDepths}" Content="Define structural and framing depths" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralAnalysis}" Content="Perform structural analysis and design for all gravity and lateral load resisting elements" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralPlans}" Content="Structural Plans" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralDetailsCalculations}" Content="Details and calculations" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralCodeCompliance}" Content="Building structural to comply with code" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Mechanical">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox IsChecked="{Binding MechanicalExhaustSupply}" Content="Design exhaust and supply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding MechanicalHvacEquipmentSpec}" Content="HVAC equipment specifications" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding MechanicalTitle24}" Content="Title 24" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Electrical">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox IsChecked="{Binding ElectricalPowerDesign}" Content="Electrical power design" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding ElectricalServiceLoadCalc}" Content="Service load calculation" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding ElectricalSingleLineDiagram}" Content="Single line diagrams" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding ElectricalLightingDesign}" Content="Electrical lighting design" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Plumbing">
+                <Grid Background="#FFE5E5E5">
+                    <CheckBox IsChecked="{Binding PlumbingHotColdWater}" Content="Hot and cold water piping design" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding PlumbingWasteVent}" Content="Sewer and vent piping design" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Scope">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

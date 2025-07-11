@@ -70,7 +70,7 @@
                     </StackPanel>
                     <Label Grid.Row="10" Content="Descriptions" Margin="0,0,0,10" />
                     <TextBox Grid.Row="10" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
-                    <Button Grid.Row="11" Content="save" Click="saveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
+                    <Button Grid.Row="11" Content="save" Click="SaveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
             </Grid>
            
@@ -86,8 +86,7 @@
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal"  Background="LightGray" Margin="1,1,1,10">
                     <Label Content="Proposals" VerticalAlignment="Center" Width="132" FontSize="16"  FontWeight="Bold"/>
-                    <Button Content="Add"  Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
-                
+                    <Button Content="Add" Click="OpenSelectProposalTypeWindow" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
                 </StackPanel>
                 <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="230"  ScrollViewer.VerticalScrollBarVisibility="Auto"
           ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Fixtures}" AutoGenerateColumns="False" >

@@ -31,19 +31,20 @@ namespace GMEPDesignTool
         private AdminViewModel adminViewModel;
         private string ProjectId;
         private readonly Database.Database db;
-        
 
         public ObservableCollection<AdminModel> Fixtures { get; set; } = new();
+
         public AdminProject(string projectId)
         {
             InitializeComponent();
             adminViewModel = new AdminViewModel(projectId);
+            this.loginResponse = loginResponse;
             this.DataContext = adminViewModel;
             ProjectId = projectId;
             db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
             LoadData();
-
         }
+
         private async void LoadData()
         {
             var results = await db.GetProposals();
@@ -54,6 +55,7 @@ namespace GMEPDesignTool
             }
             MyDataGrid.ItemsSource = Fixtures;
         }
+
         private async void saveAdminProject(object sender, RoutedEventArgs e)
         {
             if (!Saving && !Loading)
@@ -80,11 +82,14 @@ namespace GMEPDesignTool
                             IsCheckedM = adminViewModel.IsCheckedM,
                             IsCheckedE = adminViewModel.IsCheckedE,
                             IsCheckedP = adminViewModel.IsCheckedP,
-                            Descriptions = adminViewModel.Descriptions
+                            Descriptions = adminViewModel.Descriptions,
                         };
 
+                        var db = new Database.Database(
+                            Properties.Settings.Default.ConnectionString
+                        );
                         await db.UpdateAdminProject(model, ProjectId);
-                        Console.WriteLine("s:"+ model.IsCheckedS);
+                        Console.WriteLine("s:" + model.IsCheckedS);
                         Console.WriteLine("save successed");
 
                         MessageBox.Show("Project updated successfully.");
@@ -100,9 +105,18 @@ namespace GMEPDesignTool
             }
         }
 
-        private void MyDataGrid_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
-        {
+        private void MyDataGrid_Scroll(
+            object sender,
+            System.Windows.Controls.Primitives.ScrollEventArgs e
+        ) { }
 
+        private void OpenSelectProposalTypeWindow(object sender, RoutedEventArgs e)
+        {
+            SelectProposalTypeWindow selectProposalTypeWindow = new SelectProposalTypeWindow(
+                loginResponse,
+                ProjectId
+            );
+            selectProposalTypeWindow.Show();
         }
     }
 }
