@@ -10,12 +10,17 @@
         <TabControl>
             <TabItem Header="Structural">
                 <Grid Background="#FFE5E5E5">
-                    <CheckBox IsChecked="{Binding StructuralGeoReport}" Content="Review geotechnical report and define foundation type" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding StructuralFramingDepths}" Content="Define structural and framing depths" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding StructuralAnalysis}" Content="Perform structural analysis and design for all gravity and lateral load resisting elements" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210*"/>
+                        <ColumnDefinition Width="55*"/>
+                        <ColumnDefinition Width="529*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox IsChecked="{Binding StructuralGeoReport}" Content="Review geotechnical report and define foundation type" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+                    <CheckBox IsChecked="{Binding StructuralFramingDepths}" Content="Define structural and framing depths" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                    <CheckBox IsChecked="{Binding StructuralAnalysis}" Content="Perform structural analysis and design for all gravity and lateral load resisting elements" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
                     <CheckBox IsChecked="{Binding StructuralPlans}" Content="Structural Plans" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding StructuralDetailsCalculations}" Content="Details and calculations" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding StructuralCodeCompliance}" Content="Building structural to comply with code" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding StructuralCodeCompliance}" Content="Building structural to comply with code" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Mechanical">
@@ -39,8 +44,49 @@
                     <CheckBox IsChecked="{Binding PlumbingWasteVent}" Content="Sewer and vent piping design" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Scope">
-                <Grid Background="#FFE5E5E5"/>
+            <TabItem Header="Scope" Height="20" VerticalAlignment="Top">
+                <Grid Margin="0,20,0,0" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="147*"/>
+                        <ColumnDefinition Width="647*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
+                    <TextBox Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" />
+                    <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding IsCheckedS}" Height="20"/>
+
+                    <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
+                    <TextBox Grid.Row="2" Margin="0,0,0,10" Text="{Binding Architect}" Grid.Column="1" />
+                    <Label Grid.Row="3" Content="Client Type"  Margin="0,0,0,10" />
+                    <ComboBox Grid.Row="3" Margin="0,0,0,10" Grid.Column="1"
+                          ItemsSource="{Binding Types}" 
+                          SelectedItem="{Binding Type}" 
+                         />
+                    <Label Grid.Row="4" Content="Client Contact Name"  Margin="0,0,0,10" />
+                    <TextBox Grid.Row="4" Margin="0,0,0,10" Grid.Column="1" />
+                    <Label Grid.Row="5" Content="Client Business Name"  Margin="0,0,0,10" />
+                    <TextBox Grid.Row="5" Margin="0,0,0,10" Grid.Column="1" />
+                    <Label Grid.Row="6" Content="Client Street Address"  Margin="0,0,0,10" />
+                    <TextBox Grid.Row="6" Margin="0,0,0,10"  Grid.Column="1" />
+                    <Label Grid.Row="7" Content="Client City"  Margin="0,0,0,10" Grid.ColumnSpan="2" />
+                    <TextBox Grid.Row="7"  Margin="74,0,589,10" Grid.ColumnSpan="2"/>
+                    <Label Grid.Row="7" Content="Client State"  Margin="63,0,0,10" Grid.Column="1"/>
+                    <Label Grid.Row="7" Content="Client Zipcode"  Margin="271,0,0,10" Grid.Column="1"/>
+                    <TextBox Grid.Row="7" Margin="135,0,381,10" Grid.Column="1"/>
+                    <TextBox Grid.Row="7" Margin="355,0,161,10" Grid.Column="1"/>
+
+                </Grid>
             </TabItem>
         </TabControl>
 

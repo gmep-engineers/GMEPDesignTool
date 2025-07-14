@@ -20,7 +20,8 @@ namespace GMEPDesignTool
             AllocConsole();
 
             Console.WriteLine("Console window opened!");
-
+            var proposalCommercialWindow = new ProposalCommercialWindow();
+            proposalCommercialWindow.Show(); // or ShowDialog();
 
             Console.WriteLine("end");
 

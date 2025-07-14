@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,6 +112,33 @@ namespace GMEPDesignTool
         {
             get { return plumbingWasteVent; }
             set { plumbingWasteVent = value; }
+        }
+
+        public ObservableCollection<string> Types { get; set; } =
+            new ObservableCollection<string>
+            {
+                "loyal",
+                "returning",
+                "new",
+            };
+
+        private string Type;
+        public string type
+        {
+            get => type;
+            set
+            {
+                if (type != value)
+                {
+                    type = value;
+                    OnPropertyChanged(nameof(Type));
+                }
+            }
+        }
+
+        private void OnPropertyChanged(string v)
+        {
+            throw new NotImplementedException();
         }
 
         public ProposalCommercialViewModel() { }
