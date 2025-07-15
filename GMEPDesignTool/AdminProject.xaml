@@ -89,7 +89,7 @@
                     <Button Content="Add" Click="OpenSelectProposalTypeWindow" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
                 </StackPanel>
                 <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="230"  ScrollViewer.VerticalScrollBarVisibility="Auto"
-          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Proposals}" AutoGenerateColumns="False" >
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Proposals}" AutoGenerateColumns="False" SelectionChanged="MyDataGrid_SelectionChanged" >
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>

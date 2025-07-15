@@ -1,4 +1,4 @@
-﻿<Window x:Class="GMEPDesignTool.ProposalWindow"
+﻿<Window x:Class="GMEPDesignTool.ProposalCommercialWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -45,48 +45,94 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Scope" Height="20" VerticalAlignment="Top">
-                <Grid Margin="0,20,0,0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="147*"/>
-                        <ColumnDefinition Width="647*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="10,20,40,10" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="147*"/>
+                            <ColumnDefinition Width="647*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
 
-                    </Grid.RowDefinitions>
+                        </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
-                    <TextBox Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" />
-                    <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding IsCheckedS}" Height="20"/>
+                        <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
+                        <TextBox Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" />
+                        <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding IsCheckedS}" Height="20"/>
 
-                    <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
-                    <TextBox Grid.Row="2" Margin="0,0,0,10" Text="{Binding Architect}" Grid.Column="1" />
-                    <Label Grid.Row="3" Content="Client Type"  Margin="0,0,0,10" />
-                    <ComboBox Grid.Row="3" Margin="0,0,0,10" Grid.Column="1"
+                        <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="2" Margin="0,0,0,10" Text="{Binding Architect}" Grid.Column="1" />
+                        <Label Grid.Row="3" Content="Client Type"  Margin="0,0,0,10" />
+                        <ComboBox Grid.Row="3" Margin="0,0,0,10" Grid.Column="1"
                           ItemsSource="{Binding Types}" 
                           SelectedItem="{Binding Type}" 
                          />
-                    <Label Grid.Row="4" Content="Client Contact Name"  Margin="0,0,0,10" />
-                    <TextBox Grid.Row="4" Margin="0,0,0,10" Grid.Column="1" />
-                    <Label Grid.Row="5" Content="Client Business Name"  Margin="0,0,0,10" />
-                    <TextBox Grid.Row="5" Margin="0,0,0,10" Grid.Column="1" />
-                    <Label Grid.Row="6" Content="Client Street Address"  Margin="0,0,0,10" />
-                    <TextBox Grid.Row="6" Margin="0,0,0,10"  Grid.Column="1" />
-                    <Label Grid.Row="7" Content="Client City"  Margin="0,0,0,10" Grid.ColumnSpan="2" />
-                    <TextBox Grid.Row="7"  Margin="74,0,589,10" Grid.ColumnSpan="2"/>
-                    <Label Grid.Row="7" Content="Client State"  Margin="63,0,0,10" Grid.Column="1"/>
-                    <Label Grid.Row="7" Content="Client Zipcode"  Margin="271,0,0,10" Grid.Column="1"/>
-                    <TextBox Grid.Row="7" Margin="135,0,381,10" Grid.Column="1"/>
-                    <TextBox Grid.Row="7" Margin="355,0,161,10" Grid.Column="1"/>
+                        <Label Grid.Row="4" Content="Client Contact Name"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="4" Margin="0,0,0,10" Grid.Column="1" />
+                        <Label Grid.Row="5" Content="Client Business Name"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="5" Margin="0,0,0,10" Grid.Column="1" />
+                        <Label Grid.Row="6" Content="Client Street Address"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="6" Margin="0,0,0,10"  Grid.Column="1" />
+                        <Grid Grid.Row="7" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                </Grid>
+                            <Label Grid.Column="0" Content="Client City" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="0" Margin="80,0,0,10" />
+                            <Label Grid.Column="1" Content="Client State" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Margin="80,0,0,10" />
+                            <Label Grid.Column="2" Content="Client Zipcode" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="2" Margin="90,0,0,0" Height="30" VerticalAlignment="Top" />
+                        </Grid>
+                        <Grid Grid.Row="8" Grid.ColumnSpan="2" Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Grid.Row="8" Content="Initial Recommendations Meeting"  Height="20" Grid.Column="0"/>
+                            <CheckBox Grid.Row="8" Content="Commerical Shell Connection"  Height="20" Grid.Column="1"/>
+                            <CheckBox Grid.Row="8" Content="Commerical Shell Connection"  Height="20" Grid.Column="2"/>
+                            <CheckBox Grid.Row="8" Content="Emergency Power"  Height="20" Grid.Column="3"/>
+                        </Grid>
+                        <Grid Grid.Row="9" Grid.ColumnSpan="2" Margin="10,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Grid.Row="8" Content="Indoor CommonArea"  Height="20" Grid.Column="0"/>
+                            <CheckBox Grid.Row="8" Content="Garage Exhaust" Height="20" Grid.Column="1"/>
+                            <CheckBox Grid.Row="8" Content="Site Lighting" Height="20" Grid.Column="2"/>
+                            <CheckBox Grid.Row="8" Content="New Construction" Height="20" Grid.Column="3"/>
+                        </Grid>
+                        <Label Grid.Row="10" Content="Date Sent"  Margin="0,0,0,10" />
+                        <DatePicker Grid.Row="10" Margin="0,0,0,10" Grid.Column="1" />
+                        <Label Grid.Row="11" Content="NumMeetings"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="11" Margin="0,0,0,10" Grid.Column="1" />
+                        <Label Grid.Row="12" Content="TarrarNo"  Margin="0,0,0,10" />
+                        <TextBox Grid.Row="12" Margin="0,0,0,10" Grid.Column="1" />
+                    </Grid>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
 

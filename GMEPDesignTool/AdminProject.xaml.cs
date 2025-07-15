@@ -119,5 +119,10 @@ namespace GMEPDesignTool
             );
             selectProposalTypeWindow.Show();
         }
+
+        private void MyDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

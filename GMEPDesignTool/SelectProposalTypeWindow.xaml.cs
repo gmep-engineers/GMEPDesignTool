@@ -20,7 +20,7 @@ namespace GMEPDesignTool
     public partial class SelectProposalTypeWindow : Window
     {
         SelectProposalTypeViewModel ViewModel { get; set; }
-
+        ProposalCommercialViewModel CommercialViewModel { get;set; }
         LoginResponse LoginResponse { get; set; }
 
         string ProjectId { get; set; }
@@ -42,6 +42,11 @@ namespace GMEPDesignTool
                 ViewModel.TypeId,
                 ProjectId
             );
+            CommercialViewModel = new ProposalCommercialViewModel();
+            ProposalCommercialWindow newWindow = new ProposalCommercialWindow();
+            newWindow.DataContext = CommercialViewModel;
+            newWindow.Show();
+            this.Close();
         }
     }
 }
