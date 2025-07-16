@@ -60,8 +60,8 @@
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="60"/>
+                            <RowDefinition Height="80"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
@@ -99,7 +99,7 @@
                             <Label Grid.Column="2" Content="Client Zipcode" VerticalAlignment="Center" />
                             <TextBox Grid.Column="2" Margin="90,0,0,0" Height="30" VerticalAlignment="Top" />
                         </Grid>
-                        <Grid Grid.Row="8" Grid.ColumnSpan="2" Margin="10,0,0,0">
+                        <Grid Grid.Row="8" Grid.ColumnSpan="2" Margin="10,30,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
@@ -112,7 +112,7 @@
                             <CheckBox Grid.Row="8" Content="Commerical Shell Connection"  Height="20" Grid.Column="2"/>
                             <CheckBox Grid.Row="8" Content="Emergency Power"  Height="20" Grid.Column="3"/>
                         </Grid>
-                        <Grid Grid.Row="9" Grid.ColumnSpan="2" Margin="10,0,0,0">
+                        <Grid Grid.Row="9" Grid.ColumnSpan="2" Margin="10,0,0,50">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
