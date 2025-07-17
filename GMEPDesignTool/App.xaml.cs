@@ -21,7 +21,8 @@ namespace GMEPDesignTool
 
             Console.WriteLine("Console window opened!");
             var proposalCommercialWindow = new ProposalCommercialWindow();
-            proposalCommercialWindow.Show(); // or ShowDialog();
+            proposalCommercialWindow.Show();
+
 
             Console.WriteLine("end");
 

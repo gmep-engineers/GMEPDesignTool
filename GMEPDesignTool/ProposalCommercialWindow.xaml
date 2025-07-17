@@ -7,7 +7,25 @@
         mc:Ignorable="d"
         Title="ProposalWindow" Height="450" Width="800">
     <Grid>
-        <TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="Generate PDF"
+            Width="100"
+            Height="30"
+            Background="#FF007ACC"
+            Foreground="White"
+            FontWeight="Bold"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,10,100,0"
+            Click="generate_Click"
+            Opacity="0.9"
+            
+            />
+        <TabControl  Grid.Row="1" >
             <TabItem Header="Structural">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
@@ -25,6 +43,11 @@
             </TabItem>
             <TabItem Header="Mechanical">
                 <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="226*"/>
+                        <ColumnDefinition Width="59*"/>
+                        <ColumnDefinition Width="509*"/>
+                    </Grid.ColumnDefinitions>
                     <CheckBox IsChecked="{Binding MechanicalExhaustSupply}" Content="Design exhaust and supply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding MechanicalHvacEquipmentSpec}" Content="HVAC equipment specifications" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding MechanicalTitle24}" Content="Title 24" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
@@ -69,18 +92,18 @@
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
-                        <TextBox Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" />
+                        <TextBox x:Name="TotalPriceBox" Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
                         <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding IsCheckedS}" Height="20"/>
 
                         <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="2" Margin="0,0,0,10" Text="{Binding Architect}" Grid.Column="1" />
+                        <TextBox x:Name="RetainerPercentBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" />
                         <Label Grid.Row="3" Content="Client Type"  Margin="0,0,0,10" />
                         <ComboBox Grid.Row="3" Margin="0,0,0,10" Grid.Column="1"
                           ItemsSource="{Binding Types}" 
                           SelectedItem="{Binding Type}" 
                          />
                         <Label Grid.Row="4" Content="Client Contact Name"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="4" Margin="0,0,0,10" Grid.Column="1" />
+                        <TextBox Grid.Row="4" x:Name="ClientContactNameBox" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="5" Content="Client Business Name"  Margin="0,0,0,10" />
                         <TextBox Grid.Row="5" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="6" Content="Client Street Address"  Margin="0,0,0,10" />
