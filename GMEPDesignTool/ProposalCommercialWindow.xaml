@@ -24,6 +24,7 @@
             Click="generate_Click"
             Opacity="0.9"
             
+            
             />
         <TabControl  Grid.Row="1" >
             <TabItem Header="Structural">
@@ -48,7 +49,7 @@
                         <ColumnDefinition Width="59*"/>
                         <ColumnDefinition Width="509*"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox IsChecked="{Binding MechanicalExhaustSupply}" Content="Design exhaust and supply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding MechanicalExhaustSupply}" Content="exhaust and supply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding MechanicalHvacEquipmentSpec}" Content="HVAC equipment specifications" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding MechanicalTitle24}" Content="Title 24" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
                 </Grid>
@@ -93,21 +94,21 @@
 
                         <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
                         <TextBox x:Name="TotalPriceBox" Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
-                        <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding IsCheckedS}" Height="20"/>
+                        <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>
 
                         <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
                         <TextBox x:Name="RetainerPercentBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" />
                         <Label Grid.Row="3" Content="Client Type"  Margin="0,0,0,10" />
                         <ComboBox Grid.Row="3" Margin="0,0,0,10" Grid.Column="1"
                           ItemsSource="{Binding Types}" 
-                          SelectedItem="{Binding Type}" 
+                          SelectedItem="{Binding ClientType}" 
                          />
                         <Label Grid.Row="4" Content="Client Contact Name"  Margin="0,0,0,10" />
                         <TextBox Grid.Row="4" x:Name="ClientContactNameBox" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="5" Content="Client Business Name"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="5" Margin="0,0,0,10" Grid.Column="1" />
+                        <TextBox Grid.Row="5" x:Name="ClientBusinessNameBox" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="6" Content="Client Street Address"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="6" Margin="0,0,0,10"  Grid.Column="1" />
+                        <TextBox Grid.Row="6" x:Name="ClientStreetAddressBox" Margin="0,0,0,10"  Grid.Column="1" />
                         <Grid Grid.Row="7" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -116,11 +117,11 @@
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Column="0" Content="Client City" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="0" Margin="80,0,0,10" />
+                            <TextBox Grid.Column="0" x:Name="ClientCityBox" Margin="80,0,0,10" />
                             <Label Grid.Column="1" Content="Client State" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="1" Margin="80,0,0,10" />
+                            <TextBox Grid.Column="1" x:Name="ClientStateBox" Margin="80,0,0,10" />
                             <Label Grid.Column="2" Content="Client Zipcode" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="2" Margin="90,0,0,0" Height="30" VerticalAlignment="Top" />
+                            <TextBox Grid.Column="2" x:Name="ClientZipcodeBox" Margin="90,0,0,0" Height="30" VerticalAlignment="Top" />
                         </Grid>
                         <Grid Grid.Row="8" Grid.ColumnSpan="2" Margin="10,30,0,0">
                             <Grid.ColumnDefinitions>
@@ -129,11 +130,10 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Row="8" Content="Initial Recommendations Meeting"  Height="20" Grid.Column="0"/>
-                            <CheckBox Grid.Row="8" Content="Commerical Shell Connection"  Height="20" Grid.Column="1"/>
-                            <CheckBox Grid.Row="8" Content="Commerical Shell Connection"  Height="20" Grid.Column="2"/>
-                            <CheckBox Grid.Row="8" Content="Emergency Power"  Height="20" Grid.Column="3"/>
+                            <CheckBox Grid.Row="8" Content="New Construction" Height="20" IsChecked="{Binding NewConstruction}"  Grid.Column="0"/>
+                            <CheckBox Grid.Row="8" Content="Initial Recommendations Meeting" IsChecked="{Binding HasInitialRecommendationsMeeting}" Height="20" Grid.Column="1"/>
+                            <CheckBox Grid.Row="8" Content="Commerical Shell Connection" IsChecked="{Binding HasCommericalShellConnection }" Height="20" Grid.Column="2"/>
+                            <CheckBox Grid.Row="8" Content="Emergency Power" IsChecked="{Binding HasEmergencyPower }" Height="20" Grid.Column="3"/>
                         </Grid>
                         <Grid Grid.Row="9" Grid.ColumnSpan="2" Margin="10,0,0,50">
                             <Grid.ColumnDefinitions>
@@ -143,17 +143,17 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <CheckBox Grid.Row="8" Content="Indoor CommonArea"  Height="20" Grid.Column="0"/>
-                            <CheckBox Grid.Row="8" Content="Garage Exhaust" Height="20" Grid.Column="1"/>
-                            <CheckBox Grid.Row="8" Content="Site Lighting" Height="20" Grid.Column="2"/>
-                            <CheckBox Grid.Row="8" Content="New Construction" Height="20" Grid.Column="3"/>
+                            <CheckBox Grid.Row="8" Content="Indoor CommonArea" IsChecked="{Binding HasIndoorCommonArea }"  Height="20" Grid.Column="0"/>
+                            <CheckBox Grid.Row="8" Content="Garage Exhaust" IsChecked="{Binding HasGarageExhaust }" Height="20" Grid.Column="1"/>
+                            <CheckBox Grid.Row="8" Content="Site Lighting" IsChecked="{Binding HasSiteLighting }" Height="20" Grid.Column="2"/>
+                            
                         </Grid>
                         <Label Grid.Row="10" Content="Date Sent"  Margin="0,0,0,10" />
-                        <DatePicker Grid.Row="10" Margin="0,0,0,10" Grid.Column="1" />
+                        <DatePicker Grid.Row="10" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateSent}"/>
                         <Label Grid.Row="11" Content="NumMeetings"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="11" Margin="0,0,0,10" Grid.Column="1" />
+                        <TextBox Grid.Row="11" x:Name="NumMeetingsBox" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="12" Content="TarrarNo"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="12" Margin="0,0,0,10" Grid.Column="1" />
+                        <TextBox Grid.Row="12" x:Name="TarrarNoBox" Margin="0,0,0,10" Grid.Column="1" />
                     </Grid>
                 </ScrollViewer>
             </TabItem>

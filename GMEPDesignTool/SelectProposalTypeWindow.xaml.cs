@@ -43,7 +43,8 @@ namespace GMEPDesignTool
                 ProjectId
             );
             CommercialViewModel = new ProposalCommercialViewModel();
-            ProposalCommercialWindow newWindow = new ProposalCommercialWindow();
+            var vm = new ProposalCommercialViewModel();
+            ProposalCommercialWindow newWindow = new ProposalCommercialWindow(vm);
             newWindow.DataContext = CommercialViewModel;
             newWindow.Show();
             this.Close();

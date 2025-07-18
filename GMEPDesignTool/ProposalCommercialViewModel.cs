@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ProposalCommercialViewModel 
+    public class ProposalCommercialViewModel : INotifyPropertyChanged
     {
         private bool structuralGeoReport = false;
         public bool StructuralGeoReport
@@ -109,7 +109,7 @@ namespace GMEPDesignTool
         }
 
         private bool plumbingWasteVent = false;
-        public bool PumbingWasteVent
+        public bool PlumbingWasteVent
         {
             get { return plumbingWasteVent; }
             set { plumbingWasteVent = value; }
@@ -123,25 +123,145 @@ namespace GMEPDesignTool
                 "new",
             };
 
-        private string Type;
-        public string type
+        private string clientType;
+        public string ClientType
         {
-            get => type;
+            get => clientType;
             set
             {
-                if (type != value)
+                if (clientType != value)
                 {
-                    type = value;
-                    OnPropertyChanged(nameof(Type));
+                    clientType = value;
+                    OnPropertyChanged(nameof(ClientType));
                 }
             }
         }
 
-        private void OnPropertyChanged(string v)
+        private bool newConstruction;
+        public bool NewConstruction
         {
-            throw new NotImplementedException();
+            get => newConstruction;
+            set
+            {
+                if (newConstruction != value)
+                {
+                    newConstruction = value;
+                    OnPropertyChanged(nameof(NewConstruction));
+                }
+            }
+        }
+        private bool hasSiteVisit;
+        public bool HasSiteVisit
+        {
+            get => hasSiteVisit;
+            set
+            {
+                if (hasSiteVisit != value)
+                {
+                    hasSiteVisit = value;
+                    OnPropertyChanged(nameof(HasSiteVisit));
+                }
+            }
+        }
+        private bool hasInitialRecommendationsMeeting;
+        public bool HasInitialRecommendationsMeeting
+        {
+            get => hasInitialRecommendationsMeeting;
+            set
+            {
+                if (hasInitialRecommendationsMeeting != value)
+                {
+                    hasInitialRecommendationsMeeting = value;
+                    OnPropertyChanged(nameof(HasInitialRecommendationsMeeting));
+                }
+            }
+        }
+        private bool hasCommericalShellConnection;
+        public bool HasCommericalShellConnection
+        {
+            get => hasCommericalShellConnection;
+            set
+            {
+                if (hasCommericalShellConnection != value)
+                {
+                    hasCommericalShellConnection = value;
+                    OnPropertyChanged(nameof(HasCommericalShellConnection));
+                }
+            }
+        }
+        private bool hasEmergencyPower;
+        public bool HasEmergencyPower
+        {
+            get => hasEmergencyPower;
+            set
+            {
+                if (hasEmergencyPower != value)
+                {
+                    hasEmergencyPower = value;
+                    OnPropertyChanged(nameof(HasEmergencyPower));
+                }
+            }
+        }
+        private bool hasIndoorCommonArea;
+        public bool HasIndoorCommonArea
+        {
+            get => hasIndoorCommonArea;
+            set
+            {
+                if (hasIndoorCommonArea != value)
+                {
+                    hasIndoorCommonArea = value;
+                    OnPropertyChanged(nameof(HasIndoorCommonArea));
+                }
+            }
+        }
+        private bool hasGarageExhaust;
+        public bool HasGarageExhaust
+        {
+            get => hasGarageExhaust;
+            set
+            {
+                if (hasGarageExhaust != value)
+                {
+                    hasGarageExhaust = value;
+                    OnPropertyChanged(nameof(HasGarageExhaust));
+                }
+            }
+        }
+        private bool hasSiteLighting;
+        public bool HasSiteLighting
+        {
+            get => hasSiteLighting;
+            set
+            {
+                if (hasSiteLighting != value)
+                {
+                    hasSiteLighting = value;
+                    OnPropertyChanged(nameof(HasSiteLighting));
+                }
+            }
         }
 
-        public ProposalCommercialViewModel() { }
+        private DateTime? dateSent;
+        public DateTime? DateSent
+        {
+            get => dateSent;
+            set
+            {
+                if (dateSent != value)
+                {
+                    dateSent = value;
+                    OnPropertyChanged(nameof(DateSent));
+                }
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }
