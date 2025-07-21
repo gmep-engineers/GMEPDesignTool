@@ -141,7 +141,7 @@ namespace GMEPDesignTool
                         response = await client.PostAsJsonAsync("api/wkhtmltopdf/t24", pdfRequest);
                         break;
                     case 4:
-                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/sitelightingtarrar", pdfRequest);
+                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/site-lighting-tarrar", pdfRequest);
                         break;
                     case 5:
                         response = await client.PostAsJsonAsync("api/wkhtmltopdf/2019", pdfRequest);
