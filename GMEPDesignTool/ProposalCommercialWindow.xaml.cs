@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Intrinsics.X86;
 using System.Windows;
 
 namespace GMEPDesignTool
@@ -11,7 +12,11 @@ namespace GMEPDesignTool
         static HttpClient client = new HttpClient();
         public class PDFRequest
         {
-            
+            public string ProjectAddress { get; set; }
+            public string Client { get; set; }
+            public string Architect { get; set; }
+            public string ProjectDescriptions { get; set; }
+            public string ProjectName { get; set; }
             public string TotalPrice { get; set; }
             public string RetainerPercent { get; set; }
             public string ClientType { get; set; }
@@ -31,10 +36,7 @@ namespace GMEPDesignTool
             public bool HasGarageExhaust { get; set; }
             public bool HasSiteLighting { get; set; }
 
-            //public string ProjectAddress { get; set; }
-            //public string Client { get; set; }
-            //public string Architect { get; set; }
-            //public string ProjectDescriptions { get; set; }
+            
             public string StructuralDescriptions { get; set; }           
             public string MechanicalDescriptions { get; set; }
             public string ElectricalDescriptions { get; set; }
@@ -51,6 +53,7 @@ namespace GMEPDesignTool
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json")
             );
+
             this.DataContext = vm;
         }
 
@@ -89,6 +92,13 @@ namespace GMEPDesignTool
                 pdfRequest.HasIndoorCommonArea = vm.HasIndoorCommonArea;
                 pdfRequest.HasGarageExhaust = vm.HasGarageExhaust;
                 pdfRequest.HasSiteLighting = vm.HasSiteLighting;
+
+                pdfRequest.Client = vm.AdminViewModel.Client;
+                pdfRequest.Architect = vm.AdminViewModel.Architect;
+                string projectAddress = vm.AdminViewModel.StreetAddress+", " + vm.AdminViewModel.City + ", " + vm.AdminViewModel.State + " " + vm.AdminViewModel.PostalCode;
+                pdfRequest.ProjectAddress = projectAddress;
+                pdfRequest.ProjectDescriptions = vm.AdminViewModel.Descriptions;
+                pdfRequest.ProjectName = vm.AdminViewModel.ProjectName;
 
                 string mechanicalDescriptions = "Tenant Improvement: engineering for HVAC design";
                 if (vm.MechanicalExhaustSupply) mechanicalDescriptions += ", exhaust and supply";
@@ -139,7 +149,11 @@ namespace GMEPDesignTool
                     $"MechanicalDescriptions:{pdfRequest.MechanicalDescriptions}\n" +
                     $"StructuralDescriptions:{pdfRequest.StructuralDescriptions}\n" +
                     $"ElectricalDescriptions:{pdfRequest.ElectricalDescriptions}\n" +
-                    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n" +
+                    $"Client:{pdfRequest.Client}\n" +
+                    $"Architect:{pdfRequest.Architect}\n" +
+                    $"ProjectAddress:{pdfRequest.ProjectAddress}\n" +
+                    $"ProjectDescriptions:{pdfRequest.ProjectDescriptions}\n", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var pdfBytes = await response.Content.ReadAsByteArrayAsync();
                 string tempFilePath = System.IO.Path.Combine(
                     System.IO.Path.GetTempPath(),

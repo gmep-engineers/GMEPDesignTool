@@ -10,7 +10,7 @@ using Mysqlx.Crud;
 
 namespace GMEPDesignTool
 {
-    class AdminViewModel : INotifyPropertyChanged
+    public class AdminViewModel : INotifyPropertyChanged
     {
         private string projectNo;
 

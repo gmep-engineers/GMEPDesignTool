@@ -20,9 +20,9 @@ namespace GMEPDesignTool
             //AllocConsole();
 
             Console.WriteLine("Console window opened!");
-            var vm = new ProposalCommercialViewModel();
-            var proposalCommercialWindow = new ProposalCommercialWindow(vm);
-            proposalCommercialWindow.Show();
+            //var vm = new ProposalCommercialViewModel();
+            //var proposalCommercialWindow = new ProposalCommercialWindow(vm);
+            //proposalCommercialWindow.Show();
 
 
             Console.WriteLine("end");

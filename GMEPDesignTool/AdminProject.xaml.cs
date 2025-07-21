@@ -32,6 +32,7 @@ namespace GMEPDesignTool
         private string ProjectId;
         private readonly Database.Database db;
         private LoginResponse loginResponse;
+        
 
         public ObservableCollection<Proposal> Proposals { get; set; } = new();
 
@@ -115,7 +116,8 @@ namespace GMEPDesignTool
         {
             SelectProposalTypeWindow selectProposalTypeWindow = new SelectProposalTypeWindow(
                 loginResponse,
-                ProjectId
+                ProjectId,
+                adminViewModel
             );
             selectProposalTypeWindow.Show();
         }

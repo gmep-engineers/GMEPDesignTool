@@ -10,6 +10,17 @@ namespace GMEPDesignTool
 {
     public class ProposalCommercialViewModel : INotifyPropertyChanged
     {
+        public ProposalCommercialViewModel(AdminViewModel adminViewModel) {
+            this.adminViewModel = adminViewModel;
+        }
+
+        private AdminViewModel adminViewModel;
+        public AdminViewModel AdminViewModel
+        {
+            get { return adminViewModel; }
+            set { adminViewModel = value; }
+
+        }
         private bool structuralGeoReport = false;
         public bool StructuralGeoReport
         {

@@ -22,14 +22,15 @@ namespace GMEPDesignTool
         SelectProposalTypeViewModel ViewModel { get; set; }
         ProposalCommercialViewModel CommercialViewModel { get;set; }
         LoginResponse LoginResponse { get; set; }
-
+        AdminViewModel adminViewModel { get; set; }
         string ProjectId { get; set; }
 
-        public SelectProposalTypeWindow(LoginResponse loginResponse, string projectId)
+        public SelectProposalTypeWindow(LoginResponse loginResponse, string projectId, AdminViewModel adminViewModel)
         {
             InitializeComponent();
             this.LoginResponse = loginResponse;
             this.ProjectId = projectId;
+            this.adminViewModel = adminViewModel;
             ViewModel = new SelectProposalTypeViewModel();
             this.DataContext = ViewModel;
         }
@@ -42,8 +43,8 @@ namespace GMEPDesignTool
                 ViewModel.TypeId,
                 ProjectId
             );
-            CommercialViewModel = new ProposalCommercialViewModel();
-            var vm = new ProposalCommercialViewModel();
+            CommercialViewModel = new ProposalCommercialViewModel(adminViewModel);
+            var vm = new ProposalCommercialViewModel(adminViewModel);
             ProposalCommercialWindow newWindow = new ProposalCommercialWindow(vm);
             newWindow.DataContext = CommercialViewModel;
             newWindow.Show();
