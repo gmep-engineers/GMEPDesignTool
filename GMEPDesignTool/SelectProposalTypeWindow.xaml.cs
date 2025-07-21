@@ -37,14 +37,15 @@ namespace GMEPDesignTool
 
         public void SelectButton_Click(object sender, RoutedEventArgs e)
         {
+            //MessageBox.Show($"Selected TypeId: {ViewModel.TypeId}");
             Database.Database database = new Database.Database(LoginResponse.SqlConnectionString);
             string id = database.CreateProposal(
                 LoginResponse.EmployeeId,
                 ViewModel.TypeId,
                 ProjectId
             );
-            CommercialViewModel = new ProposalCommercialViewModel(adminViewModel);
-            var vm = new ProposalCommercialViewModel(adminViewModel);
+            CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel);
+            var vm = new ProposalCommercialViewModel(adminViewModel, ViewModel);
             ProposalCommercialWindow newWindow = new ProposalCommercialWindow(vm);
             newWindow.DataContext = CommercialViewModel;
             newWindow.Show();

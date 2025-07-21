@@ -9,10 +9,10 @@
     <Grid>
         <ComboBox HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top" Width="120" SelectedValue="{Binding TypeId}" SelectedValuePath="Tag">
             <ComboBoxItem Tag="1">Commercial</ComboBoxItem>
-            <ComboBoxItem Tag="1">Residential</ComboBoxItem>
-            <ComboBoxItem Tag="1">T24</ComboBoxItem>
-            <ComboBoxItem Tag="1">Site Lighting Tarrar</ComboBoxItem>
-            <ComboBoxItem Tag="1">2019</ComboBoxItem>
+            <ComboBoxItem Tag="2">Residential</ComboBoxItem>
+            <ComboBoxItem Tag="3">T24</ComboBoxItem>
+            <ComboBoxItem Tag="4">Site Lighting Tarrar</ComboBoxItem>
+            <ComboBoxItem Tag="5">2019</ComboBoxItem>
         </ComboBox>
 
         <Button Click="SelectButton_Click" Content="Select" HorizontalAlignment="Center" Margin="0,102,0,0" VerticalAlignment="Top"/>

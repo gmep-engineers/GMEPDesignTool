@@ -59,7 +59,7 @@ namespace GMEPDesignTool
 
         private async void generate_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Generate button clicked");
+            MessageBox.Show("Click OK to get PDF");
             PDFRequest pdfRequest = new PDFRequest();
             var vm = DataContext as ProposalCommercialViewModel;
             if (vm == null) {
@@ -127,33 +127,59 @@ namespace GMEPDesignTool
                 if (vm.PlumbingWasteVent) plumbingDescriptions += ", Sewer and vent piping design";
                 pdfRequest.PlumbingDescriptions = plumbingDescriptions;
 
-                HttpResponseMessage response = await client.PostAsJsonAsync("api/wkhtmltopdf/commercial", pdfRequest);
+                HttpResponseMessage response;
+
+                switch (vm.SelectProposalTypeViewModel.TypeId)
+                {
+                    case 1:
+                        response =  await client.PostAsJsonAsync("api/wkhtmltopdf/commercial", pdfRequest);
+                        break;
+                    case 2:
+                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/residential", pdfRequest);
+                        break;
+                    case 3:
+                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/t24", pdfRequest);
+                        break;
+                    case 4:
+                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/sitelightingtarrar", pdfRequest);
+                        break;
+                    case 5:
+                        response = await client.PostAsJsonAsync("api/wkhtmltopdf/2019", pdfRequest);
+                        break;
+                    default:
+                        MessageBox.Show("Invalid proposal type selected.");
+                        return;
+                }
+
+
                 response.EnsureSuccessStatusCode();
-                MessageBox.Show($"Click OK to check PDF--- " +
-                    $"HasInitialRecommendationsMeeting: {pdfRequest.HasInitialRecommendationsMeeting}\n" + 
-                    $"HasCommericalShellConnection:{pdfRequest.HasCommericalShellConnection}\n" +
-                    $"HasEmergencyPower:{pdfRequest.HasEmergencyPower}\n" +
-                    $"HasIndoorCommonArea:{pdfRequest.HasIndoorCommonArea} \n" +
-                    $"HasGarageExhaust:{pdfRequest.HasGarageExhaust} \n" +
-                    $"HasSiteLighting:{pdfRequest.HasSiteLighting} \n" +
-                    $"HasSiteVisit:{pdfRequest.HasSiteVisit} \n" +
-                    $"TotalPrice:{pdfRequest.TotalPrice}\n" +
-                    $"RetainerPercent:{pdfRequest.RetainerPercent} \n" +
-                    $"ClientType:{pdfRequest.ClientType} \n" +
-                    $"ClientBusinessName:{pdfRequest.ClientBusinessName} \n" +
-                    $"ClientStreetAddress:{pdfRequest.ClientStreetAddress}\n" +
-                    $"ClientCityStateZip:{pdfRequest.ClientCityStateZip}\n" +
-                    $"DateSent:{pdfRequest.DateSent}\n" +
-                    $"NumMeetings:{pdfRequest.NumMeetings}\n" +
-                    $"TarrarNo:{pdfRequest.TarrarNo}\n" +
-                    $"MechanicalDescriptions:{pdfRequest.MechanicalDescriptions}\n" +
-                    $"StructuralDescriptions:{pdfRequest.StructuralDescriptions}\n" +
-                    $"ElectricalDescriptions:{pdfRequest.ElectricalDescriptions}\n" +
-                    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n" +
-                    $"Client:{pdfRequest.Client}\n" +
-                    $"Architect:{pdfRequest.Architect}\n" +
-                    $"ProjectAddress:{pdfRequest.ProjectAddress}\n" +
-                    $"ProjectDescriptions:{pdfRequest.ProjectDescriptions}\n", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show($"Click OK to check PDF--- \n" +
+                //    $"HasInitialRecommendationsMeeting: {pdfRequest.HasInitialRecommendationsMeeting}\n" + 
+                //    $"HasCommericalShellConnection:{pdfRequest.HasCommericalShellConnection}\n" +
+                //    $"HasEmergencyPower:{pdfRequest.HasEmergencyPower}\n" +
+                //    $"HasIndoorCommonArea:{pdfRequest.HasIndoorCommonArea} \n" +
+                //    $"HasGarageExhaust:{pdfRequest.HasGarageExhaust} \n" +
+                //    $"HasSiteLighting:{pdfRequest.HasSiteLighting} \n" +
+                //    $"HasSiteVisit:{pdfRequest.HasSiteVisit} \n" +
+                //    $"TotalPrice:{pdfRequest.TotalPrice}\n" +
+                //    $"RetainerPercent:{pdfRequest.RetainerPercent} \n" +
+                //    $"ClientType:{pdfRequest.ClientType} \n" +
+                //    $"ClientBusinessName:{pdfRequest.ClientBusinessName} \n" +
+                //    $"ClientStreetAddress:{pdfRequest.ClientStreetAddress}\n" +
+                //    $"ClientCityStateZip:{pdfRequest.ClientCityStateZip}\n" +
+                //    $"DateSent:{pdfRequest.DateSent}\n" +
+                //    $"NumMeetings:{pdfRequest.NumMeetings}\n" +
+                //    $"TarrarNo:{pdfRequest.TarrarNo}\n" +
+                //    $"MechanicalDescriptions:{pdfRequest.MechanicalDescriptions}\n" +
+                //    $"StructuralDescriptions:{pdfRequest.StructuralDescriptions}\n" +
+                //    $"ElectricalDescriptions:{pdfRequest.ElectricalDescriptions}\n" +
+                //    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n" +
+                //    $"Client:{pdfRequest.Client}\n" +
+                //    $"Architect:{pdfRequest.Architect}\n" +
+                //    $"ProjectAddress:{pdfRequest.ProjectAddress}\n" +
+                //    $"ProjectDescriptions:{pdfRequest.ProjectDescriptions}\n" +
+                //    $"TypeId:{vm.SelectProposalTypeViewModel.TypeId}\n", 
+                //    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var pdfBytes = await response.Content.ReadAsByteArrayAsync();
                 string tempFilePath = System.IO.Path.Combine(
                     System.IO.Path.GetTempPath(),

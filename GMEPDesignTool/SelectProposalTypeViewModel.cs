@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class SelectProposalTypeViewModel
+    public class SelectProposalTypeViewModel : INotifyPropertyChanged
     {
         private int typeId;
         public int TypeId
@@ -17,13 +18,16 @@ namespace GMEPDesignTool
                 if (typeId != value)
                 {
                     typeId = value;
+                    OnPropertyChanged(nameof(TypeId));
                 }
             }
         }
 
-        public SelectProposalTypeViewModel()
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
         {
-            typeId = 0;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
