@@ -16,6 +16,6 @@
             <ComboBoxItem Tag="5">2019</ComboBoxItem>
         </ComboBox>
 
-        <Button Click="SelectButton_Click" Content="Select" HorizontalAlignment="Center" Margin="0,102,0,0" VerticalAlignment="Top"/>
+        <Button Click="SelectButton_Click" Content="Select" HorizontalAlignment="Center" Margin="0,102,0,0" VerticalAlignment="Top" Width="50"/>
     </Grid>
 </Window>
