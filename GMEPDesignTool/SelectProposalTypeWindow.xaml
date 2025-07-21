@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Select Proposal Type" Height="250" Width="400">
     <Grid>
-        <ComboBox HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top" Width="120" SelectedValue="{Binding TypeId}" SelectedValuePath="Tag">
+        <ComboBox HorizontalAlignment="Center" Margin="0,60,0,0" VerticalAlignment="Top" Width="170" SelectedValue="{Binding TypeId}" SelectedValuePath="Tag">
+            <ComboBoxItem IsEnabled="False" IsSelected="True">-- Select Proposal Type --</ComboBoxItem>
             <ComboBoxItem Tag="1">Commercial</ComboBoxItem>
             <ComboBoxItem Tag="2">Residential</ComboBoxItem>
             <ComboBoxItem Tag="3">T24</ComboBoxItem>
