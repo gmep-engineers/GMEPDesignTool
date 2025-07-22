@@ -48,7 +48,11 @@ namespace GMEPDesignTool
         public ProposalCommercialWindow(ProposalCommercialViewModel vm)
         {
             InitializeComponent();
-            client.BaseAddress = new Uri("http://44.240.61.252:3000/");
+
+            client = new HttpClient
+            {
+                BaseAddress = new Uri("http://44.240.61.252:3000/")
+            };
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json")
