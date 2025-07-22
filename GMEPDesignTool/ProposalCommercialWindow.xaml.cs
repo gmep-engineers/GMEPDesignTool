@@ -68,7 +68,7 @@ namespace GMEPDesignTool
             var vm = DataContext as ProposalCommercialViewModel;
             if (vm == null) {
                 
-                    MessageBox.Show("DataContext is null or not of expected type.");
+                    MessageBox.Show("Please complete the missing fields.");
                     return;              
             }
             try

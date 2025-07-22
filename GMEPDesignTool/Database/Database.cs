@@ -586,18 +586,25 @@ namespace GMEPDesignTool.Database
                 projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
             await reader.CloseAsync();
-
-            if (!projectIds.Any())
+            try
             {
-                // Project name does not exist, insert a new entry with a generated ID
-                var id = Guid.NewGuid().ToString();
-                string insertQuery =
-                    "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
-                MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
-                insertCommand.Parameters.AddWithValue("@id", id);
-                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                await insertCommand.ExecuteNonQueryAsync();
-                projectIds.Add(1, id);
+                if (!projectIds.Any())
+                {
+                    // Project name does not exist, insert a new entry with a generated ID
+                    var id = Guid.NewGuid().ToString();
+                    string insertQuery =
+                        "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+                    MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
+                    insertCommand.Parameters.AddWithValue("@id", id);
+                    insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
+                    await insertCommand.ExecuteNonQueryAsync();
+                    projectIds.Add(1, id);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Insert failed: {ex.Message}");
+                return projectIds;
             }
 
             await CloseConnectionAsync(Connection);

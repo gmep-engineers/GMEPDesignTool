@@ -61,8 +61,15 @@ namespace GMEPDesignTool
             _loginResponse = loginResponse;
             EmployeeId = loginResponse.EmployeeId;
             SessionId = loginResponse.SessionId;
-            string projectId = viewModel.ProjectIds.First().Value;
-            viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
+            if (viewModel.ProjectIds.Any())
+            {
+                string projectId = viewModel.ProjectIds.First().Value;
+                viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
+            }
+            else
+            {
+                MessageBox.Show("No project IDs found.");
+            }
             Application.Current.Deactivated += Application_Deactivated;
             Application.Current.Activated += Application_Activated;
         }
