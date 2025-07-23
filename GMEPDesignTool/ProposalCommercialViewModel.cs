@@ -278,6 +278,20 @@ namespace GMEPDesignTool
             }
         }
 
+        
+        private DateTime? dateDrawingsReceived;
+        public DateTime? DateDrawingsReceived
+        {
+            get => dateDrawingsReceived;
+            set
+            {
+                if (dateDrawingsReceived != value)
+                {
+                    dateDrawingsReceived = value;
+                    OnPropertyChanged(nameof(DateDrawingsReceived));
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

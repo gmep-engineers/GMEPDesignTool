@@ -89,6 +89,7 @@
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
+                            <RowDefinition Height="40"/>
 
                         </Grid.RowDefinitions>
 
@@ -154,6 +155,8 @@
                         <TextBox Grid.Row="11" x:Name="NumMeetingsBox" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="12" Content="TarrarNo"  Margin="0,0,0,10" />
                         <TextBox Grid.Row="12" x:Name="TarrarNoBox" Margin="0,0,0,10" Grid.Column="1" />
+                        <Label Grid.Row="13" Content="Drawings Received"  Margin="0,0,0,10" />
+                        <DatePicker Grid.Row="13" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
                     </Grid>
                 </ScrollViewer>
             </TabItem>
