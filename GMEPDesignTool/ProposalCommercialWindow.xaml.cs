@@ -104,13 +104,17 @@ namespace GMEPDesignTool
                 pdfRequest.ProjectDescriptions = vm.AdminViewModel.Descriptions;
                 pdfRequest.ProjectName = vm.AdminViewModel.ProjectName;
 
-                string mechanicalDescriptions = "Tenant Improvement: engineering for HVAC design";
+                string mechanicalDescriptions;
+                if (vm.NewConstruction) { mechanicalDescriptions = "New Construction: engineering for HVAC design"; }
+                else{ mechanicalDescriptions = "Tenant Improvement: engineering for HVAC design"; }
                 if (vm.MechanicalExhaustSupply) mechanicalDescriptions += ", exhaust and supply";
                 if (vm.MechanicalHvacEquipSpec) mechanicalDescriptions += ", HVAC equipment specifications";
                 if (vm.MechanicalTitle24) mechanicalDescriptions += ", Title 24";
                 pdfRequest.MechanicalDescriptions = mechanicalDescriptions;
 
-                string structuralDescriptions = "Tenant Improvement: engineering for Structural design";
+                string structuralDescriptions;
+                if (vm.NewConstruction) { structuralDescriptions = "New Construction: engineering for Structural design"; }
+                else { structuralDescriptions = "Tenant Improvement: engineering for Structural design"; }
                 if (vm.StructuralGeoReport) structuralDescriptions += ", Review geotechnical report and define foundation type";
                 if (vm.StructuralFramingDepths) structuralDescriptions += ", Perform structural analysis and design for all gravity and lateral load resisting elements";
                 if (vm.StructuralAnalysis) structuralDescriptions += ", Title 24";
@@ -119,14 +123,18 @@ namespace GMEPDesignTool
                 if (vm.StructuralCodeCompliance) structuralDescriptions += ", Building structural to comply with code";
                 pdfRequest.StructuralDescriptions = structuralDescriptions;
 
-                string electricalDescriptions = "Tenant Improvement: engineering for Electrica design";
+                string electricalDescriptions = "New Construction: engineering for Electrical design";
+                if (vm.NewConstruction) { electricalDescriptions = "New Construction: engineering for Electrical design"; }
+                else { electricalDescriptions = "Tenant Improvement: engineering for Electrical design"; }
                 if (vm.ElectricalPowerDesign) electricalDescriptions += ", Electrical power design";
                 if (vm.ElectricalServiceLoadCalc) electricalDescriptions += ", Service load calculation";
                 if (vm.ElectricalSingleLineDiagram) electricalDescriptions += ", Single line diagrams";
                 if (vm.ElectricalLightingDesign) electricalDescriptions += ", Electrical lighting design";
                 pdfRequest.ElectricalDescriptions = electricalDescriptions;
 
-                string plumbingDescriptions = "Tenant Improvement: engineering for Plumbing design";
+                string plumbingDescriptions;
+                if (vm.NewConstruction) { plumbingDescriptions = "New Construction: engineering for Plumbing design"; }
+                else { plumbingDescriptions = "Tenant Improvement: engineering for Plumbing design"; }
                 if (vm.PlumbingHotColdWater) plumbingDescriptions += ", Hot and cold water piping design";
                 if (vm.PlumbingWasteVent) plumbingDescriptions += ", Sewer and vent piping design";
                 pdfRequest.PlumbingDescriptions = plumbingDescriptions;
