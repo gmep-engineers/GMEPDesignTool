@@ -73,8 +73,6 @@ namespace GMEPDesignTool
             }
             try
             {
-                pdfRequest.MechanicalDescriptions = "MEP design, Title 24 calculations";
-
                 pdfRequest.TotalPrice = TotalPriceBox.Text;
                 pdfRequest.RetainerPercent = RetainerPercentBox.Text;
                 pdfRequest.ClientType = vm.ClientType;
@@ -166,34 +164,34 @@ namespace GMEPDesignTool
 
 
                 response.EnsureSuccessStatusCode();
-                MessageBox.Show($"Click OK to check PDF--- \n" +
-                    $"HasInitialRecommendationsMeeting: {pdfRequest.HasInitialRecommendationsMeeting}\n" +
-                    $"HasCommericalShellConnection:{pdfRequest.HasCommericalShellConnection}\n" +
-                    $"HasEmergencyPower:{pdfRequest.HasEmergencyPower}\n" +
-                    $"HasIndoorCommonArea:{pdfRequest.HasIndoorCommonArea} \n" +
-                    $"HasGarageExhaust:{pdfRequest.HasGarageExhaust} \n" +
-                    $"HasSiteLighting:{pdfRequest.HasSiteLighting} \n" +
-                    $"HasSiteVisit:{pdfRequest.HasSiteVisit} \n" +
-                    $"TotalPrice:{pdfRequest.TotalPrice}\n" +
-                    $"RetainerPercent:{pdfRequest.RetainerPercent} \n" +
-                    $"ClientType:{pdfRequest.ClientType} \n" +
-                    $"ClientBusinessName:{pdfRequest.ClientBusinessName} \n" +
-                    $"ClientStreetAddress:{pdfRequest.ClientStreetAddress}\n" +
-                    $"ClientCityStateZip:{pdfRequest.ClientCityStateZip}\n" +
-                    $"DateSent:{pdfRequest.DateSent}\n" +
-                    $"NumMeetings:{pdfRequest.NumMeetings}\n" +
-                    $"TarrarNo:{pdfRequest.TarrarNo}\n" +
-                    $"MechanicalDescriptions:{pdfRequest.MechanicalDescriptions}\n" +
-                    $"StructuralDescriptions:{pdfRequest.StructuralDescriptions}\n" +
-                    $"ElectricalDescriptions:{pdfRequest.ElectricalDescriptions}\n" +
-                    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n" +
-                    $"Client:{pdfRequest.Client}\n" +
-                    $"Architect:{pdfRequest.Architect}\n" +
-                    $"ProjectAddress:{pdfRequest.ProjectAddress}\n" +
-                    $"ProjectDescriptions:{pdfRequest.ProjectDescriptions}\n" +
-                    $"TypeId:{vm.SelectProposalTypeViewModel.TypeId}\n" +
-                    $"DrawingsReceivedDate:{pdfRequest.DateDrawingsReceived}\n",
-                    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //MessageBox.Show($"Click OK to check PDF--- \n" +
+                //    $"HasInitialRecommendationsMeeting: {pdfRequest.HasInitialRecommendationsMeeting}\n" +
+                //    $"HasCommericalShellConnection:{pdfRequest.HasCommericalShellConnection}\n" +
+                //    $"HasEmergencyPower:{pdfRequest.HasEmergencyPower}\n" +
+                //    $"HasIndoorCommonArea:{pdfRequest.HasIndoorCommonArea} \n" +
+                //    $"HasGarageExhaust:{pdfRequest.HasGarageExhaust} \n" +
+                //    $"HasSiteLighting:{pdfRequest.HasSiteLighting} \n" +
+                //    $"HasSiteVisit:{pdfRequest.HasSiteVisit} \n" +
+                //    $"TotalPrice:{pdfRequest.TotalPrice}\n" +
+                //    $"RetainerPercent:{pdfRequest.RetainerPercent} \n" +
+                //    $"ClientType:{pdfRequest.ClientType} \n" +
+                //    $"ClientBusinessName:{pdfRequest.ClientBusinessName} \n" +
+                //    $"ClientStreetAddress:{pdfRequest.ClientStreetAddress}\n" +
+                //    $"ClientCityStateZip:{pdfRequest.ClientCityStateZip}\n" +
+                //    $"DateSent:{pdfRequest.DateSent}\n" +
+                //    $"NumMeetings:{pdfRequest.NumMeetings}\n" +
+                //    $"TarrarNo:{pdfRequest.TarrarNo}\n" +
+                //    $"MechanicalDescriptions:{pdfRequest.MechanicalDescriptions}\n" +
+                //    $"StructuralDescriptions:{pdfRequest.StructuralDescriptions}\n" +
+                //    $"ElectricalDescriptions:{pdfRequest.ElectricalDescriptions}\n" +
+                //    $"PlumbingDescriptions:{pdfRequest.PlumbingDescriptions}\n" +
+                //    $"Client:{pdfRequest.Client}\n" +
+                //    $"Architect:{pdfRequest.Architect}\n" +
+                //    $"ProjectAddress:{pdfRequest.ProjectAddress}\n" +
+                //    $"ProjectDescriptions:{pdfRequest.ProjectDescriptions}\n" +
+                //    $"TypeId:{vm.SelectProposalTypeViewModel.TypeId}\n" +
+                //    $"DrawingsReceivedDate:{pdfRequest.DateDrawingsReceived}\n",
+                //    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var pdfBytes = await response.Content.ReadAsByteArrayAsync();
                 
                 string tempFilePath = System.IO.Path.Combine(
