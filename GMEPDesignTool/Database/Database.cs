@@ -160,7 +160,7 @@ namespace GMEPDesignTool.Database
             return DateTime.MinValue;
         }
 
-        public async Task<ObservableCollection<Proposal>> GetProposals()
+        public async Task<ObservableCollection<Proposal>> GetProposals(string projectId)
         {
             ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
             string query =
@@ -173,9 +173,13 @@ namespace GMEPDesignTool.Database
                             employees.username AS username            
                         FROM proposals
                         LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
-                        LEFT JOIN employees ON proposals.employee_id = employees.id";
+                        LEFT JOIN employees ON proposals.employee_id = employees.id
+                        where proposals.project_id = @projectId
+                        order by date_created DESC";
             await OpenConnectionAsync(Connection);
+            
             MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
