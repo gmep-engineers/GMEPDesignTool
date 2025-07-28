@@ -2921,6 +2921,34 @@ namespace GMEPDesignTool.Database
             );
         }
 
+        public async Task<bool> IsFileUploadedAsync(string key)
+        {
+            var response = await _s3Client.ListObjectsV2Async(new ListObjectsV2Request
+            {
+                BucketName = _bucketName,
+                Prefix = key
+            });
+
+            return response.S3Objects.Any(o => o.Key == key);
+        }
+
+        //test
+        //public async Task ListFilesInBucketAsync()
+        //{
+        //    var request = new ListObjectsV2Request
+        //    {
+        //        BucketName = _bucketName
+        //    };
+
+        //    var response = await _s3Client.ListObjectsV2Async(request);
+
+        //    var files = response.S3Objects
+        //                .Select(entry => $"{entry.Key} ({entry.Size} bytes)")
+        //                .ToList();
+        //    string fileList = string.Join("\n", files);
+        //    int n = files.Count;
+        //    MessageBox.Show(n + "------" + fileList, "S3 Bucket Files");
+        //}
         public async Task UploadFileAsync(string keyName, string filePath)
         {
             try

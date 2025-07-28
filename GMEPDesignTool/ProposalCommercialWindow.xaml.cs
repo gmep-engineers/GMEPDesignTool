@@ -10,6 +10,7 @@ namespace GMEPDesignTool
     public partial class ProposalCommercialWindow : Window
     {
         static HttpClient client = new HttpClient();
+        public Database.S3 s3 = new Database.S3();
         public class PDFRequest
         {
             public string ProjectAddress { get; set; }
@@ -193,13 +194,30 @@ namespace GMEPDesignTool
                 //    $"DrawingsReceivedDate:{pdfRequest.DateDrawingsReceived}\n",
                 //    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var pdfBytes = await response.Content.ReadAsByteArrayAsync();
-                
+                string keyName = $"{vm.SelectProposalTypeViewModel.TypeId}-{Guid.NewGuid()}.pdf";
+
+
                 string tempFilePath = System.IO.Path.Combine(
                     System.IO.Path.GetTempPath(),
-                    $"{vm.SelectProposalTypeViewModel.TypeId}-{Guid.NewGuid()}.pdf"
+                    keyName
                 );
                 System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
                 Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
+                await s3.UploadFileAsync(keyName, tempFilePath);
+
+                //test if uploaded to S3
+                //bool isUploaded = await s3.IsFileUploadedAsync(keyName);
+                //if (isUploaded)
+                //{
+                //    MessageBox.Show("✅ PDF was successfully uploaded to S3.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                //}
+                //else
+                //{
+                //    MessageBox.Show("❌ PDF upload failed or file not found in S3.", "Upload Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //}
+                //await s3.ListFilesInBucketAsync();
+                
+
             }
 
             catch (Exception ex)
