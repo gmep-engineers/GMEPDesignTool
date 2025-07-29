@@ -1,13 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class ProposalCommercialViewModel
+    public class ProposalCommercialViewModel : INotifyPropertyChanged
     {
+        public ProposalCommercialViewModel(AdminViewModel adminViewModel, SelectProposalTypeViewModel selectProposalTypeViewModel) {
+            this.adminViewModel = adminViewModel;
+            this.selectProposalTypeViewModel = selectProposalTypeViewModel;
+        }
+
+        private AdminViewModel adminViewModel;
+        public AdminViewModel AdminViewModel
+        {
+            get { return adminViewModel; }
+            set { adminViewModel = value; }
+
+        }
+
+
+        private SelectProposalTypeViewModel selectProposalTypeViewModel;
+        public SelectProposalTypeViewModel SelectProposalTypeViewModel
+        {
+            get { return selectProposalTypeViewModel; }
+            set { selectProposalTypeViewModel = value; }
+
+        }
+
         private bool structuralGeoReport = false;
         public bool StructuralGeoReport
         {
@@ -107,12 +131,173 @@ namespace GMEPDesignTool
         }
 
         private bool plumbingWasteVent = false;
-        public bool PumbingWasteVent
+        public bool PlumbingWasteVent
         {
             get { return plumbingWasteVent; }
             set { plumbingWasteVent = value; }
         }
 
-        public ProposalCommercialViewModel() { }
+        public ObservableCollection<string> Types { get; set; } =
+            new ObservableCollection<string>
+            {
+                "loyal",
+                "returning",
+                "new",
+            };
+
+        private string clientType;
+        public string ClientType
+        {
+            get => clientType;
+            set
+            {
+                if (clientType != value)
+                {
+                    clientType = value;
+                    OnPropertyChanged(nameof(ClientType));
+                }
+            }
+        }
+
+        private bool newConstruction;
+        public bool NewConstruction
+        {
+            get => newConstruction;
+            set
+            {
+                if (newConstruction != value)
+                {
+                    newConstruction = value;
+                    OnPropertyChanged(nameof(NewConstruction));
+                }
+            }
+        }
+        private bool hasSiteVisit;
+        public bool HasSiteVisit
+        {
+            get => hasSiteVisit;
+            set
+            {
+                if (hasSiteVisit != value)
+                {
+                    hasSiteVisit = value;
+                    OnPropertyChanged(nameof(HasSiteVisit));
+                }
+            }
+        }
+        private bool hasInitialRecommendationsMeeting;
+        public bool HasInitialRecommendationsMeeting
+        {
+            get => hasInitialRecommendationsMeeting;
+            set
+            {
+                if (hasInitialRecommendationsMeeting != value)
+                {
+                    hasInitialRecommendationsMeeting = value;
+                    OnPropertyChanged(nameof(HasInitialRecommendationsMeeting));
+                }
+            }
+        }
+        private bool hasCommericalShellConnection;
+        public bool HasCommericalShellConnection
+        {
+            get => hasCommericalShellConnection;
+            set
+            {
+                if (hasCommericalShellConnection != value)
+                {
+                    hasCommericalShellConnection = value;
+                    OnPropertyChanged(nameof(HasCommericalShellConnection));
+                }
+            }
+        }
+        private bool hasEmergencyPower;
+        public bool HasEmergencyPower
+        {
+            get => hasEmergencyPower;
+            set
+            {
+                if (hasEmergencyPower != value)
+                {
+                    hasEmergencyPower = value;
+                    OnPropertyChanged(nameof(HasEmergencyPower));
+                }
+            }
+        }
+        private bool hasIndoorCommonArea;
+        public bool HasIndoorCommonArea
+        {
+            get => hasIndoorCommonArea;
+            set
+            {
+                if (hasIndoorCommonArea != value)
+                {
+                    hasIndoorCommonArea = value;
+                    OnPropertyChanged(nameof(HasIndoorCommonArea));
+                }
+            }
+        }
+        private bool hasGarageExhaust;
+        public bool HasGarageExhaust
+        {
+            get => hasGarageExhaust;
+            set
+            {
+                if (hasGarageExhaust != value)
+                {
+                    hasGarageExhaust = value;
+                    OnPropertyChanged(nameof(HasGarageExhaust));
+                }
+            }
+        }
+        private bool hasSiteLighting;
+        public bool HasSiteLighting
+        {
+            get => hasSiteLighting;
+            set
+            {
+                if (hasSiteLighting != value)
+                {
+                    hasSiteLighting = value;
+                    OnPropertyChanged(nameof(HasSiteLighting));
+                }
+            }
+        }
+
+        private DateTime? dateSent;
+        public DateTime? DateSent
+        {
+            get => dateSent;
+            set
+            {
+                if (dateSent != value)
+                {
+                    dateSent = value;
+                    OnPropertyChanged(nameof(DateSent));
+                }
+            }
+        }
+
+        
+        private DateTime? dateDrawingsReceived;
+        public DateTime? DateDrawingsReceived
+        {
+            get => dateDrawingsReceived;
+            set
+            {
+                if (dateDrawingsReceived != value)
+                {
+                    dateDrawingsReceived = value;
+                    OnPropertyChanged(nameof(DateDrawingsReceived));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

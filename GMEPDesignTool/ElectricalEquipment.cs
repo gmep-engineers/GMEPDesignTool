@@ -405,6 +405,11 @@ namespace GMEPDesignTool
                     category = value;
                     DetermineLoadCategory();
                     OnPropertyChanged(nameof(Category));
+                    LoadType = 1;
+                    if (category == 5) { LoadType = 3;  }
+                    if (category == 2) { LoadType = 2; }
+                    if (category == 6) { LoadType = 3; }
+                    
                 }
             }
         }
@@ -740,24 +745,24 @@ namespace GMEPDesignTool
             }
         }
 
-        /*public void DetermineLoadTypes()
-        {
-            switch (LoadType)
-            {
-                case 3:
-                    IsLcl = true;
-                    IsLml = false;
-                    break;
-                case 2:
-                    IsLcl = false;
-                    IsLml = true;
-                    break;
-                case 1:
-                    IsLcl = false;
-                    IsLml = false;
-                    break;
-            }
-        }*/
+        //public void DetermineLoadTypes()
+        //{
+        //    switch (LoadType)
+        //    {
+        //        case 3:
+        //            IsLcl = true;
+        //            IsLml = false;
+        //            break;
+        //        case 2:
+        //            IsLcl = false;
+        //            IsLml = true;
+        //            break;
+        //        case 1:
+        //            IsLcl = false;
+        //            IsLml = false;
+        //            break;
+        //    }
+        //}
         public void DetermineLoadCategory()
         {
             if (Category == 5)

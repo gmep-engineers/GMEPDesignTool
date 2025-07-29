@@ -20,28 +20,36 @@ namespace GMEPDesignTool
     public partial class SelectProposalTypeWindow : Window
     {
         SelectProposalTypeViewModel ViewModel { get; set; }
-
+        ProposalCommercialViewModel CommercialViewModel { get;set; }
         LoginResponse LoginResponse { get; set; }
-
+        AdminViewModel adminViewModel { get; set; }
         string ProjectId { get; set; }
 
-        public SelectProposalTypeWindow(LoginResponse loginResponse, string projectId)
+        public SelectProposalTypeWindow(LoginResponse loginResponse, string projectId, AdminViewModel adminViewModel)
         {
             InitializeComponent();
             this.LoginResponse = loginResponse;
             this.ProjectId = projectId;
+            this.adminViewModel = adminViewModel;
             ViewModel = new SelectProposalTypeViewModel();
             this.DataContext = ViewModel;
         }
 
         public void SelectButton_Click(object sender, RoutedEventArgs e)
         {
+            
             Database.Database database = new Database.Database(LoginResponse.SqlConnectionString);
             string id = database.CreateProposal(
                 LoginResponse.EmployeeId,
                 ViewModel.TypeId,
                 ProjectId
             );
+            MessageBox.Show($"proposal TypeId: {id}");
+            CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel);
+            ProposalCommercialWindow newWindow = new ProposalCommercialWindow(CommercialViewModel,id);
+            newWindow.DataContext = CommercialViewModel;
+            newWindow.Show();
+            this.Close();
         }
     }
 }

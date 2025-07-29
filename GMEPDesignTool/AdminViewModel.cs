@@ -10,7 +10,7 @@ using Mysqlx.Crud;
 
 namespace GMEPDesignTool
 {
-    class AdminViewModel : INotifyPropertyChanged
+    public class AdminViewModel : INotifyPropertyChanged
     {
         private string projectNo;
 
@@ -265,7 +265,6 @@ namespace GMEPDesignTool
         {
             LoadProjectInfoAsync(projectId);
         }
-
         private async void LoadProjectInfoAsync(string projectId)
         {
             var db = new Database.Database(
@@ -286,6 +285,8 @@ namespace GMEPDesignTool
             IsCheckedE = ProjectInfo.IsCheckedE;
             IsCheckedP = ProjectInfo.IsCheckedP;
             Descriptions = ProjectInfo.Descriptions;
+
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

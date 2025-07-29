@@ -159,6 +159,103 @@ namespace GMEPDesignTool.Database
             }
             return DateTime.MinValue;
         }
+        public async Task UpdateProposalById(string proposal_id, string pdf_name)
+        {
+            string query =
+                @"
+            UPDATE proposals
+            SET proposals.pdf_name = @pdf_name
+            WHERE id = @proposal_id";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@pdf_name", pdf_name);
+            command.Parameters.AddWithValue("@proposal_id", proposal_id);
+            await command.ExecuteNonQueryAsync();
+            command.Dispose();
+            await CloseConnectionAsync(Connection);
+        }
+        public async Task<ObservableCollection<Proposal>> GetProposals(string projectId)
+        {
+            ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
+            string query =
+                @"
+                        SELECT 
+                            proposals.id,
+                            proposals.pdf_name,
+                            proposals.project_id,
+                            proposals.date_created AS date_created,
+                            proposal_types.type AS type,
+                            employees.username AS username            
+                        FROM proposals
+                        LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
+                        LEFT JOIN employees ON proposals.employee_id = employees.id
+                        where proposals.project_id = @projectId
+                        order by date_created DESC";
+            await OpenConnectionAsync(Connection);
+            
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@projectId", projectId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                proposals.Add(
+                    new Proposal
+                    {
+                        Id = GetSafeString(reader, "id"),
+                        ProjectId = GetSafeString(reader, "project_id"),
+                        DateCreated = GetSafeDateTime(reader, "date_created"),
+                        Type = GetSafeString(reader, "type"),
+                        EmployeeUsername = GetSafeString(reader, "username"),
+                        Pdf_name = GetSafeString(reader,"pdf_name")
+                    }
+                );
+            }
+
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return proposals;
+        }
+
+        public async Task<Proposal> GetProposalById(string proposalId)
+        {
+            Proposal proposal = null;
+            string query =
+                @"
+                        SELECT 
+                            proposals.id,
+                            proposals.pdf_name,
+                            proposals.project_id,
+                            proposals.date_created AS date_created,
+                            proposal_types.type AS type,
+                            employees.username AS username            
+                        FROM proposals
+                        LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
+                        LEFT JOIN employees ON proposals.employee_id = employees.id
+                        where proposals.id = @proposalId";
+            await OpenConnectionAsync(Connection);
+
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@proposalId", proposalId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+
+                proposal = new Proposal
+                {
+                    Id = GetSafeString(reader, "id"),
+                    ProjectId = GetSafeString(reader, "project_id"),
+                    DateCreated = GetSafeDateTime(reader, "date_created"),
+                    Type = GetSafeString(reader, "type"),
+                    EmployeeUsername = GetSafeString(reader, "username"),
+                    Pdf_name = GetSafeString(reader, "pdf_name")
+                };
+                
+            }
+
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return proposal;
+        }
 
         public async Task<AdminModel> GetAdminByProjectId(string projectId)
         {
@@ -550,18 +647,25 @@ namespace GMEPDesignTool.Database
                 projectIds.Add(reader.GetInt32("version"), reader.GetString("id"));
             }
             await reader.CloseAsync();
-
-            if (!projectIds.Any())
+            try
             {
-                // Project name does not exist, insert a new entry with a generated ID
-                var id = Guid.NewGuid().ToString();
-                string insertQuery =
-                    "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
-                MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
-                insertCommand.Parameters.AddWithValue("@id", id);
-                insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
-                await insertCommand.ExecuteNonQueryAsync();
-                projectIds.Add(1, id);
+                if (!projectIds.Any())
+                {
+                    // Project name does not exist, insert a new entry with a generated ID
+                    var id = Guid.NewGuid().ToString();
+                    string insertQuery =
+                        "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+                    MySqlCommand insertCommand = new MySqlCommand(insertQuery, Connection);
+                    insertCommand.Parameters.AddWithValue("@id", id);
+                    insertCommand.Parameters.AddWithValue("@projectNo", projectNo);
+                    await insertCommand.ExecuteNonQueryAsync();
+                    projectIds.Add(1, id);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Insert failed: {ex.Message}");
+                return projectIds;
             }
 
             await CloseConnectionAsync(Connection);
@@ -2874,6 +2978,34 @@ namespace GMEPDesignTool.Database
             );
         }
 
+        public async Task<bool> IsFileUploadedAsync(string key)
+        {
+            var response = await _s3Client.ListObjectsV2Async(new ListObjectsV2Request
+            {
+                BucketName = _bucketName,
+                Prefix = key
+            });
+
+            return response.S3Objects.Any(o => o.Key == key);
+        }
+
+        //test
+        //public async Task ListFilesInBucketAsync()
+        //{
+        //    var request = new ListObjectsV2Request
+        //    {
+        //        BucketName = _bucketName
+        //    };
+
+        //    var response = await _s3Client.ListObjectsV2Async(request);
+
+        //    var files = response.S3Objects
+        //                .Select(entry => $"{entry.Key} ({entry.Size} bytes)")
+        //                .ToList();
+        //    string fileList = string.Join("\n", files);
+        //    int n = files.Count;
+        //    MessageBox.Show(n + "------" + fileList, "S3 Bucket Files");
+        //}
         public async Task UploadFileAsync(string keyName, string filePath)
         {
             try
@@ -2928,6 +3060,43 @@ namespace GMEPDesignTool.Database
                 Process.Start(
                     new ProcessStartInfo { FileName = downloadFilePath, UseShellExecute = true }
                 );
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine(
+                    "Error encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    "Unknown encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
+            }
+        }
+
+        public async Task DownloadFileAsync(string keyName, string downloadFilePath)
+        {
+            try
+            {
+                var getRequest = new GetObjectRequest { BucketName = _bucketName, Key = keyName };
+
+                using (GetObjectResponse response = await _s3Client.GetObjectAsync(getRequest))
+                using (Stream responseStream = response.ResponseStream)
+                using (
+                    FileStream fileStream = new FileStream(
+                        downloadFilePath,
+                        FileMode.Create,
+                        FileAccess.Write
+                    )
+                )
+                {
+                    await responseStream.CopyToAsync(fileStream);
+                    Console.WriteLine("File downloaded successfully.");
+                }
+
             }
             catch (AmazonS3Exception e)
             {

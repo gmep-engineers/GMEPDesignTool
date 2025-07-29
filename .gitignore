@@ -9,6 +9,8 @@ GMEPDesignTool/Properties/Settings.Designer.cs
 
 # Ignore App.config
 GMEPDesignTool/App.config
+GMEPDesignTool/App.xaml.cs
+
 
 # User-specific files
 *.rsuser
