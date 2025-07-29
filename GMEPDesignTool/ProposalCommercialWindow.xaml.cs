@@ -11,6 +11,9 @@ namespace GMEPDesignTool
     {
         static HttpClient client = new HttpClient();
         public Database.S3 s3 = new Database.S3();
+        private string proposal_id;
+        private Database.Database database;
+
         public class PDFRequest
         {
             public string ProjectAddress { get; set; }
@@ -46,7 +49,7 @@ namespace GMEPDesignTool
 
 
         }
-        public ProposalCommercialWindow(ProposalCommercialViewModel vm)
+        public ProposalCommercialWindow(ProposalCommercialViewModel vm, string proposal_id)
         {
             InitializeComponent();
 
@@ -60,6 +63,7 @@ namespace GMEPDesignTool
             );
 
             this.DataContext = vm;
+            this.proposal_id = proposal_id;
         }
 
         private async void generate_Click(object sender, RoutedEventArgs e)
@@ -195,8 +199,9 @@ namespace GMEPDesignTool
                 //    "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 var pdfBytes = await response.Content.ReadAsByteArrayAsync();
                 string keyName = $"{vm.SelectProposalTypeViewModel.TypeId}-{Guid.NewGuid()}.pdf";
-
-
+                database = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
+                database.UpdateProposalById(proposal_id, keyName);
+                MessageBox.Show($"pdfname: {keyName}");
                 string tempFilePath = System.IO.Path.Combine(
                     System.IO.Path.GetTempPath(),
                     keyName

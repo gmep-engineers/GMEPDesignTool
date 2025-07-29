@@ -159,7 +159,21 @@ namespace GMEPDesignTool.Database
             }
             return DateTime.MinValue;
         }
-
+        public async Task UpdateProposalById(string proposal_id, string pdf_name)
+        {
+            string query =
+                @"
+            UPDATE proposals
+            SET proposals.pdf_name = @pdf_name
+            WHERE id = @proposal_id";
+            await OpenConnectionAsync(Connection);
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@pdf_name", pdf_name);
+            command.Parameters.AddWithValue("@proposal_id", proposal_id);
+            await command.ExecuteNonQueryAsync();
+            command.Dispose();
+            await CloseConnectionAsync(Connection);
+        }
         public async Task<ObservableCollection<Proposal>> GetProposals(string projectId)
         {
             ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
