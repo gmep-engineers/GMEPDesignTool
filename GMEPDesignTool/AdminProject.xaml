@@ -94,6 +94,15 @@
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
                         <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>
+                        
+                        <DataGridTemplateColumn Header="Actions" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Download"  Margin="2" Click="Click_to_download" Tag="{Binding ProposalId}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

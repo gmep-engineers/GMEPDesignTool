@@ -181,6 +181,7 @@ namespace GMEPDesignTool.Database
                 @"
                         SELECT 
                             proposals.id,
+                            proposals.pdf_name,
                             proposals.project_id,
                             proposals.date_created AS date_created,
                             proposal_types.type AS type,
@@ -205,6 +206,7 @@ namespace GMEPDesignTool.Database
                         DateCreated = GetSafeDateTime(reader, "date_created"),
                         Type = GetSafeString(reader, "type"),
                         EmployeeUsername = GetSafeString(reader, "username"),
+                        Pdf_name = GetSafeString(reader,"pdf_name")
                     }
                 );
             }
@@ -212,6 +214,47 @@ namespace GMEPDesignTool.Database
             await reader.CloseAsync();
             await CloseConnectionAsync(Connection);
             return proposals;
+        }
+
+        public async Task<Proposal> GetProposalById(string proposalId)
+        {
+            Proposal proposal = null;
+            string query =
+                @"
+                        SELECT 
+                            proposals.id,
+                            proposals.pdf_name,
+                            proposals.project_id,
+                            proposals.date_created AS date_created,
+                            proposal_types.type AS type,
+                            employees.username AS username            
+                        FROM proposals
+                        LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
+                        LEFT JOIN employees ON proposals.employee_id = employees.id
+                        where proposals.id = @proposalId";
+            await OpenConnectionAsync(Connection);
+
+            MySqlCommand command = new MySqlCommand(query, Connection);
+            command.Parameters.AddWithValue("@proposalId", proposalId);
+            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+
+                proposal = new Proposal
+                {
+                    Id = GetSafeString(reader, "id"),
+                    ProjectId = GetSafeString(reader, "project_id"),
+                    DateCreated = GetSafeDateTime(reader, "date_created"),
+                    Type = GetSafeString(reader, "type"),
+                    EmployeeUsername = GetSafeString(reader, "username"),
+                    Pdf_name = GetSafeString(reader, "pdf_name")
+                };
+                
+            }
+
+            await reader.CloseAsync();
+            await CloseConnectionAsync(Connection);
+            return proposal;
         }
 
         public async Task<AdminModel> GetAdminByProjectId(string projectId)
@@ -3017,6 +3060,43 @@ namespace GMEPDesignTool.Database
                 Process.Start(
                     new ProcessStartInfo { FileName = downloadFilePath, UseShellExecute = true }
                 );
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine(
+                    "Error encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    "Unknown encountered on server. Message:'{0}' when reading an object.",
+                    e.Message
+                );
+            }
+        }
+
+        public async Task DownloadFileAsync(string keyName, string downloadFilePath)
+        {
+            try
+            {
+                var getRequest = new GetObjectRequest { BucketName = _bucketName, Key = keyName };
+
+                using (GetObjectResponse response = await _s3Client.GetObjectAsync(getRequest))
+                using (Stream responseStream = response.ResponseStream)
+                using (
+                    FileStream fileStream = new FileStream(
+                        downloadFilePath,
+                        FileMode.Create,
+                        FileAccess.Write
+                    )
+                )
+                {
+                    await responseStream.CopyToAsync(fileStream);
+                    Console.WriteLine("File downloaded successfully.");
+                }
+
             }
             catch (AmazonS3Exception e)
             {
