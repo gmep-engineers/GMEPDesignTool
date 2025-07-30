@@ -44,7 +44,7 @@ namespace GMEPDesignTool
                 ViewModel.TypeId,
                 ProjectId
             );
-            MessageBox.Show($"proposal TypeId: {id}");
+            //MessageBox.Show($"proposal TypeId: {id}");
             CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel);
             ProposalCommercialWindow newWindow = new ProposalCommercialWindow(CommercialViewModel,id);
             newWindow.DataContext = CommercialViewModel;
