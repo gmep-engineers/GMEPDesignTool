@@ -36,63 +36,224 @@ namespace GMEPDesignTool
         public bool StructuralGeoReport
         {
             get { return structuralGeoReport; }
-            set { structuralGeoReport = value; }
+            set {
+                if (structuralGeoReport != value)
+                {
+                    structuralGeoReport = value;
+                    OnPropertyChanged(nameof(StructuralGeoReport));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
 
         private bool structuralFramingDepths = false;
         public bool StructuralFramingDepths
         {
             get { return structuralFramingDepths; }
-            set { structuralFramingDepths = value; }
+            set {
+                if (structuralFramingDepths != value)
+                {
+                    structuralFramingDepths = value;
+                    OnPropertyChanged(nameof(StructuralFramingDepths));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
 
         private bool structuralAnalysis = false;
         public bool StructuralAnalysis
         {
             get { return structuralAnalysis; }
-            set { structuralAnalysis = value; }
+            set {
+                if (structuralAnalysis != value)
+                {
+                    structuralAnalysis = value;
+                    OnPropertyChanged(nameof(StructuralAnalysis));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
 
         private bool structuralPlans = false;
         public bool StructuralPlans
         {
             get { return structuralPlans; }
-            set { structuralPlans = value; }
+            set {
+                if (structuralPlans != value)
+                {
+                    structuralPlans = value;
+                    OnPropertyChanged(nameof(StructuralPlans));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
 
         private bool structuralDetailsCalculations = false;
         public bool StructuralDetailsCalculations
         {
             get { return structuralDetailsCalculations; }
-            set { structuralDetailsCalculations = value; }
+            set {
+                if (structuralDetailsCalculations != value)
+                {
+                    structuralDetailsCalculations = value;
+                    OnPropertyChanged(nameof(StructuralDetailsCalculations));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
 
         private bool structuralCodeCompliance = false;
         public bool StructuralCodeCompliance
         {
             get { return structuralCodeCompliance; }
-            set { structuralCodeCompliance = value; }
+            set {
+                if (structuralCodeCompliance != value)
+                {
+                    structuralCodeCompliance = value;
+                    OnPropertyChanged(nameof(StructuralCodeCompliance));
+                    UpdateStructuralCheckAll();
+                }
+            }
         }
+
+        private bool structuralCheckAll;
+        public bool StructuralCheckAll
+        {
+            get => structuralCheckAll;
+            set
+            {
+                if (structuralCheckAll != value)
+                {
+                    structuralCheckAll = value;
+                    OnPropertyChanged(nameof(StructuralCheckAll));
+
+                    if (value)
+                    {
+                        // Check all
+                        StructuralGeoReport = true;
+                        StructuralFramingDepths = true;
+                        StructuralAnalysis = true;
+                        StructuralPlans = true;
+                        StructuralDetailsCalculations = true;
+                        StructuralCodeCompliance = true;
+                    }
+                    else
+                    {
+                        // Uncheck all
+                        StructuralGeoReport = false;
+                        StructuralFramingDepths = false;
+                        StructuralAnalysis = false;
+                        StructuralPlans = false;
+                        StructuralDetailsCalculations = false;
+                        StructuralCodeCompliance = false;
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateStructuralCheckAll()
+        {
+            bool allChecked =
+                StructuralGeoReport &&
+                StructuralFramingDepths &&
+                StructuralAnalysis &&
+                StructuralPlans &&
+                StructuralDetailsCalculations &&
+                StructuralCodeCompliance;
+
+            if (structuralCheckAll != allChecked)
+            {
+                structuralCheckAll = allChecked;
+                OnPropertyChanged(nameof(StructuralCheckAll));
+            }
+        }
+
 
         private bool mechanicalExhaustSupply = false;
         public bool MechanicalExhaustSupply
         {
             get { return mechanicalExhaustSupply; }
-            set { mechanicalExhaustSupply = value; }
+            set {
+                if (mechanicalExhaustSupply != value)
+                {
+                    mechanicalExhaustSupply = value;
+                    OnPropertyChanged(nameof(MechanicalExhaustSupply));
+                    UpdateMechanicalCheckAll();
+                }
+            }
         }
 
         private bool mechanicalHvacEquipSpec = false;
         public bool MechanicalHvacEquipSpec
         {
             get { return mechanicalHvacEquipSpec; }
-            set { MechanicalHvacEquipSpec = value; }
+            set {
+                if (mechanicalHvacEquipSpec != value)
+                {
+                    mechanicalHvacEquipSpec = value;
+                    OnPropertyChanged(nameof(MechanicalHvacEquipSpec));
+                    UpdateMechanicalCheckAll();
+                }
+            }
         }
 
         private bool mechanicalTitle24 = false;
         public bool MechanicalTitle24
         {
             get { return mechanicalTitle24; }
-            set { value = mechanicalTitle24; }
+            set {
+                if (mechanicalTitle24 != value)
+                {
+                    mechanicalTitle24 = value;
+                    OnPropertyChanged(nameof(MechanicalTitle24));
+                    UpdateMechanicalCheckAll();
+                }
+            }
+        }
+
+        private bool mechanicalCheckAll;
+        public bool MechanicalCheckAll
+        {
+            get => mechanicalCheckAll;
+            set
+            {
+                if (mechanicalCheckAll != value)
+                {
+                    mechanicalCheckAll = value;
+                    OnPropertyChanged(nameof(MechanicalCheckAll));
+
+                    if (value)
+                    {
+                        // Check all
+                        MechanicalExhaustSupply = true;
+                        MechanicalHvacEquipSpec = true;
+                        MechanicalTitle24 = true;
+                    }
+                    else
+                    {
+                        // Uncheck all
+                        MechanicalExhaustSupply = false;
+                        MechanicalHvacEquipSpec = false;
+                        MechanicalTitle24 = false;
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateMechanicalCheckAll()
+        {
+            bool allChecked =
+                MechanicalExhaustSupply &&
+                MechanicalHvacEquipSpec &&
+                MechanicalTitle24;
+
+            if (mechanicalCheckAll != allChecked)
+            {
+                mechanicalCheckAll = allChecked;
+                OnPropertyChanged(nameof(MechanicalCheckAll));
+            }
         }
 
         private bool electricalPowerDesign = false;
