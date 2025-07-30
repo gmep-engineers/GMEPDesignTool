@@ -63,12 +63,16 @@
                     <CheckBox IsChecked="{Binding ElectricalServiceLoadCalc}" Content="Service load calculation" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding ElectricalSingleLineDiagram}" Content="Single line diagrams" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding ElectricalLightingDesign}" Content="Electrical lighting design" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding ElectricalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
+                    
                 </Grid>
             </TabItem>
             <TabItem Header="Plumbing">
                 <Grid Background="#FFE5E5E5">
                     <CheckBox IsChecked="{Binding PlumbingHotColdWater}" Content="Hot and cold water piping design" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <CheckBox IsChecked="{Binding PlumbingWasteVent}" Content="Sewer and vent piping design" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                    <CheckBox IsChecked="{Binding PlumbingCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Scope" Height="20" VerticalAlignment="Top">

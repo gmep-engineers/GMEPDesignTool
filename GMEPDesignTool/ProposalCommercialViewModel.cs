@@ -260,42 +260,172 @@ namespace GMEPDesignTool
         public bool ElectricalPowerDesign
         {
             get { return electricalPowerDesign; }
-            set { electricalPowerDesign = value; }
+            set {
+                if (electricalPowerDesign != value)
+                {
+                    electricalPowerDesign = value;
+                    OnPropertyChanged(nameof(ElectricalPowerDesign));
+                    UpdateElectricalCheckAll();
+                }
+            }
         }
 
         private bool electricalServiceLoadCalc = false;
         public bool ElectricalServiceLoadCalc
         {
             get { return electricalServiceLoadCalc; }
-            set { electricalServiceLoadCalc = value; }
+            set {
+                if (electricalServiceLoadCalc != value)
+                {
+                    electricalServiceLoadCalc = value;
+                    OnPropertyChanged(nameof(ElectricalServiceLoadCalc));
+                    UpdateElectricalCheckAll();
+                }
+            }
         }
 
         private bool electricalSingleLineDiagram = false;
         public bool ElectricalSingleLineDiagram
         {
             get { return electricalSingleLineDiagram; }
-            set { electricalSingleLineDiagram = value; }
+            set {
+                if (electricalSingleLineDiagram != value)
+                {
+                    electricalSingleLineDiagram = value;
+                    OnPropertyChanged(nameof(ElectricalSingleLineDiagram));
+                    UpdateElectricalCheckAll();
+                }
+            }
         }
 
         private bool electricalLightingDesign = false;
         public bool ElectricalLightingDesign
         {
             get { return electricalLightingDesign; }
-            set { electricalLightingDesign = value; }
+            set {
+                if (electricalLightingDesign != value)
+                {
+                    electricalLightingDesign = value;
+                    OnPropertyChanged(nameof(ElectricalLightingDesign));
+                    UpdateElectricalCheckAll();
+                }
+            }
+        }
+
+        private bool electricalCheckAll;
+        public bool ElectricalCheckAll
+        {
+            get => electricalCheckAll;
+            set
+            {
+                if (electricalCheckAll != value)
+                {
+                    electricalCheckAll = value;
+                    OnPropertyChanged(nameof(ElectricalCheckAll));
+
+                    if (value)
+                    {
+                        // Check all
+                        ElectricalPowerDesign = true;
+                        ElectricalServiceLoadCalc = true;
+                        ElectricalSingleLineDiagram = true;
+                        ElectricalLightingDesign = true;
+                    }
+                    else
+                    {
+                        // Uncheck all
+                        ElectricalPowerDesign = false;
+                        ElectricalServiceLoadCalc = false;
+                        ElectricalSingleLineDiagram = false;
+                        ElectricalLightingDesign = false;
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateElectricalCheckAll()
+        {
+            bool allChecked =
+                ElectricalPowerDesign &&
+                ElectricalServiceLoadCalc &&
+                ElectricalSingleLineDiagram &&
+                ElectricalLightingDesign;
+
+            if (electricalCheckAll != allChecked)
+            {
+                electricalCheckAll = allChecked;
+                OnPropertyChanged(nameof(ElectricalCheckAll));
+            }
         }
 
         private bool plumbingHotColdWater = false;
         public bool PlumbingHotColdWater
         {
             get { return plumbingHotColdWater; }
-            set { plumbingHotColdWater = value; }
+            set {
+                if (plumbingHotColdWater != value)
+                {
+                    plumbingHotColdWater = value;
+                    OnPropertyChanged(nameof(PlumbingHotColdWater));
+                    UpdatePlumbingCheckAll();
+                }
+            }
         }
 
         private bool plumbingWasteVent = false;
         public bool PlumbingWasteVent
         {
             get { return plumbingWasteVent; }
-            set { plumbingWasteVent = value; }
+            set {
+                if (plumbingWasteVent != value)
+                {
+                    plumbingWasteVent = value;
+                    OnPropertyChanged(nameof(PlumbingWasteVent));
+                    UpdatePlumbingCheckAll();
+                }
+            }
+        }
+
+        private bool plumbingCheckAll;
+        public bool PlumbingCheckAll
+        {
+            get => plumbingCheckAll;
+            set
+            {
+                if (plumbingCheckAll != value)
+                {
+                    plumbingCheckAll = value;
+                    OnPropertyChanged(nameof(PlumbingCheckAll));
+
+                    if (value)
+                    {
+                        // Check all
+                        PlumbingHotColdWater = true;
+                        PlumbingWasteVent = true;
+                    }
+                    else
+                    {
+                        // Uncheck all
+                        PlumbingHotColdWater = false;
+                        PlumbingWasteVent = false;
+                    }
+                }
+            }
+        }
+
+
+        private void UpdatePlumbingCheckAll()
+        {
+            bool allChecked =
+                PlumbingHotColdWater &&
+                PlumbingWasteVent;
+
+            if (plumbingCheckAll != allChecked)
+            {
+                plumbingCheckAll = allChecked;
+                OnPropertyChanged(nameof(PlumbingCheckAll));
+            }
         }
 
         public ObservableCollection<string> Types { get; set; } =
