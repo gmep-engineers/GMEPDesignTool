@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -371,11 +372,13 @@ namespace GMEPDesignTool
         public Database.Database Database { get; set; }
 
         public Employee? SelectedEmployee { get; set; }
+        public ObservableCollection<Employee> AllEmployees { get; set; }
 
         public EmployeesViewModel(LoginResponse loginResponse)
         {
             Database = new Database.Database(loginResponse.SqlConnectionString);
-            Employees = Database.GetEmployees();
+            AllEmployees = new ObservableCollection<Employee>(Database.GetEmployees());
+
         }
 
         public void OpenUpdatePasswordWindow()
