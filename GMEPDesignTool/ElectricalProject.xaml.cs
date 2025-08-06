@@ -4,12 +4,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Net.Quic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Amazon.S3.Model;
 using GongSolutions.Wpf.DragDrop;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
@@ -1570,6 +1572,69 @@ namespace GMEPDesignTool
                 }
             }
             catch { }
+        }
+        private void Duplicate_Click(object sender, RoutedEventArgs args)
+        {
+            try
+            {
+                var selectedEquipment = ElectricalEquipmentDataGrid
+                    .SelectedItems.Cast<ElectricalEquipment>()
+                    .ToList();
+                foreach (ElectricalEquipment equipment in selectedEquipment)
+                {
+                    CopyElectricalEquipment(equipment);
+                }
+            }
+            catch { }
+        }
+        public void CopyElectricalEquipment(ElectricalEquipment equipment)
+        {
+            var copied = new ElectricalEquipment
+            (
+                Guid.NewGuid().ToString(), // generate new ID
+                projectId:equipment.ProjectId,
+                owner: equipment.Owner,
+                equipment.EquipNo,
+                equipment.Qty,
+                equipment.ParentId,
+                equipment.Voltage,
+                equipment.Fla,
+                equipment.Va,
+                equipment.Is3Ph,
+                equipment.SpecSheetId,
+                equipment.AicRating,
+                equipment.SpecSheetFromClient,
+                equipment.DistanceFromParent,
+                equipment.Category,
+                equipment.ColorCode,
+                equipment.Powered,
+                equipment.Connection,
+                equipment.Description,
+                equipment.MocpId,
+                equipment.Hp,
+                equipment.HasPlug,
+                equipment.LockingConnector,
+                equipment.Width,
+                equipment.Depth,
+                equipment.Height,
+                equipment.CircuitNo,
+                equipment.IsHiddenOnPlan,
+                equipment.LoadType,
+                equipment.OrderNo,
+                equipment.StatusId,
+                equipment.ConnectionSymbolId,
+                equipment.NumConvDuplex,
+                equipment.circuitHalf,
+                equipment.PhaseAVA,
+                equipment.PhaseBVA,
+                equipment.PhaseCVA
+
+            );
+
+            // Re-subscribe to property changed event if needed
+            copied.PropertyChanged += ElectricalEquipment_PropertyChanged;
+
+            ElectricalEquipments.Add(copied);
         }
 
         private void RemoveSelectedElectricalLighting_Click(object sender, RoutedEventArgs e)
