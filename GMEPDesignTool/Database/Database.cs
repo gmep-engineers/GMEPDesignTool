@@ -159,6 +159,7 @@ namespace GMEPDesignTool.Database
             }
             return DateTime.MinValue;
         }
+
         public async Task UpdateProposalById(string proposal_id, string pdf_name)
         {
             string query =
@@ -174,6 +175,7 @@ namespace GMEPDesignTool.Database
             command.Dispose();
             await CloseConnectionAsync(Connection);
         }
+
         public async Task<ObservableCollection<Proposal>> GetProposals(string projectId)
         {
             ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
@@ -192,7 +194,7 @@ namespace GMEPDesignTool.Database
                         where proposals.project_id = @projectId
                         order by date_created DESC";
             await OpenConnectionAsync(Connection);
-            
+
             MySqlCommand command = new MySqlCommand(query, Connection);
             command.Parameters.AddWithValue("@projectId", projectId);
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -206,7 +208,7 @@ namespace GMEPDesignTool.Database
                         DateCreated = GetSafeDateTime(reader, "date_created"),
                         Type = GetSafeString(reader, "type"),
                         EmployeeUsername = GetSafeString(reader, "username"),
-                        Pdf_name = GetSafeString(reader,"pdf_name")
+                        Pdf_name = GetSafeString(reader, "pdf_name"),
                     }
                 );
             }
@@ -239,7 +241,6 @@ namespace GMEPDesignTool.Database
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-
                 proposal = new Proposal
                 {
                     Id = GetSafeString(reader, "id"),
@@ -247,9 +248,8 @@ namespace GMEPDesignTool.Database
                     DateCreated = GetSafeDateTime(reader, "date_created"),
                     Type = GetSafeString(reader, "type"),
                     EmployeeUsername = GetSafeString(reader, "username"),
-                    Pdf_name = GetSafeString(reader, "pdf_name")
+                    Pdf_name = GetSafeString(reader, "pdf_name"),
                 };
-                
             }
 
             await reader.CloseAsync();
@@ -2980,11 +2980,9 @@ namespace GMEPDesignTool.Database
 
         public async Task<bool> IsFileUploadedAsync(string key)
         {
-            var response = await _s3Client.ListObjectsV2Async(new ListObjectsV2Request
-            {
-                BucketName = _bucketName,
-                Prefix = key
-            });
+            var response = await _s3Client.ListObjectsV2Async(
+                new ListObjectsV2Request { BucketName = _bucketName, Prefix = key }
+            );
 
             return response.S3Objects.Any(o => o.Key == key);
         }
@@ -3096,7 +3094,6 @@ namespace GMEPDesignTool.Database
                     await responseStream.CopyToAsync(fileStream);
                     Console.WriteLine("File downloaded successfully.");
                 }
-
             }
             catch (AmazonS3Exception e)
             {
