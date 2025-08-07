@@ -979,7 +979,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridTextColumn Binding="{Binding AicRating, StringFormat=N2}" Header="Aic Rating"/>
+                                        <DataGridTextColumn Binding="{Binding AicRating, StringFormat=N0}" Header="Aic Rating"/>
 
                                         <DataGridTemplateColumn Header="Load Summary">
                                             <DataGridTemplateColumn.CellTemplate>
