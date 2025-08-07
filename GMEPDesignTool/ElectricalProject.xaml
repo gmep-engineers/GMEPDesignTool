@@ -711,6 +711,7 @@
                                                         <ComboBoxItem Content="EM (Bug Eye)" Tag="9"/>
                                                         <ComboBoxItem Content="Exit (Sign Only)" Tag="10"/>
                                                         <ComboBoxItem Content="Exit Sign Light Combo" Tag="11"/>
+                                                        <ComboBoxItem Content="Custom" Tag="0"/>
                                                         <!--
                                                         <ComboBoxItem Content="Decorative Round 6&quot;" Tag="9"/>
                                                         <ComboBoxItem Content="Decorative Round 8&quot;" Tag="10"/>
