@@ -172,9 +172,9 @@
                                         <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
-                                                    <ComboBoxItem Content="Existing" Tag="0" />
                                                     <ComboBoxItem Content="New" Tag="1" />
-                                                    <ComboBoxItem Content="Relocated" Tag="2" />
+                                                    <ComboBoxItem Content="Existing" Tag="2" />
+                                                    <ComboBoxItem Content="Relocated" Tag="3" />
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
