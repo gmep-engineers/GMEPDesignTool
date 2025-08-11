@@ -149,9 +149,11 @@
                                                     <ComboBoxItem Content="Plumbing" Tag="3"/>
                                                     <ComboBoxItem Content="Kitchen" Tag="4"/>
                                                     <ComboBoxItem Content="Lighting" Tag="5"/>
-                                                    <ComboBoxItem Content="Signage" Tag="6"/>
+                                                    <ComboBoxItem Content="Signage(Outdoor)" Tag="6"/>
+                                                    <ComboBoxItem Content="Signage(Indoor)" Tag="8"/>
                                                     <ComboBoxItem Content="Conv. Rec." Tag="7"/>
                                                 </CompositeCollection>
+                                                
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
                                         
