@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="ProposalWindow" Height="450" Width="800">
+        Title="ProposalWindow" Height="450" Width="1042">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -75,7 +75,7 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Scope" Height="20" VerticalAlignment="Top">
+            <TabItem Header="Scope" Height="20" VerticalAlignment="Bottom">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid Margin="10,20,40,10" >
                         <Grid.ColumnDefinitions>
@@ -128,8 +128,8 @@
                             <TextBox Grid.Column="0" x:Name="ClientCityBox" Margin="80,0,0,10" />
                             <Label Grid.Column="1" Content="Client State" VerticalAlignment="Center" />
                             <TextBox Grid.Column="1" x:Name="ClientStateBox" Margin="80,0,0,10" />
-                            <Label Grid.Column="2" Content="Client Zipcode" VerticalAlignment="Center" />
-                            <TextBox Grid.Column="2" x:Name="ClientZipcodeBox" Margin="90,0,0,0" Height="30" VerticalAlignment="Top" />
+                            <Label Grid.Column="2" Content="Client Zip" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="2" x:Name="ClientZipcodeBox" Margin="80,0,0,0" Height="30" VerticalAlignment="Top" />
                         </Grid>
                         <Grid Grid.Row="8" Grid.ColumnSpan="2" Margin="10,30,0,0">
                             <Grid.ColumnDefinitions>
@@ -151,7 +151,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <CheckBox Grid.Row="8" Content="Indoor CommonArea" IsChecked="{Binding HasIndoorCommonArea }"  Height="20" Grid.Column="0"/>
+                            <CheckBox Grid.Row="8" Content="Indoor Common Area" IsChecked="{Binding HasIndoorCommonArea }"  Height="20" Grid.Column="0"/>
                             <CheckBox Grid.Row="8" Content="Garage Exhaust" IsChecked="{Binding HasGarageExhaust }" Height="20" Grid.Column="1"/>
                             <CheckBox Grid.Row="8" Content="Site Lighting" IsChecked="{Binding HasSiteLighting }" Height="20" Grid.Column="2"/>
                             
