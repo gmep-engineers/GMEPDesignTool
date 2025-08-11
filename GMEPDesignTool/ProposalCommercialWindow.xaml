@@ -160,10 +160,33 @@
                         <DatePicker Grid.Row="10" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateSent}"/>
                         <Label Grid.Row="11" Content="NumMeetings"  Margin="0,0,0,10" />
                         <TextBox Grid.Row="11" x:Name="NumMeetingsBox" Margin="0,0,0,10" Grid.Column="1" />
-                        <Label Grid.Row="12" Content="TarrarNo"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="12" x:Name="TarrarNoBox" Margin="0,0,0,10" Grid.Column="1" />
-                        <Label Grid.Row="13" Content="Drawings Received"  Margin="0,0,0,10" />
-                        <DatePicker Grid.Row="13" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
+                        <Label Grid.Row="12" Content="Drawings Received"  Margin="0,0,0,10" />
+                        <DatePicker Grid.Row="12" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
+                        <Label Grid.Row="13" Content="TarrarNo" Margin="0,0,0,10">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TypeId}" Value="4">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <TextBox Grid.Row="13" x:Name="TarrarNoBox" Margin="0,0,0,10" Grid.Column="4">
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TypeId}" Value="4">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+
                     </Grid>
                 </ScrollViewer>
             </TabItem>

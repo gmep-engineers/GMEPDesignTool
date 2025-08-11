@@ -24,7 +24,7 @@ namespace GMEPDesignTool
         LoginResponse LoginResponse { get; set; }
         AdminViewModel adminViewModel { get; set; }
         string ProjectId { get; set; }
-
+        
         public SelectProposalTypeWindow(LoginResponse loginResponse, string projectId, AdminViewModel adminViewModel)
         {
             InitializeComponent();
@@ -44,7 +44,7 @@ namespace GMEPDesignTool
                 ViewModel.TypeId,
                 ProjectId
             );
-            //MessageBox.Show($"proposal TypeId: {id}");
+            //MessageBox.Show($"proposal TypeId: {ViewModel.TypeId}");
             CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel);
             ProposalCommercialWindow newWindow = new ProposalCommercialWindow(CommercialViewModel,id);
             newWindow.DataContext = CommercialViewModel;
