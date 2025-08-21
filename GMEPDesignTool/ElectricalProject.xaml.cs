@@ -1573,6 +1573,7 @@ namespace GMEPDesignTool
             }
             catch { }
         }
+
         private void Duplicate_Click(object sender, RoutedEventArgs args)
         {
             try
@@ -1587,12 +1588,12 @@ namespace GMEPDesignTool
             }
             catch { }
         }
+
         public void CopyElectricalEquipment(ElectricalEquipment equipment)
         {
-            var copied = new ElectricalEquipment
-            (
+            var copied = new ElectricalEquipment(
                 Guid.NewGuid().ToString(), // generate new ID
-                projectId:equipment.ProjectId,
+                projectId: equipment.ProjectId,
                 owner: equipment.Owner,
                 equipment.EquipNo,
                 equipment.Qty,
@@ -1600,6 +1601,7 @@ namespace GMEPDesignTool
                 equipment.Voltage,
                 equipment.Fla,
                 equipment.Va,
+                equipment.OriginalVa,
                 equipment.Is3Ph,
                 equipment.SpecSheetId,
                 equipment.AicRating,
@@ -1628,7 +1630,6 @@ namespace GMEPDesignTool
                 equipment.PhaseAVA,
                 equipment.PhaseBVA,
                 equipment.PhaseCVA
-
             );
 
             // Re-subscribe to property changed event if needed
@@ -1935,6 +1936,7 @@ namespace GMEPDesignTool
                 1,
                 0,
                 0,
+                0,
                 false,
                 "",
                 0,
@@ -2008,6 +2010,7 @@ namespace GMEPDesignTool
                     electricalEquipment.Voltage,
                     electricalEquipment.Fla,
                     electricalEquipment.Va,
+                    electricalEquipment.OriginalVa,
                     electricalEquipment.Is3Ph,
                     "",
                     0,
