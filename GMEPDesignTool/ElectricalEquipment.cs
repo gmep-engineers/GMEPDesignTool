@@ -34,6 +34,7 @@ namespace GMEPDesignTool
         private bool hasPlug = true;
         private bool lockingConnector = false;
         private float va = 0;
+        private float originalVa = 0;
         private bool isHiddenOnPlan = false;
         private int loadType = 1;
         private string circuits = string.Empty;
@@ -52,6 +53,7 @@ namespace GMEPDesignTool
             int voltage,
             float fla,
             float va,
+            float originalVa,
             bool is3Ph,
             string specSheetId,
             int aicRating,
@@ -91,6 +93,7 @@ namespace GMEPDesignTool
             this.voltage = voltage;
             this.fla = fla;
             this.va = va;
+            this.originalVa = originalVa;
             this.amp = fla;
             this.is3Ph = is3Ph;
             this.statusId = statusId;
@@ -406,10 +409,18 @@ namespace GMEPDesignTool
                     DetermineLoadCategory();
                     OnPropertyChanged(nameof(Category));
                     LoadType = 1;
-                    if (category == 5) { LoadType = 3;  }
-                    if (category == 2) { LoadType = 2; }
-                    if (category == 6) { LoadType = 3; }
-                    
+                    if (category == 5)
+                    {
+                        LoadType = 3;
+                    }
+                    if (category == 2)
+                    {
+                        LoadType = 2;
+                    }
+                    if (category == 6)
+                    {
+                        LoadType = 3;
+                    }
                 }
             }
         }
@@ -520,10 +531,29 @@ namespace GMEPDesignTool
             {
                 if (va != value)
                 {
+                    if (va == 0)
+                    {
+                        originalVa = value;
+                    }
                     va = value;
                     SetPhaseVa();
                     SetFla();
                     OnPropertyChanged(nameof(Va));
+                }
+            }
+        }
+
+        public float OriginalVa
+        {
+            get => originalVa;
+            set
+            {
+                if (va != value)
+                {
+                    originalVa = value;
+                    SetPhaseVa();
+                    SetFla();
+                    OnPropertyChanged(nameof(OriginalVa));
                 }
             }
         }

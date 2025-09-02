@@ -615,6 +615,25 @@ namespace GMEPDesignTool
                     }
                 }
             }
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (ElectricalPanelNote addedItem in e.NewItems)
+                {
+                    LeftNotes.Add(
+                        new ElectricalPanelNoteRel(
+                            addedItem.Id,
+                            Panel.ProjectId,
+                            Panel.id,
+                            addedItem.Id,
+                            "",
+                            0,
+                            0,
+                            0,
+                            addedItem.Tag
+                        )
+                    );
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

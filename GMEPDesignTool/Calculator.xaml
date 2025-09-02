@@ -37,7 +37,7 @@
                                                     IsEnabled="False" 
                                                     SelectedValue="{Binding Type}" SelectedValuePath="Tag">
                                                     <ComboBoxItem Content="120/208V 3-Φ" Tag="1" />
-                                                    <ComboBoxItem Content="120/240V 1-Φ" Tag="2" />
+                                                    <ComboBoxItem Content="120/2a40V 1-Φ" Tag="2" />
                                                     <ComboBoxItem Content="277/480V 3-Φ" Tag="3" />
                                                     <ComboBoxItem Content="120/240V 3-Φ" Tag="4" />
 

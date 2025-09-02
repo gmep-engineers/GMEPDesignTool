@@ -13,6 +13,7 @@ namespace GMEPDesignTool
         public ProposalCommercialViewModel(AdminViewModel adminViewModel, SelectProposalTypeViewModel selectProposalTypeViewModel) {
             this.adminViewModel = adminViewModel;
             this.selectProposalTypeViewModel = selectProposalTypeViewModel;
+            TypeId = selectProposalTypeViewModel.TypeId;
         }
 
         private AdminViewModel adminViewModel;
@@ -22,6 +23,8 @@ namespace GMEPDesignTool
             set { adminViewModel = value; }
 
         }
+
+        public int TypeId { get; set; }
 
 
         private SelectProposalTypeViewModel selectProposalTypeViewModel;

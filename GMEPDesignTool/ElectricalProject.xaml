@@ -53,7 +53,8 @@
                                             <ComboBoxItem Content="Plumbing" Tag="3"/>
                                             <ComboBoxItem Content="Kitchen" Tag="4"/>
                                             <ComboBoxItem Content="Lighting" Tag="5"/>
-                                            <ComboBoxItem Content="Signage" Tag="6"/>
+                                            <ComboBoxItem Content="Signage(Outdoor)" Tag="6"/>
+                                            <ComboBoxItem Content="Signage(Indoor)" Tag="8"/>
                                             <ComboBoxItem Content="Conv. Rec." Tag="7"/>
                                         </ComboBox>
                                         <Label Content="Panel" Margin="150 3 0 0"/>
@@ -104,6 +105,7 @@
                                         <ContextMenu Name="ElectricalEquipmentContextMenu">
                                             <MenuItem Header="Remove" Click="RemoveSelectedElectricalEquipment_Click"/>
                                             <MenuItem Header="Set VA Per Phase" Click="SetVaPerPhase_Click"/>
+                                            <MenuItem Header="Duplicate" Click="Duplicate_Click"/>
                                         </ContextMenu>
                                     </DataGrid.ContextMenu>
                                     <DataGrid.Columns>
@@ -148,32 +150,20 @@
                                                     <ComboBoxItem Content="Plumbing" Tag="3"/>
                                                     <ComboBoxItem Content="Kitchen" Tag="4"/>
                                                     <ComboBoxItem Content="Lighting" Tag="5"/>
-                                                    <ComboBoxItem Content="Signage" Tag="6"/>
+                                                    <ComboBoxItem Content="Signage(Outdoor)" Tag="6"/>
+                                                    <ComboBoxItem Content="Signage(Indoor)" Tag="8"/>
                                                     <ComboBoxItem Content="Conv. Rec." Tag="7"/>
                                                 </CompositeCollection>
+                                                
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Num Conv. Duplex" SelectedValueBinding="{Binding NumConvDuplex, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
-                                            <DataGridComboBoxColumn.ItemsSource>
-                                                <CompositeCollection>
-                                                    <ComboBoxItem Content="0" Tag="0"/>
-                                                    <ComboBoxItem Content="1" Tag="1"/>
-                                                    <ComboBoxItem Content="2" Tag="2"/>
-                                                    <ComboBoxItem Content="3" Tag="3"/>
-                                                    <ComboBoxItem Content="4" Tag="4"/>
-                                                    <ComboBoxItem Content="5" Tag="5"/>
-                                                    <ComboBoxItem Content="6" Tag="6"/>
-                                                    <ComboBoxItem Content="7" Tag="7"/>
-                                                    <ComboBoxItem Content="8" Tag="8"/>
-                                                </CompositeCollection>
-                                            </DataGridComboBoxColumn.ItemsSource>
-                                        </DataGridComboBoxColumn>
+                                        
                                         <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
-                                                    <ComboBoxItem Content="Existing" Tag="0" />
                                                     <ComboBoxItem Content="New" Tag="1" />
-                                                    <ComboBoxItem Content="Relocated" Tag="2" />
+                                                    <ComboBoxItem Content="Existing" Tag="2" />
+                                                    <ComboBoxItem Content="Relocated" Tag="3" />
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
@@ -473,6 +463,21 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
+                                        <DataGridComboBoxColumn Header="Num Conv. Duplex" SelectedValueBinding="{Binding NumConvDuplex, UpdateSourceTrigger=LostFocus}" IsReadOnly="True" SelectedValuePath="Tag">
+                                            <DataGridComboBoxColumn.ItemsSource>
+                                                <CompositeCollection>
+                                                    <ComboBoxItem Content="0" Tag="0"/>
+                                                    <ComboBoxItem Content="1" Tag="1"/>
+                                                    <ComboBoxItem Content="2" Tag="2"/>
+                                                    <ComboBoxItem Content="3" Tag="3"/>
+                                                    <ComboBoxItem Content="4" Tag="4"/>
+                                                    <ComboBoxItem Content="5" Tag="5"/>
+                                                    <ComboBoxItem Content="6" Tag="6"/>
+                                                    <ComboBoxItem Content="7" Tag="7"/>
+                                                    <ComboBoxItem Content="8" Tag="8"/>
+                                                </CompositeCollection>
+                                            </DataGridComboBoxColumn.ItemsSource>
+                                        </DataGridComboBoxColumn>
                                         <DataGridTemplateColumn Header="Spec Sheet">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
@@ -710,6 +715,7 @@
                                                         <ComboBoxItem Content="EM (Bug Eye)" Tag="9"/>
                                                         <ComboBoxItem Content="Exit (Sign Only)" Tag="10"/>
                                                         <ComboBoxItem Content="Exit Sign Light Combo" Tag="11"/>
+                                                        <ComboBoxItem Content="Custom" Tag="0"/>
                                                         <!--
                                                         <ComboBoxItem Content="Decorative Round 6&quot;" Tag="9"/>
                                                         <ComboBoxItem Content="Decorative Round 8&quot;" Tag="10"/>
@@ -978,6 +984,8 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
+                                        <DataGridTextColumn Binding="{Binding AicRating, StringFormat=N0}" Header="Aic Rating"/>
+
                                         <DataGridTemplateColumn Header="Load Summary">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>

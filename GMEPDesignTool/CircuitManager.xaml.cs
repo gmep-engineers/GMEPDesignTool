@@ -633,28 +633,23 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i++)
-                        {
-                            Spare spare = new Spare(
-                                1,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.leftComponents.Add(spare);
-                        }
+                        Spare spare = new Spare(
+                            1,
+                            mocpId,
+                            Panel,
+                            selectedItems.ElementAt(0).number
+                        );
+                        selectedItems.ElementAt(0).EquipId = spare.Id;
+                        selectedItems.ElementAt(0).Description = spare.EquipNo;
+                        selectedItems.ElementAt(0).BreakerSize = mocp;
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.leftComponents.Add(spare);
                     }
                 }
             }
@@ -665,6 +660,20 @@ namespace GMEPDesignTool
             var selectedItems = LeftCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number);
+
+            int startCircuitNumber = selectedItems.ElementAt(0).Number;
+            var allItems = LeftCircuitGrid.Items.Cast<Circuit>().OrderBy(circuit => circuit.Number);
+
+            List<Circuit> targetItems = new List<Circuit>();
+            targetItems.Add(selectedItems.ElementAt(0));
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 2)
+            );
+
+            if (targetItems.ElementAt(1) == null)
+            {
+                return;
+            }
             if (sender is MenuItem item)
             {
                 string mocpIdStr = item.Tag.ToString();
@@ -675,36 +684,22 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i += 2)
-                        {
-                            if (i == selectedItems.Count() - 1)
-                            {
-                                return;
-                            }
-                            Spare spare = new Spare(
-                                2,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).Number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                        Spare spare = new Spare(2, mocpId, Panel, targetItems.ElementAt(0).Number);
+                        targetItems.ElementAt(0).EquipId = spare.Id;
+                        targetItems.ElementAt(0).Description = spare.EquipNo;
+                        targetItems.ElementAt(0).BreakerSize = mocp;
 
-                            selectedItems.ElementAt(i + 1).Description = "---";
-                            selectedItems.ElementAt(i + 1).BreakerSize = 2;
+                        targetItems.ElementAt(1).Description = "---";
+                        targetItems.ElementAt(1).BreakerSize = 2;
 
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.leftComponents.Add(spare);
-                        }
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.leftComponents.Add(spare);
                     }
                 }
             }
@@ -715,6 +710,24 @@ namespace GMEPDesignTool
             var selectedItems = LeftCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number);
+
+            int startCircuitNumber = selectedItems.ElementAt(0).Number;
+            var allItems = LeftCircuitGrid.Items.Cast<Circuit>().OrderBy(circuit => circuit.Number);
+
+            List<Circuit> targetItems = new List<Circuit>();
+            targetItems.Add(selectedItems.ElementAt(0));
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 2)
+            );
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 4)
+            );
+
+            if (targetItems.ElementAt(1) == null || targetItems.ElementAt(2) == null)
+            {
+                return;
+            }
+
             if (sender is MenuItem item)
             {
                 string mocpIdStr = item.Tag.ToString();
@@ -725,36 +738,22 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i += 3)
-                        {
-                            if (i == selectedItems.Count() - 2)
-                            {
-                                return;
-                            }
-                            Spare spare = new Spare(
-                                3,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                        Spare spare = new Spare(3, mocpId, Panel, targetItems.ElementAt(0).number);
+                        targetItems.ElementAt(0).EquipId = spare.Id;
+                        targetItems.ElementAt(0).Description = spare.EquipNo;
+                        targetItems.ElementAt(0).BreakerSize = mocp;
 
-                            selectedItems.ElementAt(i + 1).Description = "---";
-                            selectedItems.ElementAt(i + 2).Description = "---";
-                            selectedItems.ElementAt(i + 2).BreakerSize = 3;
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.leftComponents.Add(spare);
-                        }
+                        targetItems.ElementAt(1).Description = "---";
+                        targetItems.ElementAt(2).Description = "---";
+                        targetItems.ElementAt(2).BreakerSize = 3;
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.leftComponents.Add(spare);
                     }
                 }
             }
@@ -775,28 +774,23 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i++)
-                        {
-                            Spare spare = new Spare(
-                                1,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.rightComponents.Add(spare);
-                        }
+                        Spare spare = new Spare(
+                            1,
+                            mocpId,
+                            Panel,
+                            selectedItems.ElementAt(0).number
+                        );
+                        selectedItems.ElementAt(0).EquipId = spare.Id;
+                        selectedItems.ElementAt(0).Description = spare.EquipNo;
+                        selectedItems.ElementAt(0).BreakerSize = mocp;
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.rightComponents.Add(spare);
                     }
                 }
             }
@@ -807,6 +801,22 @@ namespace GMEPDesignTool
             var selectedItems = RightCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number);
+
+            int startCircuitNumber = selectedItems.ElementAt(0).Number;
+            var allItems = RightCircuitGrid
+                .Items.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+
+            List<Circuit> targetItems = new List<Circuit>();
+            targetItems.Add(selectedItems.ElementAt(0));
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 2)
+            );
+
+            if (targetItems.ElementAt(1) == null)
+            {
+                return;
+            }
             if (sender is MenuItem item)
             {
                 string mocpIdStr = item.Tag.ToString();
@@ -817,36 +827,22 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i += 2)
-                        {
-                            if (i == selectedItems.Count() - 1)
-                            {
-                                return;
-                            }
-                            Spare spare = new Spare(
-                                2,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).Number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                        Spare spare = new Spare(2, mocpId, Panel, targetItems.ElementAt(0).Number);
+                        targetItems.ElementAt(0).EquipId = spare.Id;
+                        targetItems.ElementAt(0).Description = spare.EquipNo;
+                        targetItems.ElementAt(0).BreakerSize = mocp;
 
-                            selectedItems.ElementAt(i + 1).Description = "---";
-                            selectedItems.ElementAt(i + 1).BreakerSize = 2;
+                        targetItems.ElementAt(1).Description = "---";
+                        targetItems.ElementAt(1).BreakerSize = 2;
 
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.rightComponents.Add(spare);
-                        }
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.rightComponents.Add(spare);
                     }
                 }
             }
@@ -857,6 +853,26 @@ namespace GMEPDesignTool
             var selectedItems = RightCircuitGrid
                 .SelectedItems.Cast<Circuit>()
                 .OrderBy(circuit => circuit.Number);
+
+            int startCircuitNumber = selectedItems.ElementAt(0).Number;
+            var allItems = RightCircuitGrid
+                .Items.Cast<Circuit>()
+                .OrderBy(circuit => circuit.Number);
+
+            List<Circuit> targetItems = new List<Circuit>();
+            targetItems.Add(selectedItems.ElementAt(0));
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 2)
+            );
+            targetItems.Add(
+                allItems.FirstOrDefault(circuit => circuit.Number == startCircuitNumber + 4)
+            );
+
+            if (targetItems.ElementAt(1) == null || targetItems.ElementAt(2) == null)
+            {
+                return;
+            }
+
             if (sender is MenuItem item)
             {
                 string mocpIdStr = item.Tag.ToString();
@@ -867,36 +883,22 @@ namespace GMEPDesignTool
                     int mocp;
                     if (int.TryParse(mocpStr, out mocp))
                     {
-                        for (int i = 0; i < selectedItems.Count(); i += 3)
-                        {
-                            if (i == selectedItems.Count() - 2)
-                            {
-                                return;
-                            }
-                            Spare spare = new Spare(
-                                3,
-                                mocpId,
-                                Panel,
-                                selectedItems.ElementAt(i).number
-                            );
-                            selectedItems.ElementAt(i).EquipId = spare.Id;
-                            selectedItems.ElementAt(i).Description = spare.EquipNo;
-                            selectedItems.ElementAt(i).BreakerSize = mocp;
+                        Spare spare = new Spare(3, mocpId, Panel, targetItems.ElementAt(0).number);
+                        targetItems.ElementAt(0).EquipId = spare.Id;
+                        targetItems.ElementAt(0).Description = spare.EquipNo;
+                        targetItems.ElementAt(0).BreakerSize = mocp;
 
-                            selectedItems.ElementAt(i + 1).Description = "---";
-                            selectedItems.ElementAt(i + 2).Description = "---";
-                            selectedItems.ElementAt(i + 2).BreakerSize = 3;
-                            MySqlConnection conn = new MySqlConnection(
-                                Panel.Database.ConnectionString
-                            );
-                            await Panel.Database.OpenConnectionAsync(conn);
-                            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
-                            await Panel.Database.CloseConnectionAsync(conn);
-                            ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
-                                spare
-                            );
-                            Panel.rightComponents.Add(spare);
-                        }
+                        targetItems.ElementAt(1).Description = "---";
+                        targetItems.ElementAt(2).Description = "---";
+                        targetItems.ElementAt(2).BreakerSize = 3;
+                        MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
+                        await Panel.Database.OpenConnectionAsync(conn);
+                        await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+                        await Panel.Database.CloseConnectionAsync(conn);
+                        ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(
+                            spare
+                        );
+                        Panel.rightComponents.Add(spare);
                     }
                 }
             }

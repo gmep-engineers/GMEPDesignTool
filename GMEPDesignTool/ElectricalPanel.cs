@@ -832,6 +832,7 @@ namespace GMEPDesignTool
                     this.Id,
                     voltageId,
                     (float)Convert.ToDouble(equipVa) / 120,
+                    (float)Convert.ToDouble(equipVa) / 120,
                     equipVa,
                     is3Phase,
                     "",
