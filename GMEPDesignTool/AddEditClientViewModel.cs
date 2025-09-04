@@ -6,11 +6,5 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class User
-  {
-    public string Name { get; set; }
-    public Dictionary<string, string> Colors { get; set; }
-
-    public User() { }
-  }
+  internal class AddEditClientViewModel { }
 }

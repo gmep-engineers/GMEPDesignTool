@@ -14,6 +14,7 @@ namespace GMEPDesignTool
     public List<ElectricalEquipment> EquipmentList;
     public DateTime LastSaved;
     public List<string> sqlActions;
+
     public Electrical()
     {
       ServiceList = new List<ElectricalService>();
@@ -21,45 +22,74 @@ namespace GMEPDesignTool
       EquipmentList = new List<ElectricalEquipment>();
       sqlActions = new List<string>();
     }
+
     public void AddService(ElectricalService electricalService)
     {
-      if (!electricalService.Verify()) { return; }
+      if (!electricalService.Verify())
+      {
+        return;
+      }
       ServiceList.Add(electricalService);
-      sqlActions.Add($"INSERT INTO electrical_services VALUES('{electricalService.Id}', '{electricalService.Name}', '{electricalService.ProjectId}')");
+      sqlActions.Add(
+        $"INSERT INTO electrical_services VALUES('{electricalService.Id}', '{electricalService.Name}', '{electricalService.ProjectId}')"
+      );
     }
+
     public void UpdateService(int serviceIndex, ElectricalService updatedElectricalService)
     {
-      if (!updatedElectricalService.Verify()) { return; }
+      if (!updatedElectricalService.Verify())
+      {
+        return;
+      }
       ServiceList[serviceIndex] = updatedElectricalService;
     }
+
     public void RemoveService(int serviceIndex)
     {
       ServiceList.RemoveAt(serviceIndex);
     }
+
     public void AddPanel(ElectricalPanel panel)
     {
-      if (!panel.Verify()) { return; }
+      if (!panel.Verify())
+      {
+        return;
+      }
       PanelList.Add(panel);
     }
+
     public void UpdatePanel(int panelIndex, ElectricalPanel updatedPanel)
     {
-      if (!updatedPanel.Verify()) { return; }
+      if (!updatedPanel.Verify())
+      {
+        return;
+      }
       PanelList[panelIndex] = updatedPanel;
     }
+
     public void RemovePanel(int panelIndex)
     {
       PanelList.RemoveAt(panelIndex);
     }
+
     public void AddEquipment(ElectricalEquipment equipment)
     {
-      if (!equipment.Verify()) { return; }
+      if (!equipment.Verify())
+      {
+        return;
+      }
       EquipmentList.Add(equipment);
     }
+
     public void UpdateEquipment(int equipmentIndex, ElectricalEquipment updatedEquipment)
     {
-      if (!updatedEquipment.Verify()) { return; }
+      if (!updatedEquipment.Verify())
+      {
+        return;
+      }
       EquipmentList[equipmentIndex] = updatedEquipment;
     }
+
     public void RemoveEquipment(int equipmentIndex)
     {
       EquipmentList.RemoveAt(equipmentIndex);

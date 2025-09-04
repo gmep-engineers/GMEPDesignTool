@@ -14,29 +14,29 @@ using System.Windows.Shapes;
 
 namespace GMEPDesignTool
 {
-    /// <summary>
-    /// Interaction logic for SetVaPerPhaseWindow.xaml
-    /// </summary>
-    public partial class SetVaPerPhaseWindow : Window
+  /// <summary>
+  /// Interaction logic for SetVaPerPhaseWindow.xaml
+  /// </summary>
+  public partial class SetVaPerPhaseWindow : Window
+  {
+    SetVaPerPhaseViewModel ViewModel;
+
+    public SetVaPerPhaseWindow(ElectricalEquipment equip)
     {
-        SetVaPerPhaseViewModel ViewModel;
-
-        public SetVaPerPhaseWindow(ElectricalEquipment equip)
-        {
-            ViewModel = new SetVaPerPhaseViewModel(equip);
-            this.DataContext = ViewModel;
-            InitializeComponent();
-        }
-
-        public void OkButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        public void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Reset();
-            Close();
-        }
+      ViewModel = new SetVaPerPhaseViewModel(equip);
+      this.DataContext = ViewModel;
+      InitializeComponent();
     }
+
+    public void OkButton_Click(object sender, RoutedEventArgs e)
+    {
+      Close();
+    }
+
+    public void ResetButton_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.Reset();
+      Close();
+    }
+  }
 }

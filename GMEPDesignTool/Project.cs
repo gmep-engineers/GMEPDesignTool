@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 namespace GMEPDesignTool
 {
   public class Project
-   {
+  {
     // public Structural? Stru;
     // public Mechanical? Mech;
     public Electrical? Elec;
+
     // public Plumbing? Plbg;
     public string Scope;
+
     public Project(string scope)
     {
       Scope = scope;
@@ -21,5 +23,5 @@ namespace GMEPDesignTool
         Elec = new Electrical();
       }
     }
-   }
+  }
 }

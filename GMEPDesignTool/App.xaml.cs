@@ -7,26 +7,25 @@ using MySql.Data.MySqlClient;
 
 namespace GMEPDesignTool
 {
-    public partial class App : Application
+  public partial class App : Application
+  {
+    // Import kernel32.dll to allow console window allocation
+    //[DllImport("kernel32.dll")]
+    //private static extern bool AllocConsole();
+
+    protected override async void OnStartup(StartupEventArgs e)
     {
-        // Import kernel32.dll to allow console window allocation
-        //[DllImport("kernel32.dll")]
-        //private static extern bool AllocConsole();
+      base.OnStartup(e);
 
-        protected override async void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+      //AllocConsole();
 
-            //AllocConsole();
-
-            Console.WriteLine("Console window opened!");
-            //var vm = new ProposalCommercialViewModel();
-            //var proposalCommercialWindow = new ProposalCommercialWindow(vm);
-            //proposalCommercialWindow.Show();
+      Console.WriteLine("Console window opened!");
+      //var vm = new ProposalCommercialViewModel();
+      //var proposalCommercialWindow = new ProposalCommercialWindow(vm);
+      //proposalCommercialWindow.Show();
 
 
-            Console.WriteLine("end");
-
-        }
+      Console.WriteLine("end");
     }
+  }
 }

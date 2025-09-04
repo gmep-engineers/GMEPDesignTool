@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-    public class SelectProposalTypeViewModel : INotifyPropertyChanged
+  public class SelectProposalTypeViewModel : INotifyPropertyChanged
+  {
+    private int typeId;
+    public int TypeId
     {
-        private int typeId;
-        public int TypeId
+      get { return typeId; }
+      set
+      {
+        if (typeId != value)
         {
-            get { return typeId; }
-            set
-            {
-                if (typeId != value)
-                {
-                    typeId = value;
-                    OnPropertyChanged(nameof(TypeId));
-                }
-            }
+          typeId = value;
+          OnPropertyChanged(nameof(TypeId));
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+      }
     }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+  }
 }

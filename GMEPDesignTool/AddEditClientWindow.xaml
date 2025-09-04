@@ -1,0 +1,130 @@
+﻿<Window x:Class="GMEPDesignTool.AddEditClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Add/Edit Client" Height="800" Width="800">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="300"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Margin="10,20,40,10" Grid.Row="0" Width="775" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="147*"/>
+                        <ColumnDefinition Width="650"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Content="Company Name"  Margin="0,0,0,10" Width="auto" />
+                    <TextBox x:Name="CompanyNameBox" Grid.Row="0" Margin="0,0,0,10"  Text="{Binding CompanyName}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+
+                    <Label Grid.Row="1" Content="Client Type"  Margin="0,0,0,10" Width="auto" />
+                    <ComboBox Grid.Row="1" Margin="0,0,0,10" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding ClientTypeId}">
+                        <ComboBoxItem Tag="1">Loyal</ComboBoxItem>
+                        <ComboBoxItem Tag="2">Returning</ComboBoxItem>
+                        <ComboBoxItem Tag="3">New</ComboBoxItem>
+                    </ComboBox>
+                    <Label Grid.Row="2" Content="Street Address"  Margin="0,0,0,10" />
+                    <TextBox x:Name="StreetAddressBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding StreetAddress}"/>
+                    <Label Grid.Row="3" Content="City"/>
+                    <Grid Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" x:Name="ClientCityBox" Margin="0,0,11,10" Text="{Binding City}"/>
+                        <Label Grid.Column="1" Content="State" VerticalAlignment="Top" Margin="0,2,0,0" Height="26" />
+                        <ComboBox Margin="0,0,0,10"
+                          ItemsSource="{Binding States}" 
+                          SelectedItem="{Binding State}" Grid.Column="2" Grid.ColumnSpan="1" 
+                         />
+                        <Label Grid.Column="3" Content="Zip" VerticalAlignment="Top" Margin="10,2,0,0" Height="26" />
+                        <TextBox Grid.Column="4" x:Name="ClientZipcodeBox" Height="30" VerticalAlignment="Top" Text="{Binding PostalCode}"/>
+                    </Grid>
+                    <Label Grid.Row="4" Content="Company Email"  Margin="0,0,0,10" Width="auto" />
+                    <TextBox x:Name="EmailAddressBox" Grid.Row="4" Margin="0,0,0,10"  Text="{Binding CompanyEmailAddress}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+
+                    <Label Grid.Row="5" Grid.Column="0" Content="Company Phone" VerticalAlignment="Center" />
+                    <Grid Grid.Row="5" Grid.ColumnSpan="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="75" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" x:Name="PhoneBox" Margin="0,0,0,10" Text="{Binding CompanyPhone}"/>
+                        <Label  Grid.Column="1" Content="Extension" VerticalAlignment="Top" Margin="10,5,0,5"/>
+                        <TextBox  Grid.Column="2" x:Name="ExtensionBox" Margin="0,0,0,10" Text="{Binding CompanyExtension}" Grid.ColumnSpan="2"/>
+                    </Grid>
+
+                    <Label Grid.Row="6" Content="Primary Contact"  Margin="0,5,0,5" Width="auto" />
+                    <TextBox x:Name="PrimaryContactBox" Grid.Row="6" Margin="0,0,0,10"  Text="{Binding PrimaryContactInfo}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+
+                </Grid>
+                <Grid Grid.Row="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <TextBox x:Name="SearchBox" Grid.Row="0" Margin="10,0,0,10"  Text="{Binding SearchText}" Grid.Column="0" TextChanged="TextBox_TextChanged" />
+                    <Button Content="Search Company Contacts" Grid.Column="1" Grid.Row="0" Margin="10,0,0,10"/>
+                    <TextBox BorderThickness="0" x:Name="SearchResult" Grid.Row="1" Margin="10,0,0,10" Text="{Binding SearchResult}" Grid.Column="0" IsReadOnly="True"/>
+                    <Button Content="Set Primary" Grid.Column="1" Grid.Row="1" Margin="10,0,0,10" Visibility="Hidden"/>
+                </Grid>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="175"/>
+                        <ColumnDefinition Width="400"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Label FontFamily="Tahoma" FontSize="16" Grid.Row="0" Content="Add Contact"  Margin="10,5,0,5" Width="auto" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="First Name" VerticalAlignment="Center" Margin="10,5,0,5"/>
+                    <TextBox x:Name="FirstNameBox" Grid.Row="1" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding FirstName}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Last Name" VerticalAlignment="Center" Margin="10,5,0,5"/>
+                    <TextBox x:Name="LastNameBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding LastName}"/>
+                    <Label Grid.Row="3" Grid.Column="0" Content="Email Address" VerticalAlignment="Center" Margin="10,5,0,5"/>
+                    <TextBox x:Name="EmailBox" Grid.Row="3" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding ContactEmail}"/>
+                    <Label Grid.Row="4" Grid.Column="0" Content="Phone" VerticalAlignment="Center" Margin="10,5,0,5"/>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="1" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="75" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" x:Name="ContactPhoneBox" Margin="0,0,0,10" Text="{Binding ContactPhone}"/>
+                        <Label  Grid.Column="1" Content="Extension" VerticalAlignment="Top" Margin="10,5,0,5"/>
+                        <TextBox  Grid.Column="2" x:Name="ContactExtensionBox" Margin="0,0,0,10" Text="{Binding ContactExtension}" Grid.ColumnSpan="2"/>
+                    </Grid>
+                    <Button Content="Add" Grid.Column="0" Grid.Row="5" Margin="10,0,10,10" Visibility="Visible"/>
+                </Grid>
+            </Grid>            
+        </ScrollViewer>
+    </Grid>
+</Window>

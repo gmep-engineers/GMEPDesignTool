@@ -1,0 +1,174 @@
+﻿<Window x:Class="GMEPDesignTool.ClientsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        xmlns:vm="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="ClientsWindow" Height="800" Width="1200">
+    <Window.Resources>
+        <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding AllClients}" />
+    </Window.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Clients">
+                <Grid Background="#FFE5E5E5">
+                    <Grid Margin="5 25 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Company Search" Margin="0 0 0 0" Width="150" Height="25px"/>
+                        <TextBox Grid.Column="1" x:Name="CompanyNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
+                    </Grid>
+                    <DataGrid Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridComboBoxColumn Header="Client Type"  SelectedValueBinding="{Binding ClientType, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                <DataGridComboBoxColumn.ItemsSource>
+                                    <CompositeCollection>
+                                        <ComboBoxItem Content="Loyal" Tag="1"/>
+                                        <ComboBoxItem Content="Returning" Tag="2"/>
+                                        <ComboBoxItem Content="New" Tag="3"/>
+                                    </CompositeCollection>
+                                </DataGridComboBoxColumn.ItemsSource>
+                            </DataGridComboBoxColumn>
+                            <DataGridTextColumn Header="Street Address" Binding="{Binding StreetAddress, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="City" Binding="{Binding City, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridComboBoxColumn Header="State"  SelectedValueBinding="{Binding State, UpdateSourceTrigger=LostFocus}">
+                                <DataGridComboBoxColumn.ItemsSource>
+                                    <CompositeCollection>
+                                        <ComboBoxItem Content="AL"/>
+                                        <ComboBoxItem Content="AK"/>
+                                        <ComboBoxItem Content="AZ"/>
+                                        <ComboBoxItem Content="AR"/>
+                                        <ComboBoxItem Content="CA"/>
+                                        <ComboBoxItem Content="CO"/>
+                                        <ComboBoxItem Content="CT"/>
+                                        <ComboBoxItem Content="DE"/>
+                                        <ComboBoxItem Content="DC"/>
+                                        <ComboBoxItem Content="FL"/>
+                                        <ComboBoxItem Content="GA"/>
+                                        <ComboBoxItem Content="HI"/>
+                                        <ComboBoxItem Content="ID"/>
+                                        <ComboBoxItem Content="IL"/>
+                                        <ComboBoxItem Content="IN"/>
+                                        <ComboBoxItem Content="IA"/>
+                                        <ComboBoxItem Content="KS"/>
+                                        <ComboBoxItem Content="KY"/>
+                                        <ComboBoxItem Content="LA"/>
+                                        <ComboBoxItem Content="ME"/>
+                                        <ComboBoxItem Content="MD"/>
+                                        <ComboBoxItem Content="MA"/>
+                                        <ComboBoxItem Content="MI"/>
+                                        <ComboBoxItem Content="MN"/>
+                                        <ComboBoxItem Content="MS"/>
+                                        <ComboBoxItem Content="MO"/>
+                                        <ComboBoxItem Content="MT"/>
+                                        <ComboBoxItem Content="NE"/>
+                                        <ComboBoxItem Content="NV"/>
+                                        <ComboBoxItem Content="NH"/>
+                                        <ComboBoxItem Content="NJ"/>
+                                        <ComboBoxItem Content="NM"/>
+                                        <ComboBoxItem Content="NY"/>
+                                        <ComboBoxItem Content="NC"/>
+                                        <ComboBoxItem Content="ND"/>
+                                        <ComboBoxItem Content="OH"/>
+                                        <ComboBoxItem Content="OK"/>
+                                        <ComboBoxItem Content="OR"/>
+                                        <ComboBoxItem Content="PA"/>
+                                        <ComboBoxItem Content="SC"/>
+                                        <ComboBoxItem Content="SD"/>
+                                        <ComboBoxItem Content="TN"/>
+                                        <ComboBoxItem Content="TX"/>
+                                        <ComboBoxItem Content="UT"/>
+                                        <ComboBoxItem Content="VT"/>
+                                        <ComboBoxItem Content="VA"/>
+                                        <ComboBoxItem Content="WA"/>
+                                        <ComboBoxItem Content="WV"/>
+                                        <ComboBoxItem Content="WI"/>
+                                        <ComboBoxItem Content="WY"/>
+                                    </CompositeCollection>
+                                </DataGridComboBoxColumn.ItemsSource>
+                            </DataGridComboBoxColumn>
+                            <DataGridTextColumn Header="Zip" Binding="{Binding PostalCode, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Company Email" Binding="{Binding CompanyEmail, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Company Phone">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="CompanyPhone" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:(###) ###-####}" TargetNullValue="{}">
+                                        <Binding.Converter>
+                                            <local:PhoneNumberConverter />
+                                        </Binding.Converter>
+                                    </Binding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Extension" Binding="{Binding CompanyExtension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
+                            <DataGridTemplateColumn Header="Primary Contact">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding Path=PrimaryContactName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="AddEditPrimaryContact_Click" CommandParameter="{Binding Path=PrimaryContactId}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PrimaryContactId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>                        
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Architects">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Contacts">                
+                <Grid Background="#FFE5E5E5" >
+                    <Grid Margin="5 25 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Contact Search" Margin="0 0 0 0" Width="150" Height="25px"/>
+                        <TextBox Grid.Column="1" x:Name="ContactNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ContactsFilter_TextChanged"></TextBox>
+                    </Grid>
+                    <DataGrid Margin="0 60 0 0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Company" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Email Address" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Phone Number">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="PhoneNumber" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:(###) ###-####}" TargetNullValue="{}">
+                                        <Binding.Converter>
+                                            <local:PhoneNumberConverter />
+                                        </Binding.Converter>
+                                    </Binding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Extension" Binding="{Binding Extension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+
+    </Grid>
+</Window>
