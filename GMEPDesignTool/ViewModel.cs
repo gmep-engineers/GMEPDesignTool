@@ -148,7 +148,7 @@ namespace GMEPDesignTool
     public ICommand OpenEmployeesWindowCommand => _openEmployeesWindowCommand;
 
     private readonly DelegateCommand _openClientsWindowCommand;
-    private ICommand OpenClientsWindowCommand => _openClientsWindowCommand;
+    public ICommand OpenClientsWindowCommand => _openClientsWindowCommand;
 
     private readonly DelegateCommand _openAboutWindowCommand;
     public ICommand OpenAboutWindowCommand => _openAboutWindowCommand;
@@ -164,6 +164,7 @@ namespace GMEPDesignTool
         CanOpenEmployeesWindow
       );
       _openAboutWindowCommand = new DelegateCommand(OpenAboutWindow, CanOpenAboutWindow);
+      _openClientsWindowCommand = new DelegateCommand(OpenClientsWindow, CanOpenClientsWindow);
       Name = loginResponse.FirstName + " " + loginResponse.LastName;
       EmailAddress = loginResponse.EmailAddress;
       PhoneNumber = loginResponse.PhoneNumber;
@@ -194,6 +195,7 @@ namespace GMEPDesignTool
 
     private void OpenEmployeesWindow(object commandParameter)
     {
+      Trace.WriteLine(loginResponse.AccessLevelId);
       EmployeesWindow employeesWindow = new EmployeesWindow(loginResponse);
       employeesWindow.Show();
     }
@@ -207,10 +209,15 @@ namespace GMEPDesignTool
       return false;
     }
 
-    private void OpenClientsWindow(object commandParameter) { }
+    private void OpenClientsWindow(object commandParameter)
+    {
+      ClientsWindow clientsWindow = new ClientsWindow(loginResponse);
+      clientsWindow.Show();
+    }
 
     private bool CanOpenClientsWindow(object commandParameter)
     {
+      Trace.WriteLine(loginResponse.AccessLevelId);
       if (loginResponse.AccessLevelId == 1)
       {
         return true;

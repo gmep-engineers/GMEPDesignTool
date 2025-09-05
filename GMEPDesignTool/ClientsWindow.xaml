@@ -8,10 +8,16 @@
         mc:Ignorable="d"
         Title="ClientsWindow" Height="800" Width="1200">
     <Window.Resources>
+        <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
         <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding AllClients}" />
     </Window.Resources>
     <Grid>
-        <TabControl>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Click="SaveClick"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Margin="0 25 0 0">
             <TabItem Header="Clients">
                 <Grid Background="#FFE5E5E5">
                     <Grid Margin="5 25 0 0">
@@ -25,10 +31,10 @@
                         <Label Content="Company Search" Margin="0 0 0 0" Width="150" Height="25px"/>
                         <TextBox Grid.Column="1" x:Name="CompanyNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
                     </Grid>
-                    <DataGrid Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                    <DataGrid PreviewKeyDown="ClientDataGrid_PreviewKeyDown" Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 60 0 0">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridComboBoxColumn Header="Client Type"  SelectedValueBinding="{Binding ClientType, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                            <DataGridComboBoxColumn Header="Client Type"  SelectedValueBinding="{Binding ClientTypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                 <DataGridComboBoxColumn.ItemsSource>
                                     <CompositeCollection>
                                         <ComboBoxItem Content="Loyal" Tag="1"/>
@@ -110,12 +116,12 @@
                             <DataGridTemplateColumn Header="Primary Contact">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="{Binding Path=PrimaryContactName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="AddEditPrimaryContact_Click" CommandParameter="{Binding Path=PrimaryContactId}">
+                                        <Button Content="{Binding Path=PrimaryContactName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="AddEditPrimaryContact_Click" CommandParameter="{Binding Path=CompanyId}">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding PrimaryContactId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                        <DataTrigger Binding="{Binding CompanyId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
                                                             <Setter Property="Visibility" Value="Visible"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>

@@ -632,6 +632,47 @@ namespace GMEPDesignTool.Database
       CloseConnection(Connection);
     }
 
+    public void CreateClient(Client client)
+    {
+      string query =
+        @"
+        INSERT INTO email_addresses
+        ( id,  email_address) VALUES
+        (@id, @email_address)
+        ";
+
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", client.CompanyEmailId);
+      command.Parameters.AddWithValue("@email_address", client.CompanyEmail);
+
+      query =
+        @"
+        INSERT INTO phone_numbers
+        ( id,  phone_numbers) VALUES
+        (@id, @phone_numbers)
+        ";
+
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", client.CompanyPhoneId);
+      command.Parameters.AddWithValue("@email_address", client.CompanyPhone);
+
+      query =
+        @"
+          INSERT INTO companies
+          ( id,  entity_id,  name,  street_address,  city,  postal_code,  email_address_id,  phone_number_id,  primary_contact_id) VALUES
+          (@id, @entity_id, @name, @street_address, @city, @postal_code, @email_address_id, @phone_number_id, @primary_contact_id)
+         ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@name", client.CompanyName);
+      command.Parameters.AddWithValue("@street_address", client.StreetAddress);
+      command.Parameters.AddWithValue("@city", client.City);
+      command.Parameters.AddWithValue("@state", client.State);
+      command.Parameters.AddWithValue("@postal_code", client.PostalCode);
+      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.ExecuteNonQuery();
+    }
+
     public List<Client> GetClients()
     {
       List<Client> clients = new List<Client>();
@@ -647,16 +688,28 @@ namespace GMEPDesignTool.Database
         companies.state,
         companies.postal_code,
         companies.email_address_id,
-        companies.phone_number_id
+        companies.phone_number_id,
+        companies.primary_contact_id,
         phone_numbers.phone_number,
-        phone_numbers.extension
-        email_addresses.email_address
+        phone_numbers.extension,
+        email_addresses.email_address,
+        contacts.id as primary_contact_id,
+        contacts.first_name,
+        contacts.last_name
+        FROM companies
         LEFT JOIN
         entities ON entities.id = companies.entity_id
         LEFT JOIN
-        phone_numbers ON phone_numbers.entity_id = entities.id
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
         LEFT JOIN
-        email_addresses ON email_addresses.entity_id = entities.id
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        contacts ON contacts.id = companies.primary_contact_id
+        WHERE compnaies.type = 1
         ORDER BY companies.name
         ";
       OpenConnection(Connection);
@@ -677,14 +730,135 @@ namespace GMEPDesignTool.Database
             GetSafeString(reader, "email_address"),
             GetSafeString(reader, "phone_number_id"),
             GetUnsafeULong(reader, "phone_number"),
-            GetUnsafeUInt(reader, "extension")
+            GetUnsafeUInt(reader, "extension"),
+            GetSafeString(reader, "primary_contact_id"),
+            GetSafeString(reader, "first_name"),
+            GetSafeString(reader, "last_name")
           )
         );
       }
+      reader.Close();
+      CloseConnection(Connection);
       return clients;
     }
 
-    public void SaveClient(Client client) { }
+    public void SaveClient(Client client)
+    {
+      string query =
+        @"
+        UPDATE companies SET
+        name = @name,
+        street_address = @streetAddress,
+        city = @city,
+        state = @state,
+        postal_code = @postalCode
+        WHERE id = @id
+        ";
+      ;
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@name", client.CompanyName);
+      command.Parameters.AddWithValue("@street_address", client.StreetAddress);
+      command.Parameters.AddWithValue("@city", client.City);
+      command.Parameters.AddWithValue("@state", client.State);
+      command.Parameters.AddWithValue("@postal_code", client.PostalCode);
+      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE clients SET
+        client_type_id = @clientTypeId
+        WHERE company_id = @companyId
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@clientTypeId", client.ClientTypeId);
+      command.Parameters.AddWithValue("@companyId", client.CompanyId);
+      command.ExecuteNonQuery();
+
+      if (client.NewEmailAddress)
+      {
+        string emailAddressId = Guid.NewGuid().ToString();
+        string emailAddressRelId = Guid.NewGuid().ToString();
+        query =
+          @"
+                    INSERT INTO email_addresses (id, email_address)
+                    VALUES (@id, @emailAddress)
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", emailAddressId);
+        command.Parameters.AddWithValue("@emailAddress", client.CompanyEmail);
+        command.ExecuteNonQuery();
+        query =
+          @"
+                    INSERT INTO email_addresses_entity_rel (id, email_address_id, entity_id, is_primary)
+                    VALUES (@id, @emailAddressId, @entityId, 1)
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", emailAddressRelId);
+        command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
+        command.Parameters.AddWithValue("@entityId", client.EntityId);
+        command.ExecuteNonQuery();
+        client.CompanyEmailId = emailAddressId;
+        client.NewEmailAddress = false;
+      }
+      else
+      {
+        query =
+          @"
+                    UPDATE email_addresses
+                    SET email_address = @emailAddress
+                    WHERE id = @emailAddressId
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@emailAddress", client.CompanyEmail);
+        command.Parameters.AddWithValue("@emailAddressId", client.CompanyEmailId);
+        command.ExecuteNonQuery();
+      }
+      if (client.NewPhoneNumber)
+      {
+        string phoneNumberId = Guid.NewGuid().ToString();
+        string phoneNumberRelId = Guid.NewGuid().ToString();
+        query =
+          @"
+                    INSERT INTO phone_numbers (id, phone_number, extension, calling_code)
+                    VALUES (@id, @phoneNumber, @extension, 1)
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", phoneNumberId);
+        command.Parameters.AddWithValue("@phoneNumber", client.CompanyPhone);
+        command.Parameters.AddWithValue(
+          "@extension",
+          client.CompanyExtension == 0 ? null : client.CompanyExtension
+        );
+        command.ExecuteNonQuery();
+        query =
+          @"
+                    INSERT INTO phone_number_entity_rel (id, phone_number_id, entity_id, is_primary)
+                    VALUES (@id, @phoneNumberId, @entityId, 1)
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", phoneNumberRelId);
+        command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
+        command.Parameters.AddWithValue("@entityId", client.EntityId);
+        command.ExecuteNonQuery();
+        client.CompanyPhoneId = phoneNumberId;
+        client.NewPhoneNumber = false;
+      }
+      else
+      {
+        query =
+          @"
+                    UPDATE phone_numbers
+                    SET phone_number = @phoneNumber
+                    WHERE id = @phoneNumberId
+                    ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@phoneNumber", client.CompanyPhone);
+        command.Parameters.AddWithValue("@phoneNumberId", client.CompanyPhoneId);
+        command.ExecuteNonQuery();
+      }
+    }
 
     public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)
     {

@@ -39,6 +39,13 @@ namespace GMEPDesignTool
       set => _NewEmailAddress = value;
     }
 
+    private bool _NewPrimaryContact = false;
+    public bool NewPrimaryContact
+    {
+      get => _NewPrimaryContact;
+      set => _NewPrimaryContact = value;
+    }
+
     private string _CompanyId = string.Empty;
     public string CompanyId
     {
@@ -61,6 +68,21 @@ namespace GMEPDesignTool
         {
           _CompanyName = value;
           OnPropertyChanged(nameof(CompanyName));
+          _Modified = true;
+        }
+      }
+    }
+
+    private int _ClientTypeId;
+    public int ClientTypeId
+    {
+      get => _ClientTypeId;
+      set
+      {
+        if (_ClientTypeId != value)
+        {
+          _ClientTypeId = value;
+          OnPropertyChanged(nameof(ClientTypeId));
           _Modified = true;
         }
       }
@@ -185,7 +207,20 @@ namespace GMEPDesignTool
       }
     }
 
-    // HERE define primary contact ID
+    private string _PrimaryContactId;
+
+    public string PrimaryContactId
+    {
+      get => _PrimaryContactId;
+      set => _PrimaryContactId = value;
+    }
+
+    private string _PrimaryContactName;
+    public string PrimaryContactName
+    {
+      get => _PrimaryContactName;
+      set => _PrimaryContactName = value;
+    }
 
     public Client(
       string id,
@@ -199,7 +234,10 @@ namespace GMEPDesignTool
       string emailAddress,
       string phoneNumberId,
       ulong? phoneNumber,
-      uint? extension
+      uint? extension,
+      string primaryContactId,
+      string primaryContactFirstName,
+      string primaryContactLastName
     )
     {
       _CompanyId = id;
@@ -214,6 +252,15 @@ namespace GMEPDesignTool
       _CompanyPhoneId = phoneNumberId;
       _CompanyPhone = phoneNumber;
       _CompanyExtension = extension;
+      _PrimaryContactId = primaryContactId;
+      if (string.IsNullOrEmpty(_PrimaryContactId))
+      {
+        _PrimaryContactName = "Assign";
+      }
+      else
+      {
+        _PrimaryContactName = primaryContactFirstName + " " + primaryContactLastName;
+      }
     }
   }
 
