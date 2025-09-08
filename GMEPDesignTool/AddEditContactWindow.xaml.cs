@@ -26,7 +26,7 @@ namespace GMEPDesignTool
       InitializeComponent();
       ViewModel = new AddEditContactViewModel(
         client.CompanyName,
-        client.ClientTypeId,
+        client.ClientLoyaltyTypeId,
         client.StreetAddress,
         client.City,
         client.State,

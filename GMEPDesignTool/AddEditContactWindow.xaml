@@ -33,7 +33,7 @@
                     <TextBox x:Name="CompanyNameBox" Grid.Row="0" Margin="0,0,0,10" IsReadOnly="True" Text="{Binding CompanyName, Mode=OneWay}" Grid.Column="1" />
 
                     <Label Grid.Row="1" Content="Client Type"  Margin="0,0,0,10" Width="auto" />
-                    <ComboBox Grid.Row="1" Margin="0,0,0,10" Grid.Column="1" SelectedValuePath="Tag" IsReadOnly="True" SelectedValue="{Binding ClientTypeId, Mode=OneWay}">
+                    <ComboBox Grid.Row="1" Margin="0,0,0,10" Grid.Column="1" SelectedValuePath="Tag" IsReadOnly="True" SelectedValue="{Binding ClientLoyaltyTypeId, Mode=OneWay}">
                         <ComboBoxItem Tag="1">Loyal</ComboBoxItem>
                         <ComboBoxItem Tag="2">Returning</ComboBoxItem>
                         <ComboBoxItem Tag="3">New</ComboBoxItem>

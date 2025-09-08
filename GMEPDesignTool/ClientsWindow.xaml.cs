@@ -74,8 +74,12 @@ namespace GMEPDesignTool
       ViewModel.Save();
     }
 
-    private void ClientDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+    private void ClientDataGrid_KeyUp(object sender, KeyEventArgs e)
     {
+      if (e.Key == Key.Enter)
+      {
+        ViewModel.Save();
+      }
       // HERE check for enter pressed. If so, add or edit the client in the database;
     }
   }

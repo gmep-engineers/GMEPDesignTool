@@ -636,32 +636,71 @@ namespace GMEPDesignTool.Database
     {
       string query =
         @"
-        INSERT INTO email_addresses
-        ( id,  email_address) VALUES
-        (@id, @email_address)
+        INSERT INTO entities
+        ( id ) VALUES
+        (@id)
         ";
 
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", client.EntityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        INSERT INTO email_addresses
+        ( id,  email_address) VALUES
+        (@id, @email_address)
+        ";
+      command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", client.CompanyEmailId);
       command.Parameters.AddWithValue("@email_address", client.CompanyEmail);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        INSERT INTO email_addr_entity_rel
+        ( id,  email_address_id,  entity_id,  is_primary) VALUES
+        (@id, @email_address_id, @entity_id, @is_primary)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+      command.Parameters.AddWithValue("@email_address_id", client.CompanyEmailId);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.Parameters.AddWithValue("@is_primary", 1);
+      command.ExecuteNonQuery();
 
       query =
         @"
         INSERT INTO phone_numbers
-        ( id,  phone_numbers) VALUES
-        (@id, @phone_numbers)
+        ( id,  phone_number,  extension) VALUES
+        (@id, @phone_number, @extension)
         ";
 
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", client.CompanyPhoneId);
-      command.Parameters.AddWithValue("@email_address", client.CompanyPhone);
+      command.Parameters.AddWithValue("@phone_number", client.CompanyPhone);
+      command.Parameters.AddWithValue("@extension", client.CompanyExtension);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        INSERT INTO phone_number_entity_rel
+        ( id,  phone_number_id,  entity_id,  is_primary) VALUES
+        (@id, @phone_number_id, @entity_id, @is_primary)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+      command.Parameters.AddWithValue("@phone_number_id", client.CompanyPhoneId);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.Parameters.AddWithValue("@is_primary", 1);
+      command.ExecuteNonQuery();
 
       query =
         @"
           INSERT INTO companies
-          ( id,  entity_id,  name,  street_address,  city,  postal_code,  email_address_id,  phone_number_id,  primary_contact_id) VALUES
-          (@id, @entity_id, @name, @street_address, @city, @postal_code, @email_address_id, @phone_number_id, @primary_contact_id)
+          ( id,  entity_id,  name,  street_address,  city,  state,  postal_code) VALUES
+          (@id, @entity_id, @name, @street_address, @city, @state, @postal_code)
          ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@name", client.CompanyName);
@@ -669,8 +708,22 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@city", client.City);
       command.Parameters.AddWithValue("@state", client.State);
       command.Parameters.AddWithValue("@postal_code", client.PostalCode);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
       command.Parameters.AddWithValue("@id", client.CompanyId);
       command.ExecuteNonQuery();
+      CloseConnection(Connection);
+
+      query =
+        @"
+        INSERT INTO clients
+        ( id,  company_id,  loyalty_type_id) VALUES
+        (@id, @company_id, @loyalty_type_id)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
+      command.Parameters.AddWithValue("@loyalty_type_id", client.ClientLoyaltyTypeId);
+      client.New = false;
     }
 
     public List<Client> GetClients()
@@ -682,20 +735,20 @@ namespace GMEPDesignTool.Database
         companies.id,
         companies.entity_id,
         companies.name,
-        companies.type_id,
         companies.street_address,
         companies.city,
         companies.state,
         companies.postal_code,
-        companies.email_address_id,
-        companies.phone_number_id,
         companies.primary_contact_id,
         phone_numbers.phone_number,
         phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
         email_addresses.email_address,
+        email_addresses.id as email_address_id,
         contacts.id as primary_contact_id,
         contacts.first_name,
-        contacts.last_name
+        contacts.last_name,
+        clients.loyalty_type_id
         FROM companies
         LEFT JOIN
         entities ON entities.id = companies.entity_id
@@ -709,7 +762,11 @@ namespace GMEPDesignTool.Database
         email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
         LEFT JOIN
         contacts ON contacts.id = companies.primary_contact_id
-        WHERE compnaies.type = 1
+        LEFT JOIN
+        clients ON clients.company_id = companies.id
+        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
+        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        GROUP BY companies.id
         ORDER BY companies.name
         ";
       OpenConnection(Connection);
@@ -722,6 +779,7 @@ namespace GMEPDesignTool.Database
             GetSafeString(reader, "id"),
             GetSafeString(reader, "entity_id"),
             GetSafeString(reader, "name"),
+            GetSafeInt(reader, "loyalty_type_id"),
             GetSafeString(reader, "street_address"),
             GetSafeString(reader, "city"),
             GetSafeString(reader, "state"),
@@ -744,6 +802,11 @@ namespace GMEPDesignTool.Database
 
     public void SaveClient(Client client)
     {
+      if (client.New)
+      {
+        CreateClient(client);
+        return;
+      }
       string query =
         @"
         UPDATE companies SET
@@ -758,21 +821,21 @@ namespace GMEPDesignTool.Database
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@name", client.CompanyName);
-      command.Parameters.AddWithValue("@street_address", client.StreetAddress);
+      command.Parameters.AddWithValue("@streetAddress", client.StreetAddress);
       command.Parameters.AddWithValue("@city", client.City);
       command.Parameters.AddWithValue("@state", client.State);
-      command.Parameters.AddWithValue("@postal_code", client.PostalCode);
+      command.Parameters.AddWithValue("@postalCode", client.PostalCode);
       command.Parameters.AddWithValue("@id", client.CompanyId);
       command.ExecuteNonQuery();
 
       query =
         @"
         UPDATE clients SET
-        client_type_id = @clientTypeId
+        loyalty_type_id = @loyaltyTypeId
         WHERE company_id = @companyId
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@clientTypeId", client.ClientTypeId);
+      command.Parameters.AddWithValue("@loyaltyTypeId", client.ClientLoyaltyTypeId);
       command.Parameters.AddWithValue("@companyId", client.CompanyId);
       command.ExecuteNonQuery();
 
@@ -789,9 +852,19 @@ namespace GMEPDesignTool.Database
         command.Parameters.AddWithValue("@id", emailAddressId);
         command.Parameters.AddWithValue("@emailAddress", client.CompanyEmail);
         command.ExecuteNonQuery();
+
         query =
           @"
-                    INSERT INTO email_addresses_entity_rel (id, email_address_id, entity_id, is_primary)
+          UPDATE email_addr_entity_rel SET
+          is_primary = 0 WHERE entity_id = ?
+          ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", client.EntityId);
+        command.ExecuteNonQuery();
+
+        query =
+          @"
+                    INSERT INTO email_addr_entity_rel (id, email_address_id, entity_id, is_primary)
                     VALUES (@id, @emailAddressId, @entityId, 1)
                     ";
         command = new MySqlCommand(query, Connection);
@@ -832,6 +905,16 @@ namespace GMEPDesignTool.Database
           client.CompanyExtension == 0 ? null : client.CompanyExtension
         );
         command.ExecuteNonQuery();
+
+        query =
+          @"
+          UPDATE phone_number_entity_entity_rel SET
+          is_primary = 0 WHERE entity_id = ?
+          ";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", client.EntityId);
+        command.ExecuteNonQuery();
+
         query =
           @"
                     INSERT INTO phone_number_entity_rel (id, phone_number_id, entity_id, is_primary)
@@ -858,6 +941,15 @@ namespace GMEPDesignTool.Database
         command.Parameters.AddWithValue("@phoneNumberId", client.CompanyPhoneId);
         command.ExecuteNonQuery();
       }
+
+      query =
+        @"
+        UPDATE clients SET
+        loyalty_type_id = @loyalty_type_id WHERE company_id = @company_id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
+      command.Parameters.AddWithValue("@loyalty_type_id", client.ClientLoyaltyTypeId);
     }
 
     public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)

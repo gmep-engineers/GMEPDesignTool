@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         xmlns:vm="clr-namespace:GMEPDesignTool"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Title="ClientsWindow" Height="800" Width="1200">
     <Window.Resources>
@@ -31,10 +32,21 @@
                         <Label Content="Company Search" Margin="0 0 0 0" Width="150" Height="25px"/>
                         <TextBox Grid.Column="1" x:Name="CompanyNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
                     </Grid>
-                    <DataGrid PreviewKeyDown="ClientDataGrid_PreviewKeyDown" Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                    <DataGrid CanUserAddRows="True" KeyUp="ClientDataGrid_KeyUp" Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="{Binding ColorCode}" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="CadetBlue"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridComboBoxColumn Header="Client Type"  SelectedValueBinding="{Binding ClientTypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                            <DataGridComboBoxColumn Header="Client Loyalty"  SelectedValueBinding="{Binding ClientLoyaltyTypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                 <DataGridComboBoxColumn.ItemsSource>
                                     <CompositeCollection>
                                         <ComboBoxItem Content="Loyal" Tag="1"/>
@@ -45,59 +57,59 @@
                             </DataGridComboBoxColumn>
                             <DataGridTextColumn Header="Street Address" Binding="{Binding StreetAddress, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="City" Binding="{Binding City, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridComboBoxColumn Header="State"  SelectedValueBinding="{Binding State, UpdateSourceTrigger=LostFocus}">
+                            <DataGridComboBoxColumn Header="State"  SelectedValueBinding="{Binding State, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                 <DataGridComboBoxColumn.ItemsSource>
                                     <CompositeCollection>
-                                        <ComboBoxItem Content="AL"/>
-                                        <ComboBoxItem Content="AK"/>
-                                        <ComboBoxItem Content="AZ"/>
-                                        <ComboBoxItem Content="AR"/>
-                                        <ComboBoxItem Content="CA"/>
-                                        <ComboBoxItem Content="CO"/>
-                                        <ComboBoxItem Content="CT"/>
-                                        <ComboBoxItem Content="DE"/>
-                                        <ComboBoxItem Content="DC"/>
-                                        <ComboBoxItem Content="FL"/>
-                                        <ComboBoxItem Content="GA"/>
-                                        <ComboBoxItem Content="HI"/>
-                                        <ComboBoxItem Content="ID"/>
-                                        <ComboBoxItem Content="IL"/>
-                                        <ComboBoxItem Content="IN"/>
-                                        <ComboBoxItem Content="IA"/>
-                                        <ComboBoxItem Content="KS"/>
-                                        <ComboBoxItem Content="KY"/>
-                                        <ComboBoxItem Content="LA"/>
-                                        <ComboBoxItem Content="ME"/>
-                                        <ComboBoxItem Content="MD"/>
-                                        <ComboBoxItem Content="MA"/>
-                                        <ComboBoxItem Content="MI"/>
-                                        <ComboBoxItem Content="MN"/>
-                                        <ComboBoxItem Content="MS"/>
-                                        <ComboBoxItem Content="MO"/>
-                                        <ComboBoxItem Content="MT"/>
-                                        <ComboBoxItem Content="NE"/>
-                                        <ComboBoxItem Content="NV"/>
-                                        <ComboBoxItem Content="NH"/>
-                                        <ComboBoxItem Content="NJ"/>
-                                        <ComboBoxItem Content="NM"/>
-                                        <ComboBoxItem Content="NY"/>
-                                        <ComboBoxItem Content="NC"/>
-                                        <ComboBoxItem Content="ND"/>
-                                        <ComboBoxItem Content="OH"/>
-                                        <ComboBoxItem Content="OK"/>
-                                        <ComboBoxItem Content="OR"/>
-                                        <ComboBoxItem Content="PA"/>
-                                        <ComboBoxItem Content="SC"/>
-                                        <ComboBoxItem Content="SD"/>
-                                        <ComboBoxItem Content="TN"/>
-                                        <ComboBoxItem Content="TX"/>
-                                        <ComboBoxItem Content="UT"/>
-                                        <ComboBoxItem Content="VT"/>
-                                        <ComboBoxItem Content="VA"/>
-                                        <ComboBoxItem Content="WA"/>
-                                        <ComboBoxItem Content="WV"/>
-                                        <ComboBoxItem Content="WI"/>
-                                        <ComboBoxItem Content="WY"/>
+                                        <ComboBoxItem Content="AL" Tag="AL"/>
+                                        <ComboBoxItem Content="AK" Tag="AK"/>
+                                        <ComboBoxItem Content="AZ" Tag="AZ"/>
+                                        <ComboBoxItem Content="AR" Tag="AR"/>
+                                        <ComboBoxItem Content="CA" Tag="CA"/>
+                                        <ComboBoxItem Content="CO" Tag="CO"/>
+                                        <ComboBoxItem Content="CT" Tag="CT"/>
+                                        <ComboBoxItem Content="DE" Tag="DE"/>
+                                        <ComboBoxItem Content="DC" Tag="DC"/>
+                                        <ComboBoxItem Content="FL" Tag="FL"/>
+                                        <ComboBoxItem Content="GA" Tag="GA"/>
+                                        <ComboBoxItem Content="HI" Tag="HI"/>
+                                        <ComboBoxItem Content="ID" Tag="ID"/>
+                                        <ComboBoxItem Content="IL" Tag="IL"/>
+                                        <ComboBoxItem Content="IN" Tag="IN"/>
+                                        <ComboBoxItem Content="IA" Tag="IA"/>
+                                        <ComboBoxItem Content="KS" Tag="KS"/>
+                                        <ComboBoxItem Content="KY" Tag="KY"/>
+                                        <ComboBoxItem Content="LA" Tag="LA"/>
+                                        <ComboBoxItem Content="ME" Tag="ME"/>
+                                        <ComboBoxItem Content="MD" Tag="MD"/>
+                                        <ComboBoxItem Content="MA" Tag="MA"/>
+                                        <ComboBoxItem Content="MI" Tag="MI"/>
+                                        <ComboBoxItem Content="MN" Tag="MN"/>
+                                        <ComboBoxItem Content="MS" Tag="MS"/>
+                                        <ComboBoxItem Content="MO" Tag="MO"/>
+                                        <ComboBoxItem Content="MT" Tag="MT"/>
+                                        <ComboBoxItem Content="NE" Tag="NE"/>
+                                        <ComboBoxItem Content="NV" Tag="NV"/>
+                                        <ComboBoxItem Content="NH" Tag="NH"/>
+                                        <ComboBoxItem Content="NJ" Tag="NJ"/>
+                                        <ComboBoxItem Content="NM" Tag="NM"/>
+                                        <ComboBoxItem Content="NY" Tag="NY"/>
+                                        <ComboBoxItem Content="NC" Tag="NC"/>
+                                        <ComboBoxItem Content="ND" Tag="ND"/>
+                                        <ComboBoxItem Content="OH" Tag="OH"/>
+                                        <ComboBoxItem Content="OK" Tag="OK"/>
+                                        <ComboBoxItem Content="OR" Tag="OR"/>
+                                        <ComboBoxItem Content="PA" Tag="PA"/>
+                                        <ComboBoxItem Content="SC" Tag="SC"/>
+                                        <ComboBoxItem Content="SD" Tag="SD"/>
+                                        <ComboBoxItem Content="TN" Tag="TN"/>
+                                        <ComboBoxItem Content="TX" Tag="TX"/>
+                                        <ComboBoxItem Content="UT" Tag="UX"/>
+                                        <ComboBoxItem Content="VT" Tag="VT"/>
+                                        <ComboBoxItem Content="VA" Tag="VA"/>
+                                        <ComboBoxItem Content="WA" Tag="WA"/>
+                                        <ComboBoxItem Content="WV" Tag="WV"/>
+                                        <ComboBoxItem Content="WI" Tag="WI"/>
+                                        <ComboBoxItem Content="WY" Tag="WY"/>
                                     </CompositeCollection>
                                 </DataGridComboBoxColumn.ItemsSource>
                             </DataGridComboBoxColumn>

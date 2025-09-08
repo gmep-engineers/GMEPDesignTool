@@ -23,10 +23,10 @@ namespace GMEPDesignTool
       get => _CompanyName;
     }
 
-    private int _ClientTypeId;
-    public int ClientTypeId
+    private int _ClientLoyaltyTypeId;
+    public int ClientLoyaltyTypeId
     {
-      get => _ClientTypeId;
+      get => _ClientLoyaltyTypeId;
     }
 
     private string _StreetAddress;
@@ -163,7 +163,7 @@ namespace GMEPDesignTool
 
     public AddEditContactViewModel(
       string companyName,
-      int clientTypeId,
+      int clientLoyaltyTypeId,
       string streetAddress,
       string city,
       string state,
@@ -175,7 +175,7 @@ namespace GMEPDesignTool
     )
     {
       _CompanyName = companyName;
-      _ClientTypeId = clientTypeId;
+      _ClientLoyaltyTypeId = clientLoyaltyTypeId;
       _StreetAddress = streetAddress;
       _City = city;
       _State = state;

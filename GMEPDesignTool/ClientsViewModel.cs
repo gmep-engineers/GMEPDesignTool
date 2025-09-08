@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using Google.Protobuf;
 
 namespace GMEPDesignTool
 {
@@ -23,6 +26,13 @@ namespace GMEPDesignTool
     {
       get => _Modified;
       set => _Modified = value;
+    }
+
+    private bool _New = true;
+    public bool New
+    {
+      get => _New;
+      set => _New = value;
     }
 
     private bool _NewPhoneNumber = false;
@@ -73,16 +83,16 @@ namespace GMEPDesignTool
       }
     }
 
-    private int _ClientTypeId;
-    public int ClientTypeId
+    private int _ClientLoyaltyTypeId;
+    public int ClientLoyaltyTypeId
     {
-      get => _ClientTypeId;
+      get => _ClientLoyaltyTypeId;
       set
       {
-        if (_ClientTypeId != value)
+        if (_ClientLoyaltyTypeId != value)
         {
-          _ClientTypeId = value;
-          OnPropertyChanged(nameof(ClientTypeId));
+          _ClientLoyaltyTypeId = value;
+          OnPropertyChanged(nameof(ClientLoyaltyTypeId));
           _Modified = true;
         }
       }
@@ -166,6 +176,7 @@ namespace GMEPDesignTool
           _CompanyEmail = value;
           OnPropertyChanged(nameof(CompanyEmail));
           _Modified = true;
+          _NewEmailAddress = true;
         }
       }
     }
@@ -188,6 +199,7 @@ namespace GMEPDesignTool
           _CompanyPhone = value;
           OnPropertyChanged(nameof(CompanyPhone));
           _Modified = true;
+          _NewPhoneNumber = true;
         }
       }
     }
@@ -226,6 +238,7 @@ namespace GMEPDesignTool
       string id,
       string entityId,
       string name,
+      int clientLoyaltyTypeId,
       string streetAddress,
       string city,
       string state,
@@ -243,6 +256,7 @@ namespace GMEPDesignTool
       _CompanyId = id;
       _EntityId = entityId;
       _CompanyName = name;
+      _ClientLoyaltyTypeId = clientLoyaltyTypeId;
       _StreetAddress = streetAddress;
       _City = city;
       _State = state;
@@ -262,6 +276,26 @@ namespace GMEPDesignTool
         _PrimaryContactName = primaryContactFirstName + " " + primaryContactLastName;
       }
     }
+
+    public Client()
+    {
+      _CompanyId = Guid.NewGuid().ToString();
+      _EntityId = Guid.NewGuid().ToString();
+      _CompanyName = string.Empty;
+      _ClientLoyaltyTypeId = 3;
+      _StreetAddress = string.Empty;
+      _City = string.Empty;
+      _State = string.Empty;
+      _PostalCode = string.Empty;
+      _CompanyEmailId = Guid.NewGuid().ToString();
+      _CompanyEmail = string.Empty;
+      _CompanyPhoneId = Guid.NewGuid().ToString();
+      _CompanyPhone = 0;
+      _CompanyExtension = 0;
+      _PrimaryContactId = string.Empty;
+      _NewPhoneNumber = true;
+      _NewEmailAddress = true;
+    }
   }
 
   class ClientsViewModel : ViewModelBase
@@ -276,11 +310,15 @@ namespace GMEPDesignTool
     {
       Database = new Database.Database(loginResponse.SqlConnectionString);
       AllClients = new ObservableCollection<Client>(Database.GetClients());
+      foreach (Client client in AllClients)
+      {
+        client.New = false;
+      }
     }
 
     public void Save()
     {
-      foreach (Client client in Clients)
+      foreach (Client client in AllClients)
       {
         if (client.Modified)
         {
