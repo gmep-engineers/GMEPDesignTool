@@ -950,6 +950,75 @@ namespace GMEPDesignTool.Database
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.Parameters.AddWithValue("@loyalty_type_id", client.ClientLoyaltyTypeId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
+    }
+
+    public void DeleteClient(Client client)
+    {
+      string query =
+        @"
+        DELETE FROM clients WHERE company_id = @company_id
+        ";
+
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM companies WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM email_addresses WHERE id IN (
+        SELECT email_address_id FROM email_addr_entity_rel
+        WHERE entity_id = @entity_id
+        )
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM phone_numbers WHERE id IN (
+        SELECT phone_number_id FROM phone_number_entity_rel
+        WHERE entity_id = @entity_id
+        )
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM email_addr_entity_rel WHERE entity_id = @entity_id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM phone_number_entity_rel WHERE entity_id = @entity_id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        DELETE FROM contacts WHERE company_id = @company_id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
+      command.ExecuteNonQuery();
     }
 
     public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)

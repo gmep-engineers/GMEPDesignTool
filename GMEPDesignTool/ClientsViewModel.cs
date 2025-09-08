@@ -35,6 +35,20 @@ namespace GMEPDesignTool
       set => _New = value;
     }
 
+    private bool _Delete = false;
+    public bool Delete
+    {
+      get => _Delete;
+      set
+      {
+        if (_Delete != value)
+        {
+          _Delete = value;
+          OnPropertyChanged(nameof(Delete));
+        }
+      }
+    }
+
     private bool _NewPhoneNumber = false;
     public bool NewPhoneNumber
     {
@@ -318,6 +332,28 @@ namespace GMEPDesignTool
 
     public void Save()
     {
+      List<Client> deletedClients = new List<Client>();
+      foreach (Client client in AllClients)
+      {
+        if (client.Delete)
+        {
+          Database.DeleteClient(client);
+          deletedClients.Add(client);
+        }
+        else if (client.Modified)
+        {
+          Database.SaveClient(client);
+          client.Modified = false;
+        }
+      }
+      foreach (Client client in deletedClients)
+      {
+        AllClients.Remove(client);
+      }
+    }
+
+    public void SaveOnEnter()
+    {
       foreach (Client client in AllClients)
       {
         if (client.Modified)
@@ -325,6 +361,14 @@ namespace GMEPDesignTool
           Database.SaveClient(client);
           client.Modified = false;
         }
+      }
+    }
+
+    public void FlagForDeletion()
+    {
+      if (SelectedClient != null)
+      {
+        SelectedClient.Delete = !SelectedClient.Delete;
       }
     }
   }

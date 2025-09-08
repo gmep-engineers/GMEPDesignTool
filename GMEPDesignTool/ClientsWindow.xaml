@@ -33,14 +33,21 @@
                         <TextBox Grid.Column="1" x:Name="CompanyNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
                     </Grid>
                     <DataGrid CanUserAddRows="True" KeyUp="ClientDataGrid_KeyUp" Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu Name="ClientContextMenu">
+                                <MenuItem Header="Flag for deletion" Click="FlagClientForDeletion_Click"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
-                                <Setter Property="Background" Value="{Binding ColorCode}" />
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="CadetBlue"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
+                                    <DataTrigger Binding="{Binding Path=Delete}" Value="True">
+                                        <Setter Property="Background" Value="Pink"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </DataGrid.RowStyle>

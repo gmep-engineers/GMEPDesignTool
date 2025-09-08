@@ -78,9 +78,13 @@ namespace GMEPDesignTool
     {
       if (e.Key == Key.Enter)
       {
-        ViewModel.Save();
+        ViewModel.SaveOnEnter();
       }
-      // HERE check for enter pressed. If so, add or edit the client in the database;
+    }
+
+    private void FlagClientForDeletion_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.FlagForDeletion();
     }
   }
 }
