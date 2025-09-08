@@ -11,6 +11,7 @@
     <Window.Resources>
         <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
         <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding AllClients}" />
+        <CollectionViewSource x:Key="ContactsViewSource" Source="{Binding AllContacts}" />
     </Window.Resources>
     <Grid>
         <Menu>
@@ -172,7 +173,7 @@
                         <Label Content="Contact Search" Margin="0 0 0 0" Width="150" Height="25px"/>
                         <TextBox Grid.Column="1" x:Name="ContactNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ContactsFilter_TextChanged"></TextBox>
                     </Grid>
-                    <DataGrid Margin="0 60 0 0">
+                    <DataGrid Margin="0 60 0 0" CanUserAddRows="True" KeyUp="ContactDataGrid_KeyUp" Name="ContactsDataGrid" ItemsSource="{Binding Source={StaticResource ContactsViewSource}}" SelectedItem="{Binding Path=SelectedContact,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"/>

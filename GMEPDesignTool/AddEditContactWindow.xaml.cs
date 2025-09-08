@@ -21,22 +21,16 @@ namespace GMEPDesignTool
   {
     AddEditContactViewModel ViewModel { get; set; }
 
-    public AddEditContactWindow(Client client)
+    public AddEditContactWindow(Client client, LoginResponse loginResponse)
     {
       InitializeComponent();
-      ViewModel = new AddEditContactViewModel(
-        client.CompanyName,
-        client.ClientLoyaltyTypeId,
-        client.StreetAddress,
-        client.City,
-        client.State,
-        client.PostalCode,
-        client.CompanyEmail,
-        client.CompanyPhone,
-        client.CompanyExtension,
-        client.PrimaryContactName
-      );
+      ViewModel = new AddEditContactViewModel(loginResponse, client.CompanyId, client.CompanyName);
       this.DataContext = ViewModel;
+    }
+
+    private void AddPrimaryContact_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.CreateContact();
     }
   }
 }

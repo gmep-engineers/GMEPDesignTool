@@ -229,6 +229,7 @@ namespace GMEPDesignTool
           _CompanyExtension = value;
           OnPropertyChanged(nameof(CompanyExtension));
           _Modified = true;
+          _NewPhoneNumber = true;
         }
       }
     }
@@ -312,18 +313,208 @@ namespace GMEPDesignTool
     }
   }
 
+  public class Contact : INotifyPropertyChanged
+  {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private bool _Modified = false;
+    public bool Modified
+    {
+      get => _Modified;
+      set => _Modified = value;
+    }
+
+    private bool _New = true;
+    public bool New
+    {
+      get => _New;
+      set => _New = value;
+    }
+
+    private string _Id = string.Empty;
+    public string Id
+    {
+      get => _Id;
+      set => _Id = value;
+    }
+
+    private string _EntityId = string.Empty;
+    public string EntityId
+    {
+      get => _EntityId;
+      set => _EntityId = value;
+    }
+
+    private string _FirstName = string.Empty;
+    public string FirstName
+    {
+      get => _FirstName;
+      set
+      {
+        if (_FirstName != value)
+        {
+          _FirstName = value;
+          OnPropertyChanged(nameof(FirstName));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _LastName = string.Empty;
+    public string LastName
+    {
+      get => _LastName;
+      set
+      {
+        if (_LastName != value)
+        {
+          _LastName = value;
+          OnPropertyChanged(nameof(LastName));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _CompanyId = string.Empty;
+    public string CompanyId
+    {
+      get => _CompanyId;
+      set => _CompanyId = value;
+    }
+
+    private string _CompanyName = string.Empty;
+    public string CompanyName
+    {
+      get => _CompanyName;
+      set => _CompanyName = value;
+    }
+
+    private string _EmailAddressId = string.Empty;
+    public string EmailAddressId
+    {
+      get => _EmailAddressId;
+      set => _EmailAddressId = value;
+    }
+
+    private string _EmailAddress = string.Empty;
+    public string EmailAddress
+    {
+      get => _EmailAddress;
+      set
+      {
+        if (_EmailAddress != value)
+        {
+          _EmailAddress = value;
+          OnPropertyChanged(nameof(EmailAddress));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _PhoneNumberId = string.Empty;
+    public string PhoneNumberId
+    {
+      get => _PhoneNumberId;
+      set => _PhoneNumberId = value;
+    }
+
+    private ulong? _PhoneNumber = 0;
+    public ulong? PhoneNumber
+    {
+      get => _PhoneNumber;
+      set
+      {
+        if (_PhoneNumber != value)
+        {
+          _PhoneNumber = value;
+          OnPropertyChanged(nameof(PhoneNumber));
+          _Modified = true;
+        }
+      }
+    }
+
+    private uint? _Extension = 0;
+    public uint? Extension
+    {
+      get => _Extension;
+      set
+      {
+        if (_Extension != value)
+        {
+          _Extension = value;
+          OnPropertyChanged(nameof(Extension));
+          _Modified = true;
+        }
+      }
+    }
+
+    public Contact(
+      string id,
+      string entityId,
+      string firstName,
+      string lastName,
+      string companyId,
+      string companyName,
+      string emailAddressId,
+      string emailAddress,
+      string phoneNumberId,
+      ulong? phoneNumber,
+      uint? extension
+    )
+    {
+      _Id = id;
+      _EntityId = entityId;
+      _FirstName = firstName;
+      _LastName = lastName;
+      _CompanyId = companyId;
+      _CompanyName = companyName;
+      _EmailAddressId = emailAddressId;
+      _EmailAddress = emailAddress;
+      _PhoneNumberId = phoneNumberId;
+      _PhoneNumber = phoneNumber;
+      _Extension = extension;
+    }
+
+    public Contact()
+    {
+      _Id = Guid.NewGuid().ToString();
+      _EntityId = Guid.NewGuid().ToString();
+      ;
+      _FirstName = string.Empty;
+      _LastName = string.Empty;
+      _CompanyId = string.Empty;
+      _EmailAddressId = Guid.NewGuid().ToString();
+      ;
+      _EmailAddress = string.Empty;
+      _PhoneNumberId = Guid.NewGuid().ToString();
+      ;
+      _PhoneNumber = 0;
+      _Extension = 0;
+    }
+  }
+
   class ClientsViewModel : ViewModelBase
   {
     public List<Client> Clients { get; set; }
     public Database.Database Database { get; set; }
     public Client? SelectedClient { get; set; }
 
+    public Contact? SelectedContact { get; set; }
+
     public ObservableCollection<Client> AllClients { get; set; }
+
+    public ObservableCollection<Contact> AllContacts { get; set; }
 
     public ClientsViewModel(LoginResponse loginResponse)
     {
       Database = new Database.Database(loginResponse.SqlConnectionString);
       AllClients = new ObservableCollection<Client>(Database.GetClients());
+      AllContacts = new ObservableCollection<Contact>(Database.GetContacts());
       foreach (Client client in AllClients)
       {
         client.New = false;
@@ -352,7 +543,7 @@ namespace GMEPDesignTool
       }
     }
 
-    public void SaveOnEnter()
+    public void SaveClientOnEnter()
     {
       foreach (Client client in AllClients)
       {
@@ -360,6 +551,18 @@ namespace GMEPDesignTool
         {
           Database.SaveClient(client);
           client.Modified = false;
+        }
+      }
+    }
+
+    public void SaveContactOnEnter()
+    {
+      foreach (Contact contact in AllContacts)
+      {
+        if (contact.Modified)
+        {
+          Database.SaveContact(contact);
+          contact.Modified = false;
         }
       }
     }

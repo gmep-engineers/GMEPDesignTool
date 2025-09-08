@@ -20,6 +20,7 @@ using Amazon.S3.Model;
 using BCrypt.Net;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
+using MySqlX.XDevAPI;
 using Org.BouncyCastle.Crypto.Generators;
 
 namespace GMEPDesignTool.Database
@@ -1019,6 +1020,221 @@ namespace GMEPDesignTool.Database
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.ExecuteNonQuery();
+      CloseConnection(Connection);
+    }
+
+    public List<Contact> GetContacts(string companyId = "")
+    {
+      List<Contact> contacts = new List<Contact>();
+      string query =
+        @"
+        SELECT 
+        contacts.id,
+        contacts.entity_id,
+        contacts.first_name,
+        contacts.last_name,
+        contacts.company_id,
+        phone_numbers.phone_number,
+        phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
+        email_addresses.email_address,
+        email_addresses.id as email_address_id,
+        companies.name
+        FROM contacts
+        LEFT JOIN
+        entities ON entities.id = contacts.entity_id
+        LEFT JOIN
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        companies ON companies.id = contacts.company_id
+        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
+        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+      ";
+      if (!String.IsNullOrEmpty(companyId))
+      {
+        query += "AND contacts.company_id = @company_id";
+      }
+      query +=
+        @"
+        GROUP BY contacts.id
+        ORDER BY contacts.last_name
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      if (!String.IsNullOrEmpty(companyId))
+      {
+        command.Parameters.AddWithValue("@company_id", companyId);
+      }
+      MySqlDataReader reader = command.ExecuteReader();
+      while (reader.Read())
+      {
+        contacts.Add(
+          new Contact(
+            GetSafeString(reader, "id"),
+            GetSafeString(reader, "entity_id"),
+            GetSafeString(reader, "first_name"),
+            GetSafeString(reader, "last_name"),
+            GetSafeString(reader, "company_id"),
+            GetSafeString(reader, "name"),
+            GetSafeString(reader, "email_address_id"),
+            GetSafeString(reader, "email_address"),
+            GetSafeString(reader, "phone_number_id"),
+            GetUnsafeULong(reader, "phone_number"),
+            GetUnsafeUInt(reader, "extension")
+          )
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+
+      return contacts;
+    }
+
+    public string CreateContact(
+      string firstName,
+      string lastName,
+      string companyId,
+      string emailAddress,
+      ulong? phoneNumber,
+      uint? phoneExtension
+    )
+    {
+      string query = @"INSERT INTO entities ( id ) VALUES ( @entityId )";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      string entityId = Guid.NewGuid().ToString();
+      command.Parameters.AddWithValue("@entityId", entityId);
+      query =
+        @"
+        INSERT INTO contacts
+        ( id,  entity_id,  first_name,  last_name,  company_id) VALUES
+        (@id, @entity_id, @first_name, @last_name, @company_id)
+        ";
+      string contactId = Guid.NewGuid().ToString();
+      command.Parameters.AddWithValue("@id", contactId);
+      command.Parameters.AddWithValue("@entity_id", entityId);
+      command.Parameters.AddWithValue("@first_name", firstName);
+      command.Parameters.AddWithValue("@last_name", lastName);
+      command.Parameters.AddWithValue("@company_id", companyId);
+      command.ExecuteNonQuery();
+
+      string emailAddressId = Guid.NewGuid().ToString();
+      string emailAddressRelId = Guid.NewGuid().ToString();
+      query =
+        @"
+        INSERT INTO email_addresses (id, email_address)
+        VALUES (@id, @emailAddress)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", emailAddressId);
+      command.Parameters.AddWithValue("@emailAddress", emailAddress);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE email_addr_entity_rel SET
+        is_primary = 0 WHERE entity_id = ?
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", entityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        INSERT INTO email_addr_entity_rel (id, email_address_id, entity_id, is_primary)
+        VALUES (@id, @emailAddressId, @entityId, 1)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", emailAddressRelId);
+      command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
+      command.Parameters.AddWithValue("@entityId", entityId);
+      command.ExecuteNonQuery();
+
+      string phoneNumberId = Guid.NewGuid().ToString();
+      string phoneNumberRelId = Guid.NewGuid().ToString();
+      query =
+        @"
+        INSERT INTO phone_numbers (id, phone_number, extension, calling_code)
+        VALUES (@id, @phoneNumber, @extension, 1)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", phoneNumberId);
+      command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+      command.Parameters.AddWithValue("@extension", phoneExtension == 0 ? null : phoneExtension);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE phone_number_entity_entity_rel SET
+        is_primary = 0 WHERE entity_id = ?
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", entityId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        INSERT INTO phone_number_entity_rel (id, phone_number_id, entity_id, is_primary)
+        VALUES (@id, @phoneNumberId, @entityId, 1)
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", phoneNumberRelId);
+      command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
+      command.Parameters.AddWithValue("@entityId", entityId);
+      command.ExecuteNonQuery();
+
+      CloseConnection(Connection);
+      return contactId;
+    }
+
+    public void SaveContact(Contact contact)
+    {
+      string query =
+        @"
+        UPDATE contacts SET
+        first_name = @first_name,
+        last_name = @last_name
+        WHERE id = @id
+        ";
+
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@first_name", contact.FirstName);
+      command.Parameters.AddWithValue("@last_name", contact.LastName);
+      command.Parameters.AddWithValue("@id", contact.Id);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE email_addresses SET
+        email_address = @email_address,
+        WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@email_address", contact.EmailAddress);
+      command.Parameters.AddWithValue("@id", contact.EmailAddressId);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE phone_numbers SET
+        phone_number = @phone_numbers,
+        extension = @phone_extension
+        WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@phone_number", contact.PhoneNumber);
+      command.Parameters.AddWithValue("@extension", contact.Extension);
+      command.Parameters.AddWithValue("@id", contact.PhoneNumberId);
+      command.ExecuteNonQuery();
+
+      CloseConnection(Connection);
     }
 
     public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)

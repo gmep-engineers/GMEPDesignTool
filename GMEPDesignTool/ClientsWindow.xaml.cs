@@ -61,7 +61,10 @@ namespace GMEPDesignTool
 
     private void AddEditPrimaryContact_Click(object sender, RoutedEventArgs e)
     {
-      AddEditContactWindow addEditClientWindow = new AddEditContactWindow(ViewModel.SelectedClient);
+      AddEditContactWindow addEditClientWindow = new AddEditContactWindow(
+        ViewModel.SelectedClient,
+        LoginResponse
+      );
       addEditClientWindow.Show();
     }
 
@@ -78,7 +81,15 @@ namespace GMEPDesignTool
     {
       if (e.Key == Key.Enter)
       {
-        ViewModel.SaveOnEnter();
+        ViewModel.SaveClientOnEnter();
+      }
+    }
+
+    private void ContactDataGrid_KeyUp(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Enter)
+      {
+        ViewModel.SaveContactOnEnter();
       }
     }
 
