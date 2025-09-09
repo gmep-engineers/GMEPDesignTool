@@ -14,15 +14,22 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid>
-                    <DataGrid Name="ContactsDataGrid" ItemsSource="{Binding Source={StaticResource ContactsViewSource}}" SelectedItem="{Binding Path=SelectedContact,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+                <Grid Grid.Row="0">
+                    <Label FontFamily="Tahoma" FontSize="26" Content="{Binding Path=CompanyName}"/>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <DataGrid KeyUp="ContactDataGrid_KeyUp" Name="ContactsDataGrid" ItemsSource="{Binding Source={StaticResource ContactsViewSource}}" SelectedItem="{Binding Path=SelectedContact,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu Name="ContactContextMenu">
+                                <MenuItem Header="Flag for deletion" Click="FlagContactForDeletion_Click"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridTextColumn Header="Company" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="Email Address" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header="Phone Number">
                                 <DataGridTextColumn.Binding>
@@ -36,51 +43,7 @@
                             <DataGridTextColumn Header="Extension" Binding="{Binding Extension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                </Grid>
-                <Grid Grid.Row="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250"/>
-                        <ColumnDefinition Width="200"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                    </Grid.RowDefinitions>
-                    <Button Content="Set Primary" Grid.Column="1" Grid.Row="1" Margin="10,0,0,10" Visibility="Hidden"/>
-                </Grid>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="175"/>
-                        <ColumnDefinition Width="400"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="40"/>
-                    </Grid.RowDefinitions>
-                    <Label FontFamily="Tahoma" FontSize="16" Grid.Row="0" Content="Add New Contact"  Margin="10,5,0,5" Width="auto" />
-                    <Label Grid.Row="1" Grid.Column="0" Content="First Name" VerticalAlignment="Center" Margin="10,5,0,5"/>
-                    <TextBox x:Name="NewFirstNameBox" Grid.Row="1" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding NewFirstName}"/>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Last Name" VerticalAlignment="Center" Margin="10,5,0,5"/>
-                    <TextBox x:Name="NewLastNameBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding NewLastName}"/>
-                    <Label Grid.Row="3" Grid.Column="0" Content="Email Address" VerticalAlignment="Center" Margin="10,5,0,5"/>
-                    <TextBox x:Name="NewEmailAddressBox" Grid.Row="3" Margin="0,0,0,10"  Grid.Column="1" Text="{Binding NewEmailAddress}"/>
-                    <Label Grid.Row="4" Grid.Column="0" Content="Phone" VerticalAlignment="Center" Margin="10,5,0,5"/>
-                    <Grid Grid.Row="4" Grid.ColumnSpan="1" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition Width="75" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" x:Name="NewPhoneNumberBox" Margin="0,0,0,10" Text="{Binding NewPhoneNumber}"/>
-                        <Label  Grid.Column="1" Content="Extension" VerticalAlignment="Top" Margin="10,5,0,5"/>
-                        <TextBox  Grid.Column="2" x:Name="NewExtensionBox" Margin="0,0,0,10" Text="{Binding NewExtension}" Grid.ColumnSpan="2"/>
-                    </Grid>
-                    <Button Content="Add" Grid.Column="0" Grid.Row="5" Margin="10,0,10,10" Visibility="Visible" Click="AddPrimaryContact_Click"/>
-                </Grid>
+                </Grid>                          
             </Grid>            
         </ScrollViewer>
     </Grid>

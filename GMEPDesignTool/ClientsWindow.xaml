@@ -54,7 +54,7 @@
                         </DataGrid.RowStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridComboBoxColumn Header="Client Loyalty"  SelectedValueBinding="{Binding ClientLoyaltyTypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                            <DataGridComboBoxColumn Header="Client Loyalty"  SelectedValueBinding="{Binding LoyaltyTypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
                                 <DataGridComboBoxColumn.ItemsSource>
                                     <CompositeCollection>
                                         <ComboBoxItem Content="Loyal" Tag="1"/>

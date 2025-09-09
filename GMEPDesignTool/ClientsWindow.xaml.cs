@@ -95,7 +95,12 @@ namespace GMEPDesignTool
 
     private void FlagClientForDeletion_Click(object sender, RoutedEventArgs e)
     {
-      ViewModel.FlagForDeletion();
+      ViewModel.FlagClientForDeletion();
+    }
+
+    private void FlagContactForDeletion_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.FlagContactForDeletion();
     }
   }
 }

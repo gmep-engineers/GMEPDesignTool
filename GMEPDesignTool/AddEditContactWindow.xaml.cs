@@ -28,9 +28,22 @@ namespace GMEPDesignTool
       this.DataContext = ViewModel;
     }
 
-    private void AddPrimaryContact_Click(object sender, RoutedEventArgs e)
+    public void SaveClick(object sender, RoutedEventArgs e)
     {
-      ViewModel.CreateContact();
+      ViewModel.Save();
+    }
+
+    private void ContactDataGrid_KeyUp(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Enter)
+      {
+        ViewModel.SaveContactOnEnter();
+      }
+    }
+
+    private void FlagContactForDeletion_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.FlagForDeletion();
     }
   }
 }

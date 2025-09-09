@@ -97,16 +97,16 @@ namespace GMEPDesignTool
       }
     }
 
-    private int _ClientLoyaltyTypeId;
-    public int ClientLoyaltyTypeId
+    private int _LoyaltyTypeId;
+    public int LoyaltyTypeId
     {
-      get => _ClientLoyaltyTypeId;
+      get => _LoyaltyTypeId;
       set
       {
-        if (_ClientLoyaltyTypeId != value)
+        if (_LoyaltyTypeId != value)
         {
-          _ClientLoyaltyTypeId = value;
-          OnPropertyChanged(nameof(ClientLoyaltyTypeId));
+          _LoyaltyTypeId = value;
+          OnPropertyChanged(nameof(LoyaltyTypeId));
           _Modified = true;
         }
       }
@@ -253,7 +253,7 @@ namespace GMEPDesignTool
       string id,
       string entityId,
       string name,
-      int clientLoyaltyTypeId,
+      int loyaltyTypeId,
       string streetAddress,
       string city,
       string state,
@@ -271,7 +271,7 @@ namespace GMEPDesignTool
       _CompanyId = id;
       _EntityId = entityId;
       _CompanyName = name;
-      _ClientLoyaltyTypeId = clientLoyaltyTypeId;
+      _LoyaltyTypeId = loyaltyTypeId;
       _StreetAddress = streetAddress;
       _City = city;
       _State = state;
@@ -297,7 +297,7 @@ namespace GMEPDesignTool
       _CompanyId = Guid.NewGuid().ToString();
       _EntityId = Guid.NewGuid().ToString();
       _CompanyName = string.Empty;
-      _ClientLoyaltyTypeId = 3;
+      _LoyaltyTypeId = 3;
       _StreetAddress = string.Empty;
       _City = string.Empty;
       _State = string.Empty;
@@ -334,6 +334,20 @@ namespace GMEPDesignTool
     {
       get => _New;
       set => _New = value;
+    }
+
+    private bool _Delete = false;
+    public bool Delete
+    {
+      get => _Delete;
+      set
+      {
+        if (_Delete != value)
+        {
+          _Delete = value;
+          OnPropertyChanged(nameof(Delete));
+        }
+      }
     }
 
     private string _Id = string.Empty;
@@ -484,15 +498,12 @@ namespace GMEPDesignTool
     {
       _Id = Guid.NewGuid().ToString();
       _EntityId = Guid.NewGuid().ToString();
-      ;
       _FirstName = string.Empty;
       _LastName = string.Empty;
       _CompanyId = string.Empty;
       _EmailAddressId = Guid.NewGuid().ToString();
-      ;
       _EmailAddress = string.Empty;
       _PhoneNumberId = Guid.NewGuid().ToString();
-      ;
       _PhoneNumber = 0;
       _Extension = 0;
     }
@@ -567,11 +578,19 @@ namespace GMEPDesignTool
       }
     }
 
-    public void FlagForDeletion()
+    public void FlagClientForDeletion()
     {
       if (SelectedClient != null)
       {
         SelectedClient.Delete = !SelectedClient.Delete;
+      }
+    }
+
+    public void FlagContactForDeletion()
+    {
+      if (SelectedContact != null)
+      {
+        SelectedContact.Delete = !SelectedContact.Delete;
       }
     }
   }

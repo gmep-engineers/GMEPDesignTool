@@ -712,7 +712,6 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@entity_id", client.EntityId);
       command.Parameters.AddWithValue("@id", client.CompanyId);
       command.ExecuteNonQuery();
-      CloseConnection(Connection);
 
       query =
         @"
@@ -723,7 +722,9 @@ namespace GMEPDesignTool.Database
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
-      command.Parameters.AddWithValue("@loyalty_type_id", client.ClientLoyaltyTypeId);
+      command.Parameters.AddWithValue("@loyalty_type_id", client.LoyaltyTypeId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
       client.New = false;
     }
 
@@ -767,6 +768,8 @@ namespace GMEPDesignTool.Database
         clients ON clients.company_id = companies.id
         WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
         AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        AND clients.company_id IS NOT NULL
+        AND companies.date_deleted IS NULL
         GROUP BY companies.id
         ORDER BY companies.name
         ";
@@ -836,7 +839,7 @@ namespace GMEPDesignTool.Database
         WHERE company_id = @companyId
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@loyaltyTypeId", client.ClientLoyaltyTypeId);
+      command.Parameters.AddWithValue("@loyaltyTypeId", client.LoyaltyTypeId);
       command.Parameters.AddWithValue("@companyId", client.CompanyId);
       command.ExecuteNonQuery();
 
@@ -857,7 +860,7 @@ namespace GMEPDesignTool.Database
         query =
           @"
           UPDATE email_addr_entity_rel SET
-          is_primary = 0 WHERE entity_id = ?
+          is_primary = 0 WHERE entity_id = @id
           ";
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", client.EntityId);
@@ -910,7 +913,7 @@ namespace GMEPDesignTool.Database
         query =
           @"
           UPDATE phone_number_entity_entity_rel SET
-          is_primary = 0 WHERE entity_id = ?
+          is_primary = 0 WHERE entity_id = @id
           ";
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", client.EntityId);
@@ -950,75 +953,20 @@ namespace GMEPDesignTool.Database
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
-      command.Parameters.AddWithValue("@loyalty_type_id", client.ClientLoyaltyTypeId);
+      command.Parameters.AddWithValue("@loyalty_type_id", client.LoyaltyTypeId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
     }
 
     public void DeleteClient(Client client)
     {
+      OpenConnection(Connection);
       string query =
         @"
-        DELETE FROM clients WHERE company_id = @company_id
+        UPDATE clients SET date_deleted = current_timestamp() WHERE id = @id
         ";
-
-      OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@company_id", client.CompanyId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM companies WHERE id = @id
-        ";
-      command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", client.CompanyId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM email_addresses WHERE id IN (
-        SELECT email_address_id FROM email_addr_entity_rel
-        WHERE entity_id = @entity_id
-        )
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM phone_numbers WHERE id IN (
-        SELECT phone_number_id FROM phone_number_entity_rel
-        WHERE entity_id = @entity_id
-        )
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM email_addr_entity_rel WHERE entity_id = @entity_id
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM phone_number_entity_rel WHERE entity_id = @entity_id
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
-      command.ExecuteNonQuery();
-
-      query =
-        @"
-        DELETE FROM contacts WHERE company_id = @company_id
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
     }
@@ -1053,8 +1001,13 @@ namespace GMEPDesignTool.Database
         email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
         LEFT JOIN
         companies ON companies.id = contacts.company_id
+        LEFT JOIN
+        clients ON clients.company_id = companies.id
         WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
         AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        AND companies.date_deleted IS NULL
+        AND contacts.date_deleted IS NULL
+        AND clients.company_id IS NOT NULL
       ";
       if (!String.IsNullOrEmpty(companyId))
       {
@@ -1096,35 +1049,28 @@ namespace GMEPDesignTool.Database
       return contacts;
     }
 
-    public string CreateContact(
-      string firstName,
-      string lastName,
-      string companyId,
-      string emailAddress,
-      ulong? phoneNumber,
-      uint? phoneExtension
-    )
+    public void CreateContact(Contact contact)
     {
       string query = @"INSERT INTO entities ( id ) VALUES ( @entityId )";
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
-      string entityId = Guid.NewGuid().ToString();
-      command.Parameters.AddWithValue("@entityId", entityId);
+      command.Parameters.AddWithValue("@entityId", contact.EntityId);
+      command.ExecuteNonQuery();
       query =
         @"
         INSERT INTO contacts
         ( id,  entity_id,  first_name,  last_name,  company_id) VALUES
         (@id, @entity_id, @first_name, @last_name, @company_id)
         ";
-      string contactId = Guid.NewGuid().ToString();
-      command.Parameters.AddWithValue("@id", contactId);
-      command.Parameters.AddWithValue("@entity_id", entityId);
-      command.Parameters.AddWithValue("@first_name", firstName);
-      command.Parameters.AddWithValue("@last_name", lastName);
-      command.Parameters.AddWithValue("@company_id", companyId);
+      Trace.WriteLine("entity id" + contact.EntityId);
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", contact.Id);
+      command.Parameters.AddWithValue("@entity_id", contact.EntityId);
+      command.Parameters.AddWithValue("@first_name", contact.FirstName);
+      command.Parameters.AddWithValue("@last_name", contact.LastName);
+      command.Parameters.AddWithValue("@company_id", contact.CompanyId);
       command.ExecuteNonQuery();
 
-      string emailAddressId = Guid.NewGuid().ToString();
       string emailAddressRelId = Guid.NewGuid().ToString();
       query =
         @"
@@ -1132,17 +1078,17 @@ namespace GMEPDesignTool.Database
         VALUES (@id, @emailAddress)
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", emailAddressId);
-      command.Parameters.AddWithValue("@emailAddress", emailAddress);
+      command.Parameters.AddWithValue("@id", contact.EmailAddressId);
+      command.Parameters.AddWithValue("@emailAddress", contact.EmailAddress);
       command.ExecuteNonQuery();
 
       query =
         @"
         UPDATE email_addr_entity_rel SET
-        is_primary = 0 WHERE entity_id = ?
+        is_primary = 0 WHERE entity_id = @id
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", entityId);
+      command.Parameters.AddWithValue("@id", contact.EntityId);
       command.ExecuteNonQuery();
 
       query =
@@ -1152,11 +1098,10 @@ namespace GMEPDesignTool.Database
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", emailAddressRelId);
-      command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
-      command.Parameters.AddWithValue("@entityId", entityId);
+      command.Parameters.AddWithValue("@emailAddressId", contact.EmailAddressId);
+      command.Parameters.AddWithValue("@entityId", contact.EntityId);
       command.ExecuteNonQuery();
 
-      string phoneNumberId = Guid.NewGuid().ToString();
       string phoneNumberRelId = Guid.NewGuid().ToString();
       query =
         @"
@@ -1164,18 +1109,21 @@ namespace GMEPDesignTool.Database
         VALUES (@id, @phoneNumber, @extension, 1)
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", phoneNumberId);
-      command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-      command.Parameters.AddWithValue("@extension", phoneExtension == 0 ? null : phoneExtension);
+      command.Parameters.AddWithValue("@id", contact.PhoneNumberId);
+      command.Parameters.AddWithValue("@phoneNumber", contact.PhoneNumber);
+      command.Parameters.AddWithValue(
+        "@extension",
+        contact.Extension == 0 ? null : contact.Extension
+      );
       command.ExecuteNonQuery();
 
       query =
         @"
-        UPDATE phone_number_entity_entity_rel SET
-        is_primary = 0 WHERE entity_id = ?
+        UPDATE phone_number_entity_rel SET
+        is_primary = 0 WHERE entity_id = @id
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", entityId);
+      command.Parameters.AddWithValue("@id", contact.EntityId);
       command.ExecuteNonQuery();
 
       query =
@@ -1185,16 +1133,20 @@ namespace GMEPDesignTool.Database
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", phoneNumberRelId);
-      command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
-      command.Parameters.AddWithValue("@entityId", entityId);
+      command.Parameters.AddWithValue("@phoneNumberId", contact.PhoneNumberId);
+      command.Parameters.AddWithValue("@entityId", contact.EntityId);
       command.ExecuteNonQuery();
 
       CloseConnection(Connection);
-      return contactId;
     }
 
     public void SaveContact(Contact contact)
     {
+      if (contact.New)
+      {
+        CreateContact(contact);
+        return;
+      }
       string query =
         @"
         UPDATE contacts SET
@@ -1213,7 +1165,7 @@ namespace GMEPDesignTool.Database
       query =
         @"
         UPDATE email_addresses SET
-        email_address = @email_address,
+        email_address = @email_address
         WHERE id = @id
         ";
       command = new MySqlCommand(query, Connection);
@@ -1224,8 +1176,8 @@ namespace GMEPDesignTool.Database
       query =
         @"
         UPDATE phone_numbers SET
-        phone_number = @phone_numbers,
-        extension = @phone_extension
+        phone_number = @phone_number,
+        extension = @extension
         WHERE id = @id
         ";
       command = new MySqlCommand(query, Connection);
@@ -1234,6 +1186,19 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@id", contact.PhoneNumberId);
       command.ExecuteNonQuery();
 
+      CloseConnection(Connection);
+    }
+
+    public void DeleteContact(Contact contact)
+    {
+      string query =
+        @"
+        UPDATE contacts SET date_deleted = current_timestamp() WHERE id = @id
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", contact.Id);
+      command.ExecuteNonQuery();
       CloseConnection(Connection);
     }
 
