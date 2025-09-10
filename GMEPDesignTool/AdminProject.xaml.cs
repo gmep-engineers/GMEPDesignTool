@@ -67,45 +67,33 @@ namespace GMEPDesignTool
       if (!Saving && !Loading)
       {
         Saving = true;
-        Console.WriteLine("save start");
         if (adminViewModel != null)
         {
-          try
+          var model = new AdminModel
           {
-            // Construct your AdminModel from ViewModel data
-            var model = new AdminModel
-            {
-              ProjectNo = adminViewModel.ProjectNo,
-              ProjectName = adminViewModel.ProjectName,
-              Client = adminViewModel.Client,
-              Architect = adminViewModel.Architect,
-              StreetAddress = adminViewModel.StreetAddress,
-              City = adminViewModel.City,
-              State = adminViewModel.State,
-              PostalCode = adminViewModel.PostalCode,
-              Directory = adminViewModel.FileDictionary,
-              IsCheckedS = adminViewModel.IsCheckedS,
-              IsCheckedM = adminViewModel.IsCheckedM,
-              IsCheckedE = adminViewModel.IsCheckedE,
-              IsCheckedP = adminViewModel.IsCheckedP,
-              Descriptions = adminViewModel.Descriptions,
-            };
+            ProjectNo = adminViewModel.ProjectNo,
+            ProjectName = adminViewModel.ProjectName,
+            Client = adminViewModel.Client,
+            ClientCompanyId = adminViewModel.SelectedClientId,
+            Architect = adminViewModel.Architect,
+            //ArchitectCompanyId = adminViewModel.SelectedArchitectId, HERE implement
+            StreetAddress = adminViewModel.StreetAddress,
+            City = adminViewModel.City,
+            State = adminViewModel.State,
+            PostalCode = adminViewModel.PostalCode,
+            Directory = adminViewModel.FileDictionary,
+            IsCheckedS = adminViewModel.IsCheckedS,
+            IsCheckedM = adminViewModel.IsCheckedM,
+            IsCheckedE = adminViewModel.IsCheckedE,
+            IsCheckedP = adminViewModel.IsCheckedP,
+            Descriptions = adminViewModel.Descriptions,
+          };
 
-            var db = new Database.Database(Properties.Settings.Default.ConnectionString);
-            await db.UpdateAdminProject(model, ProjectId);
-            Console.WriteLine("s:" + model.IsCheckedS);
-            Console.WriteLine("save successed");
-
-            MessageBox.Show("Project updated successfully.");
-          }
-          catch (Exception ex)
-          {
-            MessageBox.Show("Error saving project: " + ex.Message);
-          }
+          var db = new Database.Database(Properties.Settings.Default.ConnectionString);
+          await db.UpdateAdminProject(model, ProjectId);
         }
 
         Saving = false;
-        Console.WriteLine("save end");
       }
     }
 

@@ -195,7 +195,6 @@ namespace GMEPDesignTool
 
     private void OpenEmployeesWindow(object commandParameter)
     {
-      Trace.WriteLine(loginResponse.AccessLevelId);
       EmployeesWindow employeesWindow = new EmployeesWindow(loginResponse);
       employeesWindow.Show();
     }
@@ -217,7 +216,6 @@ namespace GMEPDesignTool
 
     private bool CanOpenClientsWindow(object commandParameter)
     {
-      Trace.WriteLine(loginResponse.AccessLevelId);
       if (loginResponse.AccessLevelId == 1)
       {
         return true;

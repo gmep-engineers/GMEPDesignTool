@@ -97,5 +97,13 @@ namespace GMEPDesignTool
         SelectedContact.Delete = !SelectedContact.Delete;
       }
     }
+
+    public void SetPrimaryContact()
+    {
+      if (SelectedContact != null)
+      {
+        Database.SetPrimaryContact(SelectedContact);
+      }
+    }
   }
 }

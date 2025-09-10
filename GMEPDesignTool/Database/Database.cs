@@ -161,20 +161,37 @@ namespace GMEPDesignTool.Database
       return DateTime.MinValue;
     }
 
-    public async Task UpdateProposalById(string proposal_id, string pdf_name)
+    public void SetProposalPdf(string proposalId, string pdfName)
     {
       string query =
         @"
             UPDATE proposals
             SET proposals.pdf_name = @pdf_name
-            WHERE id = @proposal_id";
-      await OpenConnectionAsync(Connection);
-      MySqlCommand command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@pdf_name", pdf_name);
-      command.Parameters.AddWithValue("@proposal_id", proposal_id);
-      await command.ExecuteNonQueryAsync();
-      command.Dispose();
-      await CloseConnectionAsync(Connection);
+            WHERE id = @id";
+      MySqlConnection Connection2 = new MySqlConnection(ConnectionString);
+      OpenConnection(Connection2);
+      MySqlCommand command = new MySqlCommand(query, Connection2);
+      command.Parameters.AddWithValue("@pdf_name", pdfName);
+      command.Parameters.AddWithValue("@id", proposalId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection2);
+    }
+
+    public void SetProposalData(string proposalId, string data)
+    {
+      string query =
+        @"
+        UPDATE proposals SET
+        proposals.data = @data
+        WHERE id = @id
+        ";
+      MySqlConnection Connection2 = new MySqlConnection(ConnectionString);
+      OpenConnection(Connection2);
+      MySqlCommand command = new MySqlCommand(query, Connection2);
+      command.Parameters.AddWithValue("@data", data);
+      command.Parameters.AddWithValue("@id", proposalId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection2);
     }
 
     public async Task<ObservableCollection<Proposal>> GetProposals(string projectId)
@@ -188,10 +205,12 @@ namespace GMEPDesignTool.Database
                             proposals.project_id,
                             proposals.date_created AS date_created,
                             proposal_types.type AS type,
+                            proposal_statuses.status,
                             employees.username AS username            
                         FROM proposals
                         LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
                         LEFT JOIN employees ON proposals.employee_id = employees.id
+                        LEFT JOIN proposal_statuses ON proposal_statuses.id = proposals.status_id
                         where proposals.project_id = @projectId
                         order by date_created DESC";
       await OpenConnectionAsync(Connection);
@@ -210,6 +229,7 @@ namespace GMEPDesignTool.Database
             Type = GetSafeString(reader, "type"),
             EmployeeUsername = GetSafeString(reader, "username"),
             Pdf_name = GetSafeString(reader, "pdf_name"),
+            Status = GetSafeString(reader, "status"),
           }
         );
       }
@@ -266,19 +286,25 @@ namespace GMEPDesignTool.Database
                         SELECT 
                         gmep_project_no,
                         gmep_project_name,
-                        client,
-                        architect,
-                        street_address,
-                        city,
-                        state,
-                        postal_code, 
-                        directory,
+                        client_companies.name as client,
+                        projects.client_company_id,
+                        architect_companies.name as architect,
+                        projects.architect_company_id as architect_company_id,
+                        projects.street_address,
+                        projects.city,
+                        projects.state,
+                        projects.postal_code, 
+                        projects.directory,
                         s,
                         m,
                         e,
                         p,
                         descriptions
-                        FROM projects WHERE id = @projectId";
+                        FROM projects
+                        LEFT JOIN companies AS client_companies ON client_companies.id = projects.client_company_id
+                        LEFT JOIN companies AS architect_companies ON architect_companies.id = projects.architect_company_id
+                        WHERE projects.id = @projectId
+      ";
       await OpenConnectionAsync(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@projectId", projectId);
@@ -292,7 +318,9 @@ namespace GMEPDesignTool.Database
             ProjectNo = GetSafeString(reader, "gmep_project_no"),
             ProjectName = GetSafeString(reader, "gmep_project_name"),
             Client = GetSafeString(reader, "client"),
+            ClientCompanyId = GetSafeString(reader, "client_company_id"),
             Architect = GetSafeString(reader, "architect"),
+            ArchitectCompanyId = GetSafeString(reader, "architect_company_id"),
             StreetAddress = GetSafeString(reader, "street_address"),
             City = GetSafeString(reader, "city"),
             State = GetSafeString(reader, "state"),
@@ -318,8 +346,7 @@ namespace GMEPDesignTool.Database
             UPDATE projects
             SET gmep_project_name = @name,
                 street_address = @address,
-                client = @client,
-                architect = @architect,
+                client_company_id = @clientCompanyId,
                 city = @city,
                 state = @state,
                 postal_code = @postalCode,
@@ -334,8 +361,8 @@ namespace GMEPDesignTool.Database
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@projectId", projectId);
       command.Parameters.AddWithValue("@name", model.ProjectName);
-      command.Parameters.AddWithValue("@client", model.Client);
-      command.Parameters.AddWithValue("@architect", model.Architect);
+      command.Parameters.AddWithValue("@clientCompanyId", model.ClientCompanyId);
+      //command.Parameters.AddWithValue("@architectId", model.ArchitectCompanyId);
       command.Parameters.AddWithValue("@address", model.StreetAddress);
       command.Parameters.AddWithValue("@city", model.City);
       command.Parameters.AddWithValue("@state", model.State);
@@ -430,6 +457,7 @@ namespace GMEPDesignTool.Database
         hashedPassword = reader.GetString("passhash");
         result = BCrypt.Net.BCrypt.Verify(password, hashedPassword);
       }
+      reader.Close();
       CloseConnection(Connection);
       return result;
     }
@@ -489,6 +517,7 @@ namespace GMEPDesignTool.Database
           )
         );
       }
+      reader.Close();
       CloseConnection(Connection);
       return employees;
     }
@@ -804,6 +833,81 @@ namespace GMEPDesignTool.Database
       return clients;
     }
 
+    public Client? GetClient(string companyId)
+    {
+      string query =
+        @"
+        SELECT 
+        companies.id,
+        companies.entity_id,
+        companies.name,
+        companies.street_address,
+        companies.city,
+        companies.state,
+        companies.postal_code,
+        companies.primary_contact_id,
+        phone_numbers.phone_number,
+        phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
+        email_addresses.email_address,
+        email_addresses.id as email_address_id,
+        contacts.id as primary_contact_id,
+        contacts.first_name,
+        contacts.last_name,
+        clients.loyalty_type_id
+        FROM companies
+        LEFT JOIN
+        entities ON entities.id = companies.entity_id
+        LEFT JOIN
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        contacts ON contacts.id = companies.primary_contact_id
+        LEFT JOIN
+        clients ON clients.company_id = companies.id
+        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
+        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        AND clients.company_id IS NOT NULL
+        AND companies.date_deleted IS NULL
+        AND companies.id = @companyId
+        GROUP BY companies.id
+        ORDER BY companies.name
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@companyId", companyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        return new Client(
+          GetSafeString(reader, "id"),
+          GetSafeString(reader, "entity_id"),
+          GetSafeString(reader, "name"),
+          GetSafeInt(reader, "loyalty_type_id"),
+          GetSafeString(reader, "street_address"),
+          GetSafeString(reader, "city"),
+          GetSafeString(reader, "state"),
+          GetSafeString(reader, "postal_code"),
+          GetSafeString(reader, "email_address_id"),
+          GetSafeString(reader, "email_address"),
+          GetSafeString(reader, "phone_number_id"),
+          GetUnsafeULong(reader, "phone_number"),
+          GetUnsafeUInt(reader, "extension"),
+          GetSafeString(reader, "primary_contact_id"),
+          GetSafeString(reader, "first_name"),
+          GetSafeString(reader, "last_name")
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return null;
+    }
+
     public void SaveClient(Client client)
     {
       if (client.New)
@@ -1062,7 +1166,6 @@ namespace GMEPDesignTool.Database
         ( id,  entity_id,  first_name,  last_name,  company_id) VALUES
         (@id, @entity_id, @first_name, @last_name, @company_id)
         ";
-      Trace.WriteLine("entity id" + contact.EntityId);
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", contact.Id);
       command.Parameters.AddWithValue("@entity_id", contact.EntityId);
@@ -1198,6 +1301,26 @@ namespace GMEPDesignTool.Database
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", contact.Id);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
+    }
+
+    public void SetPrimaryContact(Contact contact)
+    {
+      if (String.IsNullOrEmpty(contact.CompanyId))
+      {
+        return;
+      }
+      string query =
+        @"
+        UPDATE companies SET
+        primary_contact_id = @primary_contact_id
+        WHERE id = @id
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@primary_contact_id", contact.Id);
+      command.Parameters.AddWithValue("@id", contact.CompanyId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
     }

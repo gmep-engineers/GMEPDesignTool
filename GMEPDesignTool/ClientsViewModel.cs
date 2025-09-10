@@ -88,7 +88,7 @@ namespace GMEPDesignTool
       get => _CompanyName;
       set
       {
-        if (_CompanyName != value)
+        if (_CompanyName != value && value.Length <= 255)
         {
           _CompanyName = value;
           OnPropertyChanged(nameof(CompanyName));
@@ -118,7 +118,7 @@ namespace GMEPDesignTool
       get => _StreetAddress;
       set
       {
-        if (_StreetAddress != value)
+        if (_StreetAddress != value && value.Length <= 255)
         {
           _StreetAddress = value;
           OnPropertyChanged(nameof(StreetAddress));
@@ -133,7 +133,7 @@ namespace GMEPDesignTool
       get => _City;
       set
       {
-        if (_City != value)
+        if (_City != value && value.Length <= 255)
         {
           _City = value;
           OnPropertyChanged(nameof(City));
@@ -163,7 +163,7 @@ namespace GMEPDesignTool
       get => _PostalCode;
       set
       {
-        if (_PostalCode != value)
+        if (_PostalCode != value && value.Length <= 15)
         {
           _PostalCode = value;
           OnPropertyChanged(nameof(PostalCode));
@@ -185,7 +185,7 @@ namespace GMEPDesignTool
       get => _CompanyEmail;
       set
       {
-        if (_CompanyEmail != value)
+        if (_CompanyEmail != value && value.Length <= 63)
         {
           _CompanyEmail = value;
           OnPropertyChanged(nameof(CompanyEmail));
@@ -370,7 +370,7 @@ namespace GMEPDesignTool
       get => _FirstName;
       set
       {
-        if (_FirstName != value)
+        if (_FirstName != value && value.Length <= 31)
         {
           _FirstName = value;
           OnPropertyChanged(nameof(FirstName));
@@ -385,7 +385,7 @@ namespace GMEPDesignTool
       get => _LastName;
       set
       {
-        if (_LastName != value)
+        if (_LastName != value && value.Length <= 31)
         {
           _LastName = value;
           OnPropertyChanged(nameof(LastName));
@@ -421,7 +421,7 @@ namespace GMEPDesignTool
       get => _EmailAddress;
       set
       {
-        if (_EmailAddress != value)
+        if (_EmailAddress != value && value.Length <= 63)
         {
           _EmailAddress = value;
           OnPropertyChanged(nameof(EmailAddress));
@@ -593,5 +593,7 @@ namespace GMEPDesignTool
         SelectedContact.Delete = !SelectedContact.Delete;
       }
     }
+
+    public void SetPrimaryContact() { }
   }
 }

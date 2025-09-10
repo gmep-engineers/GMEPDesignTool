@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GMEPDesignTool.Database;
 using Mysqlx.Crud;
 
 namespace GMEPDesignTool
@@ -261,6 +262,26 @@ namespace GMEPDesignTool
       }
     }
 
+    private List<ComboData> clientData = new List<ComboData>();
+    public List<ComboData> ClientData
+    {
+      get { return clientData; }
+    }
+
+    private string selectedClientId;
+    public string SelectedClientId
+    {
+      get => selectedClientId;
+      set
+      {
+        if (selectedClientId != value)
+        {
+          selectedClientId = value;
+          OnPropertyChanged(nameof(SelectedClientId));
+        }
+      }
+    }
+
     public AdminViewModel(string projectId)
     {
       LoadProjectInfoAsync(projectId);
@@ -269,10 +290,18 @@ namespace GMEPDesignTool
     private async void LoadProjectInfoAsync(string projectId)
     {
       var db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
+
+      var clients = db.GetClients();
+      foreach (var client in clients)
+      {
+        clientData.Add(new ComboData { Id = client.CompanyId, Value = client.CompanyName });
+      }
+
       AdminModel ProjectInfo = await db.GetAdminByProjectId(projectId);
       ProjectNo = ProjectInfo.ProjectNo;
       ProjectName = ProjectInfo.ProjectName;
       Client = ProjectInfo.Client;
+      SelectedClientId = ProjectInfo.ClientCompanyId;
       Architect = ProjectInfo.Architect;
       StreetAddress = ProjectInfo.StreetAddress;
       City = ProjectInfo.City;

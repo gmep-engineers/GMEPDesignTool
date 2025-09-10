@@ -8,16 +8,49 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
+  public class ComboData
+  {
+    public string Id { get; set; }
+    public string Value { get; set; }
+  }
+
   public class ProposalCommercialViewModel : INotifyPropertyChanged
   {
     public ProposalCommercialViewModel(
       AdminViewModel adminViewModel,
-      SelectProposalTypeViewModel selectProposalTypeViewModel
+      SelectProposalTypeViewModel selectProposalTypeViewModel,
+      Database.Database database
     )
     {
       this.adminViewModel = adminViewModel;
       this.selectProposalTypeViewModel = selectProposalTypeViewModel;
       TypeId = selectProposalTypeViewModel.TypeId;
+      var clients = database.GetClients();
+      foreach (var client in clients)
+      {
+        clientData.Add(new ComboData { Id = client.CompanyId, Value = client.CompanyName });
+      }
+      selectedClientId = adminViewModel.SelectedClientId;
+    }
+
+    private List<ComboData> clientData = new List<ComboData>();
+    public List<ComboData> ClientData
+    {
+      get { return clientData; }
+    }
+
+    private string selectedClientId;
+    public string SelectedClientId
+    {
+      get => selectedClientId;
+      set
+      {
+        if (selectedClientId != value)
+        {
+          selectedClientId = value;
+          OnPropertyChanged(nameof(SelectedClientId));
+        }
+      }
     }
 
     private AdminViewModel adminViewModel;

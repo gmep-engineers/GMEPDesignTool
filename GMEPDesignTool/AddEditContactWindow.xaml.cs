@@ -45,5 +45,10 @@ namespace GMEPDesignTool
     {
       ViewModel.FlagForDeletion();
     }
+
+    private void SetPrimary_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.SetPrimaryContact();
+    }
   }
 }
