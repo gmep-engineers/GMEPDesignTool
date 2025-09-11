@@ -13,7 +13,7 @@ namespace GMEPDesignTool
     public DateTime DateCreated { get; set; }
     public string Type { get; set; }
     public string EmployeeUsername { get; set; }
-    public string Pdf_name { get; set; }
+    public string PdfName { get; set; }
     public string Status { get; set; }
     public ProposalData? Data { get; set; }
 
@@ -25,7 +25,7 @@ namespace GMEPDesignTool
       DateTime dateCreated,
       string type,
       string employeeUsername,
-      string pdf_name,
+      string pdfName,
       string status
     )
     {
@@ -34,7 +34,7 @@ namespace GMEPDesignTool
       DateCreated = dateCreated;
       Type = type;
       EmployeeUsername = employeeUsername;
-      Pdf_name = pdf_name;
+      PdfName = pdfName;
       Status = status;
     }
   }

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows;
@@ -229,7 +230,7 @@ namespace GMEPDesignTool.Database
             DateCreated = GetSafeDateTime(reader, "date_created"),
             Type = GetSafeString(reader, "type"),
             EmployeeUsername = GetSafeString(reader, "username"),
-            Pdf_name = GetSafeString(reader, "pdf_name"),
+            PdfName = GetSafeString(reader, "pdf_name"),
             Status = GetSafeString(reader, "status"),
           }
         );
@@ -240,9 +241,9 @@ namespace GMEPDesignTool.Database
       return proposals;
     }
 
-    public async Task<Proposal> GetProposalById(string proposalId)
+    public async Task<Proposal?> GetProposalById(string proposalId)
     {
-      Proposal proposal = null;
+      Proposal? proposal = null;
       string query =
         @"
                         SELECT 
@@ -250,6 +251,7 @@ namespace GMEPDesignTool.Database
                             proposals.pdf_name,
                             proposals.project_id,
                             proposals.date_created AS date_created,
+                            proposals.data,
                             proposal_types.type AS type,
                             employees.username AS username            
                         FROM proposals
@@ -263,14 +265,17 @@ namespace GMEPDesignTool.Database
       MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
       while (await reader.ReadAsync())
       {
+        string dataString = GetSafeString(reader, "data");
+        ProposalData? proposalData = JsonSerializer.Deserialize<ProposalData>(dataString);
         proposal = new Proposal
         {
           Id = GetSafeString(reader, "id"),
           ProjectId = GetSafeString(reader, "project_id"),
           DateCreated = GetSafeDateTime(reader, "date_created"),
           Type = GetSafeString(reader, "type"),
+          Data = proposalData,
           EmployeeUsername = GetSafeString(reader, "username"),
-          Pdf_name = GetSafeString(reader, "pdf_name"),
+          PdfName = GetSafeString(reader, "pdf_name"),
         };
       }
 
@@ -348,6 +353,7 @@ namespace GMEPDesignTool.Database
             SET gmep_project_name = @name,
                 street_address = @address,
                 client_company_id = @clientCompanyId,
+                architect_company_id = @architectCompanyId,
                 city = @city,
                 state = @state,
                 postal_code = @postalCode,
@@ -363,7 +369,7 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@projectId", projectId);
       command.Parameters.AddWithValue("@name", model.ProjectName);
       command.Parameters.AddWithValue("@clientCompanyId", model.ClientCompanyId);
-      //command.Parameters.AddWithValue("@architectId", model.ArchitectCompanyId);
+      command.Parameters.AddWithValue("@architectCompanyId", model.ArchitectCompanyId);
       command.Parameters.AddWithValue("@address", model.StreetAddress);
       command.Parameters.AddWithValue("@city", model.City);
       command.Parameters.AddWithValue("@state", model.State);
@@ -3902,21 +3908,21 @@ namespace GMEPDesignTool.Database
         )
         {
           await responseStream.CopyToAsync(fileStream);
-          Console.WriteLine("File downloaded successfully.");
+          Trace.WriteLine("File downloaded successfully.");
         }
 
         Process.Start(new ProcessStartInfo { FileName = downloadFilePath, UseShellExecute = true });
       }
       catch (AmazonS3Exception e)
       {
-        Console.WriteLine(
+        Trace.WriteLine(
           "Error encountered on server. Message:'{0}' when reading an object.",
           e.Message
         );
       }
       catch (Exception e)
       {
-        Console.WriteLine(
+        Trace.WriteLine(
           "Unknown encountered on server. Message:'{0}' when reading an object.",
           e.Message
         );

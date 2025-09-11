@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Amazon.S3;
+using Amazon.S3.Model;
 using GMEPDesignTool.Database;
 using Mysqlx.Crud;
 
@@ -292,7 +295,7 @@ namespace GMEPDesignTool
         {
           selectedClientId = value;
           OnPropertyChanged(nameof(SelectedClientId));
-          if (!string.IsNullOrEmpty(selectedClientId))
+          if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
           {
             AddButtonEnabled = true;
           }
@@ -303,6 +306,34 @@ namespace GMEPDesignTool
         }
       }
     }
+
+    private List<ComboData> architectData = new List<ComboData>();
+    public List<ComboData> ArchitectData
+    {
+      get { return architectData; }
+    }
+
+    private string selectedArchitectId;
+    public string SelectedArchitectId
+    {
+      get => selectedArchitectId;
+      set
+      {
+        if (selectedArchitectId != value)
+          selectedArchitectId = value;
+        OnPropertyChanged(nameof(SelectedArchitectId));
+        if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
+        {
+          AddButtonEnabled = true;
+        }
+        else
+        {
+          AddButtonEnabled = false;
+        }
+      }
+    }
+
+    public Proposal? SelectedProposal { get; set; }
 
     public AdminViewModel(string projectId)
     {
@@ -318,6 +349,13 @@ namespace GMEPDesignTool
       {
         clientData.Add(new ComboData { Id = client.CompanyId, Value = client.CompanyName });
       }
+      var architects = db.GetArchitects();
+      foreach (var architect in architects)
+      {
+        architectData.Add(
+          new ComboData { Id = architect.CompanyId, Value = architect.CompanyName }
+        );
+      }
 
       AdminModel ProjectInfo = await db.GetAdminByProjectId(projectId);
       ProjectNo = ProjectInfo.ProjectNo;
@@ -325,6 +363,7 @@ namespace GMEPDesignTool
       Client = ProjectInfo.Client;
       SelectedClientId = ProjectInfo.ClientCompanyId;
       Architect = ProjectInfo.Architect;
+      SelectedArchitectId = ProjectInfo.ArchitectCompanyId;
       StreetAddress = ProjectInfo.StreetAddress;
       City = ProjectInfo.City;
       State = ProjectInfo.State;
@@ -336,7 +375,7 @@ namespace GMEPDesignTool
       IsCheckedP = ProjectInfo.IsCheckedP;
       Descriptions = ProjectInfo.Descriptions;
 
-      if (!string.IsNullOrEmpty(selectedClientId))
+      if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
       {
         AddButtonEnabled = true;
       }
@@ -344,6 +383,30 @@ namespace GMEPDesignTool
       {
         AddButtonEnabled = false;
       }
+    }
+
+    public async void DownloadProposal()
+    {
+      if (SelectedProposal != null)
+      {
+        if (!String.IsNullOrEmpty(SelectedProposal.PdfName))
+        {
+          S3 s3 = new S3();
+          Trace.WriteLine("namae " + SelectedProposal.PdfName);
+          string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+          string downloadPath = System.IO.Path.Combine(desktopPath, SelectedProposal.PdfName);
+          await s3.DownloadAndOpenFileAsync(SelectedProposal.PdfName, downloadPath);
+          return;
+        }
+        var db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString); // HERE change this
+        Proposal? proposal = await db.GetProposalById(SelectedProposal.Id);
+        if (proposal == null)
+        {
+          return;
+        }
+        // HERE generate pdf in server and download -or- show error
+      }
+      else { }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

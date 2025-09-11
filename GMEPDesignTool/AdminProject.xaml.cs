@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -33,19 +34,19 @@ namespace GMEPDesignTool
 
     private bool Saving = false;
     private bool Loading = false;
-    private AdminViewModel adminViewModel;
+    private AdminViewModel AdminViewModel;
     private string ProjectId;
     private readonly Database.Database db;
-    private LoginResponse loginResponse;
+    private LoginResponse LoginResponse;
 
     public ObservableCollection<Proposal> Proposals { get; set; } = new();
 
-    public AdminProject(string projectId, LoginResponse loginResponse)
+    public AdminProject(string projectId, LoginResponse LoginResponse)
     {
       InitializeComponent();
-      adminViewModel = new AdminViewModel(projectId);
-      this.loginResponse = loginResponse;
-      this.DataContext = adminViewModel;
+      AdminViewModel = new AdminViewModel(projectId);
+      this.LoginResponse = LoginResponse;
+      this.DataContext = AdminViewModel;
       ProjectId = projectId;
       db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
       LoadData();
@@ -67,26 +68,26 @@ namespace GMEPDesignTool
       if (!Saving && !Loading)
       {
         Saving = true;
-        if (adminViewModel != null)
+        if (AdminViewModel != null)
         {
           var model = new AdminModel
           {
-            ProjectNo = adminViewModel.ProjectNo,
-            ProjectName = adminViewModel.ProjectName,
-            Client = adminViewModel.Client,
-            ClientCompanyId = adminViewModel.SelectedClientId,
-            Architect = adminViewModel.Architect,
-            //ArchitectCompanyId = adminViewModel.SelectedArchitectId, HERE implement
-            StreetAddress = adminViewModel.StreetAddress,
-            City = adminViewModel.City,
-            State = adminViewModel.State,
-            PostalCode = adminViewModel.PostalCode,
-            Directory = adminViewModel.FileDictionary,
-            IsCheckedS = adminViewModel.IsCheckedS,
-            IsCheckedM = adminViewModel.IsCheckedM,
-            IsCheckedE = adminViewModel.IsCheckedE,
-            IsCheckedP = adminViewModel.IsCheckedP,
-            Descriptions = adminViewModel.Descriptions,
+            ProjectNo = AdminViewModel.ProjectNo,
+            ProjectName = AdminViewModel.ProjectName,
+            Client = AdminViewModel.Client,
+            ClientCompanyId = AdminViewModel.SelectedClientId,
+            Architect = AdminViewModel.Architect,
+            ArchitectCompanyId = AdminViewModel.SelectedArchitectId,
+            StreetAddress = AdminViewModel.StreetAddress,
+            City = AdminViewModel.City,
+            State = AdminViewModel.State,
+            PostalCode = AdminViewModel.PostalCode,
+            Directory = AdminViewModel.FileDictionary,
+            IsCheckedS = AdminViewModel.IsCheckedS,
+            IsCheckedM = AdminViewModel.IsCheckedM,
+            IsCheckedE = AdminViewModel.IsCheckedE,
+            IsCheckedP = AdminViewModel.IsCheckedP,
+            Descriptions = AdminViewModel.Descriptions,
           };
 
           var db = new Database.Database(Properties.Settings.Default.ConnectionString);
@@ -105,35 +106,18 @@ namespace GMEPDesignTool
     private void OpenSelectProposalTypeWindow(object sender, RoutedEventArgs e)
     {
       SelectProposalTypeWindow selectProposalTypeWindow = new SelectProposalTypeWindow(
-        loginResponse,
+        LoginResponse,
         ProjectId,
-        adminViewModel
+        AdminViewModel
       );
       selectProposalTypeWindow.Show();
     }
 
-    private async void Click_to_download(object sender, RoutedEventArgs e)
+    private void EditProposal_Click(object sender, RoutedEventArgs e) { }
+
+    private async void DownloadProposal_Click(object sender, RoutedEventArgs e)
     {
-      Proposal proposal;
-      string proposalId;
-      Button clickedButton = sender as Button;
-
-      if (clickedButton != null)
-      {
-        var rowData = clickedButton.DataContext as Proposal;
-        if (rowData != null)
-        {
-          proposalId = rowData.Id;
-          proposal = await db.GetProposalById(proposalId);
-          S3 s3 = new S3();
-          string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-          string downloadPath = System.IO.Path.Combine(desktopPath, proposal.Pdf_name);
-          await s3.DownloadFileAsync(proposal.Pdf_name, downloadPath);
-          MessageBox.Show($"Successfully downloaded to {downloadPath}");
-        }
-      }
+      AdminViewModel.DownloadProposal();
     }
-
-    private void MyDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
   }
 }

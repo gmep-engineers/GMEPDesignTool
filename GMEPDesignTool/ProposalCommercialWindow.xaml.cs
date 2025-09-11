@@ -4,6 +4,8 @@ using System.Net.Http.Headers;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Media.Animation;
+using static GMEPDesignTool.ProposalCommercialWindow;
 
 namespace GMEPDesignTool
 {
@@ -67,9 +69,97 @@ namespace GMEPDesignTool
       database = new Database.Database(loginResponse.SqlConnectionString);
     }
 
-    private async void generate_Click(object sender, RoutedEventArgs e)
+    private ProposalData? GetProposalData()
     {
-      MessageBox.Show("Click OK to get PDF");
+      try
+      {
+        ProposalData proposalData = new ProposalData();
+
+        var vm = DataContext as ProposalCommercialViewModel;
+        if (vm == null)
+        {
+          MessageBox.Show("Please complete the missing fields.");
+          return null;
+        }
+
+        proposalData.TotalPrice = TotalPriceBox.Text;
+        proposalData.HasSiteVisit = vm.HasSiteVisit;
+        proposalData.RetainerPercent = RetainerPercentBox.Text;
+
+        proposalData.DateSent = vm.DateSent.Value;
+
+        proposalData.NumMeetings = NumMeetingsBox.Text;
+
+        proposalData.TarrarNo = TarrarNoBox.Text;
+        proposalData.DateDrawingsReceived = vm.DateDrawingsReceived.Value;
+
+        proposalData.HasSiteVisit = vm.HasSiteVisit;
+
+        proposalData.NewConstruction = vm.NewConstruction;
+
+        proposalData.HasInitialRecommendationsMeeting = vm.HasInitialRecommendationsMeeting;
+
+        proposalData.HasCommercialShellConnection = vm.HasCommericalShellConnection;
+
+        proposalData.HasEmergencyPower = vm.HasEmergencyPower;
+
+        proposalData.HasIndoorCommonArea = vm.HasIndoorCommonArea;
+
+        proposalData.HasGarageExhaust = vm.HasGarageExhaust;
+
+        proposalData.HasSiteLighting = vm.HasSiteLighting;
+
+        MechanicalScope mechanicalScope = new MechanicalScope();
+        mechanicalScope.MechanicalExhaustSupply = vm.MechanicalExhaustSupply;
+        mechanicalScope.MechanicalHvacEquipSpec = vm.MechanicalHvacEquipSpec;
+        mechanicalScope.MechanicalTitle24 = vm.MechanicalTitle24;
+        proposalData.MechanicalScope = mechanicalScope;
+
+        StructuralScope structuralScope = new StructuralScope();
+        structuralScope.StructuralGeoReport = vm.StructuralGeoReport;
+        structuralScope.StructuralFramingDepths = vm.StructuralFramingDepths;
+        structuralScope.StructuralAnalysis = vm.StructuralAnalysis;
+        structuralScope.StructuralPlans = vm.StructuralPlans;
+        structuralScope.StructuralDetailsCalculations = vm.StructuralDetailsCalculations;
+        structuralScope.StructuralCodeCompliance = vm.StructuralCodeCompliance;
+        proposalData.StructuralScope = structuralScope;
+
+        ElectricalScope electricalScope = new ElectricalScope();
+        electricalScope.ElectricalPowerDesign = vm.ElectricalPowerDesign;
+        electricalScope.ElectricalLightingDesign = vm.ElectricalLightingDesign;
+        electricalScope.ElectricalSingleLineDiagram = vm.ElectricalSingleLineDiagram;
+        electricalScope.ElectricalServiceLoadCalc = vm.ElectricalServiceLoadCalc;
+        proposalData.ElectricalScope = electricalScope;
+
+        PlumbingScope plumbingScope = new PlumbingScope();
+        plumbingScope.PlumbingHotColdWater = vm.PlumbingHotColdWater;
+        plumbingScope.PlumbingWasteVent = vm.PlumbingWasteVent;
+        proposalData.PlumbingScope = plumbingScope;
+
+        return proposalData;
+      }
+      catch (Exception ex)
+      {
+        return null;
+      }
+    }
+
+    private void SaveClick(object sender, EventArgs e)
+    {
+      ProposalData? proposalData = GetProposalData();
+      if (proposalData == null)
+      {
+        MessageBox.Show("Please complete the missing fields.");
+        return;
+      }
+
+      string jsonString = JsonSerializer.Serialize(proposalData);
+
+      database.SetProposalData(proposal_id, jsonString);
+    }
+
+    private async void Generate_Click(object sender, RoutedEventArgs e)
+    {
       PDFRequest pdfRequest = new PDFRequest();
       var vm = DataContext as ProposalCommercialViewModel;
       if (vm == null)
@@ -77,13 +167,16 @@ namespace GMEPDesignTool
         MessageBox.Show("Please complete the missing fields.");
         return;
       }
-      ProposalData proposalData = new ProposalData();
+      ProposalData? proposalData = GetProposalData();
+      if (proposalData == null)
+      {
+        MessageBox.Show("Please complete the missing fields.");
+        return;
+      }
 
       pdfRequest.TotalPrice = TotalPriceBox.Text;
-      proposalData.TotalPrice = pdfRequest.TotalPrice;
 
       pdfRequest.RetainerPercent = RetainerPercentBox.Text;
-      pdfRequest.RetainerPercent = pdfRequest.RetainerPercent;
 
       string selectedClientId = ClientNameComboBox.SelectedValue.ToString();
 
@@ -112,37 +205,24 @@ namespace GMEPDesignTool
       string clientCityStateZip = client.City + ", " + client.State + "  " + client.PostalCode;
       pdfRequest.ClientCityStateZip = clientCityStateZip;
       pdfRequest.DateSent = vm.DateSent.Value.ToString("yyyy-MM-dd");
-      proposalData.DateSent = vm.DateSent.Value;
       pdfRequest.NumMeetings = NumMeetingsBox.Text;
-      proposalData.NumMeetings = pdfRequest.NumMeetings;
       pdfRequest.TarrarNo = TarrarNoBox.Text;
-      proposalData.TarrarNo = pdfRequest.TarrarNo;
       pdfRequest.DateDrawingsReceived = vm.DateDrawingsReceived.Value.ToString("yyyy-MM-dd");
-      proposalData.DateDrawingsReceived = vm.DateDrawingsReceived.Value;
-
       pdfRequest.HasSiteVisit = vm.HasSiteVisit;
-      proposalData.HasSiteVisit = pdfRequest.HasSiteVisit;
 
       pdfRequest.NewConstruction = vm.NewConstruction;
-      proposalData.NewConstruction = pdfRequest.NewConstruction;
 
       pdfRequest.HasInitialRecommendationsMeeting = vm.HasInitialRecommendationsMeeting;
-      proposalData.HasInitialRecommendationsMeeting = pdfRequest.HasInitialRecommendationsMeeting;
 
       pdfRequest.HasCommericalShellConnection = vm.HasCommericalShellConnection;
-      proposalData.HasCommercialShellConnection = pdfRequest.HasCommericalShellConnection;
 
       pdfRequest.HasEmergencyPower = vm.HasEmergencyPower;
-      proposalData.HasEmergencyPower = pdfRequest.HasEmergencyPower;
 
       pdfRequest.HasIndoorCommonArea = vm.HasIndoorCommonArea;
-      proposalData.HasIndoorCommonArea = pdfRequest.HasIndoorCommonArea;
 
       pdfRequest.HasGarageExhaust = vm.HasGarageExhaust;
-      proposalData.HasGarageExhaust = pdfRequest.HasGarageExhaust;
 
       pdfRequest.HasSiteLighting = vm.HasSiteLighting;
-      proposalData.HasSiteLighting = pdfRequest.HasSiteLighting;
 
       pdfRequest.Client = vm.AdminViewModel.Client;
       pdfRequest.Architect = vm.AdminViewModel.Architect;
@@ -159,11 +239,6 @@ namespace GMEPDesignTool
       pdfRequest.ProjectName = vm.AdminViewModel.ProjectName;
 
       string mechanicalDescriptions;
-      MechanicalScope mechanicalScope = new MechanicalScope();
-      mechanicalScope.MechanicalExhaustSupply = vm.MechanicalExhaustSupply;
-      mechanicalScope.MechanicalHvacEquipSpec = vm.MechanicalHvacEquipSpec;
-      mechanicalScope.MechanicalTitle24 = vm.MechanicalTitle24;
-      proposalData.MechanicalScope = mechanicalScope;
       if (vm.MechanicalExhaustSupply || vm.MechanicalHvacEquipSpec || vm.MechanicalTitle24)
       {
         if (vm.NewConstruction)
@@ -184,14 +259,6 @@ namespace GMEPDesignTool
       }
 
       string structuralDescriptions;
-      StructuralScope structuralScope = new StructuralScope();
-      structuralScope.StructuralGeoReport = vm.StructuralGeoReport;
-      structuralScope.StructuralFramingDepths = vm.StructuralFramingDepths;
-      structuralScope.StructuralAnalysis = vm.StructuralAnalysis;
-      structuralScope.StructuralPlans = vm.StructuralPlans;
-      structuralScope.StructuralDetailsCalculations = vm.StructuralDetailsCalculations;
-      structuralScope.StructuralCodeCompliance = vm.StructuralCodeCompliance;
-      proposalData.StructuralScope = structuralScope;
       if (
         vm.StructuralGeoReport
         || vm.StructuralFramingDepths
@@ -226,12 +293,6 @@ namespace GMEPDesignTool
       }
 
       string electricalDescriptions = "New Construction: engineering for Electrical design";
-      ElectricalScope electricalScope = new ElectricalScope();
-      electricalScope.ElectricalPowerDesign = vm.ElectricalPowerDesign;
-      electricalScope.ElectricalLightingDesign = vm.ElectricalLightingDesign;
-      electricalScope.ElectricalSingleLineDiagram = vm.ElectricalSingleLineDiagram;
-      electricalScope.ElectricalServiceLoadCalc = vm.ElectricalServiceLoadCalc;
-      proposalData.ElectricalScope = electricalScope;
       if (
         vm.ElectricalPowerDesign
         || vm.ElectricalServiceLoadCalc
@@ -259,10 +320,6 @@ namespace GMEPDesignTool
       }
 
       string plumbingDescriptions;
-      PlumbingScope plumbingScope = new PlumbingScope();
-      plumbingScope.PlumbingHotColdWater = vm.PlumbingHotColdWater;
-      plumbingScope.PlumbingWasteVent = vm.PlumbingWasteVent;
-      proposalData.PlumbingScope = plumbingScope;
       if (vm.PlumbingHotColdWater || vm.PlumbingWasteVent)
       {
         if (vm.NewConstruction)

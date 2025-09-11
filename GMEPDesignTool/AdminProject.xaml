@@ -47,7 +47,7 @@
                     <Label Grid.Row="2" Content="Client" Margin="0,0,0,10"/>
                     <ComboBox Margin="100,0,0,10" Grid.Row="2" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientId}"/>
                     <Label Grid.Row="3" Content="Architect" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="3" Margin="100,0,0,10"  Text="{Binding Architect}"/>
+                    <ComboBox Margin="100,0,0,10" Grid.Row="3" ItemsSource="{Binding ArchitectData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedArchitectId}"/>
                     <Label Grid.Row="4" Content="Street Address" Margin="0,0,0,10"/>
                     <TextBox Grid.Row="4" Margin="100,0,0,10"  Text="{Binding StreetAddress}"/>
                     <Label Grid.Row="5" Content="City" Margin="0,0,0,10"/>
@@ -89,20 +89,19 @@
                     <Button IsEnabled="{Binding AddButtonEnabled}" Content="Add" Click="OpenSelectProposalTypeWindow" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  Margin="10"/>
                 </StackPanel>
                 <DataGrid x:Name="MyDataGrid" Grid.Row="1" FontSize="15" Height="230"  ScrollViewer.VerticalScrollBarVisibility="Auto"
-          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Proposals}" AutoGenerateColumns="False" SelectionChanged="MyDataGrid_SelectionChanged" >
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"  ItemsSource="{Binding Proposals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedProposal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Name="ContactContextMenu">
+                            <MenuItem Header="Edit" Click="EditProposal_Click"/>
+                            <MenuItem Header="Download PDF" Click="DownloadProposal_Click"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
                         <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}"/>
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>
+                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>        
                         
-                        <DataGridTemplateColumn Header="Actions" Width="Auto">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Download"  Margin="2" Click="Click_to_download" Tag="{Binding ProposalId}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>

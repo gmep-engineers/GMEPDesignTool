@@ -324,7 +324,14 @@ namespace GMEPDesignTool
     public string PrimaryContactName
     {
       get => _PrimaryContactName;
-      set => _PrimaryContactName = value;
+      set
+      {
+        if (_PrimaryContactName != value)
+        {
+          _PrimaryContactName = value;
+          OnPropertyChanged(nameof(PrimaryContactName));
+        }
+      }
     }
 
     private Architect? _Architect;
@@ -586,6 +593,8 @@ namespace GMEPDesignTool
           _FirstName = value;
           OnPropertyChanged(nameof(FirstName));
           _Modified = true;
+          if (Company != null)
+            Company.PrimaryContactName = _FirstName + " " + _LastName;
         }
       }
     }
@@ -601,6 +610,8 @@ namespace GMEPDesignTool
           _LastName = value;
           OnPropertyChanged(nameof(LastName));
           _Modified = true;
+          if (Company != null)
+            Company.PrimaryContactName = _FirstName + " " + _LastName;
         }
       }
     }
@@ -676,6 +687,13 @@ namespace GMEPDesignTool
           _Modified = true;
         }
       }
+    }
+
+    private Company? _Company;
+    public Company? Company
+    {
+      get => _Company;
+      set => _Company = value;
     }
 
     public Contact(
@@ -764,6 +782,24 @@ namespace GMEPDesignTool
           }
         }
         architect.New = false;
+      }
+      foreach (Contact contact in AllContacts)
+      {
+        foreach (Architect architect in AllArchitects)
+        {
+          if (contact.CompanyId == architect.CompanyId)
+          {
+            contact.Company = architect;
+          }
+        }
+        foreach (Client client in AllClients)
+        {
+          if (contact.CompanyId == client.CompanyId)
+          {
+            contact.Company = client;
+          }
+        }
+        contact.New = false;
       }
     }
 
