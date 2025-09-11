@@ -9,10 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Google.Protobuf;
+using MySqlX.XDevAPI;
 
 namespace GMEPDesignTool
 {
-  public class Client : INotifyPropertyChanged
+  public class Company : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -45,6 +46,16 @@ namespace GMEPDesignTool
         {
           _Delete = value;
           OnPropertyChanged(nameof(Delete));
+
+          if (Client != null)
+          {
+            Client.Delete = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.Delete = value;
+          }
         }
       }
     }
@@ -74,15 +85,17 @@ namespace GMEPDesignTool
     public string CompanyId
     {
       get => _CompanyId;
+      set => _CompanyId = value;
     }
 
     private string _EntityId = String.Empty;
     public string EntityId
     {
       get => _EntityId;
+      set => _EntityId = value;
     }
 
-    private string _CompanyName;
+    private string _CompanyName = string.Empty;
     public string CompanyName
     {
       get => _CompanyName;
@@ -93,26 +106,21 @@ namespace GMEPDesignTool
           _CompanyName = value;
           OnPropertyChanged(nameof(CompanyName));
           _Modified = true;
+
+          if (Client != null)
+          {
+            Client.CompanyName = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.CompanyName = value;
+          }
         }
       }
     }
 
-    private int _LoyaltyTypeId;
-    public int LoyaltyTypeId
-    {
-      get => _LoyaltyTypeId;
-      set
-      {
-        if (_LoyaltyTypeId != value)
-        {
-          _LoyaltyTypeId = value;
-          OnPropertyChanged(nameof(LoyaltyTypeId));
-          _Modified = true;
-        }
-      }
-    }
-
-    private string _StreetAddress;
+    private string _StreetAddress = string.Empty;
     public string StreetAddress
     {
       get => _StreetAddress;
@@ -123,11 +131,21 @@ namespace GMEPDesignTool
           _StreetAddress = value;
           OnPropertyChanged(nameof(StreetAddress));
           _Modified = true;
+
+          if (Client != null)
+          {
+            Client.StreetAddress = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.StreetAddress = value;
+          }
         }
       }
     }
 
-    private string _City;
+    private string _City = string.Empty;
     public string City
     {
       get => _City;
@@ -138,11 +156,21 @@ namespace GMEPDesignTool
           _City = value;
           OnPropertyChanged(nameof(City));
           _Modified = true;
+
+          if (Client != null)
+          {
+            Client.City = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.City = value;
+          }
         }
       }
     }
 
-    private string _State;
+    private string _State = string.Empty;
     public string State
     {
       get => _State;
@@ -153,11 +181,21 @@ namespace GMEPDesignTool
           _State = value;
           OnPropertyChanged(nameof(State));
           _Modified = true;
+
+          if (Client != null)
+          {
+            Client.State = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.State = value;
+          }
         }
       }
     }
 
-    private string _PostalCode;
+    private string _PostalCode = string.Empty;
     public string PostalCode
     {
       get => _PostalCode;
@@ -168,18 +206,28 @@ namespace GMEPDesignTool
           _PostalCode = value;
           OnPropertyChanged(nameof(PostalCode));
           _Modified = true;
+
+          if (Client != null)
+          {
+            Client.PostalCode = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.PostalCode = value;
+          }
         }
       }
     }
 
-    private string _CompanyEmailId;
+    private string _CompanyEmailId = string.Empty;
     public string CompanyEmailId
     {
       get => _CompanyEmailId;
       set => _CompanyEmailId = value;
     }
 
-    private string _CompanyEmail;
+    private string _CompanyEmail = string.Empty;
     public string CompanyEmail
     {
       get => _CompanyEmail;
@@ -191,11 +239,21 @@ namespace GMEPDesignTool
           OnPropertyChanged(nameof(CompanyEmail));
           _Modified = true;
           _NewEmailAddress = true;
+
+          if (Client != null)
+          {
+            Client.CompanyEmail = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.CompanyEmail = value;
+          }
         }
       }
     }
 
-    private string _CompanyPhoneId;
+    private string _CompanyPhoneId = string.Empty;
     public string CompanyPhoneId
     {
       get => _CompanyPhoneId;
@@ -214,6 +272,16 @@ namespace GMEPDesignTool
           OnPropertyChanged(nameof(CompanyPhone));
           _Modified = true;
           _NewPhoneNumber = true;
+
+          if (Client != null)
+          {
+            Client.CompanyPhone = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.CompanyPhone = value;
+          }
         }
       }
     }
@@ -230,11 +298,21 @@ namespace GMEPDesignTool
           OnPropertyChanged(nameof(CompanyExtension));
           _Modified = true;
           _NewPhoneNumber = true;
+
+          if (Client != null)
+          {
+            Client.CompanyExtension = value;
+          }
+
+          if (Architect != null)
+          {
+            Architect.CompanyExtension = value;
+          }
         }
       }
     }
 
-    private string _PrimaryContactId;
+    private string _PrimaryContactId = string.Empty;
 
     public string PrimaryContactId
     {
@@ -242,11 +320,74 @@ namespace GMEPDesignTool
       set => _PrimaryContactId = value;
     }
 
-    private string _PrimaryContactName;
+    private string _PrimaryContactName = string.Empty;
     public string PrimaryContactName
     {
       get => _PrimaryContactName;
       set => _PrimaryContactName = value;
+    }
+
+    private Architect? _Architect;
+    public Architect? Architect
+    {
+      get => _Architect;
+      set => _Architect = value;
+    }
+
+    private Client? _Client;
+    public Client? Client
+    {
+      get => _Client;
+      set => _Client = value;
+    }
+
+    private bool _IsArchitect;
+    public bool IsArchitect
+    {
+      get => _IsArchitect;
+      set
+      {
+        if (_IsArchitect != value)
+        {
+          _IsArchitect = value;
+          OnPropertyChanged(nameof(IsArchitect));
+          if (_IsArchitect) { }
+          Modified = true;
+        }
+      }
+    }
+
+    private bool _IsClient;
+    public bool IsClient
+    {
+      get => _IsClient;
+      set
+      {
+        if (_IsClient != value)
+        {
+          _IsClient = value;
+          OnPropertyChanged(nameof(IsClient));
+          Modified = true;
+        }
+      }
+    }
+  }
+
+  public class Client : Company
+  {
+    private int _LoyaltyTypeId;
+    public int LoyaltyTypeId
+    {
+      get => _LoyaltyTypeId;
+      set
+      {
+        if (_LoyaltyTypeId != value)
+        {
+          _LoyaltyTypeId = value;
+          OnPropertyChanged(nameof(LoyaltyTypeId));
+          Modified = true;
+        }
+      }
     }
 
     public Client(
@@ -268,48 +409,118 @@ namespace GMEPDesignTool
       string primaryContactLastName
     )
     {
-      _CompanyId = id;
-      _EntityId = entityId;
-      _CompanyName = name;
+      CompanyId = id;
+      EntityId = entityId;
+      CompanyName = name;
       _LoyaltyTypeId = loyaltyTypeId;
-      _StreetAddress = streetAddress;
-      _City = city;
-      _State = state;
-      _PostalCode = postalCode;
-      _CompanyEmailId = emailAddressId;
-      _CompanyEmail = emailAddress;
-      _CompanyPhoneId = phoneNumberId;
-      _CompanyPhone = phoneNumber;
-      _CompanyExtension = extension;
-      _PrimaryContactId = primaryContactId;
-      if (string.IsNullOrEmpty(_PrimaryContactId))
+      StreetAddress = streetAddress;
+      City = city;
+      State = state;
+      PostalCode = postalCode;
+      CompanyEmailId = emailAddressId;
+      CompanyEmail = emailAddress;
+      CompanyPhoneId = phoneNumberId;
+      CompanyPhone = phoneNumber;
+      CompanyExtension = extension;
+      PrimaryContactId = primaryContactId;
+      if (string.IsNullOrEmpty(PrimaryContactId))
       {
-        _PrimaryContactName = "Assign";
+        PrimaryContactName = "Assign";
       }
       else
       {
-        _PrimaryContactName = primaryContactFirstName + " " + primaryContactLastName;
+        PrimaryContactName = primaryContactFirstName + " " + primaryContactLastName;
       }
     }
 
     public Client()
     {
-      _CompanyId = Guid.NewGuid().ToString();
-      _EntityId = Guid.NewGuid().ToString();
-      _CompanyName = string.Empty;
-      _LoyaltyTypeId = 3;
-      _StreetAddress = string.Empty;
-      _City = string.Empty;
-      _State = string.Empty;
-      _PostalCode = string.Empty;
-      _CompanyEmailId = Guid.NewGuid().ToString();
-      _CompanyEmail = string.Empty;
-      _CompanyPhoneId = Guid.NewGuid().ToString();
-      _CompanyPhone = 0;
-      _CompanyExtension = 0;
-      _PrimaryContactId = string.Empty;
-      _NewPhoneNumber = true;
-      _NewEmailAddress = true;
+      CompanyId = Guid.NewGuid().ToString();
+      EntityId = Guid.NewGuid().ToString();
+      CompanyName = string.Empty;
+      LoyaltyTypeId = 3;
+      StreetAddress = string.Empty;
+      City = string.Empty;
+      State = string.Empty;
+      PostalCode = string.Empty;
+      CompanyEmailId = Guid.NewGuid().ToString();
+      CompanyEmail = string.Empty;
+      CompanyPhoneId = Guid.NewGuid().ToString();
+      CompanyPhone = 0;
+      CompanyExtension = 0;
+      PrimaryContactId = string.Empty;
+      NewPhoneNumber = true;
+      NewEmailAddress = true;
+    }
+  }
+
+  public class Architect : Company
+  {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public Architect(
+      string id,
+      string entityId,
+      string name,
+      string streetAddress,
+      string city,
+      string state,
+      string postalCode,
+      string emailAddressId,
+      string emailAddress,
+      string phoneNumberId,
+      ulong? phoneNumber,
+      uint? extension,
+      string primaryContactId,
+      string primaryContactFirstName,
+      string primaryContactLastName
+    )
+    {
+      CompanyId = id;
+      EntityId = entityId;
+      CompanyName = name;
+      StreetAddress = streetAddress;
+      City = city;
+      State = state;
+      PostalCode = postalCode;
+      CompanyEmailId = emailAddressId;
+      CompanyEmail = emailAddress;
+      CompanyPhoneId = phoneNumberId;
+      CompanyPhone = phoneNumber;
+      CompanyExtension = extension;
+      PrimaryContactId = primaryContactId;
+      if (string.IsNullOrEmpty(PrimaryContactId))
+      {
+        PrimaryContactName = "Assign";
+      }
+      else
+      {
+        PrimaryContactName = primaryContactFirstName + " " + primaryContactLastName;
+      }
+    }
+
+    public Architect()
+    {
+      CompanyId = Guid.NewGuid().ToString();
+      EntityId = Guid.NewGuid().ToString();
+      CompanyName = string.Empty;
+      StreetAddress = string.Empty;
+      City = string.Empty;
+      State = string.Empty;
+      PostalCode = string.Empty;
+      CompanyEmailId = Guid.NewGuid().ToString();
+      CompanyEmail = string.Empty;
+      CompanyPhoneId = Guid.NewGuid().ToString();
+      CompanyPhone = 0;
+      CompanyExtension = 0;
+      PrimaryContactId = string.Empty;
+      NewPhoneNumber = true;
+      NewEmailAddress = true;
     }
   }
 
@@ -514,21 +725,45 @@ namespace GMEPDesignTool
     public List<Client> Clients { get; set; }
     public Database.Database Database { get; set; }
     public Client? SelectedClient { get; set; }
+    public Architect? SelectedArchitect { get; set; }
 
     public Contact? SelectedContact { get; set; }
 
     public ObservableCollection<Client> AllClients { get; set; }
+    public ObservableCollection<Architect> AllArchitects { get; set; }
 
     public ObservableCollection<Contact> AllContacts { get; set; }
 
     public ClientsViewModel(LoginResponse loginResponse)
     {
       Database = new Database.Database(loginResponse.SqlConnectionString);
+
       AllClients = new ObservableCollection<Client>(Database.GetClients());
+      AllArchitects = new ObservableCollection<Architect>(Database.GetArchitects());
       AllContacts = new ObservableCollection<Contact>(Database.GetContacts());
       foreach (Client client in AllClients)
       {
+        foreach (Architect architect in AllArchitects)
+        {
+          if (client.CompanyId == architect.CompanyId)
+          {
+            client.IsArchitect = true;
+            client.Architect = architect;
+          }
+        }
         client.New = false;
+      }
+      foreach (Architect architect in AllArchitects)
+      {
+        foreach (Client client in AllClients)
+        {
+          if (client.CompanyId == architect.CompanyId)
+          {
+            architect.IsClient = true;
+            architect.Client = client;
+          }
+        }
+        architect.New = false;
       }
     }
 
@@ -551,6 +786,25 @@ namespace GMEPDesignTool
       foreach (Client client in deletedClients)
       {
         AllClients.Remove(client);
+      }
+
+      List<Architect> deletedArchitects = new List<Architect>();
+      foreach (Architect architect in AllArchitects)
+      {
+        if (architect.Delete)
+        {
+          Database.DeleteArchitect(architect);
+          deletedArchitects.Add(architect);
+        }
+        else if (architect.Modified)
+        {
+          Database.SaveArchitect(architect);
+          architect.Modified = false;
+        }
+      }
+      foreach (Architect architect in deletedArchitects)
+      {
+        AllArchitects.Remove(architect);
       }
     }
 
@@ -586,6 +840,14 @@ namespace GMEPDesignTool
       }
     }
 
+    public void FlagArchitectForDeletion()
+    {
+      if (SelectedArchitect != null)
+      {
+        SelectedArchitect.Delete = !SelectedArchitect.Delete;
+      }
+    }
+
     public void FlagContactForDeletion()
     {
       if (SelectedContact != null)
@@ -595,5 +857,83 @@ namespace GMEPDesignTool
     }
 
     public void SetPrimaryContact() { }
+
+    public void AddClientToArchitects()
+    {
+      if (SelectedClient == null)
+        return;
+      Architect? architect = Database.GetArchitect(SelectedClient.CompanyId);
+      if (architect == null)
+      {
+        architect = new Architect
+        {
+          CompanyId = SelectedClient.CompanyId,
+          EntityId = SelectedClient.EntityId,
+          CompanyName = SelectedClient.CompanyName,
+          StreetAddress = SelectedClient.StreetAddress,
+          City = SelectedClient.City,
+          State = SelectedClient.State,
+          PostalCode = SelectedClient.PostalCode,
+          CompanyEmailId = SelectedClient.CompanyEmailId,
+          CompanyEmail = SelectedClient.CompanyEmail,
+          CompanyPhoneId = SelectedClient.CompanyPhoneId,
+          CompanyPhone = SelectedClient.CompanyPhone,
+          CompanyExtension = SelectedClient.CompanyExtension,
+          PrimaryContactId = SelectedClient.PrimaryContactId,
+          IsClient = true,
+          Client = SelectedClient,
+        };
+      }
+      AllArchitects.Add(architect);
+    }
+
+    public void RemoveClientFromArchitects()
+    {
+      if (SelectedClient == null)
+        return;
+      Architect? architect = AllArchitects.FirstOrDefault(a =>
+        a.CompanyId == SelectedClient.CompanyId
+      );
+      if (architect != null)
+        AllArchitects.Remove(architect);
+    }
+
+    public void AddArchitectToClients()
+    {
+      if (SelectedArchitect == null)
+        return;
+      Client? client = Database.GetClient(SelectedArchitect.CompanyId);
+      if (client == null)
+      {
+        client = new Client
+        {
+          CompanyId = SelectedArchitect.CompanyId,
+          EntityId = SelectedArchitect.EntityId,
+          CompanyName = SelectedArchitect.CompanyName,
+          StreetAddress = SelectedArchitect.StreetAddress,
+          City = SelectedArchitect.City,
+          State = SelectedArchitect.State,
+          PostalCode = SelectedArchitect.PostalCode,
+          CompanyEmailId = SelectedArchitect.CompanyEmailId,
+          CompanyEmail = SelectedArchitect.CompanyEmail,
+          CompanyPhoneId = SelectedArchitect.CompanyPhoneId,
+          CompanyPhone = SelectedArchitect.CompanyPhone,
+          CompanyExtension = SelectedArchitect.CompanyExtension,
+          PrimaryContactId = SelectedArchitect.PrimaryContactId,
+          IsArchitect = true,
+          Architect = SelectedArchitect,
+        };
+      }
+      AllClients.Add(client);
+    }
+
+    public void RemoveArchitectFromClients()
+    {
+      if (SelectedArchitect == null)
+        return;
+      Client? client = AllClients.FirstOrDefault(c => c.CompanyId == SelectedArchitect.CompanyId);
+      if (client != null)
+        AllClients.Remove(client);
+    }
   }
 }

@@ -11,6 +11,7 @@
     <Window.Resources>
         <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
         <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding AllClients}" />
+        <CollectionViewSource x:Key="ArchitectsViewSource" Source="{Binding AllArchitects}" />
         <CollectionViewSource x:Key="ContactsViewSource" Source="{Binding AllContacts}" />
     </Window.Resources>
     <Grid>
@@ -31,7 +32,7 @@
                             <ColumnDefinition Width="200"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Company Search" Margin="0 0 0 0" Width="150" Height="25px"/>
-                        <TextBox Grid.Column="1" x:Name="CompanyNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
+                        <TextBox Grid.Column="1" x:Name="ClientNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
                     </Grid>
                     <DataGrid CanUserAddRows="True" KeyUp="ClientDataGrid_KeyUp" Name="ClientsDataGrid" ItemsSource="{Binding Source={StaticResource ClientsViewSource}}" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 60 0 0">
                         <DataGrid.ContextMenu>
@@ -151,13 +152,152 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Is Architect">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsArchitect, UpdateSourceTrigger=PropertyChanged}" 
+                                            Checked="IsArchitect_Checked"
+                                            Unchecked="IsArchitect_Unchecked"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>                        
                     </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem Header="Architects">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                    <Grid Margin="5 25 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="105"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Company Search" Margin="0 0 0 0" Width="150" Height="25px"/>
+                        <TextBox Grid.Column="1" x:Name="ArchitectNameFilter" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="169" TextChanged="ClientFilter_TextChanged"></TextBox>
+                    </Grid>
+                    <DataGrid CanUserAddRows="True" KeyUp="ClientDataGrid_KeyUp" Name="ArchitectsDataGrid" ItemsSource="{Binding Source={StaticResource ArchitectsViewSource}}" SelectedItem="{Binding Path=SelectedArchitect,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 60 0 0">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu Name="ArchitectContextMenu">
+                                <MenuItem Header="Flag for deletion" Click="FlagArchitectForDeletion_Click"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="CadetBlue"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding Path=Delete}" Value="True">
+                                        <Setter Property="Background" Value="Pink"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Company Name" Binding="{Binding CompanyName, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Street Address" Binding="{Binding StreetAddress, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="City" Binding="{Binding City, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridComboBoxColumn Header="State"  SelectedValueBinding="{Binding State, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                <DataGridComboBoxColumn.ItemsSource>
+                                    <CompositeCollection>
+                                        <ComboBoxItem Content="AL" Tag="AL"/>
+                                        <ComboBoxItem Content="AK" Tag="AK"/>
+                                        <ComboBoxItem Content="AZ" Tag="AZ"/>
+                                        <ComboBoxItem Content="AR" Tag="AR"/>
+                                        <ComboBoxItem Content="CA" Tag="CA"/>
+                                        <ComboBoxItem Content="CO" Tag="CO"/>
+                                        <ComboBoxItem Content="CT" Tag="CT"/>
+                                        <ComboBoxItem Content="DE" Tag="DE"/>
+                                        <ComboBoxItem Content="DC" Tag="DC"/>
+                                        <ComboBoxItem Content="FL" Tag="FL"/>
+                                        <ComboBoxItem Content="GA" Tag="GA"/>
+                                        <ComboBoxItem Content="HI" Tag="HI"/>
+                                        <ComboBoxItem Content="ID" Tag="ID"/>
+                                        <ComboBoxItem Content="IL" Tag="IL"/>
+                                        <ComboBoxItem Content="IN" Tag="IN"/>
+                                        <ComboBoxItem Content="IA" Tag="IA"/>
+                                        <ComboBoxItem Content="KS" Tag="KS"/>
+                                        <ComboBoxItem Content="KY" Tag="KY"/>
+                                        <ComboBoxItem Content="LA" Tag="LA"/>
+                                        <ComboBoxItem Content="ME" Tag="ME"/>
+                                        <ComboBoxItem Content="MD" Tag="MD"/>
+                                        <ComboBoxItem Content="MA" Tag="MA"/>
+                                        <ComboBoxItem Content="MI" Tag="MI"/>
+                                        <ComboBoxItem Content="MN" Tag="MN"/>
+                                        <ComboBoxItem Content="MS" Tag="MS"/>
+                                        <ComboBoxItem Content="MO" Tag="MO"/>
+                                        <ComboBoxItem Content="MT" Tag="MT"/>
+                                        <ComboBoxItem Content="NE" Tag="NE"/>
+                                        <ComboBoxItem Content="NV" Tag="NV"/>
+                                        <ComboBoxItem Content="NH" Tag="NH"/>
+                                        <ComboBoxItem Content="NJ" Tag="NJ"/>
+                                        <ComboBoxItem Content="NM" Tag="NM"/>
+                                        <ComboBoxItem Content="NY" Tag="NY"/>
+                                        <ComboBoxItem Content="NC" Tag="NC"/>
+                                        <ComboBoxItem Content="ND" Tag="ND"/>
+                                        <ComboBoxItem Content="OH" Tag="OH"/>
+                                        <ComboBoxItem Content="OK" Tag="OK"/>
+                                        <ComboBoxItem Content="OR" Tag="OR"/>
+                                        <ComboBoxItem Content="PA" Tag="PA"/>
+                                        <ComboBoxItem Content="SC" Tag="SC"/>
+                                        <ComboBoxItem Content="SD" Tag="SD"/>
+                                        <ComboBoxItem Content="TN" Tag="TN"/>
+                                        <ComboBoxItem Content="TX" Tag="TX"/>
+                                        <ComboBoxItem Content="UT" Tag="UX"/>
+                                        <ComboBoxItem Content="VT" Tag="VT"/>
+                                        <ComboBoxItem Content="VA" Tag="VA"/>
+                                        <ComboBoxItem Content="WA" Tag="WA"/>
+                                        <ComboBoxItem Content="WV" Tag="WV"/>
+                                        <ComboBoxItem Content="WI" Tag="WI"/>
+                                        <ComboBoxItem Content="WY" Tag="WY"/>
+                                    </CompositeCollection>
+                                </DataGridComboBoxColumn.ItemsSource>
+                            </DataGridComboBoxColumn>
+                            <DataGridTextColumn Header="Zip" Binding="{Binding PostalCode, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Company Email" Binding="{Binding CompanyEmail, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header="Company Phone">
+                                <DataGridTextColumn.Binding>
+                                    <Binding Path="CompanyPhone" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:(###) ###-####}" TargetNullValue="{}">
+                                        <Binding.Converter>
+                                            <local:PhoneNumberConverter />
+                                        </Binding.Converter>
+                                    </Binding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Extension" Binding="{Binding CompanyExtension, UpdateSourceTrigger=LostFocus, TargetNullValue={}}"/>
+                            <DataGridTemplateColumn Header="Primary Contact">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding Path=PrimaryContactName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Click="AddEditPrimaryContact_Click" CommandParameter="{Binding Path=CompanyId}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding CompanyId, Converter={StaticResource StringLengthToBoolConverter}}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn  Header="Is Client">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsClient, UpdateSourceTrigger=PropertyChanged}" 
+                                            Checked="IsClient_Checked"
+                                            Unchecked="IsClient_Unchecked"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem Header="Contacts">                

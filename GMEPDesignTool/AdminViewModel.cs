@@ -44,6 +44,20 @@ namespace GMEPDesignTool
     }
     private string client;
 
+    private bool addButtonEnabled;
+    public bool AddButtonEnabled
+    {
+      get => addButtonEnabled;
+      set
+      {
+        if (addButtonEnabled != value)
+        {
+          addButtonEnabled = value;
+          OnPropertyChanged(nameof(AddButtonEnabled));
+        }
+      }
+    }
+
     public string Client
     {
       get => client;
@@ -278,6 +292,14 @@ namespace GMEPDesignTool
         {
           selectedClientId = value;
           OnPropertyChanged(nameof(SelectedClientId));
+          if (!string.IsNullOrEmpty(selectedClientId))
+          {
+            AddButtonEnabled = true;
+          }
+          else
+          {
+            AddButtonEnabled = false;
+          }
         }
       }
     }
@@ -313,6 +335,15 @@ namespace GMEPDesignTool
       IsCheckedE = ProjectInfo.IsCheckedE;
       IsCheckedP = ProjectInfo.IsCheckedP;
       Descriptions = ProjectInfo.Descriptions;
+
+      if (!string.IsNullOrEmpty(selectedClientId))
+      {
+        AddButtonEnabled = true;
+      }
+      else
+      {
+        AddButtonEnabled = false;
+      }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -42,11 +43,11 @@ namespace GMEPDesignTool
         bool isAccepted = true;
 
         if (
-          !string.IsNullOrEmpty(CompanyNameFilter.Text)
+          !string.IsNullOrEmpty(ClientNameFilter.Text)
           && (
             employee.LastName == null
             || !employee.LastName.Contains(
-              CompanyNameFilter.Text,
+              ClientNameFilter.Text,
               StringComparison.OrdinalIgnoreCase
             )
           )
@@ -98,9 +99,34 @@ namespace GMEPDesignTool
       ViewModel.FlagClientForDeletion();
     }
 
+    private void FlagArchitectForDeletion_Click(object sender, RoutedEventArgs e)
+    {
+      ViewModel.FlagArchitectForDeletion();
+    }
+
     private void FlagContactForDeletion_Click(object sender, RoutedEventArgs e)
     {
       ViewModel.FlagContactForDeletion();
+    }
+
+    private void IsArchitect_Checked(object sender, RoutedEventArgs e)
+    {
+      ViewModel.AddClientToArchitects();
+    }
+
+    private void IsArchitect_Unchecked(object sender, RoutedEventArgs e)
+    {
+      ViewModel.RemoveClientFromArchitects();
+    }
+
+    private void IsClient_Checked(object sender, RoutedEventArgs e)
+    {
+      ViewModel.AddArchitectToClients();
+    }
+
+    private void IsClient_Unchecked(object sender, RoutedEventArgs e)
+    {
+      ViewModel.RemoveArchitectFromClients();
     }
   }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -662,7 +663,7 @@ namespace GMEPDesignTool.Database
       CloseConnection(Connection);
     }
 
-    public void CreateClient(Client client)
+    public void CreateCompany(Company company)
     {
       string query =
         @"
@@ -673,8 +674,16 @@ namespace GMEPDesignTool.Database
 
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", client.EntityId);
-      command.ExecuteNonQuery();
+      command.Parameters.AddWithValue("@id", company.EntityId);
+      try
+      {
+        command.ExecuteNonQuery();
+      }
+      catch (Exception ex)
+      {
+        CloseConnection(Connection);
+        return;
+      }
 
       query =
         @"
@@ -683,8 +692,8 @@ namespace GMEPDesignTool.Database
         (@id, @email_address)
         ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", client.CompanyEmailId);
-      command.Parameters.AddWithValue("@email_address", client.CompanyEmail);
+      command.Parameters.AddWithValue("@id", company.CompanyEmailId);
+      command.Parameters.AddWithValue("@email_address", company.CompanyEmail);
       command.ExecuteNonQuery();
 
       query =
@@ -695,8 +704,8 @@ namespace GMEPDesignTool.Database
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
-      command.Parameters.AddWithValue("@email_address_id", client.CompanyEmailId);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.Parameters.AddWithValue("@email_address_id", company.CompanyEmailId);
+      command.Parameters.AddWithValue("@entity_id", company.EntityId);
       command.Parameters.AddWithValue("@is_primary", 1);
       command.ExecuteNonQuery();
 
@@ -708,9 +717,9 @@ namespace GMEPDesignTool.Database
         ";
 
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", client.CompanyPhoneId);
-      command.Parameters.AddWithValue("@phone_number", client.CompanyPhone);
-      command.Parameters.AddWithValue("@extension", client.CompanyExtension);
+      command.Parameters.AddWithValue("@id", company.CompanyPhoneId);
+      command.Parameters.AddWithValue("@phone_number", company.CompanyPhone);
+      command.Parameters.AddWithValue("@extension", company.CompanyExtension);
       command.ExecuteNonQuery();
 
       query =
@@ -721,8 +730,8 @@ namespace GMEPDesignTool.Database
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
-      command.Parameters.AddWithValue("@phone_number_id", client.CompanyPhoneId);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
+      command.Parameters.AddWithValue("@phone_number_id", company.CompanyPhoneId);
+      command.Parameters.AddWithValue("@entity_id", company.EntityId);
       command.Parameters.AddWithValue("@is_primary", 1);
       command.ExecuteNonQuery();
 
@@ -733,28 +742,69 @@ namespace GMEPDesignTool.Database
           (@id, @entity_id, @name, @street_address, @city, @state, @postal_code)
          ";
       command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@name", client.CompanyName);
-      command.Parameters.AddWithValue("@street_address", client.StreetAddress);
-      command.Parameters.AddWithValue("@city", client.City);
-      command.Parameters.AddWithValue("@state", client.State);
-      command.Parameters.AddWithValue("@postal_code", client.PostalCode);
-      command.Parameters.AddWithValue("@entity_id", client.EntityId);
-      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.Parameters.AddWithValue("@name", company.CompanyName);
+      command.Parameters.AddWithValue("@street_address", company.StreetAddress);
+      command.Parameters.AddWithValue("@city", company.City);
+      command.Parameters.AddWithValue("@state", company.State);
+      command.Parameters.AddWithValue("@postal_code", company.PostalCode);
+      command.Parameters.AddWithValue("@entity_id", company.EntityId);
+      command.Parameters.AddWithValue("@id", company.CompanyId);
       command.ExecuteNonQuery();
 
+      company.New = false;
+    }
+
+    public void CreateClient(Client client)
+    {
+      string query = "SELECT id FROM clients WHERE company_id = @company_id";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        CloseConnection(Connection);
+        return;
+      }
       query =
         @"
         INSERT INTO clients
         ( id,  company_id,  loyalty_type_id) VALUES
         (@id, @company_id, @loyalty_type_id)
         ";
+      OpenConnection(Connection);
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.Parameters.AddWithValue("@loyalty_type_id", client.LoyaltyTypeId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
-      client.New = false;
+    }
+
+    public void CreateArchitect(Architect architect)
+    {
+      string query = "SELECT id FROM architects WHERE company_id = @company_id";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", architect.CompanyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        CloseConnection(Connection);
+        return;
+      }
+      query =
+        @"
+        INSERT INTO architects
+        ( id,  company_id ) VALUES
+        (@id, @company_id )
+        ";
+      OpenConnection(Connection);
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", Guid.NewGuid().ToString());
+      command.Parameters.AddWithValue("@company_id", architect.CompanyId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
     }
 
     public List<Client> GetClients()
@@ -798,7 +848,7 @@ namespace GMEPDesignTool.Database
         WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
         AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
         AND clients.company_id IS NOT NULL
-        AND companies.date_deleted IS NULL
+        AND clients.date_deleted IS NULL
         GROUP BY companies.id
         ORDER BY companies.name
         ";
@@ -835,6 +885,7 @@ namespace GMEPDesignTool.Database
 
     public Client? GetClient(string companyId)
     {
+      Client? client = null;
       string query =
         @"
         SELECT 
@@ -873,7 +924,7 @@ namespace GMEPDesignTool.Database
         WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
         AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
         AND clients.company_id IS NOT NULL
-        AND companies.date_deleted IS NULL
+        AND clients.date_deleted IS NULL
         AND companies.id = @companyId
         GROUP BY companies.id
         ORDER BY companies.name
@@ -884,7 +935,7 @@ namespace GMEPDesignTool.Database
       MySqlDataReader reader = command.ExecuteReader();
       if (reader.Read())
       {
-        return new Client(
+        client = new Client(
           GetSafeString(reader, "id"),
           GetSafeString(reader, "entity_id"),
           GetSafeString(reader, "name"),
@@ -905,16 +956,11 @@ namespace GMEPDesignTool.Database
       }
       reader.Close();
       CloseConnection(Connection);
-      return null;
+      return client;
     }
 
-    public void SaveClient(Client client)
+    public void SaveCompany(Company company)
     {
-      if (client.New)
-      {
-        CreateClient(client);
-        return;
-      }
       string query =
         @"
         UPDATE companies SET
@@ -928,26 +974,15 @@ namespace GMEPDesignTool.Database
       ;
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@name", client.CompanyName);
-      command.Parameters.AddWithValue("@streetAddress", client.StreetAddress);
-      command.Parameters.AddWithValue("@city", client.City);
-      command.Parameters.AddWithValue("@state", client.State);
-      command.Parameters.AddWithValue("@postalCode", client.PostalCode);
-      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.Parameters.AddWithValue("@name", company.CompanyName);
+      command.Parameters.AddWithValue("@streetAddress", company.StreetAddress);
+      command.Parameters.AddWithValue("@city", company.City);
+      command.Parameters.AddWithValue("@state", company.State);
+      command.Parameters.AddWithValue("@postalCode", company.PostalCode);
+      command.Parameters.AddWithValue("@id", company.CompanyId);
       command.ExecuteNonQuery();
 
-      query =
-        @"
-        UPDATE clients SET
-        loyalty_type_id = @loyaltyTypeId
-        WHERE company_id = @companyId
-        ";
-      command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@loyaltyTypeId", client.LoyaltyTypeId);
-      command.Parameters.AddWithValue("@companyId", client.CompanyId);
-      command.ExecuteNonQuery();
-
-      if (client.NewEmailAddress)
+      if (company.NewEmailAddress)
       {
         string emailAddressId = Guid.NewGuid().ToString();
         string emailAddressRelId = Guid.NewGuid().ToString();
@@ -958,7 +993,7 @@ namespace GMEPDesignTool.Database
                     ";
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", emailAddressId);
-        command.Parameters.AddWithValue("@emailAddress", client.CompanyEmail);
+        command.Parameters.AddWithValue("@emailAddress", company.CompanyEmail);
         command.ExecuteNonQuery();
 
         query =
@@ -967,7 +1002,7 @@ namespace GMEPDesignTool.Database
           is_primary = 0 WHERE entity_id = @id
           ";
         command = new MySqlCommand(query, Connection);
-        command.Parameters.AddWithValue("@id", client.EntityId);
+        command.Parameters.AddWithValue("@id", company.EntityId);
         command.ExecuteNonQuery();
 
         query =
@@ -978,10 +1013,10 @@ namespace GMEPDesignTool.Database
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", emailAddressRelId);
         command.Parameters.AddWithValue("@emailAddressId", emailAddressId);
-        command.Parameters.AddWithValue("@entityId", client.EntityId);
+        command.Parameters.AddWithValue("@entityId", company.EntityId);
         command.ExecuteNonQuery();
-        client.CompanyEmailId = emailAddressId;
-        client.NewEmailAddress = false;
+        company.CompanyEmailId = emailAddressId;
+        company.NewEmailAddress = false;
       }
       else
       {
@@ -992,11 +1027,11 @@ namespace GMEPDesignTool.Database
                     WHERE id = @emailAddressId
                     ";
         command = new MySqlCommand(query, Connection);
-        command.Parameters.AddWithValue("@emailAddress", client.CompanyEmail);
-        command.Parameters.AddWithValue("@emailAddressId", client.CompanyEmailId);
+        command.Parameters.AddWithValue("@emailAddress", company.CompanyEmail);
+        command.Parameters.AddWithValue("@emailAddressId", company.CompanyEmailId);
         command.ExecuteNonQuery();
       }
-      if (client.NewPhoneNumber)
+      if (company.NewPhoneNumber)
       {
         string phoneNumberId = Guid.NewGuid().ToString();
         string phoneNumberRelId = Guid.NewGuid().ToString();
@@ -1007,20 +1042,20 @@ namespace GMEPDesignTool.Database
                     ";
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", phoneNumberId);
-        command.Parameters.AddWithValue("@phoneNumber", client.CompanyPhone);
+        command.Parameters.AddWithValue("@phoneNumber", company.CompanyPhone);
         command.Parameters.AddWithValue(
           "@extension",
-          client.CompanyExtension == 0 ? null : client.CompanyExtension
+          company.CompanyExtension == 0 ? null : company.CompanyExtension
         );
         command.ExecuteNonQuery();
 
         query =
           @"
-          UPDATE phone_number_entity_entity_rel SET
+          UPDATE phone_number_entity_rel SET
           is_primary = 0 WHERE entity_id = @id
           ";
         command = new MySqlCommand(query, Connection);
-        command.Parameters.AddWithValue("@id", client.EntityId);
+        command.Parameters.AddWithValue("@id", company.EntityId);
         command.ExecuteNonQuery();
 
         query =
@@ -1031,10 +1066,10 @@ namespace GMEPDesignTool.Database
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@id", phoneNumberRelId);
         command.Parameters.AddWithValue("@phoneNumberId", phoneNumberId);
-        command.Parameters.AddWithValue("@entityId", client.EntityId);
+        command.Parameters.AddWithValue("@entityId", company.EntityId);
         command.ExecuteNonQuery();
-        client.CompanyPhoneId = phoneNumberId;
-        client.NewPhoneNumber = false;
+        company.CompanyPhoneId = phoneNumberId;
+        company.NewPhoneNumber = false;
       }
       else
       {
@@ -1045,17 +1080,30 @@ namespace GMEPDesignTool.Database
                     WHERE id = @phoneNumberId
                     ";
         command = new MySqlCommand(query, Connection);
-        command.Parameters.AddWithValue("@phoneNumber", client.CompanyPhone);
-        command.Parameters.AddWithValue("@phoneNumberId", client.CompanyPhoneId);
+        command.Parameters.AddWithValue("@phoneNumber", company.CompanyPhone);
+        command.Parameters.AddWithValue("@phoneNumberId", company.CompanyPhoneId);
         command.ExecuteNonQuery();
       }
+    }
 
-      query =
+    public void SaveClient(Client client)
+    {
+      if (client.New)
+      {
+        CreateCompany(client);
+        CreateClient(client);
+      }
+      else
+      {
+        SaveCompany(client);
+      }
+
+      string query =
         @"
         UPDATE clients SET
         loyalty_type_id = @loyalty_type_id WHERE company_id = @company_id
         ";
-      command = new MySqlCommand(query, Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.Parameters.AddWithValue("@loyalty_type_id", client.LoyaltyTypeId);
       command.ExecuteNonQuery();
@@ -1067,12 +1115,186 @@ namespace GMEPDesignTool.Database
       OpenConnection(Connection);
       string query =
         @"
-        UPDATE clients SET date_deleted = current_timestamp() WHERE id = @id
+        UPDATE clients SET date_deleted = current_timestamp() WHERE company_id = @company_id
         ";
       MySqlCommand command = new MySqlCommand(query, Connection);
-      command.Parameters.AddWithValue("@id", client.CompanyId);
+      command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
+    }
+
+    public void DeleteArchitect(Architect architect)
+    {
+      OpenConnection(Connection);
+      string query =
+        @"
+        UPDATE architects SET date_deleted = current_timestamp() WHERE company_id = @company_id
+        ";
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@company_id", architect.CompanyId);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
+    }
+
+    public List<Architect> GetArchitects()
+    {
+      List<Architect> architects = new List<Architect>();
+      string query =
+        @"
+        SELECT 
+        companies.id,
+        companies.entity_id,
+        companies.name,
+        companies.street_address,
+        companies.city,
+        companies.state,
+        companies.postal_code,
+        companies.primary_contact_id,
+        phone_numbers.phone_number,
+        phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
+        email_addresses.email_address,
+        email_addresses.id as email_address_id,
+        contacts.id as primary_contact_id,
+        contacts.first_name,
+        contacts.last_name
+        FROM companies
+        LEFT JOIN
+        entities ON entities.id = companies.entity_id
+        LEFT JOIN
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        contacts ON contacts.id = companies.primary_contact_id
+        LEFT JOIN
+        architects ON architects.company_id = companies.id
+        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
+        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        AND architects.company_id IS NOT NULL
+        AND architects.date_deleted IS NULL
+        GROUP BY companies.id
+        ORDER BY companies.name
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      MySqlDataReader reader = command.ExecuteReader();
+      while (reader.Read())
+      {
+        architects.Add(
+          new Architect(
+            GetSafeString(reader, "id"),
+            GetSafeString(reader, "entity_id"),
+            GetSafeString(reader, "name"),
+            GetSafeString(reader, "street_address"),
+            GetSafeString(reader, "city"),
+            GetSafeString(reader, "state"),
+            GetSafeString(reader, "postal_code"),
+            GetSafeString(reader, "email_address_id"),
+            GetSafeString(reader, "email_address"),
+            GetSafeString(reader, "phone_number_id"),
+            GetUnsafeULong(reader, "phone_number"),
+            GetUnsafeUInt(reader, "extension"),
+            GetSafeString(reader, "primary_contact_id"),
+            GetSafeString(reader, "first_name"),
+            GetSafeString(reader, "last_name")
+          )
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return architects;
+    }
+
+    public Architect? GetArchitect(string companyId)
+    {
+      Architect? architect = null;
+      string query =
+        @"
+        SELECT 
+        companies.id,
+        companies.entity_id,
+        companies.name,
+        companies.street_address,
+        companies.city,
+        companies.state,
+        companies.postal_code,
+        companies.primary_contact_id,
+        phone_numbers.phone_number,
+        phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
+        email_addresses.email_address,
+        email_addresses.id as email_address_id,
+        contacts.id as primary_contact_id,
+        contacts.first_name,
+        contacts.last_name
+        FROM companies
+        LEFT JOIN
+        entities ON entities.id = companies.entity_id
+        LEFT JOIN
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        contacts ON contacts.id = companies.primary_contact_id
+        LEFT JOIN
+        architects ON architects.company_id = companies.id
+        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
+        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
+        AND architects.company_id IS NOT NULL
+        AND architects.date_deleted IS NULL
+        AND companies.id = @companyId
+        GROUP BY companies.id
+        ORDER BY companies.name
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@companyId", companyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        architect = new Architect(
+          GetSafeString(reader, "id"),
+          GetSafeString(reader, "entity_id"),
+          GetSafeString(reader, "name"),
+          GetSafeString(reader, "street_address"),
+          GetSafeString(reader, "city"),
+          GetSafeString(reader, "state"),
+          GetSafeString(reader, "postal_code"),
+          GetSafeString(reader, "email_address_id"),
+          GetSafeString(reader, "email_address"),
+          GetSafeString(reader, "phone_number_id"),
+          GetUnsafeULong(reader, "phone_number"),
+          GetUnsafeUInt(reader, "extension"),
+          GetSafeString(reader, "primary_contact_id"),
+          GetSafeString(reader, "first_name"),
+          GetSafeString(reader, "last_name")
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return architect;
+    }
+
+    public void SaveArchitect(Architect architect)
+    {
+      if (architect.New)
+      {
+        CreateCompany(architect);
+        CreateArchitect(architect);
+      }
+      else
+      {
+        SaveCompany(architect);
+      }
     }
 
     public List<Contact> GetContacts(string companyId = "")
@@ -1107,11 +1329,13 @@ namespace GMEPDesignTool.Database
         companies ON companies.id = contacts.company_id
         LEFT JOIN
         clients ON clients.company_id = companies.id
+        LEFT JOIN
+        architects ON architects.company_id = companies.id
         WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
         AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
-        AND companies.date_deleted IS NULL
+        AND ( clients.date_deleted IS NULL OR architects.date_deleted IS NULL )
         AND contacts.date_deleted IS NULL
-        AND clients.company_id IS NOT NULL
+        AND ( clients.company_id IS NOT NULL OR architects.company_id IS NOT NULL )
       ";
       if (!String.IsNullOrEmpty(companyId))
       {
