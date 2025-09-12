@@ -50,7 +50,7 @@ namespace GMEPDesignTool
     {
       if (sender is TextBox textBox && e.Key == Key.Return)
       {
-        Regex r = new Regex(@"[0-9]{2}-[0-9]{3}");
+        Regex r = new Regex(@"p?[0-9]{2}-[0-9]{3}");
         if (r.IsMatch(textBox.Text))
         {
           MainWindowViewModel.OpenProject(textBox.Text);
@@ -61,7 +61,7 @@ namespace GMEPDesignTool
     public void MainWindowOpenProject(object sender, MouseButtonEventArgs e)
     {
       string projectNo = (string)ProjectList.SelectedItem;
-      Regex r = new Regex(@"[0-9]{2}-[0-9]{3}.*");
+      Regex r = new Regex(@"p?[0-9]{2}-[0-9]{3}.*");
       if (r.IsMatch(projectNo))
       {
         MainWindowViewModel.OpenProject(projectNo);

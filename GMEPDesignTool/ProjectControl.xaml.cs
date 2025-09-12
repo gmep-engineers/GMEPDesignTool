@@ -43,6 +43,7 @@ namespace GMEPDesignTool
     public bool Loading = false;
     public string EmployeeId = string.Empty;
     public string SessionId = string.Empty;
+    private TabItem TabItem = new TabItem();
 
     public ProjectControl()
     {
@@ -52,12 +53,12 @@ namespace GMEPDesignTool
 
     private LoginResponse _loginResponse;
 
-    public async Task InitializeProject(string projectNo, LoginResponse loginResponse)
+    public async Task InitializeProject(string projectNo, LoginResponse loginResponse, TabItem tab)
     {
       viewModel = new ProjectControlViewModel(projectNo, loginResponse);
       await viewModel.InitializeProjectControlViewModel();
       this.DataContext = viewModel;
-
+      TabItem = tab;
       _loginResponse = loginResponse;
       EmployeeId = loginResponse.EmployeeId;
       SessionId = loginResponse.SessionId;
@@ -122,7 +123,7 @@ namespace GMEPDesignTool
 
         //Admin Tab
 
-        AdminTab.Content = new AdminProject(newprojectId, _loginResponse);
+        AdminTab.Content = new AdminProject(newprojectId, _loginResponse, TabItem);
 
         Console.WriteLine(" AdminTab.Content newprojectId : " + newprojectId);
         //Plumbing Tab

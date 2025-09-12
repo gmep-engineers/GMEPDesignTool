@@ -49,6 +49,21 @@ namespace GMEPDesignTool
         }
       }
     }
+
+    private bool projectNameReadOnly = true;
+    public bool ProjectNameReadOnly
+    {
+      get => projectNameReadOnly;
+      set
+      {
+        if (projectNameReadOnly != value)
+        {
+          projectNameReadOnly = value;
+          OnPropertyChanged(nameof(ProjectNameReadOnly));
+        }
+      }
+    }
+
     private string client;
 
     private bool addButtonEnabled;
@@ -339,9 +354,13 @@ namespace GMEPDesignTool
 
     public Proposal? SelectedProposal { get; set; }
 
-    public AdminViewModel(string projectId)
+    public AdminViewModel(string projectId, LoginResponse loginResponse)
     {
       LoadProjectInfoAsync(projectId);
+      if (loginResponse.AccessLevelId == 1)
+      {
+        ProjectNameReadOnly = false;
+      }
     }
 
     private async void LoadProjectInfoAsync(string projectId)

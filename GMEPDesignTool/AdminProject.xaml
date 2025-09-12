@@ -40,8 +40,9 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    
                     <Label Grid.Row="0" Content="Project No#"  Margin="0,0,0,10" Width="auto"/>
-                    <TextBox Grid.Row="0" Margin="100,0,0,10" IsReadOnly="True" Text="{Binding ProjectNo}" />
+                    <TextBox Grid.Row="0" Margin="100,0,0,10" IsReadOnly="{Binding ProjectNameReadOnly}" Text="{Binding ProjectNo}" />
                     <Label Grid.Row="1" Content="Name" Margin="0,0,0,10"/>
                     <TextBox Grid.Row="1"  Margin="100,0,0,10" Text="{Binding ProjectName}" />
                     <Label Grid.Row="2" Content="Client" Margin="0,0,0,10"/>

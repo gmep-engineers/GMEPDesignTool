@@ -38,15 +38,17 @@ namespace GMEPDesignTool
     private string ProjectId;
     private readonly Database.Database db;
     private LoginResponse LoginResponse;
+    private TabItem TabItem;
 
     public ObservableCollection<Proposal> Proposals { get; set; } = new();
 
-    public AdminProject(string projectId, LoginResponse LoginResponse)
+    public AdminProject(string projectId, LoginResponse LoginResponse, TabItem tabItem)
     {
       InitializeComponent();
-      AdminViewModel = new AdminViewModel(projectId);
+      AdminViewModel = new AdminViewModel(projectId, LoginResponse);
       this.LoginResponse = LoginResponse;
       this.DataContext = AdminViewModel;
+      TabItem = tabItem;
       ProjectId = projectId;
       db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
       LoadData();
@@ -92,6 +94,7 @@ namespace GMEPDesignTool
 
           var db = new Database.Database(Properties.Settings.Default.ConnectionString);
           await db.UpdateAdminProject(model, ProjectId);
+          TabItem.Header = AdminViewModel.ProjectNo;
         }
 
         Saving = false;

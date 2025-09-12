@@ -253,7 +253,7 @@ namespace GMEPDesignTool
       };
       Tabs.Add(newTab);
       var projectControl = new ProjectControl();
-      await projectControl.InitializeProject(projectNo, loginResponse);
+      await projectControl.InitializeProject(projectNo, loginResponse, newTab);
       newTab.Content = projectControl;
     }
 

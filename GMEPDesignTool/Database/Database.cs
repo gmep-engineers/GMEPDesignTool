@@ -358,6 +358,7 @@ namespace GMEPDesignTool.Database
         @"
             UPDATE projects
             SET gmep_project_name = @name,
+                gmep_project_no = @projectNo,
                 street_address = @address,
                 client_company_id = @clientCompanyId,
                 architect_company_id = @architectCompanyId,
@@ -375,6 +376,7 @@ namespace GMEPDesignTool.Database
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@projectId", projectId);
       command.Parameters.AddWithValue("@name", model.ProjectName);
+      command.Parameters.AddWithValue("@projectNo", model.ProjectNo);
       command.Parameters.AddWithValue("@clientCompanyId", model.ClientCompanyId);
       command.Parameters.AddWithValue("@architectCompanyId", model.ArchitectCompanyId);
       command.Parameters.AddWithValue("@address", model.StreetAddress);
@@ -382,7 +384,6 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@state", model.State);
       command.Parameters.AddWithValue("@postalCode", model.PostalCode);
       command.Parameters.AddWithValue("@directory", model.Directory);
-      command.Parameters.AddWithValue("@projectNo", model.ProjectNo);
       command.Parameters.AddWithValue("@s", model.IsCheckedS);
       command.Parameters.AddWithValue("@m", model.IsCheckedM);
       command.Parameters.AddWithValue("@e", model.IsCheckedE);
