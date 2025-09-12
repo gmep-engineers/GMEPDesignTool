@@ -252,6 +252,7 @@ namespace GMEPDesignTool.Database
                             proposals.project_id,
                             proposals.date_created AS date_created,
                             proposals.data,
+                            proposals.type_id,
                             proposal_types.type AS type,
                             employees.username AS username            
                         FROM proposals
@@ -266,13 +267,19 @@ namespace GMEPDesignTool.Database
       while (await reader.ReadAsync())
       {
         string dataString = GetSafeString(reader, "data");
-        ProposalData? proposalData = JsonSerializer.Deserialize<ProposalData>(dataString);
+        ProposalData? proposalData = null;
+        try
+        {
+          proposalData = JsonSerializer.Deserialize<ProposalData>(dataString);
+        }
+        catch (Exception ex) { }
         proposal = new Proposal
         {
           Id = GetSafeString(reader, "id"),
           ProjectId = GetSafeString(reader, "project_id"),
           DateCreated = GetSafeDateTime(reader, "date_created"),
           Type = GetSafeString(reader, "type"),
+          TypeId = GetSafeInt(reader, "type_id"),
           Data = proposalData,
           EmployeeUsername = GetSafeString(reader, "username"),
           PdfName = GetSafeString(reader, "pdf_name"),

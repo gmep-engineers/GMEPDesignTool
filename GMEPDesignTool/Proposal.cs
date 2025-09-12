@@ -12,6 +12,7 @@ namespace GMEPDesignTool
     public string ProjectId { get; set; }
     public DateTime DateCreated { get; set; }
     public string Type { get; set; }
+    public int TypeId { get; set; }
     public string EmployeeUsername { get; set; }
     public string PdfName { get; set; }
     public string Status { get; set; }
@@ -24,6 +25,7 @@ namespace GMEPDesignTool
       string projectId,
       DateTime dateCreated,
       string type,
+      int typeId,
       string employeeUsername,
       string pdfName,
       string status
@@ -33,6 +35,7 @@ namespace GMEPDesignTool
       ProjectId = projectId;
       DateCreated = dateCreated;
       Type = type;
+      TypeId = typeId;
       EmployeeUsername = employeeUsername;
       PdfName = pdfName;
       Status = status;

@@ -620,11 +620,103 @@ namespace GMEPDesignTool
       }
     }
 
+    private string totalPrice;
+    public string TotalPrice
+    {
+      get => totalPrice;
+      set
+      {
+        if (totalPrice != value)
+        {
+          totalPrice = value;
+          OnPropertyChanged(nameof(TotalPrice));
+        }
+      }
+    }
+
+    private string retainerPercent;
+    public string RetainerPercent
+    {
+      get => retainerPercent;
+      set
+      {
+        if (retainerPercent != value)
+        {
+          retainerPercent = value;
+          OnPropertyChanged(nameof(RetainerPercent));
+        }
+      }
+    }
+
+    private string numMeetings;
+    public string NumMeetings
+    {
+      get => numMeetings;
+      set
+      {
+        if (numMeetings != value)
+        {
+          numMeetings = value;
+          OnPropertyChanged(nameof(NumMeetings));
+        }
+      }
+    }
+
+    private string tarrarNo;
+    public string TarrarNo
+    {
+      get => tarrarNo;
+      set
+      {
+        if (tarrarNo != value)
+        {
+          tarrarNo = value;
+          OnPropertyChanged(nameof(TarrarNo));
+        }
+      }
+    }
+
+    private bool saved;
+    public bool Saved
+    {
+      get => saved;
+      set
+      {
+        saved = value;
+        if (saved == true)
+        {
+          WindowTitle = "Proposal Details";
+        }
+        else
+        {
+          WindowTitle = "Proposal Details*";
+        }
+      }
+    }
+
+    private string windowTitle = "Proposal Details";
+    public string WindowTitle
+    {
+      get => windowTitle;
+      set
+      {
+        if (windowTitle != value)
+        {
+          windowTitle = value;
+          OnPropertyChanged(nameof(WindowTitle));
+        }
+      }
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected void OnPropertyChanged(string name)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+      if (name != "WindowTitle")
+      {
+        Saved = false;
+      }
     }
   }
 }

@@ -42,7 +42,6 @@ namespace GMEPDesignTool
       public bool HasGarageExhaust { get; set; }
       public bool HasSiteLighting { get; set; }
       public string DateDrawingsReceived { get; set; }
-
       public string StructuralDescriptions { get; set; }
       public string MechanicalDescriptions { get; set; }
       public string ElectricalDescriptions { get; set; }
@@ -50,6 +49,68 @@ namespace GMEPDesignTool
     }
 
     public ProposalCommercialWindow(
+      ProposalCommercialViewModel vm,
+      string proposal_id,
+      LoginResponse loginResponse
+    )
+    {
+      InitializeComponent();
+
+      InitializeWindow(vm, proposal_id, loginResponse);
+      vm.WindowTitle = "Proposal Details";
+    }
+
+    public ProposalCommercialWindow(
+      ProposalCommercialViewModel vm,
+      string proposal_id,
+      LoginResponse loginResponse,
+      ProposalData? proposalData
+    )
+    {
+      InitializeComponent();
+
+      InitializeWindow(vm, proposal_id, loginResponse);
+
+      if (proposalData != null)
+      {
+        vm.TotalPrice = proposalData.TotalPrice;
+        vm.HasSiteVisit = proposalData.HasSiteVisit;
+        vm.RetainerPercent = proposalData.RetainerPercent;
+        vm.DateSent = proposalData.DateSent;
+        vm.NumMeetings = proposalData.NumMeetings;
+        vm.TarrarNo = proposalData.TarrarNo;
+        vm.DateDrawingsReceived = proposalData.DateDrawingsReceived;
+        vm.HasSiteVisit = proposalData.HasSiteVisit;
+        vm.NewConstruction = proposalData.NewConstruction;
+        vm.HasInitialRecommendationsMeeting = proposalData.HasInitialRecommendationsMeeting;
+        vm.HasCommericalShellConnection = proposalData.HasCommercialShellConnection;
+        vm.HasEmergencyPower = proposalData.HasEmergencyPower;
+        vm.HasIndoorCommonArea = proposalData.HasIndoorCommonArea;
+        vm.HasGarageExhaust = proposalData.HasGarageExhaust;
+        vm.HasSiteVisit = proposalData.HasSiteVisit;
+
+        vm.MechanicalExhaustSupply = proposalData.MechanicalScope.MechanicalExhaustSupply;
+        vm.MechanicalHvacEquipSpec = proposalData.MechanicalScope.MechanicalHvacEquipSpec;
+        vm.MechanicalTitle24 = proposalData.MechanicalScope.MechanicalTitle24;
+
+        vm.StructuralPlans = proposalData.StructuralScope.StructuralPlans;
+        vm.StructuralDetailsCalculations = proposalData
+          .StructuralScope
+          .StructuralDetailsCalculations;
+        vm.StructuralFramingDepths = proposalData.StructuralScope.StructuralFramingDepths;
+        vm.StructuralAnalysis = proposalData.StructuralScope.StructuralAnalysis;
+        vm.StructuralCodeCompliance = proposalData.StructuralScope.StructuralCodeCompliance;
+        vm.StructuralGeoReport = proposalData.StructuralScope.StructuralGeoReport;
+
+        vm.ElectricalLightingDesign = proposalData.ElectricalScope.ElectricalLightingDesign;
+        vm.ElectricalPowerDesign = proposalData.ElectricalScope.ElectricalPowerDesign;
+        vm.ElectricalServiceLoadCalc = proposalData.ElectricalScope.ElectricalServiceLoadCalc;
+        vm.ElectricalSingleLineDiagram = proposalData.ElectricalScope.ElectricalSingleLineDiagram;
+      }
+      vm.WindowTitle = "Proposal Details";
+    }
+
+    private void InitializeWindow(
       ProposalCommercialViewModel vm,
       string proposal_id,
       LoginResponse loginResponse
@@ -156,6 +217,9 @@ namespace GMEPDesignTool
       string jsonString = JsonSerializer.Serialize(proposalData);
 
       database.SetProposalData(proposal_id, jsonString);
+
+      var vm = DataContext as ProposalCommercialViewModel;
+      vm.Saved = true;
     }
 
     private async void Generate_Click(object sender, RoutedEventArgs e)

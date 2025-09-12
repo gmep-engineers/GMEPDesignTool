@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="ProposalWindow" Height="600" Width="1042">
+        Title="{Binding WindowTitle}" Height="600" Width="1042">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -99,11 +99,11 @@
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
-                        <TextBox x:Name="TotalPriceBox" Grid.Row="0" Margin="0,0,0,10"  Text="{Binding ProjectNo}" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                        <TextBox x:Name="TotalPriceBox" Grid.Row="0" Text="{Binding TotalPrice}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
                         <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>
 
                         <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
-                        <TextBox x:Name="RetainerPercentBox" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" />
+                        <TextBox x:Name="RetainerPercentBox" Text="{Binding RetainerPercent}" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" />
 
 
                         <Label Grid.Row="3" Content="Client"  Margin="0,0,0,10" />
@@ -137,9 +137,9 @@
                             
                         </Grid>
                         <Label Grid.Row="6" Content="Date Sent"  Margin="0,0,0,10" />
-                        <DatePicker Grid.Row="6" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateSent}"/>
+                        <DatePicker Grid.Row="6" Margin="0,0,0,10" Grid.Column="1" SelectedDate="{Binding DateSent}"/>
                         <Label Grid.Row="7" Content="NumMeetings"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="7" x:Name="NumMeetingsBox" Margin="0,0,0,10" Grid.Column="1" />
+                        <TextBox Grid.Row="7" x:Name="NumMeetingsBox" Text="{Binding NumMeetings}" Margin="0,0,0,10" Grid.Column="1" />
                         <Label Grid.Row="8" Content="Drawings Received"  Margin="0,0,0,10" />
                         <DatePicker Grid.Row="8" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
                         <Label Grid.Row="9" Content="TarrarNo" Margin="0,0,0,10">
@@ -154,7 +154,7 @@
                                 </Style>
                             </Label.Style>
                         </Label>
-                        <TextBox Grid.Row="9" x:Name="TarrarNoBox" Margin="0,0,0,10" Grid.Column="4">
+                        <TextBox Grid.Row="9" x:Name="TarrarNoBox" Text="{Binding TarrarNo}" Margin="0,0,0,10" Grid.Column="4">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
                                     <Setter Property="Visibility" Value="Collapsed" />

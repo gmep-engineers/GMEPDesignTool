@@ -5,12 +5,16 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using GMEPDesignTool.Database;
 using Mysqlx.Crud;
+using static GMEPDesignTool.ProposalCommercialWindow;
 
 namespace GMEPDesignTool
 {
@@ -392,19 +396,217 @@ namespace GMEPDesignTool
         if (!String.IsNullOrEmpty(SelectedProposal.PdfName))
         {
           S3 s3 = new S3();
-          Trace.WriteLine("namae " + SelectedProposal.PdfName);
           string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
           string downloadPath = System.IO.Path.Combine(desktopPath, SelectedProposal.PdfName);
           await s3.DownloadAndOpenFileAsync(SelectedProposal.PdfName, downloadPath);
           return;
         }
-        var db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString); // HERE change this
+        var db = new Database.Database(GMEPDesignTool.Properties.Settings.Default.ConnectionString);
         Proposal? proposal = await db.GetProposalById(SelectedProposal.Id);
-        if (proposal == null)
+        if (proposal == null || proposal.Data == null)
         {
           return;
         }
-        // HERE generate pdf in server and download -or- show error
+
+        ProposalData d = proposal.Data;
+
+        HttpClient httpClient = new HttpClient
+        {
+          BaseAddress = new Uri("http://44.240.61.252:3000/"),
+        };
+        httpClient.DefaultRequestHeaders.Accept.Clear();
+        httpClient.DefaultRequestHeaders.Accept.Add(
+          new MediaTypeWithQualityHeaderValue("application/json")
+        );
+
+        HttpResponseMessage response;
+
+        PDFRequest r = new PDFRequest();
+
+        // HERE add vars to pdfRequest
+        r.TotalPrice = d.TotalPrice;
+        r.RetainerPercent = d.RetainerPercent;
+
+        Client client = db.GetClient(SelectedClientId);
+
+        if (client == null)
+        {
+          return;
+        }
+
+        if (client.LoyaltyTypeId == 1)
+        {
+          r.ClientType = "loyal";
+        }
+        if (client.LoyaltyTypeId == 2)
+        {
+          r.ClientType = "returning";
+        }
+        if (client.LoyaltyTypeId == 3)
+        {
+          r.ClientType = "new";
+        }
+        r.ClientContactName = client.PrimaryContactName;
+        r.ClientBusinessName = client.CompanyName;
+        r.ClientStreetAddress = client.StreetAddress;
+        string clientCityStateZip = client.City + ", " + client.State + "  " + client.PostalCode;
+        r.ClientCityStateZip = clientCityStateZip;
+
+        r.DateSent = d.DateSent.ToString("yyyy-MM-dd");
+        r.NumMeetings = d.NumMeetings;
+        r.TarrarNo = d.TarrarNo;
+        r.DateDrawingsReceived = d.DateDrawingsReceived.ToString("yyyy-MM-dd");
+        r.HasSiteVisit = d.HasSiteVisit;
+        r.NewConstruction = d.NewConstruction;
+        r.HasInitialRecommendationsMeeting = d.HasInitialRecommendationsMeeting;
+        r.HasCommericalShellConnection = d.HasCommercialShellConnection;
+        r.HasEmergencyPower = d.HasEmergencyPower;
+        r.HasIndoorCommonArea = d.HasIndoorCommonArea;
+        r.HasGarageExhaust = d.HasGarageExhaust;
+        r.HasSiteLighting = d.HasSiteLighting;
+        r.Client = Client;
+        r.Architect = Architect;
+        string projectAddress = StreetAddress + ", " + City + ", " + State + " " + PostalCode;
+        r.ProjectAddress = projectAddress;
+        r.ProjectDescriptions = Descriptions;
+        r.ProjectName = ProjectName;
+
+        string mechanicalDescriptions;
+        if (
+          d.MechanicalScope.MechanicalExhaustSupply
+          || d.MechanicalScope.MechanicalHvacEquipSpec
+          || d.MechanicalScope.MechanicalTitle24
+        )
+        {
+          if (d.NewConstruction)
+          {
+            mechanicalDescriptions = "New Construction: engineering for Mechanical design";
+          }
+          else
+          {
+            mechanicalDescriptions = "Tenant Improvement: engineering for HVAC design";
+          }
+          if (d.MechanicalScope.MechanicalExhaustSupply)
+            mechanicalDescriptions += ", exhaust and supply";
+          if (d.MechanicalScope.MechanicalHvacEquipSpec)
+            mechanicalDescriptions += ", HVAC equipment specifications";
+          if (d.MechanicalScope.MechanicalTitle24)
+            mechanicalDescriptions += ", Title 24";
+          r.MechanicalDescriptions = mechanicalDescriptions;
+        }
+
+        string structuralDescriptions;
+        if (
+          d.StructuralScope.StructuralGeoReport
+          || d.StructuralScope.StructuralFramingDepths
+          || d.StructuralScope.StructuralAnalysis
+          || d.StructuralScope.StructuralPlans
+          || d.StructuralScope.StructuralDetailsCalculations
+          || d.StructuralScope.StructuralCodeCompliance
+        )
+        {
+          if (d.NewConstruction)
+          {
+            structuralDescriptions = "New Construction: engineering for Structural design";
+          }
+          else
+          {
+            structuralDescriptions = "Tenant Improvement: engineering for Structural design";
+          }
+          if (d.StructuralScope.StructuralGeoReport)
+            structuralDescriptions += ", Review geotechnical report and define foundation type";
+          if (d.StructuralScope.StructuralFramingDepths)
+            structuralDescriptions +=
+              ", Perform structural analysis and design for all gravity and lateral load resisting elements";
+          if (d.StructuralScope.StructuralAnalysis)
+            structuralDescriptions += ", Title 24";
+          if (d.StructuralScope.StructuralPlans)
+            structuralDescriptions += ", Structural Plans";
+          if (d.StructuralScope.StructuralDetailsCalculations)
+            structuralDescriptions += ", Details and calculations";
+          if (d.StructuralScope.StructuralCodeCompliance)
+            structuralDescriptions += ", Building structural to comply with code";
+          r.StructuralDescriptions = structuralDescriptions;
+        }
+
+        string electricalDescriptions = "New Construction: engineering for Electrical design";
+        if (
+          d.ElectricalScope.ElectricalPowerDesign
+          || d.ElectricalScope.ElectricalServiceLoadCalc
+          || d.ElectricalScope.ElectricalSingleLineDiagram
+          || d.ElectricalScope.ElectricalLightingDesign
+        )
+        {
+          if (d.NewConstruction)
+          {
+            electricalDescriptions = "New Construction: engineering for Electrical design";
+          }
+          else
+          {
+            electricalDescriptions = "Tenant Improvement: engineering for Electrical design";
+          }
+          if (d.ElectricalScope.ElectricalPowerDesign)
+            electricalDescriptions += ", Electrical power design";
+          if (d.ElectricalScope.ElectricalServiceLoadCalc)
+            electricalDescriptions += ", Service load calculation";
+          if (d.ElectricalScope.ElectricalSingleLineDiagram)
+            electricalDescriptions += ", Single line diagrams";
+          if (d.ElectricalScope.ElectricalLightingDesign)
+            electricalDescriptions += ", Electrical lighting design";
+          r.ElectricalDescriptions = electricalDescriptions;
+        }
+
+        string plumbingDescriptions;
+        if (d.PlumbingScope.PlumbingHotColdWater || d.PlumbingScope.PlumbingWasteVent)
+        {
+          if (d.NewConstruction)
+          {
+            plumbingDescriptions = "New Construction: engineering for Plumbing design";
+          }
+          else
+          {
+            plumbingDescriptions = "Tenant Improvement: engineering for Plumbing design";
+          }
+          if (d.PlumbingScope.PlumbingHotColdWater)
+            plumbingDescriptions += ", Hot and cold water piping design";
+          if (d.PlumbingScope.PlumbingWasteVent)
+            plumbingDescriptions += ", Sewer and vent piping design";
+          r.PlumbingDescriptions = plumbingDescriptions;
+        }
+
+        switch (proposal.TypeId)
+        {
+          case 1:
+            response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/commercial", r);
+            break;
+          case 2:
+            response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/residential", r);
+            break;
+          case 3:
+            response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/t24", r);
+            break;
+          case 4:
+            response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/site-lighting-tarrar", r);
+            break;
+          case 5:
+            response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/2019", r);
+            break;
+          default:
+            return;
+        }
+
+        response.EnsureSuccessStatusCode();
+
+        string jsonString = JsonSerializer.Serialize(proposal.Data);
+        var pdfBytes = await response.Content.ReadAsByteArrayAsync();
+        string keyName = $"{proposal.TypeId}-{Guid.NewGuid()}.pdf";
+        db.SetProposalPdf(SelectedProposal.Id, keyName);
+        db.SetProposalData(SelectedProposal.Id, jsonString);
+        string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), keyName);
+        System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
+        Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
+        Database.S3 s3db = new Database.S3();
+        await s3db.UploadFileAsync(keyName, tempFilePath);
       }
       else { }
     }

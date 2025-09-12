@@ -113,7 +113,22 @@ namespace GMEPDesignTool
       selectProposalTypeWindow.Show();
     }
 
-    private void EditProposal_Click(object sender, RoutedEventArgs e) { }
+    private async void EditProposal_Click(object sender, RoutedEventArgs e)
+    {
+      Proposal? proposal = await db.GetProposalById(AdminViewModel.SelectedProposal.Id);
+      if (proposal != null)
+      {
+        SelectProposalTypeViewModel svm = new SelectProposalTypeViewModel();
+        ProposalCommercialViewModel pvm = new ProposalCommercialViewModel(AdminViewModel, svm, db);
+        ProposalCommercialWindow window = new ProposalCommercialWindow(
+          pvm,
+          AdminViewModel.SelectedProposal.Id,
+          LoginResponse,
+          proposal.Data
+        );
+        window.Show();
+      }
+    }
 
     private async void DownloadProposal_Click(object sender, RoutedEventArgs e)
     {
