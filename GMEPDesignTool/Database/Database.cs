@@ -3825,6 +3825,25 @@ namespace GMEPDesignTool.Database
       CloseConnection(Connection);
       return id;
     }
+
+    public string CreateRfp(string projectId, string storedFilename)
+    {
+      string id = Guid.NewGuid().ToString();
+      string query =
+        @"
+        INSERT INTO rfp 
+        ( id,  project_id,  filename) VALUES
+        (@id, @project_id, @filename)
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", id);
+      command.Parameters.AddWithValue("@project_id", projectId);
+      command.Parameters.AddWithValue("@filename", storedFilename);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
+      return id;
+    }
   }
 
   public class S3

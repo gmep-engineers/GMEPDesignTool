@@ -38,40 +38,43 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    
-                    <Label Grid.Row="0" Content="Project No#"  Margin="0,0,0,10" Width="auto"/>
-                    <TextBox Grid.Row="0" Margin="100,0,0,10" IsReadOnly="{Binding ProjectNameReadOnly}" Text="{Binding ProjectNo}" />
-                    <Label Grid.Row="1" Content="Name" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="1"  Margin="100,0,0,10" Text="{Binding ProjectName}" />
-                    <Label Grid.Row="2" Content="Client" Margin="0,0,0,10"/>
-                    <ComboBox Margin="100,0,0,10" Grid.Row="2" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientId}"/>
-                    <Label Grid.Row="3" Content="Architect" Margin="0,0,0,10"/>
-                    <ComboBox Margin="100,0,0,10" Grid.Row="3" ItemsSource="{Binding ArchitectData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedArchitectId}"/>
-                    <Label Grid.Row="4" Content="Street Address" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="4" Margin="100,0,0,10"  Text="{Binding StreetAddress}"/>
-                    <Label Grid.Row="5" Content="City" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="5" Margin="100,0,0,10"  Text="{Binding City}" />
-                    <Label Grid.Row="6" Content="State" Margin="0,0,0,10"/>
-                    <ComboBox Grid.Row="6" Margin="100,0,0,10"
+                    <Label Grid.Row="0" Content="RFP Email"  Margin="0,0,0,10" Width="auto"/>
+                    <Button Grid.Row="0" Content="Upload" Click="UploadRfpEmail_Click" Margin="100,0,0,10" Width="76" HorizontalAlignment="Left" FontSize="16" Height="25"  />
+                    <Button Grid.Row="0" Content="View" Click="UploadRfpEmail_Click" Margin="200,0,0,10" Width="76" HorizontalAlignment="Left" FontSize="16" Height="25"  />
+                    <Label Grid.Row="1" Content="Project No#"  Margin="0,0,0,10" Width="auto"/>
+                    <TextBox Grid.Row="1" Margin="100,0,0,10" IsReadOnly="{Binding ProjectNameReadOnly}" Text="{Binding ProjectNo}" />
+                    <Label Grid.Row="2" Content="Name" Margin="0,0,0,10"/>
+                    <TextBox Grid.Row="2"  Margin="100,0,0,10" Text="{Binding ProjectName}" />
+                    <Label Grid.Row="3" Content="Client" Margin="0,0,0,10"/>
+                    <ComboBox Margin="100,0,0,10" Grid.Row="3" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientId}"/>
+                    <Label Grid.Row="4" Content="Architect" Margin="0,0,0,10"/>
+                    <ComboBox Margin="100,0,0,10" Grid.Row="4" ItemsSource="{Binding ArchitectData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedArchitectId}"/>
+                    <Label Grid.Row="5" Content="Street Address" Margin="0,0,0,10"/>
+                    <TextBox Grid.Row="5" Margin="100,0,0,10"  Text="{Binding StreetAddress}"/>
+                    <Label Grid.Row="6" Content="City" Margin="0,0,0,10"/>
+                    <TextBox Grid.Row="6" Margin="100,0,0,10"  Text="{Binding City}" />
+                    <Label Grid.Row="7" Content="State" Margin="0,0,0,10"/>
+                    <ComboBox Grid.Row="7" Margin="100,0,0,10"
                       ItemsSource="{Binding States}" 
                       SelectedItem="{Binding State}" 
                      />
-                    <Label Grid.Row="7" Content="Post Code" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="7" Margin="100,0,0,10"  Text="{Binding PostalCode}"/>
-                    <Label Grid.Row="8" Content="Project Path" Margin="0,0,0,10"/>
-                    <TextBox Grid.Row="8" Margin="100,0,0,10"  Text="{Binding FileDictionary}"/>
-                    <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="0,0,0,10">
+                    <Label Grid.Row="8" Content="Post Code" Margin="0,0,0,10"/>
+                    <TextBox Grid.Row="8" Margin="100,0,0,10"  Text="{Binding PostalCode}"/>
+                    <Label Grid.Row="9" Content="Project Path" Margin="0,0,0,10"/>
+                    <TextBox Grid.Row="9" Margin="100,0,0,10"  Text="{Binding FileDictionary}"/>
+                    <StackPanel Grid.Row="10" Orientation="Horizontal" Margin="0,0,0,10">
                         <Label>Scope</Label>
                         <CheckBox Content="S" Margin="100,10,0,0" IsChecked="{Binding IsCheckedS}"/>
                         <CheckBox Content="M" Margin="50,10,0,0"  IsChecked="{Binding IsCheckedM}"/>
                         <CheckBox Content="E" Margin="50,10,0,0" IsChecked="{Binding IsCheckedE}"/>
                         <CheckBox Content="P" Margin="50,10,0,0" IsChecked="{Binding IsCheckedP}"/>
                     </StackPanel>
-                    <Label Grid.Row="10" Content="Descriptions" Margin="0,0,0,10" />
-                    <TextBox Grid.Row="10" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
-                    <Button Grid.Row="11" Content="save" Click="SaveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
+                    <Label Grid.Row="11" Content="Descriptions" Margin="0,0,0,10" />
+                    <TextBox Grid.Row="11" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
+                    <Button Grid.Row="12" Content="save" Click="SaveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
             </Grid>
            

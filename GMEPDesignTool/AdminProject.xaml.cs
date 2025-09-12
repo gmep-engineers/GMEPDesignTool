@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using Amazon.S3;
 using Amazon.S3.Model;
 using GMEPDesignTool.Database;
+using Microsoft.Win32;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Bcpg.Sig;
 
@@ -136,6 +137,11 @@ namespace GMEPDesignTool
     private async void DownloadProposal_Click(object sender, RoutedEventArgs e)
     {
       AdminViewModel.DownloadProposal();
+    }
+
+    public void UploadRfpEmail_Click(object sender, EventArgs e)
+    {
+      AdminViewModel.UploadRfp(ProjectId, db);
     }
   }
 }

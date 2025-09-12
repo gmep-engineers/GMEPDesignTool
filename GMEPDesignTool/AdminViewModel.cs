@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using GMEPDesignTool.Database;
+using Microsoft.Win32;
 using Mysqlx.Crud;
 using static GMEPDesignTool.ProposalCommercialWindow;
 
@@ -442,7 +443,6 @@ namespace GMEPDesignTool
 
         PDFRequest r = new PDFRequest();
 
-        // HERE add vars to pdfRequest
         r.TotalPrice = d.TotalPrice;
         r.RetainerPercent = d.RetainerPercent;
 
@@ -628,6 +628,29 @@ namespace GMEPDesignTool
         await s3db.UploadFileAsync(keyName, tempFilePath);
       }
       else { }
+    }
+
+    public void UploadRfp(string projectId, Database.Database db)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "Email Files (*.msg;*.eml)|*.msg;*.eml|All files (*.*)|*.*";
+      openFileDialog.Multiselect = false;
+      openFileDialog.InitialDirectory = Environment.GetFolderPath(
+        Environment.SpecialFolder.MyDocuments
+      );
+
+      if (openFileDialog.ShowDialog() == true)
+      {
+        string filePath = openFileDialog.FileName;
+        string fileName = openFileDialog.SafeFileName;
+        Database.S3 s3 = new Database.S3();
+        string storedFilename = Guid.NewGuid().ToString().Substring(0, 6) + "-" + fileName;
+        s3.UploadFileAsync(storedFilename, filePath);
+
+        db.CreateRfp(projectId, storedFilename);
+
+        // HERE set view button to download file
+      }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
