@@ -24,6 +24,7 @@ using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
 using MySqlX.XDevAPI;
 using Org.BouncyCastle.Crypto.Generators;
+using RtfPipe.Tokens;
 
 namespace GMEPDesignTool.Database
 {
@@ -1389,6 +1390,32 @@ namespace GMEPDesignTool.Database
       CloseConnection(Connection);
 
       return contacts;
+    }
+
+    public string GetContactCompanyIdByEmail(string email)
+    {
+      string query =
+        @"
+        SELECT
+        contacts.company_id
+        FROM contacts
+        LEFT JOIN entities ON entities.id = contacts.entity_id
+        LEFT JOIN email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        WHERE email_addresses.email_address = @email
+        ";
+      string companyId = string.Empty;
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@email", email);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        companyId = GetSafeString(reader, "company_id");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return companyId;
     }
 
     public void CreateContact(Contact contact)
@@ -3844,6 +3871,27 @@ namespace GMEPDesignTool.Database
       CloseConnection(Connection);
       return id;
     }
+
+    public string GetLatestRfpFilename(string projectId)
+    {
+      string filename = string.Empty;
+      string query =
+        @"
+        SELECT filename FROM rfp WHERE project_id = @project_id ORDER BY date_created DESC LIMIT 1
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@project_id", projectId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        filename = GetSafeString(reader, "filename");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+
+      return filename;
+    }
   }
 
   public class S3
@@ -3870,23 +3918,6 @@ namespace GMEPDesignTool.Database
       return response.S3Objects.Any(o => o.Key == key);
     }
 
-    //test
-    //public async Task ListFilesInBucketAsync()
-    //{
-    //    var request = new ListObjectsV2Request
-    //    {
-    //        BucketName = _bucketName
-    //    };
-
-    //    var response = await _s3Client.ListObjectsV2Async(request);
-
-    //    var files = response.S3Objects
-    //                .Select(entry => $"{entry.Key} ({entry.Size} bytes)")
-    //                .ToList();
-    //    string fileList = string.Join("\n", files);
-    //    int n = files.Count;
-    //    MessageBox.Show(n + "------" + fileList, "S3 Bucket Files");
-    //}
     public async Task UploadFileAsync(string keyName, string filePath)
     {
       try
@@ -3900,18 +3931,18 @@ namespace GMEPDesignTool.Database
         };
 
         PutObjectResponse response = await _s3Client.PutObjectAsync(putRequest);
-        Console.WriteLine("File uploaded successfully.");
+        Trace.WriteLine("File uploaded successfully.");
       }
       catch (AmazonS3Exception e)
       {
-        Console.WriteLine(
+        Trace.WriteLine(
           "Error encountered on server. Message:'{0}' when writing an object",
           e.Message
         );
       }
       catch (Exception e)
       {
-        Console.WriteLine(
+        Trace.WriteLine(
           "Unknown encountered on server. Message:'{0}' when writing an object",
           e.Message
         );

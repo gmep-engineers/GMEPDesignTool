@@ -26,6 +26,8 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+    <PackageReference Include="MimeKit" Version="4.13.0" />
+    <PackageReference Include="MsgReader" Version="6.0.4" />
     <PackageReference Include="MySql.Data" Version="9.1.0" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>

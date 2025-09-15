@@ -242,9 +242,9 @@ namespace GMEPDesignTool
 
       pdfRequest.RetainerPercent = RetainerPercentBox.Text;
 
-      string selectedClientId = ClientNameComboBox.SelectedValue.ToString();
+      string selectedClientCompanyId = ClientNameComboBox.SelectedValue.ToString();
 
-      Client client = database.GetClient(selectedClientId);
+      Client client = database.GetClient(selectedClientCompanyId);
 
       if (client == null)
       {

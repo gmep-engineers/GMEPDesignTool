@@ -30,7 +30,7 @@ namespace GMEPDesignTool
       {
         clientData.Add(new ComboData { Id = client.CompanyId, Value = client.CompanyName });
       }
-      selectedClientId = adminViewModel.SelectedClientId;
+      selectedClientCompanyId = adminViewModel.SelectedClientCompanyId;
     }
 
     private List<ComboData> clientData = new List<ComboData>();
@@ -39,16 +39,16 @@ namespace GMEPDesignTool
       get { return clientData; }
     }
 
-    private string selectedClientId;
-    public string SelectedClientId
+    private string selectedClientCompanyId;
+    public string SelectedClientCompanyId
     {
-      get => selectedClientId;
+      get => selectedClientCompanyId;
       set
       {
-        if (selectedClientId != value)
+        if (selectedClientCompanyId != value)
         {
-          selectedClientId = value;
-          OnPropertyChanged(nameof(SelectedClientId));
+          selectedClientCompanyId = value;
+          OnPropertyChanged(nameof(SelectedClientCompanyId));
         }
       }
     }

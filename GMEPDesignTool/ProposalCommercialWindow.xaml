@@ -107,7 +107,7 @@
 
 
                         <Label Grid.Row="3" Content="Client"  Margin="0,0,0,10" />
-                        <ComboBox Margin="0,0,0,10" IsReadOnly="True" IsEnabled="False" x:Name="ClientNameComboBox" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientId}">
+                        <ComboBox Margin="0,0,0,10" IsReadOnly="True" IsEnabled="False" x:Name="ClientNameComboBox" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientCompanyId}">
                             
                         </ComboBox>
                         

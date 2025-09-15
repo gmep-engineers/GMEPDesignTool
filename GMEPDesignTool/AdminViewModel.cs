@@ -14,6 +14,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using GMEPDesignTool.Database;
 using Microsoft.Win32;
+using MsgReader.Outlook;
 using Mysqlx.Crud;
 using static GMEPDesignTool.ProposalCommercialWindow;
 
@@ -305,17 +306,20 @@ namespace GMEPDesignTool
       get { return clientData; }
     }
 
-    private string selectedClientId;
-    public string SelectedClientId
+    private string selectedClientCompanyId;
+    public string SelectedClientCompanyId
     {
-      get => selectedClientId;
+      get => selectedClientCompanyId;
       set
       {
-        if (selectedClientId != value)
+        if (selectedClientCompanyId != value)
         {
-          selectedClientId = value;
-          OnPropertyChanged(nameof(SelectedClientId));
-          if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
+          selectedClientCompanyId = value;
+          OnPropertyChanged(nameof(SelectedClientCompanyId));
+          if (
+            !string.IsNullOrEmpty(selectedClientCompanyId)
+            && !string.IsNullOrEmpty(selectedArchitectCompanyId)
+          )
           {
             AddButtonEnabled = true;
           }
@@ -333,22 +337,39 @@ namespace GMEPDesignTool
       get { return architectData; }
     }
 
-    private string selectedArchitectId;
-    public string SelectedArchitectId
+    private string selectedArchitectCompanyId;
+    public string SelectedArchitectCompanyId
     {
-      get => selectedArchitectId;
+      get => selectedArchitectCompanyId;
       set
       {
-        if (selectedArchitectId != value)
-          selectedArchitectId = value;
-        OnPropertyChanged(nameof(SelectedArchitectId));
-        if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
+        if (selectedArchitectCompanyId != value)
+          selectedArchitectCompanyId = value;
+        OnPropertyChanged(nameof(SelectedArchitectCompanyId));
+        if (
+          !string.IsNullOrEmpty(selectedClientCompanyId)
+          && !string.IsNullOrEmpty(selectedArchitectCompanyId)
+        )
         {
           AddButtonEnabled = true;
         }
         else
         {
           AddButtonEnabled = false;
+        }
+      }
+    }
+
+    private bool enableDownloadRfp = false;
+    public bool EnableDownloadRfp
+    {
+      get => enableDownloadRfp;
+      set
+      {
+        if (enableDownloadRfp != value)
+        {
+          enableDownloadRfp = value;
+          OnPropertyChanged(nameof(EnableDownloadRfp));
         }
       }
     }
@@ -385,9 +406,9 @@ namespace GMEPDesignTool
       ProjectNo = ProjectInfo.ProjectNo;
       ProjectName = ProjectInfo.ProjectName;
       Client = ProjectInfo.Client;
-      SelectedClientId = ProjectInfo.ClientCompanyId;
+      SelectedClientCompanyId = ProjectInfo.ClientCompanyId;
       Architect = ProjectInfo.Architect;
-      SelectedArchitectId = ProjectInfo.ArchitectCompanyId;
+      SelectedArchitectCompanyId = ProjectInfo.ArchitectCompanyId;
       StreetAddress = ProjectInfo.StreetAddress;
       City = ProjectInfo.City;
       State = ProjectInfo.State;
@@ -399,13 +420,22 @@ namespace GMEPDesignTool
       IsCheckedP = ProjectInfo.IsCheckedP;
       Descriptions = ProjectInfo.Descriptions;
 
-      if (!string.IsNullOrEmpty(selectedClientId) && !string.IsNullOrEmpty(selectedArchitectId))
+      if (
+        !string.IsNullOrEmpty(selectedClientCompanyId)
+        && !string.IsNullOrEmpty(selectedArchitectCompanyId)
+      )
       {
         AddButtonEnabled = true;
       }
       else
       {
         AddButtonEnabled = false;
+      }
+
+      string filename = db.GetLatestRfpFilename(projectId);
+      if (!string.IsNullOrEmpty(filename))
+      {
+        EnableDownloadRfp = true;
       }
     }
 
@@ -446,7 +476,7 @@ namespace GMEPDesignTool
         r.TotalPrice = d.TotalPrice;
         r.RetainerPercent = d.RetainerPercent;
 
-        Client client = db.GetClient(SelectedClientId);
+        Client client = db.GetClient(SelectedClientCompanyId);
 
         if (client == null)
         {
@@ -630,7 +660,7 @@ namespace GMEPDesignTool
       else { }
     }
 
-    public void UploadRfp(string projectId, Database.Database db)
+    public async void UploadRfp(string projectId, Database.Database db)
     {
       OpenFileDialog openFileDialog = new OpenFileDialog();
       openFileDialog.Filter = "Email Files (*.msg;*.eml)|*.msg;*.eml|All files (*.*)|*.*";
@@ -645,12 +675,57 @@ namespace GMEPDesignTool
         string fileName = openFileDialog.SafeFileName;
         Database.S3 s3 = new Database.S3();
         string storedFilename = Guid.NewGuid().ToString().Substring(0, 6) + "-" + fileName;
-        s3.UploadFileAsync(storedFilename, filePath);
+        await s3.UploadFileAsync(storedFilename, filePath);
 
         db.CreateRfp(projectId, storedFilename);
 
-        // HERE set view button to download file
+        EnableDownloadRfp = true;
+
+        string companyId = string.Empty;
+        if (filePath.EndsWith(".msg"))
+        {
+          FileInfo fileInfo = new FileInfo(filePath);
+          Storage.Message msg = new Storage.Message(filePath);
+
+          string sender = msg.Sender.Email;
+
+          companyId = db.GetContactCompanyIdByEmail(sender);
+        }
+        if (filePath.EndsWith(".eml"))
+        {
+          Storage.Message eml = new Storage.Message(filePath);
+          if (eml.Headers != null)
+          {
+            string sender = eml.Headers.Sender.ToString();
+            companyId = db.GetContactCompanyIdByEmail(sender);
+          }
+        }
+
+        if (!string.IsNullOrEmpty(companyId))
+        {
+          SelectedClientCompanyId = companyId;
+        }
+
+        //using (var stream = File.OpenRead(filePath))
+        //{
+        //  var message = MimeMessage.Load(stream);
+        //  Trace.WriteLine(message.Subject);
+        //  Trace.WriteLine(message.Body);
+        //  Trace.WriteLine(message.From);
+        //}
       }
+    }
+
+    public async void DownloadRfp(string projectId, Database.Database db)
+    {
+      string filename = db.GetLatestRfpFilename(projectId);
+      if (string.IsNullOrEmpty(filename))
+      {
+        return;
+      }
+      string filePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{filename}");
+      Database.S3 s3 = new Database.S3();
+      await s3.DownloadAndOpenFileAsync(filename, filePath);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

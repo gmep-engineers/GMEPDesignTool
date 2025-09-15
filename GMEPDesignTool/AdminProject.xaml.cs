@@ -78,9 +78,9 @@ namespace GMEPDesignTool
             ProjectNo = AdminViewModel.ProjectNo,
             ProjectName = AdminViewModel.ProjectName,
             Client = AdminViewModel.Client,
-            ClientCompanyId = AdminViewModel.SelectedClientId,
+            ClientCompanyId = AdminViewModel.SelectedClientCompanyId,
             Architect = AdminViewModel.Architect,
-            ArchitectCompanyId = AdminViewModel.SelectedArchitectId,
+            ArchitectCompanyId = AdminViewModel.SelectedArchitectCompanyId,
             StreetAddress = AdminViewModel.StreetAddress,
             City = AdminViewModel.City,
             State = AdminViewModel.State,
@@ -142,6 +142,11 @@ namespace GMEPDesignTool
     public void UploadRfpEmail_Click(object sender, EventArgs e)
     {
       AdminViewModel.UploadRfp(ProjectId, db);
+    }
+
+    public void DownloadRfpEmail_Click(object sender, EventArgs e)
+    {
+      AdminViewModel.DownloadRfp(ProjectId, db);
     }
   }
 }
