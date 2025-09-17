@@ -42,14 +42,53 @@
             <Grid Grid.Column="0" Background="SlateGray" Margin="0,21,10,0" Grid.ColumnSpan="2">
 
                 <TextBox KeyUp="SearchBox_KeyUp"  Padding="3" Margin="10,10,10,0" Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" />
-                <ListView x:Name="ProjectList" Margin="10,44,10,180" Grid.ColumnSpan="2" ItemsSource="{Binding SearchResultKeys}">
 
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenProject"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                <Grid Grid.ColumnSpan="2" Margin="10,44,10,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ListView Grid.Row="0" x:Name="ProjectList" ItemsSource="{Binding SearchResultKeys}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenProject"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <Label Content="Pending Propsals" FontFamily="Verdana" Grid.Row="1" Foreground="White" Visibility="{Binding ProposalVisibility}"/>
+                    <ListView Visibility="{Binding ProposalVisibility}" Grid.Row="2" x:Name="PendingProposalList" Margin="0 0 0 0 " ItemsSource="{Binding PendingProposalKeys}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenPendingProposal"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <Label Visibility="{Binding ProposalVisibility}" Content="Executed Propsals" FontFamily="Verdana" Grid.Row="3" Foreground="White"/>
+                    <ListView Visibility="{Binding ProposalVisibility}" Grid.Row="4" x:Name="ExecutedProposalList" Margin="0 0 0 0 " ItemsSource="{Binding ExecutedProposalKeys}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenExecutedProposal"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                    <Label Visibility="{Binding ProposalVisibility}" Content="Dead Propsals" FontFamily="Verdana" Grid.Row="5" Foreground="White"/>
+                    <ListView Visibility="{Binding ProposalVisibility}" Grid.Row="6" x:Name="DeadProposalList" Margin="0 0 0 100 " ItemsSource="{Binding DeadProposalKeys}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="MainWindowOpenDeadProposal"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </Grid>
+                
+                
+
+                
 
                 <Button Width="75" Height="23" Content="Search" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,11,11,0" Command="{Binding GetSearchResultsCommand}" Grid.Column="1"/>
 

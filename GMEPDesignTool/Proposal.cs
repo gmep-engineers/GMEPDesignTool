@@ -16,6 +16,7 @@ namespace GMEPDesignTool
     public string EmployeeUsername { get; set; }
     public string PdfName { get; set; }
     public string Status { get; set; }
+    public int StatusId { get; set; }
     public ProposalData? Data { get; set; }
 
     public Proposal() { }
@@ -28,7 +29,8 @@ namespace GMEPDesignTool
       int typeId,
       string employeeUsername,
       string pdfName,
-      string status
+      string status,
+      int statusId
     )
     {
       Id = id;
@@ -39,6 +41,7 @@ namespace GMEPDesignTool
       EmployeeUsername = employeeUsername;
       PdfName = pdfName;
       Status = status;
+      StatusId = statusId;
     }
   }
 
@@ -125,6 +128,24 @@ namespace GMEPDesignTool
     {
       PlumbingHotColdWater = false;
       PlumbingWasteVent = false;
+    }
+  }
+
+  public class ProposalListItem
+  {
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public string ProjectNo { get; set; }
+    public string ProjectId { get; set; }
+    public string Type { get; set; }
+
+    public ProposalListItem(string id, string name, string projectId, string projectNo, string type)
+    {
+      Id = id;
+      Name = name;
+      ProjectId = projectId;
+      ProjectNo = projectNo;
+      Type = type;
     }
   }
 }

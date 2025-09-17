@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Intrinsics.X86;
@@ -108,6 +109,7 @@ namespace GMEPDesignTool
         vm.ElectricalSingleLineDiagram = proposalData.ElectricalScope.ElectricalSingleLineDiagram;
       }
       vm.WindowTitle = "Proposal Details";
+      vm.Saved = true;
     }
 
     private void InitializeWindow(
@@ -207,10 +209,19 @@ namespace GMEPDesignTool
 
     private void SaveClick(object sender, EventArgs e)
     {
+      Save();
+    }
+
+    private void Save(CancelEventArgs? e = null)
+    {
       ProposalData? proposalData = GetProposalData();
       if (proposalData == null)
       {
         MessageBox.Show("Please complete the missing fields.");
+        if (e != null)
+        {
+          e.Cancel = true;
+        }
         return;
       }
 
@@ -220,6 +231,36 @@ namespace GMEPDesignTool
 
       var vm = DataContext as ProposalCommercialViewModel;
       vm.Saved = true;
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+      var vm = DataContext as ProposalCommercialViewModel;
+      if (vm != null && !vm.Saved)
+      {
+        MessageBoxResult result = MessageBox.Show(
+          "Save changes?",
+          "Confirmation",
+          MessageBoxButton.YesNoCancel
+        );
+        if (result == MessageBoxResult.Yes)
+        {
+          Save(e);
+          base.OnClosing(e);
+        }
+        else if (result == MessageBoxResult.No)
+        {
+          base.OnClosing(e);
+        }
+        else
+        {
+          e.Cancel = true;
+        }
+      }
+      else
+      {
+        base.OnClosing(e);
+      }
     }
 
     private async void Generate_Click(object sender, RoutedEventArgs e)
@@ -237,10 +278,19 @@ namespace GMEPDesignTool
         MessageBox.Show("Please complete the missing fields.");
         return;
       }
+      if (vm.WarningVisibility == Visibility.Visible)
+      {
+        MessageBox.Show("Resolve warnings before continuing");
+      }
 
-      pdfRequest.TotalPrice = TotalPriceBox.Text;
+      pdfRequest.TotalPrice = TotalPriceBox.Text.Trim();
 
-      pdfRequest.RetainerPercent = RetainerPercentBox.Text;
+      pdfRequest.RetainerPercent = RetainerPercentBox.Text.Trim();
+
+      if (String.IsNullOrEmpty(pdfRequest.TotalPrice))
+      {
+        MessageBox.Show("Project must have a total price");
+      }
 
       string selectedClientCompanyId = ClientNameComboBox.SelectedValue.ToString();
 

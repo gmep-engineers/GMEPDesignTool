@@ -68,6 +68,27 @@ namespace GMEPDesignTool
       }
     }
 
+    public void MainWindowOpenPendingProposal(object sender, MouseButtonEventArgs e)
+    {
+      string project = (string)PendingProposalList.SelectedItem;
+      string projectNo = project.Split(" - ")[0];
+      MainWindowViewModel.OpenProposal(projectNo);
+    }
+
+    public void MainWindowOpenExecutedProposal(object sender, MouseButtonEventArgs e)
+    {
+      string project = (string)ExecutedProposalList.SelectedItem;
+      string projectNo = project.Split(" - ")[0];
+      MainWindowViewModel.OpenProposal(projectNo);
+    }
+
+    public void MainWindowOpenDeadProposal(object sender, MouseButtonEventArgs e)
+    {
+      string project = (string)DeadProposalList.SelectedItem;
+      string projectNo = project.Split(" - ")[0];
+      MainWindowViewModel.OpenProposal(projectNo);
+    }
+
     public void MainWindowCloseProject(object sender, RoutedEventArgs e)
     {
       TabItem projectTab = (TabItem)ProjectTabs.SelectedItem;

@@ -102,7 +102,15 @@
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Date Created" Width="*" Binding="{Binding DateCreated}" />
-                        <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status}"/>
+                        <DataGridComboBoxColumn Header="Status"  SelectedValueBinding="{Binding StatusId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                            <DataGridComboBoxColumn.ItemsSource>
+                                <CompositeCollection>
+                                    <ComboBoxItem Content="Pending" Tag="1"/>
+                                    <ComboBoxItem Content="Executed" Tag="2"/>
+                                    <ComboBoxItem Content="Dead" Tag="3"/>
+                                </CompositeCollection>
+                            </DataGridComboBoxColumn.ItemsSource>
+                        </DataGridComboBoxColumn>
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
                         <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>        
                         

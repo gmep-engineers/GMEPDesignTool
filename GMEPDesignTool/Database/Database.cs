@@ -207,6 +207,8 @@ namespace GMEPDesignTool.Database
                             proposals.pdf_name,
                             proposals.project_id,
                             proposals.date_created AS date_created,
+                            proposals.status_id,
+                            proposals.type_id,
                             proposal_types.type AS type,
                             proposal_statuses.status,
                             employees.username AS username            
@@ -230,9 +232,11 @@ namespace GMEPDesignTool.Database
             ProjectId = GetSafeString(reader, "project_id"),
             DateCreated = GetSafeDateTime(reader, "date_created"),
             Type = GetSafeString(reader, "type"),
+            TypeId = GetSafeInt(reader, "type_id"),
             EmployeeUsername = GetSafeString(reader, "username"),
             PdfName = GetSafeString(reader, "pdf_name"),
             Status = GetSafeString(reader, "status"),
+            StatusId = GetSafeInt(reader, "status_id"),
           }
         );
       }
@@ -290,6 +294,61 @@ namespace GMEPDesignTool.Database
       await reader.CloseAsync();
       await CloseConnectionAsync(Connection);
       return proposal;
+    }
+
+    public List<ProposalListItem> GetProposalsByStatusId(int statusId)
+    {
+      List<ProposalListItem> proposals = new List<ProposalListItem>();
+      string query =
+        @"
+        SELECT
+        proposals.id,
+        proposals.project_id,
+        projects.gmep_project_name,
+        projects.gmep_project_no,
+        proposal_types.type
+        FROM proposals
+        LEFT JOIN projects ON projects.id = proposals.project_id
+        LEFT JOIN proposal_types ON proposal_types.id = proposals.type_id
+        WHERE proposals.status_id = @statusId
+        GROUP BY proposals.project_id
+        ORDER BY proposals.date_created
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@statusId", statusId);
+      MySqlDataReader reader = command.ExecuteReader();
+      while (reader.Read())
+      {
+        proposals.Add(
+          new ProposalListItem(
+            GetSafeString(reader, "id"),
+            GetSafeString(reader, "gmep_project_name"),
+            GetSafeString(reader, "project_id"),
+            GetSafeString(reader, "gmep_project_no"),
+            GetSafeString(reader, "type")
+          )
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return proposals;
+    }
+
+    public void SaveProposal(Proposal proposal)
+    {
+      string query =
+        @"
+        UPDATE proposals SET
+        status_id = @status_id
+        WHERE id = @id
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@status_id", proposal.StatusId);
+      command.Parameters.AddWithValue("@id", proposal.Id);
+      command.ExecuteNonQuery();
+      Connection.Close();
     }
 
     public async Task<AdminModel> GetAdminByProjectId(string projectId)

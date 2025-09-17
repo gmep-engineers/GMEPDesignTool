@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GMEPDesignTool
 {
@@ -30,7 +31,12 @@ namespace GMEPDesignTool
       {
         clientData.Add(new ComboData { Id = client.CompanyId, Value = client.CompanyName });
       }
+      if (adminViewModel.SelectedProposal != null && adminViewModel.SelectedProposal.StatusId != 1)
+      {
+        Editable = false;
+      }
       selectedClientCompanyId = adminViewModel.SelectedClientCompanyId;
+      Saved = true;
     }
 
     private List<ComboData> clientData = new List<ComboData>();
@@ -630,6 +636,29 @@ namespace GMEPDesignTool
         {
           totalPrice = value;
           OnPropertyChanged(nameof(TotalPrice));
+          if (Int32.TryParse(totalPrice, out int t))
+          {
+            if (Int32.TryParse(retainerPercent, out int p))
+            {
+              if (t * p / 100 > 6000)
+              {
+                WarningText = "Total retainer value cannot exceed $6000";
+                WarningVisibility = Visibility.Visible;
+              }
+              else
+              {
+                WarningVisibility = Visibility.Collapsed;
+              }
+            }
+            else
+            {
+              WarningVisibility = Visibility.Collapsed;
+            }
+          }
+          else
+          {
+            WarningVisibility = Visibility.Collapsed;
+          }
         }
       }
     }
@@ -643,7 +672,31 @@ namespace GMEPDesignTool
         if (retainerPercent != value)
         {
           retainerPercent = value;
+
           OnPropertyChanged(nameof(RetainerPercent));
+          if (Int32.TryParse(totalPrice, out int t))
+          {
+            if (Int32.TryParse(retainerPercent, out int p))
+            {
+              if (t * p / 100 > 6000)
+              {
+                WarningText = "Total retainer value cannot exceed $6000";
+                WarningVisibility = Visibility.Visible;
+              }
+              else
+              {
+                WarningVisibility = Visibility.Collapsed;
+              }
+            }
+            else
+            {
+              WarningVisibility = Visibility.Collapsed;
+            }
+          }
+          else
+          {
+            WarningVisibility = Visibility.Collapsed;
+          }
         }
       }
     }
@@ -676,7 +729,7 @@ namespace GMEPDesignTool
       }
     }
 
-    private bool saved;
+    private bool saved = true;
     public bool Saved
     {
       get => saved;
@@ -694,6 +747,20 @@ namespace GMEPDesignTool
       }
     }
 
+    private bool editable = true;
+    public bool Editable
+    {
+      get => editable;
+      set
+      {
+        if (editable != value)
+        {
+          editable = value;
+          OnPropertyChanged(nameof(Editable));
+        }
+      }
+    }
+
     private string windowTitle = "Proposal Details";
     public string WindowTitle
     {
@@ -704,6 +771,34 @@ namespace GMEPDesignTool
         {
           windowTitle = value;
           OnPropertyChanged(nameof(WindowTitle));
+        }
+      }
+    }
+
+    private Visibility warningVisibility = Visibility.Collapsed;
+    public Visibility WarningVisibility
+    {
+      get => warningVisibility;
+      set
+      {
+        if (warningVisibility != value)
+        {
+          warningVisibility = value;
+          OnPropertyChanged(nameof(WarningVisibility));
+        }
+      }
+    }
+
+    private string warningText = string.Empty;
+    public string WarningText
+    {
+      get => warningText;
+      set
+      {
+        if (warningText != value)
+        {
+          warningText = value;
+          OnPropertyChanged(nameof(WarningText));
         }
       }
     }

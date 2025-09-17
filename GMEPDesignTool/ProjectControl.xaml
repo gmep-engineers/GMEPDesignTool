@@ -11,7 +11,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
     <Grid Background="White" KeyDown="ProjectControl_KeyDown">
-        <TabControl>
+        <TabControl x:Name="DisciplineTabControl">
             <TabItem Header="Structural" Visibility="Visible">
                 <Grid Background="LightBlue" />
             </TabItem>

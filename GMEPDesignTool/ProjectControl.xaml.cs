@@ -227,6 +227,11 @@ namespace GMEPDesignTool
       }
     }
 
+    public void FocusAdminTab()
+    {
+      DisciplineTabControl.SelectedIndex = 4;
+    }
+
     private void Refresh(object sender, RoutedEventArgs e)
     {
       ReloadElectricalProject();

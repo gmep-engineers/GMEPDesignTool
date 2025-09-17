@@ -112,6 +112,33 @@ namespace GMEPDesignTool
       set => SetProperty(ref _searchResultKeys, value);
     }
 
+    private List<string> _pendingProposalKeys = new List<string>();
+    public List<string> PendingProposalKeys
+    {
+      get => _pendingProposalKeys;
+      set => SetProperty(ref _pendingProposalKeys, value);
+    }
+
+    private List<ProposalListItem> _pendingProposalListItems = new List<ProposalListItem>();
+
+    private List<string> _executedProposalKeys = new List<string>();
+    public List<string> ExecutedProposalKeys
+    {
+      get => _executedProposalKeys;
+      set => SetProperty(ref _executedProposalKeys, value);
+    }
+
+    private List<ProposalListItem> _executedProposalListItems = new List<ProposalListItem>();
+
+    private List<string> _deadProposalKeys = new List<string>();
+    public List<string> DeadProposalKeys
+    {
+      get => _deadProposalKeys;
+      set => SetProperty(ref _deadProposalKeys, value);
+    }
+
+    private List<ProposalListItem> _deadProposalListItems = new List<ProposalListItem>();
+
     private Visibility _AdminMenuVisible;
     public Visibility AdminMenuVisible
     {
@@ -121,6 +148,19 @@ namespace GMEPDesignTool
         if (_AdminMenuVisible != value)
         {
           _AdminMenuVisible = value;
+        }
+      }
+    }
+
+    public Visibility _ProposalVisibility = Visibility.Collapsed;
+    public Visibility ProposalVisibility
+    {
+      get => _ProposalVisibility;
+      set
+      {
+        if (_ProposalVisibility != value)
+        {
+          SetProperty(ref _ProposalVisibility, value);
         }
       }
     }
@@ -174,10 +214,38 @@ namespace GMEPDesignTool
         ExtensionLabel = "ext.";
       }
 
+      Database.Database db = new Database.Database(loginResponse.SqlConnectionString);
+
       AdminMenuVisible = Visibility.Collapsed;
       if (loginResponse.AccessLevelId == 1)
       {
         AdminMenuVisible = Visibility.Visible;
+        SetProposalFields(db);
+      }
+
+      if (loginResponse.AccessLevelId == 2)
+      {
+        SetProposalFields(db);
+      }
+    }
+
+    private void SetProposalFields(Database.Database db)
+    {
+      ProposalVisibility = Visibility.Visible;
+      _pendingProposalListItems = db.GetProposalsByStatusId(1);
+      _executedProposalListItems = db.GetProposalsByStatusId(2);
+      _deadProposalListItems = db.GetProposalsByStatusId(3);
+      foreach (ProposalListItem proposal in _pendingProposalListItems)
+      {
+        PendingProposalKeys.Add($"{proposal.ProjectNo} - {proposal.Name}");
+      }
+      foreach (ProposalListItem proposal in _executedProposalListItems)
+      {
+        ExecutedProposalKeys.Add($"{proposal.ProjectNo} - {proposal.Name}");
+      }
+      foreach (ProposalListItem proposal in _deadProposalListItems)
+      {
+        DeadProposalKeys.Add($"{proposal.ProjectNo} - {proposal.Name}");
       }
     }
 
@@ -254,6 +322,30 @@ namespace GMEPDesignTool
       Tabs.Add(newTab);
       var projectControl = new ProjectControl();
       await projectControl.InitializeProject(projectNo, loginResponse, newTab);
+      newTab.Content = projectControl;
+    }
+
+    public async void OpenProposal(string projectNo)
+    {
+      foreach (TabItem tab in Tabs)
+      {
+        if ((string)tab.Header == projectNo)
+        {
+          return;
+        }
+      }
+
+      LoadingScreen loadingScreen = new LoadingScreen();
+      TabItem newTab = new TabItem
+      {
+        Header = projectNo,
+        Content = loadingScreen,
+        IsSelected = true,
+      };
+      Tabs.Add(newTab);
+      var projectControl = new ProjectControl();
+      await projectControl.InitializeProject(projectNo, loginResponse, newTab);
+      projectControl.FocusAdminTab();
       newTab.Content = projectControl;
     }
 
