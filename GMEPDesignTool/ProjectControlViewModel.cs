@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Mysqlx.Crud;
 
 namespace GMEPDesignTool
@@ -17,6 +18,10 @@ namespace GMEPDesignTool
     {
       _projectNo = projectNo;
       database = new Database.Database(loginResponse.SqlConnectionString);
+      if (loginResponse.AccessLevelId == 1)
+      {
+        ProjectVersionButtonsVisibility = Visibility.Visible;
+      }
       //InitializeProjectControlViewModel(projectNo);
     }
 
@@ -92,6 +97,20 @@ namespace GMEPDesignTool
         {
           activeElectricalProject = value;
           OnPropertyChanged(nameof(ActiveElectricalProject));
+        }
+      }
+    }
+
+    private Visibility projectVersionButtonsVisibility = Visibility.Hidden;
+    public Visibility ProjectVersionButtonsVisibility
+    {
+      get => projectVersionButtonsVisibility;
+      set
+      {
+        if (projectVersionButtonsVisibility != value)
+        {
+          projectVersionButtonsVisibility = value;
+          OnPropertyChanged(nameof(ProjectVersionButtonsVisibility));
         }
       }
     }

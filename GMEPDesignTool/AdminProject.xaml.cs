@@ -108,7 +108,6 @@ namespace GMEPDesignTool
       {
         SelectProposalTypeViewModel svm = new SelectProposalTypeViewModel();
         svm.TypeId = AdminViewModel.SelectedProposal.TypeId;
-        Trace.WriteLine("type id " + svm.TypeId.ToString());
         ProposalCommercialViewModel pvm = new ProposalCommercialViewModel(AdminViewModel, svm, db);
         ProposalCommercialWindow window = new ProposalCommercialWindow(
           pvm,

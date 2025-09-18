@@ -3591,6 +3591,78 @@ namespace GMEPDesignTool.Database
       );
     }
 
+    public List<string> GetAllProjectVersionIds(string projectNo)
+    {
+      List<string> projectIds = new List<string>();
+      string query =
+        @"
+        SELECT id FROM projects WHERE gmep_project_no = @projectNo
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+
+      command.Parameters.AddWithValue("@projectNo", projectNo);
+
+      MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+
+      while (reader.Read())
+      {
+        projectIds.Add(GetSafeString(reader, "id"));
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return projectIds;
+    }
+
+    public List<string> GetTables()
+    {
+      List<string> tables = new List<string> { };
+      string query =
+        @"SELECT DISTINCT TABLE_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE COLUMN_NAME = @column_name
+        AND TABLE_SCHEMA = @table_schema";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@column_name", "project_id");
+      command.Parameters.AddWithValue("@table_schema", "gmep-design-tool");
+      MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+      while (reader.Read())
+      {
+        tables.Add(GetSafeString(reader, "TABLE_NAME"));
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return tables;
+    }
+
+    public void DeleteAllProjectAssets(string projectId)
+    {
+      List<string> tables = GetTables();
+      OpenConnection(Connection);
+
+      string query = "";
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      foreach (string table in tables)
+      {
+        Trace.WriteLine(table);
+        query = $"DELETE FROM {table} WHERE project_id = @project_id";
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@project_id", projectId);
+        command.ExecuteNonQuery();
+      }
+
+      query =
+        @"
+        DELETE FROM projects WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", projectId);
+      command.ExecuteNonQuery();
+
+      CloseConnection(Connection);
+    }
+
     public async Task<(string, string)> CheckActiveSessionOnDiscipline(
       string projectNo,
       int disciplineId

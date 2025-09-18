@@ -384,7 +384,7 @@ namespace GMEPDesignTool
 
     public void Save()
     {
-      foreach (Employee employee in Employees)
+      foreach (Employee employee in AllEmployees)
       {
         if (employee.Modified)
         {

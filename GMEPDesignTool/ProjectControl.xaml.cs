@@ -103,6 +103,18 @@ namespace GMEPDesignTool
       }
     }
 
+    private void DeleteProject_Click(object sender, RoutedEventArgs e)
+    {
+      List<string> projectVersionIds = viewModel.database.GetAllProjectVersionIds(
+        viewModel.ProjectNo
+      );
+      foreach (string id in projectVersionIds)
+      {
+        viewModel.database.DeleteAllProjectAssets(id);
+      }
+      TabItem.Content = "Project deleted. You may now close the project tab.";
+    }
+
     private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
