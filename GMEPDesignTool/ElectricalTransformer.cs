@@ -28,6 +28,7 @@ namespace GMEPDesignTool
     public ElectricalTransformer(
       string id,
       string projectId,
+      string electricalProjectId,
       string parentId,
       int distanceFromParent,
       string colorCode,
@@ -44,6 +45,7 @@ namespace GMEPDesignTool
     {
       this.id = id;
       this.projectId = projectId;
+      this.electricalProjectId = electricalProjectId;
       this.colorCode = colorCode;
       this.parentId = parentId;
       this.phaseAVa = 0;

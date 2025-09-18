@@ -18,6 +18,7 @@ namespace GMEPDesignTool
     public float phaseBVa = 0;
     public float phaseCVa = 0;
     public string projectId = string.Empty;
+    public string electricalProjectId = string.Empty;
     public string colorCode = "#FFFFFFFF";
     public int circuitNo = 0;
     public string circuits = string.Empty;
@@ -226,6 +227,20 @@ namespace GMEPDesignTool
         }
       }
     }
+
+    public virtual string ElectricalProjectId
+    {
+      get => electricalProjectId;
+      set
+      {
+        if (electricalProjectId != value)
+        {
+          electricalProjectId = value;
+          OnPropertyChanged(nameof(ElectricalProjectId));
+        }
+      }
+    }
+
     public virtual string ColorCode
     {
       get => colorCode;

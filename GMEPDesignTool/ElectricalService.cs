@@ -25,6 +25,7 @@ namespace GMEPDesignTool
     public ElectricalService(
       string id,
       string projectId,
+      string electricalProjectId,
       string name,
       int type,
       int amp,
@@ -37,6 +38,7 @@ namespace GMEPDesignTool
     {
       this.id = id;
       this.projectId = projectId;
+      this.electricalProjectId = electricalProjectId;
       this.name = name;
       _type = type;
       this.amp = amp;

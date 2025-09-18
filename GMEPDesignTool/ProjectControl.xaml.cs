@@ -62,87 +62,8 @@ namespace GMEPDesignTool
       _loginResponse = loginResponse;
       EmployeeId = loginResponse.EmployeeId;
       SessionId = loginResponse.SessionId;
-      if (viewModel.ProjectIds.Any())
-      {
-        string projectId = viewModel.ProjectIds.First().Value;
-        viewModel.SelectedVersion = viewModel.ProjectIds.First().Key;
-      }
-      else
-      {
-        MessageBox.Show("No project IDs found.");
-      }
       Application.Current.Deactivated += Application_Deactivated;
       Application.Current.Activated += Application_Activated;
-    }
-
-    private async void AddVersion_Click(object sender, RoutedEventArgs e)
-    {
-      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
-      {
-        string projectId = selectedPair.Value;
-        viewModel.ProjectIds = await viewModel.database.AddProjectVersions(
-          viewModel.ProjectNo,
-          projectId
-        );
-        VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
-        CopyPopup.IsOpen = false;
-      }
-    }
-
-    private async void DeleteVersion_Click(object sender, RoutedEventArgs e)
-    {
-      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
-      {
-        string projectId = selectedPair.Value;
-        viewModel.ProjectIds = await viewModel.database.DeleteProjectVersions(
-          viewModel.ProjectNo,
-          projectId
-        );
-        VersionComboBox.SelectedValue = viewModel.ProjectIds.Keys.Last();
-        DeletePopup.IsOpen = false;
-      }
-    }
-
-    private void DeleteProject_Click(object sender, RoutedEventArgs e)
-    {
-      List<string> projectVersionIds = viewModel.database.GetAllProjectVersionIds(
-        viewModel.ProjectNo
-      );
-      foreach (string id in projectVersionIds)
-      {
-        viewModel.database.DeleteAllProjectAssets(id);
-      }
-      TabItem.Content = "Project deleted. You may now close the project tab.";
-    }
-
-    private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
-      {
-        var loadingScreen = new LoadingScreen();
-        ElectricalTab.Content = loadingScreen;
-        //Electrical Tab
-        string newprojectId = selectedPair.Value;
-        viewModel.ActiveElectricalProject = new ElectricalProject(
-          newprojectId,
-          viewModel,
-          this,
-          EmployeeId,
-          SessionId
-        );
-        await viewModel.ActiveElectricalProject.InitializeAsync();
-        ElectricalTab.Content = viewModel.ActiveElectricalProject;
-
-        //Admin Tab
-
-        AdminTab.Content = new AdminProject(newprojectId, _loginResponse, TabItem);
-
-        Console.WriteLine(" AdminTab.Content newprojectId : " + newprojectId);
-        //Plumbing Tab
-
-
-        PlumbingTab.Content = new PlumbingProject(newprojectId);
-      }
     }
 
     private void Application_Deactivated(object sender, EventArgs e)
@@ -203,13 +124,15 @@ namespace GMEPDesignTool
             .ActiveElectricalProject
             .ServiceTransPanelTabs
             .SelectedIndex;
-
+          string electricalProjectId = viewModel.database.GetLatestElectricalProjectId(projectId);
           viewModel.ActiveElectricalProject = new ElectricalProject(
             projectId,
+            electricalProjectId,
             viewModel,
             this,
             EmployeeId,
-            SessionId
+            SessionId,
+            _loginResponse
           );
           try
           {
@@ -250,26 +173,6 @@ namespace GMEPDesignTool
       //Reload Structural
       //Reload Mechanical
       //Reload Plumbing
-    }
-
-    private void CopyPopup_Click(object sender, RoutedEventArgs e)
-    {
-      CopyPopup.IsOpen = true;
-    }
-
-    private void CloseCopyPopup_Click(object sender, RoutedEventArgs e)
-    {
-      CopyPopup.IsOpen = false;
-    }
-
-    private void DeletePopup_Click(object sender, RoutedEventArgs e)
-    {
-      DeletePopup.IsOpen = true;
-    }
-
-    private void CloseDeletePopup_Click(object sender, RoutedEventArgs e)
-    {
-      DeletePopup.IsOpen = false;
     }
   }
 }

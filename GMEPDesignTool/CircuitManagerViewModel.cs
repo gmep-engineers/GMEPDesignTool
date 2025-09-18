@@ -613,6 +613,7 @@ namespace GMEPDesignTool
             new ElectricalPanelNoteRel(
               addedItem.Id,
               Panel.ProjectId,
+              Panel.ElectricalProjectId,
               Panel.id,
               addedItem.Id,
               "",

@@ -60,6 +60,7 @@ namespace GMEPDesignTool
     public ElectricalPanel(
       string id,
       string projectId,
+      string electricalProjectId,
       int busSize,
       int mainSize,
       bool isMlo,
@@ -96,6 +97,7 @@ namespace GMEPDesignTool
       this.colorCode = colorCode;
       this.parentId = parentId;
       this.projectId = projectId;
+      this.electricalProjectId = electricalProjectId;
       this.circuitNo = circuitNo;
       _numBreakers = numBreakers;
       _distanceFromParent = distanceFromParent;
@@ -543,6 +545,7 @@ namespace GMEPDesignTool
             Guid.NewGuid().ToString(),
             id,
             projectId,
+            electricalProjectId,
             string.Empty,
             leftCircuits.Count * 2 + 1,
             0,
@@ -561,6 +564,7 @@ namespace GMEPDesignTool
             Guid.NewGuid().ToString(),
             id,
             projectId,
+            electricalProjectId,
             string.Empty,
             rightCircuits.Count * 2 + 2,
             0,
@@ -810,6 +814,7 @@ namespace GMEPDesignTool
         ElectricalEquipment equip = new ElectricalEquipment(
           Guid.NewGuid().ToString(),
           ProjectId,
+          ElectricalProjectId,
           "",
           equipNo,
           1,
@@ -851,7 +856,7 @@ namespace GMEPDesignTool
         comp = equip;
         MySqlConnection conn = new MySqlConnection(Database.ConnectionString);
         await Database.OpenConnectionAsync(conn);
-        await Database.InsertEquipment(ProjectId, equip, conn);
+        await Database.InsertEquipment(ProjectId, ElectricalProjectId, equip, conn);
         await Database.CloseConnectionAsync(conn);
       }
       else if (
@@ -1132,7 +1137,7 @@ namespace GMEPDesignTool
         {
           noteId = Guid.NewGuid().ToString();
           tag = (notes.Count + 1).ToString();
-          notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+          notes.Add(new ElectricalPanelNote(noteId, ProjectId, ElectricalProjectId, noteText, tag));
         }
         int i = 0;
 
@@ -1170,6 +1175,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -1185,6 +1191,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -1598,7 +1605,7 @@ namespace GMEPDesignTool
         {
           noteId = Guid.NewGuid().ToString();
           tag = (notes.Count + 1).ToString();
-          notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+          notes.Add(new ElectricalPanelNote(noteId, ProjectId, ElectricalProjectId, noteText, tag));
         }
         int i = 0;
 
@@ -1636,6 +1643,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -1651,6 +1659,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -1729,7 +1738,7 @@ namespace GMEPDesignTool
         {
           noteId = Guid.NewGuid().ToString();
           tag = (notes.Count + 1).ToString();
-          notes.Add(new ElectricalPanelNote(noteId, ProjectId, noteText, tag));
+          notes.Add(new ElectricalPanelNote(noteId, ProjectId, ElectricalProjectId, noteText, tag));
         }
         int i = 0;
 
@@ -1767,6 +1776,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -1782,6 +1792,7 @@ namespace GMEPDesignTool
           ElectricalPanelNoteRel newNoteRel = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             ProjectId,
+            ElectricalProjectId,
             Id,
             noteId,
             noteText,
@@ -2457,6 +2468,7 @@ namespace GMEPDesignTool
     public string id;
     public string panelId;
     public string projectId;
+    public string electricalProjectId;
     public int number;
     public int va;
     public int breakerSize;
@@ -2482,6 +2494,7 @@ namespace GMEPDesignTool
       string _id,
       string _panelId,
       string _projectId,
+      string _electricalProjectId,
       string _equipId,
       int _number,
       int _va,
@@ -2508,6 +2521,7 @@ namespace GMEPDesignTool
       id = _id;
       panelId = _panelId;
       projectId = _projectId;
+      electricalProjectId = _electricalProjectId;
       customBreakerSize = _customBreakerSize;
       customDescription = _customDescription;
       errorMessage = "";
@@ -2547,6 +2561,16 @@ namespace GMEPDesignTool
       set
       {
         projectId = value;
+        OnPropertyChanged();
+      }
+    }
+
+    public string ElectricalProjectId
+    {
+      get => electricalProjectId;
+      set
+      {
+        electricalProjectId = value;
         OnPropertyChanged();
       }
     }
@@ -2727,6 +2751,7 @@ namespace GMEPDesignTool
     public ElectricalPanelNoteRel(
       string Id,
       string ProjectId,
+      string ElectricalProjectId,
       string PanelId,
       string NoteId,
       string NoteText,
@@ -2738,6 +2763,7 @@ namespace GMEPDesignTool
     {
       this.Id = Id;
       this.ProjectId = ProjectId;
+      this.ElectricalProjectId = ElectricalProjectId;
       this.PanelId = PanelId;
       this.NoteId = NoteId;
       this.NoteText = NoteText;
@@ -2831,6 +2857,20 @@ namespace GMEPDesignTool
       }
     }
 
+    private string _ElectricalProjectId = string.Empty;
+    public string ElectricalProjectId
+    {
+      get => _ElectricalProjectId;
+      set
+      {
+        if (_ElectricalProjectId != value)
+        {
+          _ElectricalProjectId = value;
+          OnPropertyChanged(nameof(ElectricalProjectId));
+        }
+      }
+    }
+
     private int _CircuitNo = 0;
     public int CircuitNo
     {
@@ -2883,11 +2923,18 @@ namespace GMEPDesignTool
   {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public ElectricalPanelNote(string Id, string ProjectId, string Note, string Tag)
+    public ElectricalPanelNote(
+      string Id,
+      string ProjectId,
+      string ElectricalProjectId,
+      string Note,
+      string Tag
+    )
     {
       this.Id = Id;
       this.Note = Note;
       this.ProjectId = ProjectId;
+      this.ElectricalProjectId = ElectricalProjectId;
       this.Tag = Tag;
     }
 
@@ -2931,6 +2978,20 @@ namespace GMEPDesignTool
         {
           _ProjectId = value;
           OnPropertyChanged(nameof(ProjectId));
+        }
+      }
+    }
+
+    private string _ElectricalProjectId = string.Empty;
+    public string ElectricalProjectId
+    {
+      get => _ElectricalProjectId;
+      set
+      {
+        if (_ElectricalProjectId != value)
+        {
+          _ElectricalProjectId = value;
+          OnPropertyChanged(nameof(ElectricalProjectId));
         }
       }
     }

@@ -12,6 +12,7 @@ namespace GMEPDesignTool
   {
     private string id = Guid.NewGuid().ToString();
     private string projectId = string.Empty;
+    private string electricalProjectId = string.Empty;
     private string parentId = string.Empty;
     private string manufacturer = string.Empty;
     private string modelNo = string.Empty;
@@ -39,6 +40,7 @@ namespace GMEPDesignTool
     public ElectricalLighting(
       string id,
       string projectId,
+      string electricalProjectId,
       string parentId,
       string manufacturer,
       string modelNo,
@@ -64,6 +66,7 @@ namespace GMEPDesignTool
     {
       this.id = id;
       this.projectId = projectId;
+      this.electricalProjectId = electricalProjectId;
       this.parentId = parentId;
       this.manufacturer = manufacturer;
       this.modelNo = modelNo;
@@ -111,6 +114,19 @@ namespace GMEPDesignTool
         {
           projectId = value;
           OnPropertyChanged(nameof(ProjectId));
+        }
+      }
+    }
+
+    public virtual string ElectricalProjectId
+    {
+      get => electricalProjectId;
+      set
+      {
+        if (electricalProjectId != value)
+        {
+          electricalProjectId = value;
+          OnPropertyChanged(nameof(ElectricalProjectId));
         }
       }
     }

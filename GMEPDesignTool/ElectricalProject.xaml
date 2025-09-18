@@ -27,6 +27,37 @@
         <Grid Background="LightSlateGray">
             <Image gif:ImageBehavior.AnimatedSource="PowerIcon.gif" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"/>
             <Label Content="Electrical" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25 0 0 0" FontWeight="Bold" Foreground="White"/>
+
+
+
+
+
+            <Button Margin="0 0 440 0" Width="50" HorizontalAlignment="Right" Height="20" Content="Copy" FontWeight="Bold" Click="CopyPopup_Click"   Visibility="{Binding ProjectVersionButtonsVisibility}"/>
+            <Button Background="Crimson" HorizontalAlignment="Right" Foreground="White" Margin="0 0 390 0" Width="50" Height="20" Content="Delete" FontWeight="Bold" Click="DeletePopup_Click"   Visibility="{Binding ProjectVersionButtonsVisibility}"/>
+            <ComboBox  Margin="0 0 250 0" x:Name="VersionComboBox" HorizontalAlignment="Right" Grid.Column="0" Width="130" Height="20" ItemsSource="{Binding ElectricalProjectIds}" DisplayMemberPath="Key" SelectedValuePath="Key" SelectedValue="{Binding SelectedVersion}" SelectionChanged="Version_SelectionChanged"></ComboBox>
+            <Popup Name="CopyPopup" StaysOpen="False" Placement="Mouse" Visibility="{Binding ProjectVersionButtonsVisibility}">
+                <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Copy Project?" />
+                        <Button Content="Copy" Click="AddVersion_Click" />
+                        <Button Content="Close" Click="CloseCopyPopup_Click" />
+                    </StackPanel>
+                </Border>
+            </Popup>
+            <Popup Name="DeletePopup" StaysOpen="False" Placement="Mouse" Visibility="{Binding ProjectVersionButtonsVisibility}">
+                <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Margin="10">
+                        <Button Content="Delete Version" Click="DeleteElectricalVersion_Click" />
+                        <Button Content="Delete Project" Click="DeleteElectricalProject_Click" />
+                        <Button Content="Close" Click="CloseDeletePopup_Click" />
+                    </StackPanel>
+                </Border>
+            </Popup>
+
+
+
+
+
             <Button Content="Single Line" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 130 0" FontWeight="Bold" Click="SingleLine_Click"/>
             <Button Content="Calculate" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 20 0" FontWeight="Bold" Click="Calculate_Click"/>
         </Grid>

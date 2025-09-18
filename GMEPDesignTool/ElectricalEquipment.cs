@@ -46,6 +46,7 @@ namespace GMEPDesignTool
     public ElectricalEquipment(
       string id,
       string projectId,
+      string electricalProjectId,
       string owner,
       string equipNo,
       int qty,
@@ -86,6 +87,7 @@ namespace GMEPDesignTool
     {
       this.id = id;
       this.projectId = projectId;
+      this.electricalProjectId = electricalProjectId;
       this.owner = owner;
       this.equipNo = equipNo;
       this.qty = qty;

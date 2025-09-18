@@ -44,6 +44,7 @@ namespace GMEPDesignTool
     public ObservableCollection<Location> LightingLocations { get; set; }
     public ObservableCollection<TimeClock> TimeClocks { get; set; }
     public string ProjectId { get; set; }
+    public string ElectricalProjectId { get; set; }
     public CollectionViewSource EquipmentViewSource { get; set; }
     public CollectionViewSource LightingViewSource { get; set; }
     public CollectionViewSource LightingControlsViewSource { get; set; }
@@ -153,15 +154,19 @@ namespace GMEPDesignTool
 
     public ElectricalProject(
       string projectId,
+      string electricalProjectId,
       ProjectControlViewModel projectView,
       ProjectControl parent,
       string employeeId,
-      string sessionId
+      string sessionId,
+      LoginResponse loginResponse
     )
     {
       InitializeComponent();
       ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
       ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
+      ElectricalProjectId =
+        electricalProjectId ?? throw new ArgumentException(nameof(electricalProjectId));
       ParentControl = parent ?? throw new ArgumentNullException(nameof(parent));
 
       // Initialize collections to avoid null references
@@ -202,13 +207,18 @@ namespace GMEPDesignTool
         ?? throw new InvalidOperationException("LightingControlsViewSource resource not found.");
       LightingControlsViewSource.Filter += LightingControlsViewSource_Filter;
 
+      if (loginResponse.AccessLevelId == 1)
+      {
+        ProjectVersionButtonsVisibility = Visibility.Visible;
+      }
+
       // Initialize other properties and event handlers
       //InitializeAsync(projectId, projectView).ConfigureAwait(false);
     }
 
     public async Task InitializeAsync()
     {
-      ElectricalPanels = await ProjectView.database.GetProjectPanels(ProjectId);
+      ElectricalPanels = await ProjectView.database.GetProjectPanels(ElectricalProjectId);
       ElectricalPanels.CollectionChanged += ElectricalPanels_CollectionChanged;
       ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
       ElectricalServices.CollectionChanged += ElectricalServices_CollectionChanged;
@@ -418,6 +428,112 @@ namespace GMEPDesignTool
       }
     }
 
+    private void CopyPopup_Click(object sender, RoutedEventArgs e)
+    {
+      CopyPopup.IsOpen = true;
+    }
+
+    private void CloseCopyPopup_Click(object sender, RoutedEventArgs e)
+    {
+      CopyPopup.IsOpen = false;
+    }
+
+    private void DeletePopup_Click(object sender, RoutedEventArgs e)
+    {
+      DeletePopup.IsOpen = true;
+    }
+
+    private void CloseDeletePopup_Click(object sender, RoutedEventArgs e)
+    {
+      DeletePopup.IsOpen = false;
+    }
+
+    private Visibility projectVersionButtonsVisibility = Visibility.Hidden;
+    public Visibility ProjectVersionButtonsVisibility
+    {
+      get => projectVersionButtonsVisibility;
+      set
+      {
+        if (projectVersionButtonsVisibility != value)
+        {
+          projectVersionButtonsVisibility = value;
+          OnPropertyChanged(nameof(ProjectVersionButtonsVisibility));
+        }
+      }
+    }
+
+    public int selectedVersion;
+
+    public int SelectedVersion
+    {
+      get { return selectedVersion; }
+      set
+      {
+        if (selectedVersion != value)
+        {
+          selectedVersion = value;
+          OnPropertyChanged(nameof(SelectedVersion));
+        }
+      }
+    }
+
+    public Dictionary<int, string> electricalProjectIds;
+    public Dictionary<int, string> ElectricalProjectIds
+    {
+      get { return electricalProjectIds; }
+      set
+      {
+        if (electricalProjectIds != value)
+        {
+          electricalProjectIds = value;
+          OnPropertyChanged(nameof(ElectricalProjectIds));
+        }
+      }
+    }
+
+    private async void AddVersion_Click(object sender, RoutedEventArgs e)
+    {
+      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+      {
+        string projectId = selectedPair.Value;
+        ElectricalProjectIds = await ProjectView.database.AddElectricalProjectVersions(projectId);
+        VersionComboBox.SelectedValue = ElectricalProjectIds.Keys.Last();
+        CopyPopup.IsOpen = false;
+      }
+    }
+
+    private async void DeleteElectricalVersion_Click(object sender, RoutedEventArgs e)
+    {
+      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+      {
+        string electricalProjectId = selectedPair.Value;
+        ElectricalProjectIds = await ProjectView.database.DeleteElectricalProjectVersions(
+          electricalProjectId,
+          ProjectId
+        );
+        VersionComboBox.SelectedValue = ElectricalProjectIds.Keys.Last();
+        DeletePopup.IsOpen = false;
+      }
+    }
+
+    private void DeleteElectricalProject_Click(object sender, RoutedEventArgs e)
+    {
+      List<string> electricalProjectVersionIds =
+        ProjectView.database.GetAllElectricalProjectVersionIds(ProjectId);
+      foreach (string id in electricalProjectVersionIds)
+      {
+        ProjectView.database.DeleteAllElectricalProjectAssets(id);
+      }
+    }
+
+    private async void Version_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (VersionComboBox.SelectedItem is KeyValuePair<int, string> selectedPair)
+      {
+        // HERE implement by reloading electrical project
+      }
+    }
+
     public async Task SaveProject()
     {
       if (!IsEnabled)
@@ -427,6 +543,7 @@ namespace GMEPDesignTool
       ProjectView.SaveText = "*SAVING*";
       await ProjectView.database.UpdateProject(
         ProjectId,
+        ElectricalProjectId,
         ElectricalServices,
         ElectricalPanels,
         ElectricalEquipments,
@@ -887,6 +1004,7 @@ namespace GMEPDesignTool
       ElectricalPanel electricalPanel = new ElectricalPanel(
         Guid.NewGuid().ToString(),
         ProjectId,
+        ElectricalProjectId,
         1,
         1,
         true,
@@ -1555,6 +1673,7 @@ namespace GMEPDesignTool
       var copied = new ElectricalEquipment(
         Guid.NewGuid().ToString(), // generate new ID
         projectId: equipment.ProjectId,
+        electricalProjectId: equipment.ElectricalProjectId,
         owner: equipment.Owner,
         equipment.EquipNo,
         equipment.Qty,
@@ -1736,6 +1855,7 @@ namespace GMEPDesignTool
       ElectricalService electricalService = new ElectricalService(
         Guid.NewGuid().ToString(),
         ProjectId,
+        ElectricalProjectId,
         "",
         1,
         1,
@@ -1876,6 +1996,7 @@ namespace GMEPDesignTool
       ElectricalEquipment electricalEquipment = new ElectricalEquipment(
         Guid.NewGuid().ToString(),
         ProjectId,
+        ElectricalProjectId,
         "",
         "",
         1,
@@ -1950,6 +2071,7 @@ namespace GMEPDesignTool
         ElectricalEquipment equipment = new ElectricalEquipment(
           Guid.NewGuid().ToString(),
           ProjectId,
+          ElectricalProjectId,
           electricalEquipment.Owner,
           electricalEquipment.EquipNo,
           electricalEquipment.Qty,
@@ -2146,6 +2268,7 @@ namespace GMEPDesignTool
       ElectricalLighting electricalLighting = new ElectricalLighting(
         Guid.NewGuid().ToString(),
         ProjectId,
+        ElectricalProjectId,
         "",
         "",
         "",
@@ -2442,6 +2565,7 @@ namespace GMEPDesignTool
       ElectricalTransformer electricalTransformer = new ElectricalTransformer(
         Guid.NewGuid().ToString(),
         ProjectId,
+        ElectricalProjectId,
         "",
         0,
         "White",
@@ -2902,8 +3026,7 @@ namespace GMEPDesignTool
         "GMEPNodeGraph.exe"
       );
       string filePath = System.IO.Path.Combine(userProfile, relativePath);
-      string arguments =
-        ProjectView.ProjectNo.ToString() + " " + ProjectView.SelectedVersion.ToString();
+      string arguments = ProjectView.ProjectNo.ToString() + " " + SelectedVersion.ToString();
 
       if (File.Exists(filePath))
       {

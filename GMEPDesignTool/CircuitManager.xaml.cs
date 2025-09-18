@@ -136,6 +136,7 @@ namespace GMEPDesignTool
           var newNote = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             selectedNote.ProjectId,
+            selectedNote.ElectricalProjectId,
             Panel.Id,
             selectedNote.Id,
             selectedNote.Note,
@@ -221,6 +222,7 @@ namespace GMEPDesignTool
           var newNote = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             existingBreakerNote.ProjectId,
+            existingBreakerNote.ElectricalProjectId,
             Panel.Id,
             existingBreakerNote.Id,
             existingBreakerNote.Note,
@@ -387,6 +389,7 @@ namespace GMEPDesignTool
           var newNote = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             selectedNote.ProjectId,
+            selectedNote.ElectricalProjectId,
             Panel.Id,
             selectedNote.Id,
             selectedNote.Note,
@@ -473,6 +476,7 @@ namespace GMEPDesignTool
           var newNote = new ElectricalPanelNoteRel(
             Guid.NewGuid().ToString(),
             existingBreakerNote.ProjectId,
+            existingBreakerNote.ElectricalProjectId,
             Panel.Id,
             existingBreakerNote.Id,
             existingBreakerNote.Note,
@@ -626,7 +630,12 @@ namespace GMEPDesignTool
             selectedItems.ElementAt(0).BreakerSize = mocp;
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.leftComponents.Add(spare);
@@ -672,7 +681,12 @@ namespace GMEPDesignTool
 
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.leftComponents.Add(spare);
@@ -720,7 +734,12 @@ namespace GMEPDesignTool
             targetItems.ElementAt(2).BreakerSize = 3;
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.leftComponents.Add(spare);
@@ -750,7 +769,12 @@ namespace GMEPDesignTool
             selectedItems.ElementAt(0).BreakerSize = mocp;
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.rightComponents.Add(spare);
@@ -796,7 +820,12 @@ namespace GMEPDesignTool
 
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.rightComponents.Add(spare);
@@ -844,7 +873,12 @@ namespace GMEPDesignTool
             targetItems.ElementAt(2).BreakerSize = 3;
             MySqlConnection conn = new MySqlConnection(Panel.Database.ConnectionString);
             await Panel.Database.OpenConnectionAsync(conn);
-            await Panel.Database.InsertEquipment(Panel.ProjectId, spare, conn);
+            await Panel.Database.InsertEquipment(
+              Panel.ProjectId,
+              Panel.ElectricalProjectId,
+              spare,
+              conn
+            );
             await Panel.Database.CloseConnectionAsync(conn);
             ProjectControlViewModel.ActiveElectricalProject.ElectricalEquipments.Add(spare);
             Panel.rightComponents.Add(spare);

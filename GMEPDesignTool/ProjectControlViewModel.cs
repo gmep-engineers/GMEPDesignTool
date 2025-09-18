@@ -72,21 +72,6 @@ namespace GMEPDesignTool
       }
     }
 
-    public int selectedVersion;
-
-    public int SelectedVersion
-    {
-      get { return selectedVersion; }
-      set
-      {
-        if (selectedVersion != value)
-        {
-          selectedVersion = value;
-          OnPropertyChanged(nameof(SelectedVersion));
-        }
-      }
-    }
-
     private ElectricalProject activeElectricalProject;
     public ElectricalProject ActiveElectricalProject
     {
