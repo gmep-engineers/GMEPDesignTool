@@ -23,6 +23,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amazon.S3.Model;
+using GMEPDesignTool.Database;
 using Google.Protobuf.WellKnownTypes;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Cmp;
@@ -62,6 +63,41 @@ namespace GMEPDesignTool
       _loginResponse = loginResponse;
       EmployeeId = loginResponse.EmployeeId;
       SessionId = loginResponse.SessionId;
+
+      var loadingScreen = new LoadingScreen();
+
+      ElectricalTab.Content = loadingScreen;
+
+      Dictionary<int, string> projectIds = await viewModel.database.GetProjectIds(projectNo);
+
+      List<string> electricalProjectIds = viewModel.database.GetAllElectricalProjectVersionIds(
+        projectNo
+      );
+
+      string latestElectricalProjectId = projectIds.First().Value;
+
+      if (electricalProjectIds.Count > 0)
+      {
+        latestElectricalProjectId = electricalProjectIds.Last();
+      }
+
+      viewModel.ActiveElectricalProject = new ElectricalProject(
+        projectIds.First().Value,
+        latestElectricalProjectId,
+        viewModel,
+        this,
+        EmployeeId,
+        SessionId,
+        loginResponse
+      );
+
+      await viewModel.ActiveElectricalProject.InitializeAsync();
+      ElectricalTab.Content = viewModel.ActiveElectricalProject;
+
+      AdminTab.Content = new AdminProject(projectIds.First().Value, loginResponse, tab);
+
+      PlumbingTab.Content = new PlumbingProject(projectIds.First().Value);
+
       Application.Current.Deactivated += Application_Deactivated;
       Application.Current.Activated += Application_Activated;
     }

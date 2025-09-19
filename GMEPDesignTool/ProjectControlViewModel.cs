@@ -28,6 +28,8 @@ namespace GMEPDesignTool
     public async Task InitializeProjectControlViewModel()
     {
       projectIds = await database.GetProjectIds(ProjectNo);
+      database.SyncProjectDisciplineTable("electrical");
+      electricalProjectIds = database.GetAllElectricalProjectVersionIds(ProjectNo);
     }
 
     private string saveText;
@@ -68,6 +70,20 @@ namespace GMEPDesignTool
         {
           projectIds = value;
           OnPropertyChanged(nameof(ProjectIds));
+        }
+      }
+    }
+
+    public List<string> electricalProjectIds;
+    public List<string> ElectricalProjectIds
+    {
+      get { return electricalProjectIds; }
+      set
+      {
+        if (electricalProjectIds != value)
+        {
+          electricalProjectIds = value;
+          OnPropertyChanged(nameof(ElectricalProjectIds));
         }
       }
     }

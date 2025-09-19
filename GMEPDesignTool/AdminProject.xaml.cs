@@ -37,6 +37,7 @@ namespace GMEPDesignTool
     private async void LoadData()
     {
       var results = await db.GetProposals(ProjectId);
+
       foreach (var item in results)
       {
         Console.WriteLine($"{item.DateCreated} -{item.Type} - {item.EmployeeUsername}");

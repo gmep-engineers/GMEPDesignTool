@@ -3131,6 +3131,7 @@ INSERT INTO electrical_lighting_timeclock_control_relays
         @"
                 SELECT
                 electrical_panel_mini_breakers.id,
+                electrical_panel_mini_breakers.project_id,
                 electrical_panel_mini_breakers.panel_id,
                 electrical_panel_mini_breakers.circuit_no,
                 electrical_panel_mini_breakers.equip_a_id,
@@ -3755,7 +3756,7 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       List<string> electricalProjectIds = new List<string>();
       string query =
         @"
-        SELECT id FROM electrical_projects WHERE project_id = @projectId
+        SELECT id FROM electrical_projects WHERE project_id = @projectId ORDER BY version
         ";
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
@@ -3804,7 +3805,6 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       MySqlCommand command = new MySqlCommand(query, Connection);
       foreach (string table in tables)
       {
-        Trace.WriteLine(table);
         query = $"DELETE FROM {table} WHERE electrical_project_id = @electrical_project_id";
         command = new MySqlCommand(query, Connection);
         command.Parameters.AddWithValue("@electrical_project_id", electricalProjectId);
@@ -3820,6 +3820,32 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       command.ExecuteNonQuery();
 
       CloseConnection(Connection);
+    }
+
+    public void SyncProjectDisciplineTable(string discipline)
+    {
+      string query =
+        @"
+        SELECT id FROM projects WHERE version = 1
+        ";
+      OpenConnection(Connection);
+      List<string> projectIds = new List<string>();
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+      while (reader.Read())
+      {
+        projectIds.Add(GetSafeString(reader, "id"));
+      }
+      reader.Close();
+      query = $"INSERT IGNORE INTO {discipline}_projects (id, project_id) VALUES (@id, @projectId)";
+      foreach (string id in projectIds)
+      {
+        command = new MySqlCommand(query, Connection);
+        command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@projectId", id);
+        command.ExecuteNonQuery();
+      }
+      Connection.Close();
     }
 
     public async Task<(string, string)> CheckActiveSessionOnDiscipline(
