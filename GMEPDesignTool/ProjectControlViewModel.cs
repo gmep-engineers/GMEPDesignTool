@@ -28,7 +28,7 @@ namespace GMEPDesignTool
     public async Task InitializeProjectControlViewModel()
     {
       projectIds = await database.GetProjectIds(ProjectNo);
-      database.SyncProjectDisciplineTable("electrical");
+      //database.SyncProjectDisciplineTable("electrical");
       electricalProjectIds = database.GetAllElectricalProjectVersionIds(ProjectNo);
     }
 

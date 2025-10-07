@@ -74,10 +74,9 @@
                     </StackPanel>
                     <Label Grid.Row="11" Content="Descriptions" Margin="0,0,0,10" />
                     <TextBox Grid.Row="11" Margin="100,0,0,10" Text="{Binding Descriptions}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="100" />
-                    <Button Grid.Row="12" Content="save" Click="SaveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
+                    <Button Grid.Row="12" Content="Save" Click="SaveAdminProject" Margin="0,15,0,0" Width="76" HorizontalAlignment="Center" FontSize="16" Height="25"  />
                 </Grid>
-            </Grid>
-           
+            </Grid>           
         </Border>
         </ScrollViewer>
 
@@ -112,8 +111,7 @@
                             </DataGridComboBoxColumn.ItemsSource>
                         </DataGridComboBoxColumn>
                         <DataGridTextColumn Header="Type" Width="*" Binding="{Binding Type}"/>
-                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>        
-                        
+                        <DataGridTextColumn Header="Created By" Width="*" Binding="{Binding EmployeeUsername}"/>         
 
                     </DataGrid.Columns>
                 </DataGrid>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -642,22 +643,31 @@ namespace GMEPDesignTool
             {
               if (t * p / 100 > 6000)
               {
-                WarningText = "Total retainer value cannot exceed $6000";
+                WarningText = "Total retainer value cannot exceed $6000. ";
                 WarningVisibility = Visibility.Visible;
               }
               else
               {
-                WarningVisibility = Visibility.Collapsed;
+                WarningText = WarningText.Replace(
+                  "Total retainer value cannot exceed $6000. ",
+                  string.Empty
+                );
               }
             }
             else
             {
-              WarningVisibility = Visibility.Collapsed;
+              WarningText = WarningText.Replace(
+                "Total retainer value cannot exceed $6000. ",
+                string.Empty
+              );
             }
           }
           else
           {
-            WarningVisibility = Visibility.Collapsed;
+            WarningText = WarningText.Replace(
+              "Total retainer value cannot exceed $6000. ",
+              string.Empty
+            );
           }
         }
       }
@@ -680,22 +690,31 @@ namespace GMEPDesignTool
             {
               if (t * p / 100 > 6000)
               {
-                WarningText = "Total retainer value cannot exceed $6000";
+                WarningText += "Total retainer value cannot exceed $6000. ";
                 WarningVisibility = Visibility.Visible;
               }
               else
               {
-                WarningVisibility = Visibility.Collapsed;
+                WarningText = WarningText.Replace(
+                  "Total retainer value cannot exceed $6000. ",
+                  string.Empty
+                );
               }
             }
             else
             {
-              WarningVisibility = Visibility.Collapsed;
+              WarningText = WarningText.Replace(
+                "Total retainer value cannot exceed $6000. ",
+                string.Empty
+              );
             }
           }
           else
           {
-            WarningVisibility = Visibility.Collapsed;
+            WarningText = WarningText.Replace(
+              "Total retainer value cannot exceed $6000. ",
+              string.Empty
+            );
           }
         }
       }
@@ -757,6 +776,20 @@ namespace GMEPDesignTool
         {
           editable = value;
           OnPropertyChanged(nameof(Editable));
+        }
+      }
+    }
+
+    private string comparableProjectNo = string.Empty;
+    public string ComparableProjectNo
+    {
+      get => comparableProjectNo;
+      set
+      {
+        if (comparableProjectNo != value)
+        {
+          comparableProjectNo = value;
+          OnPropertyChanged(nameof(ComparableProjectNo));
         }
       }
     }

@@ -24,6 +24,7 @@
 
 
                 <MenuItem Header="_Admin" Visibility="{Binding AdminMenuVisible}">
+                    <MenuItem Header="_Proposals" Command="{Binding OpenProposalsWindowCommand}"/>
                     <MenuItem Header="_Clients" Command="{Binding OpenClientsWindowCommand}"/>
                     <MenuItem Header="_Users" Command="{Binding OpenEmployeesWindowCommand}"/>
                 </MenuItem>

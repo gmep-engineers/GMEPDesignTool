@@ -184,6 +184,9 @@ namespace GMEPDesignTool
     private readonly DelegateCommand _getSearchResultsCommand;
     public ICommand GetSearchResultsCommand => _getSearchResultsCommand;
 
+    private readonly DelegateCommand _openProposalsWindowCommand;
+    public ICommand OpenProposalsWindowCommand => _openProposalsWindowCommand;
+
     private readonly DelegateCommand _openEmployeesWindowCommand;
     public ICommand OpenEmployeesWindowCommand => _openEmployeesWindowCommand;
 
@@ -205,6 +208,10 @@ namespace GMEPDesignTool
       );
       _openAboutWindowCommand = new DelegateCommand(OpenAboutWindow, CanOpenAboutWindow);
       _openClientsWindowCommand = new DelegateCommand(OpenClientsWindow, CanOpenClientsWindow);
+      _openProposalsWindowCommand = new DelegateCommand(
+        OpenProposalsWindow,
+        CanOpenProposalsWindow
+      );
       Name = loginResponse.FirstName + " " + loginResponse.LastName;
       EmailAddress = loginResponse.EmailAddress;
       PhoneNumber = loginResponse.PhoneNumber;
@@ -259,6 +266,21 @@ namespace GMEPDesignTool
     private bool CanGetSearchResults(object commandParameter)
     {
       return true;
+    }
+
+    private void OpenProposalsWindow(object commandParameter)
+    {
+      ProposalsWindow proposalsWindow = new ProposalsWindow(loginResponse);
+      proposalsWindow.Show();
+    }
+
+    private bool CanOpenProposalsWindow(object commandParameter)
+    {
+      if (loginResponse.AccessLevelId == 1 || loginResponse.AccessLevelId == 2)
+      {
+        return true;
+      }
+      return false;
     }
 
     private void OpenEmployeesWindow(object commandParameter)

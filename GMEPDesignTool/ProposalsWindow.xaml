@@ -1,0 +1,151 @@
+﻿<Window x:Class="GMEPDesignTool.ProposalsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GMEPDesignTool"
+        mc:Ignorable="d"
+        Title="Proposals" Height="450" Width="800" WindowState="Maximized">
+
+    <Window.Resources>
+        <CollectionViewSource x:Key="ProposalsViewSource" Source="{Binding FilteredProposals}" />
+        <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding Clients}" />
+        <CollectionViewSource x:Key="EmployeesViewSource" Source="{Binding Employees}" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Save" Click="SaveClick"/>
+            </MenuItem>
+        </Menu>
+        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding YearSelectionOptions, Mode=OneWay}"  x:Name="ProposalYearListView">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="ProposalYearListViewItem_Click"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource ProposalsViewSource}}" SelectedItem="{Binding Path=SelectedProposal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="CadetBlue"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding Path=StatusId}" Value="4">
+                            <Setter Property="Background" Value="Pink"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=StatusId}" Value="5">
+                            <Setter Property="Background" Value="LightGreen"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="RFP Date">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="RfpDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Proposal Date">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="ProposalDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridComboBoxColumn Header="Sent By"
+                    ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"
+                    SelectedValueBinding="{Binding SentByEmployeeId}"
+                    SelectedValuePath="Id"
+                    DisplayMemberPath="FullName"
+                    />
+                <DataGridComboBoxColumn Header="Company Name"
+                                        ItemsSource="{Binding Source={StaticResource ClientsViewSource}}"
+                                        SelectedValueBinding="{Binding ClientCompanyId}"
+                                        SelectedValuePath="CompanyId"
+                                        DisplayMemberPath="CompanyName"                                       
+                                        />
+                <DataGridTextColumn Header="Contact Name" Binding="{Binding ContactName}" />
+                <DataGridTextColumn Header="Project Name" Binding="{Binding ProjectName}" />
+                <DataGridTemplateColumn Header="Estimate?">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsEstimate, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Project #" Binding="{Binding ProjectNo}" />
+                <DataGridTextColumn Header="Fees" Binding="{Binding Fees}" />
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" />
+                <DataGridTextColumn Header="Last Follow Up">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="LastFollowUpDate" UpdateSourceTrigger="LostFocus" StringFormat="{}{0:MM-dd-yyyy}" TargetNullValue="{}">
+                            <Binding.Converter>
+                                <local:DateConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridComboBoxColumn Header="Followed Up By"
+                        ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"
+                        SelectedValueBinding="{Binding FollowedUpByEmployeeId}"
+                        SelectedValuePath="Id"
+                        DisplayMemberPath="FullName"
+                        />
+                <DataGridComboBoxColumn Header="APPROVED/DENIED"  SelectedValueBinding="{Binding StatusId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Pending" Tag="1"/>
+                            <ComboBoxItem Content="Executed" Tag="2"/>
+                            <ComboBoxItem Content="Dead" Tag="3"/>
+                            <ComboBoxItem Content="Denied" Tag="4"/>
+                            <ComboBoxItem Content="Approved" Tag="5"/>
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridComboBoxColumn Header="Region"  SelectedValueBinding="{Binding RegionId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="SoCal" Tag="1"/>
+                            <ComboBoxItem Content="NorCal" Tag="2"/>
+                            <ComboBoxItem Content="Central CA" Tag="3"/>
+                            <ComboBoxItem Content="AZ" Tag="4"/>
+                            <ComboBoxItem Content="CO" Tag="5"/>
+                            <ComboBoxItem Content="FL" Tag="6"/>
+                            <ComboBoxItem Content="GA" Tag="7"/>
+                            <ComboBoxItem Content="ID" Tag="8"/>
+                            <ComboBoxItem Content="KY" Tag="9"/>
+                            <ComboBoxItem Content="MN" Tag="10"/>
+                            <ComboBoxItem Content="NV" Tag="11"/>
+                            <ComboBoxItem Content="NH" Tag="12"/>
+                            <ComboBoxItem Content="OH" Tag="13"/>
+                            <ComboBoxItem Content="OR" Tag="14"/>
+                            <ComboBoxItem Content="TX" Tag="15"/>
+                            <ComboBoxItem Content="UT" Tag="16"/>
+                            <ComboBoxItem Content="VA" Tag="17"/>
+                            <ComboBoxItem Content="WA" Tag="18"/>
+                            <ComboBoxItem Content="Multi" Tag="19"/>
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn>
+                <DataGridTextColumn Header="S Drive Filepath" Binding="{Binding SDrivePath}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

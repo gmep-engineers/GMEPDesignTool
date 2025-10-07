@@ -169,6 +169,11 @@ namespace GMEPDesignTool
         }
       }
     }
+
+    public string FullName
+    {
+      get => _FirstName + " " + _LastName;
+    }
     private int _TitleId;
     public int TitleId
     {

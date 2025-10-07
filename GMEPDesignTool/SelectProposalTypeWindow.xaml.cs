@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,10 +26,13 @@ namespace GMEPDesignTool
     AdminViewModel adminViewModel { get; set; }
     string ProjectId { get; set; }
 
+    ObservableCollection<Proposal> Proposals { get; set; }
+
     public SelectProposalTypeWindow(
       LoginResponse loginResponse,
       string projectId,
-      AdminViewModel adminViewModel
+      AdminViewModel adminViewModel,
+      ObservableCollection<Proposal> proposals
     )
     {
       InitializeComponent();
@@ -37,14 +41,17 @@ namespace GMEPDesignTool
       this.adminViewModel = adminViewModel;
       ViewModel = new SelectProposalTypeViewModel();
       this.DataContext = ViewModel;
+      Proposals = proposals;
     }
 
-    public void SelectButton_Click(object sender, RoutedEventArgs e)
+    public async void SelectButton_Click(object sender, RoutedEventArgs e)
     {
       Database.Database database = new Database.Database(LoginResponse.SqlConnectionString);
       string id = database.CreateProposal(LoginResponse.EmployeeId, ViewModel.TypeId, ProjectId);
       //MessageBox.Show($"proposal TypeId: {ViewModel.TypeId}");
       CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel, database);
+
+      Proposals = await database.GetProposals(ProjectId);
       ProposalCommercialWindow newWindow = new ProposalCommercialWindow(
         CommercialViewModel,
         id,

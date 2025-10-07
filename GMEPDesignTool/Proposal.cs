@@ -1,23 +1,293 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class Proposal
+  public class Proposal : INotifyPropertyChanged
   {
-    public string Id { get; set; }
-    public string ProjectId { get; set; }
-    public DateTime DateCreated { get; set; }
+    public Database.Database db { get; set; }
+    private bool _Modified = false;
+    public bool Modified
+    {
+      get => _Modified;
+      set => _Modified = value;
+    }
+    private string _Id = Guid.NewGuid().ToString();
+    public string Id
+    {
+      get => _Id;
+      set
+      {
+        if (_Id != value)
+        {
+          _Id = value;
+          OnPropertyChanged(nameof(Id));
+        }
+      }
+    }
+
+    private string _ProjectId;
+    public string ProjectId
+    {
+      get => _ProjectId;
+      set
+      {
+        if (_ProjectId != value)
+        {
+          _ProjectId = value;
+          OnPropertyChanged(nameof(ProjectId));
+        }
+      }
+    }
+
+    private string _ProjectNo;
+    public string ProjectNo
+    {
+      get => _ProjectNo;
+      set
+      {
+        if (_ProjectNo != value)
+        {
+          _ProjectNo = value;
+          OnPropertyChanged(nameof(ProjectNo));
+        }
+      }
+    }
+
+    private DateTime _DateCreated;
+    public DateTime DateCreated
+    {
+      get => _DateCreated;
+      set
+      {
+        if (_DateCreated != value)
+        {
+          _DateCreated = value;
+          OnPropertyChanged(nameof(DateCreated));
+        }
+      }
+    }
+    private DateTime _RfpDate;
+    public DateTime RfpDate
+    {
+      get => _RfpDate;
+      set
+      {
+        if (value != _RfpDate)
+        {
+          _RfpDate = value;
+          OnPropertyChanged(nameof(RfpDate));
+          _Modified = true;
+        }
+      }
+    }
+
+    private DateTime _ProposalDate;
+    public DateTime ProposalDate
+    {
+      get => _ProposalDate;
+      set
+      {
+        if (value != _ProposalDate)
+        {
+          _ProposalDate = value;
+          OnPropertyChanged(nameof(ProposalDate));
+          _Modified = true;
+        }
+      }
+    }
+
+    private bool _IsEstimate;
+    public bool IsEstimate
+    {
+      get => _IsEstimate;
+      set
+      {
+        if (_IsEstimate != value)
+        {
+          _IsEstimate = value;
+          OnPropertyChanged(nameof(IsEstimate));
+          _Modified = true;
+        }
+      }
+    }
     public string Type { get; set; }
     public int TypeId { get; set; }
     public string EmployeeUsername { get; set; }
+    public string SentByEmployeeId { get; set; }
+
+    private string _ContactName;
+    public string ContactName
+    {
+      get => _ContactName;
+      set
+      {
+        if (value != _ContactName)
+        {
+          _ContactName = value;
+          OnPropertyChanged(nameof(ContactName));
+          _Modified = true;
+        }
+      }
+    }
+    public string CompanyName { get; set; }
+
+    private string _ClientCompanyId;
+
+    public string ClientCompanyId
+    {
+      get => _ClientCompanyId;
+      set
+      {
+        if (_ClientCompanyId != value)
+        {
+          _ClientCompanyId = value;
+          OnPropertyChanged(nameof(ClientCompanyId));
+          if (db != null)
+          {
+            ContactName = db.GetCompanyPrimaryContactName(_ClientCompanyId);
+          }
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _ProjectName;
+    public string ProjectName
+    {
+      get => _ProjectName;
+      set
+      {
+        if (_ProjectName != value)
+        {
+          _ProjectName = value;
+          OnPropertyChanged(nameof(ProjectName));
+          _Modified = true;
+        }
+      }
+    }
+
+    private int _Fees;
+    public int Fees
+    {
+      get => _Fees;
+      set
+      {
+        if (_Fees != value)
+        {
+          _Fees = value;
+          OnPropertyChanged(nameof(Fees));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _Notes;
+    public string Notes
+    {
+      get => _Notes;
+      set
+      {
+        if (_Notes != value)
+        {
+          _Notes = value;
+          OnPropertyChanged(nameof(Notes));
+          _Modified = true;
+        }
+      }
+    }
+
+    private DateTime _LastFollowUpDate;
+    public DateTime LastFollowUpDate
+    {
+      get => _LastFollowUpDate;
+      set
+      {
+        if (_LastFollowUpDate != value)
+        {
+          _LastFollowUpDate = value;
+          OnPropertyChanged(nameof(LastFollowUpDate));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _FollowedUpByEmployeeId;
+    public string FollowedUpByEmployeeId
+    {
+      get => _FollowedUpByEmployeeId;
+      set
+      {
+        if (value != _FollowedUpByEmployeeId)
+        {
+          _FollowedUpByEmployeeId = value;
+          OnPropertyChanged(nameof(_FollowedUpByEmployeeId));
+          _Modified = true;
+        }
+      }
+    }
+
+    private int _RegionId;
+    public int RegionId
+    {
+      get => _RegionId;
+      set
+      {
+        if (_RegionId != value)
+        {
+          _RegionId = value;
+          OnPropertyChanged(nameof(RegionId));
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _SDrivePath;
+    public string SDrivePath
+    {
+      get => _SDrivePath;
+      set
+      {
+        if (_SDrivePath != value)
+        {
+          _SDrivePath = value;
+          OnPropertyChanged(nameof(SDrivePath));
+          _Modified = true;
+        }
+      }
+    }
+
     public string PdfName { get; set; }
     public string Status { get; set; }
-    public int StatusId { get; set; }
+
+    private int _StatusId;
+    public int StatusId
+    {
+      get => _StatusId;
+      set
+      {
+        if (StatusId != value)
+        {
+          _StatusId = value;
+          OnPropertyChanged(nameof(StatusId));
+          _Modified = true;
+        }
+      }
+    }
     public ProposalData? Data { get; set; }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     public Proposal() { }
 

@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:GMEPDesignTool"
         xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
-        Title="ClientsWindow" Height="800" Width="1200">
+        Title="Clients" Height="800" Width="1200">
     <Window.Resources>
         <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
         <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding AllClients}" />
@@ -157,7 +157,8 @@
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding IsArchitect, UpdateSourceTrigger=PropertyChanged}" 
                                             Checked="IsArchitect_Checked"
-                                            Unchecked="IsArchitect_Unchecked"/>
+                                            Unchecked="IsArchitect_Unchecked"
+                                                  HorizontalAlignment="Center"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -292,7 +293,7 @@
                                     <DataTemplate>
                                         <CheckBox IsChecked="{Binding IsClient, UpdateSourceTrigger=PropertyChanged}" 
                                             Checked="IsClient_Checked"
-                                            Unchecked="IsClient_Unchecked"/>
+                                            Unchecked="IsClient_Unchecked" HorizontalAlignment="Center"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

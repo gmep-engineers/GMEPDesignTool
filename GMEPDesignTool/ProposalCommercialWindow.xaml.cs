@@ -1,11 +1,14 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Media.Animation;
+using Mysqlx.Crud;
 using static GMEPDesignTool.ProposalCommercialWindow;
 
 namespace GMEPDesignTool
@@ -16,6 +19,9 @@ namespace GMEPDesignTool
     public Database.S3 s3 = new Database.S3();
     private string proposal_id;
     private Database.Database database;
+    private ObservableCollection<Proposal> proposals;
+    string projectId;
+    LoginResponse loginResponse;
 
     public class PDFRequest
     {
@@ -130,6 +136,19 @@ namespace GMEPDesignTool
       this.proposal_id = proposal_id;
 
       database = new Database.Database(loginResponse.SqlConnectionString);
+      this.loginResponse = loginResponse;
+
+      string comparableProject = database.GetComparableProject(
+        vm.AdminViewModel.StreetAddress,
+        vm.AdminViewModel.PostalCode,
+        vm.AdminViewModel.ProjectNo
+      );
+      if (!String.IsNullOrEmpty(comparableProject))
+      {
+        vm.ComparableProjectNo = comparableProject;
+        vm.WarningText = "A project with a similar address already exists: " + comparableProject;
+        vm.WarningVisibility = Visibility.Visible;
+      }
     }
 
     private ProposalData? GetProposalData()
@@ -292,12 +311,19 @@ namespace GMEPDesignTool
         MessageBox.Show("Project must have a total price");
       }
 
+      if (ClientNameComboBox.SelectedItem == null)
+      {
+        MessageBox.Show("Client name not set.");
+        return;
+      }
+
       string selectedClientCompanyId = ClientNameComboBox.SelectedValue.ToString();
 
       Client client = database.GetClient(selectedClientCompanyId);
 
       if (client == null)
       {
+        MessageBox.Show("Client not found in database.");
         return;
       }
 
@@ -482,13 +508,35 @@ namespace GMEPDesignTool
 
       response.EnsureSuccessStatusCode();
       var pdfBytes = await response.Content.ReadAsByteArrayAsync();
-      string keyName = $"{vm.SelectProposalTypeViewModel.TypeId}-{Guid.NewGuid()}.pdf";
+      string keyName = $"{pdfRequest.ProjectName} Proposal.pdf";
+
+      proposal_id = await database.DuplicateProposal(proposal_id, loginResponse.EmployeeId);
+
       database.SetProposalPdf(proposal_id, keyName);
       database.SetProposalData(proposal_id, jsonString);
+
       string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), keyName);
       System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
       Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
       await s3.UploadFileAsync(keyName, tempFilePath);
+      int currentYear = DateTime.Now.Year;
+      try
+      {
+        Directory.CreateDirectory(
+          $"S:\\Projects\\Projects\\{currentYear}\\{client.CompanyName}\\{pdfRequest.ProjectName}"
+        );
+      }
+      catch (Exception ex) { }
+      string destinationPath =
+        $"S:\\Projects\\Projects\\{currentYear}\\{client.CompanyName}\\{pdfRequest.ProjectName}\\${keyName}";
+      try
+      {
+        System.IO.File.Copy(tempFilePath, destinationPath);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.ToString());
+      }
     }
 
     private void TextBox_TextChanged(

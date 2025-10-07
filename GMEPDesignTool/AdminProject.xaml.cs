@@ -97,7 +97,8 @@ namespace GMEPDesignTool
       SelectProposalTypeWindow selectProposalTypeWindow = new SelectProposalTypeWindow(
         LoginResponse,
         ProjectId,
-        AdminViewModel
+        AdminViewModel,
+        Proposals
       );
       selectProposalTypeWindow.Show();
     }

@@ -30,149 +30,187 @@
             VerticalAlignment="Bottom"
             Margin="0,10,100,0"
             Click="Generate_Click"
-            Opacity="0.9"
-            
+            Opacity="0.9"      
             
             />
-        <TabControl  Grid.Row="1" >
-            <TabItem Header="Structural">
-                <Grid Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="210*"/>
-                        <ColumnDefinition Width="55*"/>
-                        <ColumnDefinition Width="529*"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox IsChecked="{Binding StructuralGeoReport}" Content="Review geotechnical report and define foundation type" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
-                    <CheckBox IsChecked="{Binding StructuralFramingDepths}" Content="Define structural and framing depths" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <CheckBox IsChecked="{Binding StructuralAnalysis}" Content="Perform structural analysis and design for all gravity and lateral load resisting elements" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
-                    <CheckBox IsChecked="{Binding StructuralPlans}" Content="Structural Plans" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding StructuralDetailsCalculations}" Content="Details and calculations" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding StructuralCodeCompliance}" Content="Building structural to comply with code" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <CheckBox IsChecked="{Binding StructuralCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Mechanical">
-                <Grid Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="226*"/>
-                        <ColumnDefinition Width="59*"/>
-                        <ColumnDefinition Width="509*"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox IsChecked="{Binding MechanicalExhaustSupply}" Content="exhaust and supply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding MechanicalHvacEquipSpec}" Content="HVAC equipment specifications" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding MechanicalTitle24}" Content="Title 24" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding MechanicalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top"/>
-                </Grid>
-                
-            </TabItem>
-            <TabItem Header="Electrical" >
-                <Grid Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
-                    <CheckBox IsChecked="{Binding ElectricalPowerDesign}" Content="Electrical power design" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding ElectricalServiceLoadCalc}" Content="Service load calculation" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding ElectricalSingleLineDiagram}" Content="Single line diagrams" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding ElectricalLightingDesign}" Content="Electrical lighting design" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding ElectricalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
-                    
-                </Grid>
-            </TabItem>
-            <TabItem Header="Plumbing">
-                <Grid Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
-                    <CheckBox IsChecked="{Binding PlumbingHotColdWater}" Content="Hot and cold water piping design" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding PlumbingWasteVent}" Content="Sewer and vent piping design" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-                    <CheckBox IsChecked="{Binding PlumbingCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top"/>
 
-                </Grid>
-            </TabItem>
-            <TabItem Header="Scope" Height="20" VerticalAlignment="Bottom">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <Grid Margin="10,20,40,10" IsEnabled="{Binding Editable}">
+
+        <Grid Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"  Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="147*"/>
-                            <ColumnDefinition Width="647*"/>
+                            <ColumnDefinition Width="210*"/>
+                            <ColumnDefinition Width="55*"/>
+                            <ColumnDefinition Width="529*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="80"/>
-                            <RowDefinition Height="80"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
-                        <TextBox x:Name="TotalPriceBox" Grid.Row="0" Text="{Binding TotalPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
-                        <CheckBox Grid.Row="1" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>
-
-                        <Label Grid.Row="2" Content="Retainer %"  Margin="0,0,0,10" />
-                        <TextBox x:Name="RetainerPercentBox" Text="{Binding RetainerPercent, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Margin="0,0,0,10"  Grid.Column="1" />
-
-
-                        <Label Grid.Row="3" Content="Client"  Margin="0,0,0,10" />
-                        <ComboBox Margin="0,0,0,10" IsReadOnly="True" IsEnabled="False" x:Name="ClientNameComboBox" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientCompanyId}">
-                            
-                        </ComboBox>
-                        
-                        <Grid Grid.Row="4" Grid.ColumnSpan="2" Margin="10,30,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <CheckBox Grid.Row="4" Content="New Construction" Height="20" IsChecked="{Binding NewConstruction}"  Grid.Column="0"/>
-                            <CheckBox Grid.Row="4" Content="Initial Recommendations Meeting" IsChecked="{Binding HasInitialRecommendationsMeeting}" Height="20" Grid.Column="1"/>
-                            <CheckBox Grid.Row="4" Content="Commerical Shell Connection" IsChecked="{Binding HasCommericalShellConnection }" Height="20" Grid.Column="2"/>
-                            <CheckBox Grid.Row="4" Content="Emergency Power" IsChecked="{Binding HasEmergencyPower }" Height="20" Grid.Column="3"/>
-                        </Grid>
-                        <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="10,0,0,50">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Row="5" Content="Indoor Common Area" IsChecked="{Binding HasIndoorCommonArea }"  Height="20" Grid.Column="0"/>
-                            <CheckBox Grid.Row="5" Content="Garage Exhaust" IsChecked="{Binding HasGarageExhaust }" Height="20" Grid.Column="1"/>
-                            <CheckBox Grid.Row="5" Content="Site Lighting" IsChecked="{Binding HasSiteLighting }" Height="20" Grid.Column="2"/>
-                            
-                        </Grid>
-                        <Label Grid.Row="6" Content="Date Sent"  Margin="0,0,0,10" />
-                        <DatePicker Grid.Row="6" Margin="0,0,0,10" Grid.Column="1" SelectedDate="{Binding DateSent}"/>
-                        <Label Grid.Row="7" Content="NumMeetings"  Margin="0,0,0,10" />
-                        <TextBox Grid.Row="7" x:Name="NumMeetingsBox" Text="{Binding NumMeetings, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" />
-                        <Label Grid.Row="8" Content="Drawings Received"  Margin="0,0,0,10" />
-                        <DatePicker Grid.Row="8" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
-                        <Label Grid.Row="9" Content="TarrarNo" Margin="0,0,0,10">
-                            <Label.Style>
-                                <Style TargetType="Label">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding TypeId}" Value="4">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Label.Style>
-                        </Label>
-                        <TextBox Grid.Row="9" x:Name="TarrarNoBox" Text="{Binding TarrarNo}" Margin="0,0,0,10" Grid.Column="4">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding TypeId}" Value="4">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                        <Label Grid.Row="0" Content="Structural" FontFamily="Tahoma" FontSize="16pt"/>
+                        <CheckBox Grid.Row="1" IsChecked="{Binding StructuralGeoReport}" Content="Review geotechnical report and define foundation type" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+                        <CheckBox Grid.Row="2" IsChecked="{Binding StructuralFramingDepths}" Content="Define structural and framing depths" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <CheckBox Grid.Row="3" IsChecked="{Binding StructuralAnalysis}" Content="Perform structural analysis and design for all gravity and lateral load resisting elements" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+                        <CheckBox Grid.Row="4" IsChecked="{Binding StructuralPlans}" Content="Structural Plans" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="5" IsChecked="{Binding StructuralDetailsCalculations}" Content="Details and calculations" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="6" IsChecked="{Binding StructuralCodeCompliance}" Content="Building structural to comply with code" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <CheckBox Grid.Row="7" IsChecked="{Binding StructuralCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+                
                     </Grid>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
+                    
+                    <Grid Grid.Row="1" Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="226*"/>
+                            <ColumnDefinition Width="59*"/>
+                            <ColumnDefinition Width="509*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="Mechanical" FontFamily="Tahoma" FontSize="16pt"/>
+                        <CheckBox Grid.Row="1" IsChecked="{Binding MechanicalExhaustSupply}" Content="exhaust and supply" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="2" IsChecked="{Binding MechanicalHvacEquipSpec}" Content="HVAC equipment specifications" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="3" IsChecked="{Binding MechanicalTitle24}" Content="Title 24" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="4" IsChecked="{Binding MechanicalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="Electrical" FontFamily="Tahoma" FontSize="16pt"/>
+                        <CheckBox Grid.Row="1" IsChecked="{Binding ElectricalPowerDesign}" Content="Electrical power design" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="2" IsChecked="{Binding ElectricalServiceLoadCalc}" Content="Service load calculation" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="3" IsChecked="{Binding ElectricalSingleLineDiagram}" Content="Single line diagrams" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="4" IsChecked="{Binding ElectricalLightingDesign}" Content="Electrical lighting design" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="5" IsChecked="{Binding ElectricalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Grid.Row="3" Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
 
+                        <Label Grid.Row="0" Content="Plumbing" FontFamily="Tahoma" FontSize="16pt"/>
+                        <CheckBox Grid.Row="1" IsChecked="{Binding PlumbingHotColdWater}" Content="Hot and cold water piping design" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="2" IsChecked="{Binding PlumbingWasteVent}" Content="Sewer and vent piping design" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="3" IsChecked="{Binding PlumbingCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Grid.Row="4">
+                        <Grid Margin="10,20,40,10" IsEnabled="{Binding Editable}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="147*"/>
+                                <ColumnDefinition Width="647*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="80"/>
+                                <RowDefinition Height="80"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Content="Scope" FontFamily="Tahoma" FontSize="16pt"/>
+                            <Label Grid.Row="1" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="TotalPriceBox" Grid.Row="1" Text="{Binding TotalPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <CheckBox Grid.Row="2" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>
+
+                            <Label Grid.Row="3" Content="Retainer %"  Margin="0,0,0,10" />
+                            <TextBox x:Name="RetainerPercentBox" Text="{Binding RetainerPercent, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="0,0,0,10"  Grid.Column="1" />
+
+
+                            <Label Grid.Row="4" Content="Client"  Margin="0,0,0,10" />
+                            <ComboBox Margin="0,0,0,10" IsReadOnly="True" IsEnabled="False" x:Name="ClientNameComboBox" Grid.Row="4" Grid.Column="1" ItemsSource="{Binding ClientData}" DisplayMemberPath="Value" SelectedValuePath="Id" SelectedValue="{Binding SelectedClientCompanyId}">
+
+                            </ComboBox>
+
+                            <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="10,30,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Row="5" Content="New Construction" Height="20" IsChecked="{Binding NewConstruction}"  Grid.Column="0"/>
+                                <CheckBox Grid.Row="5" Content="Initial Recommendations Meeting" IsChecked="{Binding HasInitialRecommendationsMeeting}" Height="20" Grid.Column="1"/>
+                                <CheckBox Grid.Row="5" Content="Commerical Shell Connection" IsChecked="{Binding HasCommericalShellConnection }" Height="20" Grid.Column="2"/>
+                                <CheckBox Grid.Row="5" Content="Emergency Power" IsChecked="{Binding HasEmergencyPower }" Height="20" Grid.Column="3"/>
+                            </Grid>
+                            <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="10,0,0,50">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox Grid.Row="6" Content="Indoor Common Area" IsChecked="{Binding HasIndoorCommonArea }"  Height="20" Grid.Column="0"/>
+                                <CheckBox Grid.Row="6" Content="Garage Exhaust" IsChecked="{Binding HasGarageExhaust }" Height="20" Grid.Column="1"/>
+                                <CheckBox Grid.Row="6" Content="Site Lighting" IsChecked="{Binding HasSiteLighting }" Height="20" Grid.Column="2"/>
+
+                            </Grid>
+                            <Label Grid.Row="7" Content="Date Sent"  Margin="0,0,0,10" />
+                            <DatePicker Grid.Row="7" Margin="0,0,0,10" Grid.Column="1" SelectedDate="{Binding DateSent}"/>
+                            <Label Grid.Row="8" Content="NumMeetings"  Margin="0,0,0,10" />
+                            <TextBox Grid.Row="8" x:Name="NumMeetingsBox" Text="{Binding NumMeetings, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" />
+                            <Label Grid.Row="9" Content="Drawings Received"  Margin="0,0,0,10" />
+                            <DatePicker Grid.Row="9" Margin="0,0,0,10" Grid.Column="1"  SelectedDate="{Binding DateDrawingsReceived}"/>
+                            <Label Grid.Row="10" Content="TarrarNo" Margin="0,0,0,10">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TypeId}" Value="4">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <TextBox Grid.Row="10" x:Name="TarrarNoBox" Text="{Binding TarrarNo}" Margin="0,0,0,10" Grid.Column="4">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TypeId}" Value="4">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </Grid>
+                    </Grid>
+                </Grid>                
+            </ScrollViewer>        
+        </Grid>     
     </Grid>
 </Window>

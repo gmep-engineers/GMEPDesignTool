@@ -259,6 +259,7 @@ namespace GMEPDesignTool.Database
                             proposals.data,
                             proposals.type_id,
                             proposal_types.type AS type,
+                            proposals.status_id,
                             employees.username AS username            
                         FROM proposals
                         LEFT JOIN proposal_types ON proposals.type_id = proposal_types.id
@@ -288,6 +289,7 @@ namespace GMEPDesignTool.Database
           Data = proposalData,
           EmployeeUsername = GetSafeString(reader, "username"),
           PdfName = GetSafeString(reader, "pdf_name"),
+          StatusId = GetSafeInt(reader, "status_id"),
         };
       }
 
@@ -340,13 +342,50 @@ namespace GMEPDesignTool.Database
       string query =
         @"
         UPDATE proposals SET
-        status_id = @status_id
+        rfp_date = @rfp_date,
+        proposal_date = @proposal_date,
+        type_id = @type_id,
+        status_id = @status_id,
+        employee_id = @employee_id,
+        pdf_name = @pdf_name,
+        is_estimate = @is_estimate,
+        note = @notes,
+        last_follow_up_date = @last_follow_up_date,
+        followed_up_by_employee_id = @followed_up_by_employee_id,
+        fees = @fees,
+        s_drive_path = @s_drive_path
         WHERE id = @id
         ";
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@rfp_date", proposal.RfpDate);
+      command.Parameters.AddWithValue("@proposal_date", proposal.ProposalDate);
+      command.Parameters.AddWithValue("@type_id", proposal.TypeId);
       command.Parameters.AddWithValue("@status_id", proposal.StatusId);
+      command.Parameters.AddWithValue("@employee_id", proposal.SentByEmployeeId);
+      command.Parameters.AddWithValue("@pdf_name", proposal.PdfName);
+      command.Parameters.AddWithValue("@is_estimate", proposal.IsEstimate);
+      command.Parameters.AddWithValue("@notes", proposal.Notes);
+      command.Parameters.AddWithValue("@last_follow_up_date", proposal.LastFollowUpDate);
+      command.Parameters.AddWithValue(
+        "@followed_up_by_employee_id",
+        proposal.FollowedUpByEmployeeId
+      );
+      command.Parameters.AddWithValue("@fees", proposal.Fees);
+      command.Parameters.AddWithValue("@s_drive_path", proposal.SDrivePath);
       command.Parameters.AddWithValue("@id", proposal.Id);
+      command.ExecuteNonQuery();
+
+      query =
+        @"
+        UPDATE projects SET
+        region_id = @region_id,
+        client_company_id = @client_company_id
+        WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@region_id", proposal.RegionId);
+      command.Parameters.AddWithValue("@client_company_id", proposal.ClientCompanyId);
       command.ExecuteNonQuery();
       Connection.Close();
     }
@@ -410,6 +449,105 @@ namespace GMEPDesignTool.Database
 
       await CloseConnectionAsync(Connection);
       return adminModel;
+    }
+
+    public async Task<string> DuplicateProposal(string id, string employeeId)
+    {
+      Proposal? proposal = await GetProposalById(id);
+      if (proposal == null || proposal.Data == null)
+      {
+        return id;
+      }
+      string newId = Guid.NewGuid().ToString();
+      string query =
+        @"
+        INSERT INTO proposals
+        ( id,  project_id,  type_id,  status_id,  employee_id) VALUES
+        (@id, @project_id, @type_id, @status_id, @employee_id)
+        ";
+      await OpenConnectionAsync(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", newId);
+      command.Parameters.AddWithValue("@project_id", proposal.ProjectId);
+      command.Parameters.AddWithValue("@type_id", proposal.TypeId);
+      command.Parameters.AddWithValue("@status_id", proposal.StatusId);
+      command.Parameters.AddWithValue("@employee_id", employeeId);
+      await command.ExecuteNonQueryAsync();
+      await CloseConnectionAsync(Connection);
+      return newId;
+    }
+
+    public ObservableCollection<Proposal> GetProposalsByYear(string year)
+    {
+      ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
+
+      string query =
+        @"
+        SELECT 
+        proposals.rfp_date,
+        proposals.proposal_date,
+        sender_employees.id as sender_employee_id,
+        company_contacts.first_name as company_contact_first_name,
+        company_contacts.last_name as company_contact_last_name,
+        companies.id as company_id,
+        projects.gmep_project_name,
+        proposals.is_estimate,
+        projects.gmep_project_no,
+        proposals.data,
+        proposals.fees,
+        proposals.notes,
+        proposals.last_follow_up_date,
+        follow_up_employees.id as follow_up_employee_id,
+        proposals.status_id,
+        projects.region_id,
+        proposals.s_drive_path
+        FROM proposals
+        LEFT JOIN employees AS sender_employees ON sender_employees.id = proposals.employee_id
+        LEFT JOIN contacts AS sender_employee_contacts ON sender_employee_contacts.id = sender_employees.contact_id
+        LEFT JOIN projects ON projects.id = proposals.project_id
+        LEFT JOIN employees AS follow_up_employees ON follow_up_employees.id = proposals.employee_id
+        LEFT JOIN companies ON companies.id = projects.client_company_id
+        LEFT JOIN contacts AS company_contacts ON company_contacts.id = companies.primary_contact_id
+        WHERE proposals.rfp_date BETWEEN @yearStart AND @yearEnd
+        ";
+      string yearStart = $"{year}-01-01";
+      string yearEnd = $"{year}-12-31";
+
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@yearStart", yearStart);
+      command.Parameters.AddWithValue("@yearEnd", yearEnd);
+      MySqlDataReader reader = command.ExecuteReader();
+      while (reader.Read())
+      {
+        proposals.Add(
+          new Proposal
+          {
+            RfpDate = GetSafeDateTime(reader, "rfp_date"),
+            ProposalDate = GetSafeDateTime(reader, "proposal_date"),
+            SentByEmployeeId = GetSafeString(reader, "sender_employee_id"),
+            ContactName =
+              GetSafeString(reader, "company_contact_first_name")
+              + " "
+              + GetSafeString(reader, "company_contact_last_name"),
+            ClientCompanyId = GetSafeString(reader, "company_id"),
+            ProjectName = GetSafeString(reader, "gmep_project_name"),
+            IsEstimate = GetSafeBoolean(reader, "is_estimate"),
+            ProjectNo = GetSafeString(reader, "gmep_project_no"),
+            Fees = GetSafeInt(reader, "fees"),
+            Notes = GetSafeString(reader, "notes"),
+            LastFollowUpDate = GetSafeDateTime(reader, "last_follow_up_date"),
+            StatusId = GetSafeInt(reader, "status_id"),
+            FollowedUpByEmployeeId = GetSafeString(reader, "follow_up_employee_id"),
+            RegionId = GetSafeInt(reader, "region_id"),
+            SDrivePath = GetSafeString(reader, "s_drive_path"),
+            db = new Database(ConnectionString),
+          }
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return proposals;
     }
 
     public async Task UpdateAdminProject(AdminModel model, string projectId)
@@ -535,6 +673,77 @@ namespace GMEPDesignTool.Database
       reader.Close();
       CloseConnection(Connection);
       return result;
+    }
+
+    public List<Employee> GetAdminEmployeesByYear(string year)
+    {
+      List<Employee> employees = new List<Employee>();
+      string query =
+        @"
+        SELECT 
+        employees.id as employee_id,
+        contacts.id as contact_id,
+        entities.id as entity_id,
+        last_name,
+        first_name,
+        email_address,
+        email_addresses.id as email_address_id,
+        phone_number,
+        phone_numbers.id as phone_number_id,
+        extension,
+        hire_date,
+        termination_date,
+        employee_department_id,
+        employee_title_id,
+        employee_access_level_id,
+        username
+        FROM employees
+        LEFT JOIN contacts ON contacts.id = employees.contact_id
+        LEFT JOIN entities ON contacts.entity_id = entities.id
+        LEFT JOIN email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN email_addresses ON email_addr_entity_rel.email_address_id = email_addresses.id
+        LEFT JOIN phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        WHERE (
+          employees.termination_date IS NULL 
+          OR
+          ( employees.termination_date >= @yearStart AND employees.hire_date <= @yearEnd )
+         )
+        AND ( employees.employee_access_level_id = 1 OR employees.employee_access_level_id = 2 )
+        ORDER BY last_name ASC
+        ";
+      string yearEnd = $"{year}-12-31";
+      string yearStart = $"{year}-01-01";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@yearStart", yearStart);
+      command.Parameters.AddWithValue("@yearEnd", yearEnd);
+      MySqlDataReader reader = command.ExecuteReader();
+      while (reader.Read())
+      {
+        employees.Add(
+          new Employee(
+            GetSafeString(reader, "employee_id"),
+            GetSafeString(reader, "contact_id"),
+            GetSafeString(reader, "entity_id"),
+            GetSafeString(reader, "last_name"),
+            GetSafeString(reader, "first_name"),
+            GetSafeInt(reader, "employee_title_id"),
+            GetSafeInt(reader, "employee_department_id"),
+            GetSafeString(reader, "email_address"),
+            GetSafeString(reader, "email_address_id"),
+            GetUnsafeULong(reader, "phone_number"),
+            GetSafeString(reader, "phone_number_id"),
+            GetUnsafeUInt(reader, "extension"),
+            GetUnsafeDate(reader, "hire_date"),
+            GetUnsafeDate(reader, "termination_date"),
+            GetSafeString(reader, "username")
+          )
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return employees;
     }
 
     public List<Employee> GetEmployees()
@@ -837,9 +1046,11 @@ namespace GMEPDesignTool.Database
       MySqlDataReader reader = command.ExecuteReader();
       if (reader.Read())
       {
+        reader.Close();
         CloseConnection(Connection);
         return;
       }
+      reader.Close();
       query =
         @"
         INSERT INTO clients
@@ -1033,6 +1244,28 @@ namespace GMEPDesignTool.Database
       return client;
     }
 
+    public string GetCompanyPrimaryContactName(string companyId)
+    {
+      string query =
+        @"
+        SELECT first_name, last_name FROM contacts
+        LEFT JOIN companies ON companies.id = contacts.company_id
+        WHERE contacts.company_id = @companyId
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@companyId", companyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      string name = "";
+      if (reader.Read())
+      {
+        name = GetSafeString(reader, "first_name") + " " + GetSafeString(reader, "last_name");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return name;
+    }
+
     public void SaveCompany(Company company)
     {
       string query =
@@ -1177,6 +1410,7 @@ namespace GMEPDesignTool.Database
         UPDATE clients SET
         loyalty_type_id = @loyalty_type_id WHERE company_id = @company_id
         ";
+      OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@company_id", client.CompanyId);
       command.Parameters.AddWithValue("@loyalty_type_id", client.LoyaltyTypeId);
@@ -1693,6 +1927,45 @@ namespace GMEPDesignTool.Database
       await CloseConnectionAsync(Connection);
       projectIds = projectIds.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
       return projectIds;
+    }
+
+    public string GetComparableProject(
+      string street_address,
+      string postal_code,
+      string compareWithProjectNo
+    )
+    {
+      if (string.IsNullOrEmpty(street_address) || string.IsNullOrEmpty(postal_code))
+      {
+        return string.Empty;
+      }
+      string gmep_project_no = string.Empty;
+      string streetAddressSubstring = street_address;
+      if (street_address.Length > 4)
+      {
+        streetAddressSubstring = street_address.Substring(0, 4);
+      }
+      string query =
+        @"SELECT projects.gmep_project_no FROM projects
+        LEFT JOIN proposals ON proposals.project_id = projects.id
+        WHERE street_address LIKE @streetAddressSubstring
+        AND proposals.status_id = 1
+        AND postal_code = @postal_code
+        AND projects.gmep_project_no <> @compareWithProjectNo
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@streetAddressSubstring", streetAddressSubstring + "%");
+      command.Parameters.AddWithValue("@postal_code", postal_code);
+      command.Parameters.AddWithValue("@compareWithProjectNo", compareWithProjectNo);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        gmep_project_no = GetSafeString(reader, "gmep_project_no");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return gmep_project_no;
     }
 
     public string GetLatestElectricalProjectId(string projectId)
@@ -3615,6 +3888,33 @@ INSERT INTO electrical_lighting_timeclock_control_relays
     )
     {
       // HERE add all the electrical tables
+      // electrical_disconnects
+      // electrical_distribution_breakers
+      // electrical_distribution_buses
+      // electrical_keyed_notes
+      // electrical_keyed_note_tables
+      // electrical_lighting_lti_altered_systems
+      // electrical_lighting_lti_control_areas
+      // electrical_lighting_lti_luminaires
+      // electrical_lighting_lti_scope
+      // electrical_lighting_lto_exterior_controls
+      // electrical_lighting_lto_hardscape_areas
+      // electrical_lighting_lto_luminaires
+      // electrical_lighting_lto_scope
+      // electrical_lighting_lto_use_or_lose_areas
+      // electrical_lighting_timeclocks
+      // electrical_lighting_timeclock_control_relays
+      // electrical_main_breakers
+      // electrical_meters
+      // electrical_panel_breakers
+      // electrical_panel_mini_breakers
+      // electrical_panel_notes
+      // electrical_panel_note_panel_rel
+      // electrical_single_line_keyed_notes
+      // electrical_single_line_keyed_note_node_rel
+      // electrical_single_line_nodes
+      // electrical_single_line_node_links
+      // electrical_single_line_node_types
       var services = await GetProjectServices(electricalProjectId);
       var panels = await GetProjectPanels(electricalProjectId);
       var equipments = await GetProjectEquipment(electricalProjectId);
