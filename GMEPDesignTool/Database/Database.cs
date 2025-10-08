@@ -164,6 +164,20 @@ namespace GMEPDesignTool.Database
       return DateTime.MinValue;
     }
 
+    DateTime? GetUnsafeDateTime(MySqlDataReader reader, string fieldName)
+    {
+      int index = reader.GetOrdinal(fieldName);
+      if (!reader.IsDBNull(index))
+      {
+        if (reader.GetDateTime(index) == DateTime.MinValue)
+        {
+          return null;
+        }
+        return reader.GetDateTime(index);
+      }
+      return null;
+    }
+
     public void SetProposalPdf(string proposalId, string pdfName)
     {
       string query =
@@ -349,7 +363,7 @@ namespace GMEPDesignTool.Database
         employee_id = @employee_id,
         pdf_name = @pdf_name,
         is_estimate = @is_estimate,
-        note = @notes,
+        notes = @notes,
         last_follow_up_date = @last_follow_up_date,
         followed_up_by_employee_id = @followed_up_by_employee_id,
         fees = @fees,
@@ -386,6 +400,7 @@ namespace GMEPDesignTool.Database
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@region_id", proposal.RegionId);
       command.Parameters.AddWithValue("@client_company_id", proposal.ClientCompanyId);
+      command.Parameters.AddWithValue("@id", proposal.ProjectId);
       command.ExecuteNonQuery();
       Connection.Close();
     }
@@ -486,6 +501,7 @@ namespace GMEPDesignTool.Database
         SELECT 
         proposals.rfp_date,
         proposals.proposal_date,
+        proposals.date_created,
         sender_employees.id as sender_employee_id,
         company_contacts.first_name as company_contact_first_name,
         company_contacts.last_name as company_contact_last_name,
@@ -493,10 +509,12 @@ namespace GMEPDesignTool.Database
         projects.gmep_project_name,
         proposals.is_estimate,
         projects.gmep_project_no,
+        projects.id as project_id,
         proposals.data,
         proposals.fees,
         proposals.notes,
         proposals.last_follow_up_date,
+        proposals.id as proposal_id,
         follow_up_employees.id as follow_up_employee_id,
         proposals.status_id,
         projects.region_id,
@@ -509,6 +527,7 @@ namespace GMEPDesignTool.Database
         LEFT JOIN companies ON companies.id = projects.client_company_id
         LEFT JOIN contacts AS company_contacts ON company_contacts.id = companies.primary_contact_id
         WHERE proposals.rfp_date BETWEEN @yearStart AND @yearEnd
+        ORDER BY proposals.date_created DESC
         ";
       string yearStart = $"{year}-01-01";
       string yearEnd = $"{year}-12-31";
@@ -520,30 +539,37 @@ namespace GMEPDesignTool.Database
       MySqlDataReader reader = command.ExecuteReader();
       while (reader.Read())
       {
-        proposals.Add(
-          new Proposal
-          {
-            RfpDate = GetSafeDateTime(reader, "rfp_date"),
-            ProposalDate = GetSafeDateTime(reader, "proposal_date"),
-            SentByEmployeeId = GetSafeString(reader, "sender_employee_id"),
-            ContactName =
-              GetSafeString(reader, "company_contact_first_name")
-              + " "
-              + GetSafeString(reader, "company_contact_last_name"),
-            ClientCompanyId = GetSafeString(reader, "company_id"),
-            ProjectName = GetSafeString(reader, "gmep_project_name"),
-            IsEstimate = GetSafeBoolean(reader, "is_estimate"),
-            ProjectNo = GetSafeString(reader, "gmep_project_no"),
-            Fees = GetSafeInt(reader, "fees"),
-            Notes = GetSafeString(reader, "notes"),
-            LastFollowUpDate = GetSafeDateTime(reader, "last_follow_up_date"),
-            StatusId = GetSafeInt(reader, "status_id"),
-            FollowedUpByEmployeeId = GetSafeString(reader, "follow_up_employee_id"),
-            RegionId = GetSafeInt(reader, "region_id"),
-            SDrivePath = GetSafeString(reader, "s_drive_path"),
-            db = new Database(ConnectionString),
-          }
-        );
+        string projectId = GetSafeString(reader, "project_id");
+        Proposal? proposal = proposals.FirstOrDefault((p) => p.ProjectId == projectId);
+        if (proposal == null)
+        {
+          proposals.Add(
+            new Proposal
+            {
+              Id = GetSafeString(reader, "proposal_id"),
+              RfpDate = GetSafeDateTime(reader, "rfp_date"),
+              ProposalDate = GetUnsafeDateTime(reader, "proposal_date"),
+              SentByEmployeeId = GetSafeString(reader, "sender_employee_id"),
+              ContactName =
+                GetSafeString(reader, "company_contact_first_name")
+                + " "
+                + GetSafeString(reader, "company_contact_last_name"),
+              ClientCompanyId = GetSafeString(reader, "company_id"),
+              ProjectName = GetSafeString(reader, "gmep_project_name"),
+              IsEstimate = GetSafeBoolean(reader, "is_estimate"),
+              ProjectNo = GetSafeString(reader, "gmep_project_no"),
+              Fees = GetSafeInt(reader, "fees"),
+              Notes = GetSafeString(reader, "notes"),
+              LastFollowUpDate = GetUnsafeDateTime(reader, "last_follow_up_date"),
+              StatusId = GetSafeInt(reader, "status_id"),
+              FollowedUpByEmployeeId = GetSafeString(reader, "follow_up_employee_id"),
+              RegionId = GetSafeInt(reader, "region_id"),
+              SDrivePath = GetSafeString(reader, "s_drive_path"),
+              ProjectId = GetSafeString(reader, "project_id"),
+              db = new Database(ConnectionString),
+            }
+          );
+        }
       }
       reader.Close();
       CloseConnection(Connection);

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="Proposals" Height="450" Width="800" WindowState="Maximized">
+        Title="{Binding WindowTitle}" Height="450" Width="800" WindowState="Maximized">
 
     <Window.Resources>
         <CollectionViewSource x:Key="ProposalsViewSource" Source="{Binding FilteredProposals}" />
@@ -33,7 +33,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource ProposalsViewSource}}" SelectedItem="{Binding Path=SelectedProposal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+        <DataGrid x:Name="ProposalsDataGrid" KeyDown="ProposalsDataGrid_KeyDown" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource ProposalsViewSource}}" SelectedItem="{Binding Path=SelectedProposal,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>

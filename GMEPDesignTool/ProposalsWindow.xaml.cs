@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -31,7 +32,57 @@ namespace GMEPDesignTool
       InitializeComponent();
     }
 
-    public void SaveClick(object sender, RoutedEventArgs e) { }
+    public void SaveClick(object sender, RoutedEventArgs e)
+    {
+      Save();
+    }
+
+    public void Save(CancelEventArgs? e = null)
+    {
+      ViewModel.Save();
+      ViewModel.Saved = true;
+    }
+
+    private void ProposalsDataGrid_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+      {
+        if (e.Source == ProposalsDataGrid)
+        {
+          ProposalsDataGrid.CommitEdit();
+        }
+        Save();
+      }
+    }
+
+    protected override void OnClosing(CancelEventArgs e)
+    {
+      if (ViewModel != null && !ViewModel.Saved)
+      {
+        MessageBoxResult result = MessageBox.Show(
+          "Save changes?",
+          "Confirmation",
+          MessageBoxButton.YesNoCancel
+        );
+        if (result == MessageBoxResult.Yes)
+        {
+          Save(e);
+          base.OnClosing(e);
+        }
+        else if (result == MessageBoxResult.No)
+        {
+          base.OnClosing(e);
+        }
+        else
+        {
+          e.Cancel = true;
+        }
+      }
+      else
+      {
+        base.OnClosing(e);
+      }
+    }
 
     public void ProposalYearListViewItem_Click(object sender, RoutedEventArgs e)
     {

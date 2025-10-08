@@ -13,6 +13,8 @@ namespace GMEPDesignTool
   {
     public Database.Database db { get; set; }
     private bool _Modified = false;
+
+    public ProposalsViewModel? ProposalsViewModel { get; set; }
     public bool Modified
     {
       get => _Modified;
@@ -88,8 +90,8 @@ namespace GMEPDesignTool
       }
     }
 
-    private DateTime _ProposalDate;
-    public DateTime ProposalDate
+    private DateTime? _ProposalDate;
+    public DateTime? ProposalDate
     {
       get => _ProposalDate;
       set
@@ -120,7 +122,22 @@ namespace GMEPDesignTool
     public string Type { get; set; }
     public int TypeId { get; set; }
     public string EmployeeUsername { get; set; }
-    public string SentByEmployeeId { get; set; }
+
+    private string _SentByEmployeeId;
+
+    public string SentByEmployeeId
+    {
+      get => _SentByEmployeeId;
+      set
+      {
+        if (_SentByEmployeeId != value)
+        {
+          _SentByEmployeeId = value;
+          OnPropertyChanged(nameof(SentByEmployeeId));
+          _Modified = true;
+        }
+      }
+    }
 
     private string _ContactName;
     public string ContactName
@@ -203,8 +220,8 @@ namespace GMEPDesignTool
       }
     }
 
-    private DateTime _LastFollowUpDate;
-    public DateTime LastFollowUpDate
+    private DateTime? _LastFollowUpDate;
+    public DateTime? LastFollowUpDate
     {
       get => _LastFollowUpDate;
       set
@@ -287,6 +304,10 @@ namespace GMEPDesignTool
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      if (ProposalsViewModel != null)
+      {
+        ProposalsViewModel.Saved = false;
+      }
     }
 
     public Proposal() { }

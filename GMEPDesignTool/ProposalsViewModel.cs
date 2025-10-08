@@ -8,8 +8,36 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class ProposalsViewModel : ViewModelBase
+  public class ProposalsViewModel : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged(string name)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+      if (name != "WindowTitle")
+      {
+        Saved = false;
+      }
+    }
+
+    private bool _Saved = true;
+    public bool Saved
+    {
+      get => _Saved;
+      set
+      {
+        _Saved = value;
+        if (_Saved == true)
+        {
+          WindowTitle = "Proposals";
+        }
+        else
+        {
+          WindowTitle = "Proposals*";
+        }
+      }
+    }
     public ObservableCollection<string> YearSelectionOptions { get; set; }
 
     Database.Database Database { get; set; }
@@ -19,6 +47,20 @@ namespace GMEPDesignTool
     public List<Client> Clients { get; set; }
 
     public List<Employee> Employees { get; set; }
+
+    private string windowTitle = "Proposals";
+    public string WindowTitle
+    {
+      get => windowTitle;
+      set
+      {
+        if (windowTitle != value)
+        {
+          windowTitle = value;
+          OnPropertyChanged(nameof(WindowTitle));
+        }
+      }
+    }
 
     public ProposalsViewModel(LoginResponse loginResponse)
     {
@@ -31,11 +73,15 @@ namespace GMEPDesignTool
       }
       Database = new Database.Database(loginResponse.SqlConnectionString);
 
-      FilteredProposals = Database.GetProposalsByYear(DateTime.Now.Year.ToString());
-
       Clients = Database.GetClients();
 
-      Employees = Database.GetAdminEmployeesByYear(DateTime.Now.Year.ToString());
+      FilteredProposals = new ObservableCollection<Proposal>();
+
+      Employees = new List<Employee>();
+
+      FilterDataGridByYear(DateTime.Now.Year.ToString());
+
+      Saved = true;
     }
 
     public void FilterDataGridByYear(string year)
@@ -44,6 +90,7 @@ namespace GMEPDesignTool
       ObservableCollection<Proposal> proposals = Database.GetProposalsByYear(year);
       foreach (Proposal proposal in proposals)
       {
+        proposal.ProposalsViewModel = this;
         FilteredProposals.Add(proposal);
       }
 
