@@ -25,9 +25,12 @@ namespace GMEPDesignTool
   {
     public ProposalsViewModel ViewModel { get; set; }
 
+    private LoginResponse LoginResponse { get; set; }
+
     public ProposalsWindow(LoginResponse loginResponse)
     {
       ViewModel = new ProposalsViewModel(loginResponse);
+      this.LoginResponse = loginResponse;
       this.DataContext = ViewModel;
       InitializeComponent();
     }
@@ -53,6 +56,32 @@ namespace GMEPDesignTool
         }
         Save();
       }
+    }
+
+    private void EditProposal_Click(object sender, RoutedEventArgs e)
+    {
+      Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;
+      if (p == null)
+      {
+        return;
+      }
+      AdminViewModel adminViewModel = new AdminViewModel(p.ProjectId, LoginResponse);
+      SelectProposalTypeViewModel selectProposalTypeViewModel = new SelectProposalTypeViewModel();
+      selectProposalTypeViewModel.TypeId = p.TypeId;
+      Database.Database db = new Database.Database(LoginResponse.SqlConnectionString);
+      ProposalCommercialViewModel vm = new ProposalCommercialViewModel(
+        adminViewModel,
+        selectProposalTypeViewModel,
+        db
+      );
+      ProposalCommercialWindow proposalCommercialWindow = new ProposalCommercialWindow(
+        vm,
+        p.Id,
+        LoginResponse,
+        p.Data,
+        p
+      );
+      proposalCommercialWindow.Show();
     }
 
     protected override void OnClosing(CancelEventArgs e)

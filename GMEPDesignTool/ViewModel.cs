@@ -373,6 +373,8 @@ namespace GMEPDesignTool
 
     public void CloseProject(TabItem projectTab)
     {
+      var projectControl = (ProjectControl)projectTab.Content;
+      projectControl.Save();
       Tabs.Remove(projectTab);
     }
   }

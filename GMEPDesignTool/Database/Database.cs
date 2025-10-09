@@ -513,6 +513,7 @@ namespace GMEPDesignTool.Database
         proposals.data,
         proposals.fees,
         proposals.notes,
+        proposals.type_id,
         proposals.last_follow_up_date,
         proposals.id as proposal_id,
         follow_up_employees.id as follow_up_employee_id,
@@ -543,6 +544,18 @@ namespace GMEPDesignTool.Database
         Proposal? proposal = proposals.FirstOrDefault((p) => p.ProjectId == projectId);
         if (proposal == null)
         {
+          string dataString = GetSafeString(reader, "data");
+          ProposalData? proposalData = null;
+          int totalPrice = 0;
+          try
+          {
+            proposalData = JsonSerializer.Deserialize<ProposalData>(dataString);
+            if (proposalData != null)
+            {
+              Int32.TryParse(proposalData.TotalPrice, out totalPrice);
+            }
+          }
+          catch (Exception ex) { }
           proposals.Add(
             new Proposal
             {
@@ -558,7 +571,7 @@ namespace GMEPDesignTool.Database
               ProjectName = GetSafeString(reader, "gmep_project_name"),
               IsEstimate = GetSafeBoolean(reader, "is_estimate"),
               ProjectNo = GetSafeString(reader, "gmep_project_no"),
-              Fees = GetSafeInt(reader, "fees"),
+              Fees = GetSafeInt(reader, "fees") > 0 ? GetSafeInt(reader, "fees") : totalPrice,
               Notes = GetSafeString(reader, "notes"),
               LastFollowUpDate = GetUnsafeDateTime(reader, "last_follow_up_date"),
               StatusId = GetSafeInt(reader, "status_id"),
@@ -566,6 +579,8 @@ namespace GMEPDesignTool.Database
               RegionId = GetSafeInt(reader, "region_id"),
               SDrivePath = GetSafeString(reader, "s_drive_path"),
               ProjectId = GetSafeString(reader, "project_id"),
+              TypeId = GetSafeInt(reader, "type_id"),
+              Data = proposalData,
               db = new Database(ConnectionString),
             }
           );
@@ -2692,9 +2707,9 @@ INSERT INTO electrical_services
       command.Parameters.AddWithValue("@id", noteRel.Id);
       command.Parameters.AddWithValue("@project_id", noteRel.ProjectId);
       command.Parameters.AddWithValue("@electrical_project_id", noteRel.ElectricalProjectId);
-      command.Parameters.AddWithValue("@panelId", noteRel.PanelId);
-      command.Parameters.AddWithValue("@noteId", noteRel.NoteId);
-      command.Parameters.AddWithValue("@circuitNo", noteRel.CircuitNo);
+      command.Parameters.AddWithValue("@panel_id", noteRel.PanelId);
+      command.Parameters.AddWithValue("@note_id", noteRel.NoteId);
+      command.Parameters.AddWithValue("@circuit_no", noteRel.CircuitNo);
       command.Parameters.AddWithValue("@length", noteRel.Length);
       command.Parameters.AddWithValue("@stack", noteRel.Stack);
 

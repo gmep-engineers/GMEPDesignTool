@@ -50,6 +50,11 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
+            <DataGrid.ContextMenu>
+                <ContextMenu Name="ProposalsContextMenu">
+                    <MenuItem Header="Edit Details" Click="EditProposal_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="RFP Date">
                     <DataGridTextColumn.Binding>
@@ -141,6 +146,17 @@
                             <ComboBoxItem Content="VA" Tag="17"/>
                             <ComboBoxItem Content="WA" Tag="18"/>
                             <ComboBoxItem Content="Multi" Tag="19"/>
+                        </CompositeCollection>
+                    </DataGridComboBoxColumn.ItemsSource>
+                </DataGridComboBoxColumn >
+                <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding TypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                    <DataGridComboBoxColumn.ItemsSource>
+                        <CompositeCollection>
+                            <ComboBoxItem Content="Commercial" Tag="1"/>
+                            <ComboBoxItem Content="Residential" Tag="2"/>
+                            <ComboBoxItem Content="T24" Tag="3"/>
+                            <ComboBoxItem Content="Site Lighting Tarrar" Tag="4"/>
+                            <ComboBoxItem Content="2019" Tag="5"/>
                         </CompositeCollection>
                     </DataGridComboBoxColumn.ItemsSource>
                 </DataGridComboBoxColumn>

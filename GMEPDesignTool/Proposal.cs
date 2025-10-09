@@ -30,6 +30,7 @@ namespace GMEPDesignTool
         {
           _Id = value;
           OnPropertyChanged(nameof(Id));
+          _Modified = true;
         }
       }
     }
@@ -120,7 +121,21 @@ namespace GMEPDesignTool
       }
     }
     public string Type { get; set; }
-    public int TypeId { get; set; }
+
+    private int _TypeId;
+    public int TypeId
+    {
+      get => _TypeId;
+      set
+      {
+        if (_TypeId != value)
+        {
+          _TypeId = value;
+          OnPropertyChanged(nameof(TypeId));
+          _Modified = true;
+        }
+      }
+    }
     public string EmployeeUsername { get; set; }
 
     private string _SentByEmployeeId;

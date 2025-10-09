@@ -119,7 +119,7 @@ namespace GMEPDesignTool
       }
     }
 
-    private async void Save(object sender, EventArgs e)
+    public async Task Save()
     {
       if (!Saving && !Loading)
       {
@@ -137,6 +137,11 @@ namespace GMEPDesignTool
         }
         Saving = false;
       }
+    }
+
+    public async void Save_Click(object sender, EventArgs e)
+    {
+      await Save();
     }
 
     public async void ReloadElectricalProject()
@@ -194,7 +199,7 @@ namespace GMEPDesignTool
     {
       if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
       {
-        Save(sender, e);
+        Save();
       }
     }
 

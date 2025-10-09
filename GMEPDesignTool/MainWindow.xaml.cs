@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -17,7 +18,7 @@ namespace GMEPDesignTool
     public string EmployeeId { get; set; }
   }
 
-  public partial class MainWindow
+  public partial class MainWindow : Window
   {
     public ViewModel MainWindowViewModel { get; set; }
     public string SessionId { get; set; }
@@ -105,6 +106,16 @@ namespace GMEPDesignTool
       {
         Trace.WriteLine(ex);
       }
+    }
+
+    protected override async void OnClosing(CancelEventArgs e)
+    {
+      foreach (TabItem tab in ProjectTabs.Items)
+      {
+        var projectControl = (ProjectControl)tab.Content;
+        await projectControl.Save();
+      }
+      base.OnClosing(e);
     }
   }
 }

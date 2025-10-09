@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Mysqlx.Crud;
 using static GMEPDesignTool.ProposalCommercialWindow;
@@ -22,6 +23,8 @@ namespace GMEPDesignTool
     private ObservableCollection<Proposal> proposals;
     string projectId;
     LoginResponse loginResponse;
+
+    Proposal? proposal;
 
     public class PDFRequest
     {
@@ -71,13 +74,18 @@ namespace GMEPDesignTool
       ProposalCommercialViewModel vm,
       string proposal_id,
       LoginResponse loginResponse,
-      ProposalData? proposalData
+      ProposalData? proposalData,
+      Proposal? proposal
     )
     {
       InitializeComponent();
 
       InitializeWindow(vm, proposal_id, loginResponse);
-
+      this.proposal = proposal;
+      if (proposal != null)
+      {
+        vm.SelectedClientCompanyId = proposal.ClientCompanyId;
+      }
       if (proposalData != null)
       {
         vm.TotalPrice = proposalData.TotalPrice;
@@ -248,8 +256,24 @@ namespace GMEPDesignTool
 
       database.SetProposalData(proposal_id, jsonString);
 
+      if (proposal != null)
+      {
+        proposal.Data = proposalData;
+        var totalPrice = 0;
+        Int32.TryParse(proposalData.TotalPrice, out totalPrice);
+        proposal.Fees = totalPrice;
+      }
+
       var vm = DataContext as ProposalCommercialViewModel;
       vm.Saved = true;
+    }
+
+    private void ProposalGrid_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+      {
+        Save();
+      }
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -481,7 +505,14 @@ namespace GMEPDesignTool
 
       HttpResponseMessage response;
 
-      switch (vm.SelectProposalTypeViewModel.TypeId)
+      int typeId = vm.SelectProposalTypeViewModel.TypeId;
+
+      if (proposal != null)
+      {
+        typeId = proposal.TypeId;
+      }
+
+      switch (typeId)
       {
         case 1:
           response = await httpClient.PostAsJsonAsync("api/wkhtmltopdf/commercial", pdfRequest);
@@ -514,6 +545,13 @@ namespace GMEPDesignTool
 
       database.SetProposalPdf(proposal_id, keyName);
       database.SetProposalData(proposal_id, jsonString);
+
+      if (proposal != null)
+      {
+        proposal.Id = proposal_id;
+        proposal.PdfName = keyName;
+        proposal.Data = proposalData;
+      }
 
       string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), keyName);
       System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
