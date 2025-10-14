@@ -120,7 +120,7 @@
                                         <Rectangle Width="9999" Height="1" Margin="0 35 0 0" Stroke="White" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     </Grid>
                                 </StackPanel>
-                                <DataGrid CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 45 0 0">
+                                <DataGrid CellEditEnding="DataGrid_CellEditEnding" CanUserAddRows="True" PreviewKeyDown="DataGrid_PreviewKeyDown" Name="ElectricalEquipmentDataGrid" ItemsSource="{Binding Source={StaticResource EquipmentViewSource}}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AutoGenerateColumns="False" Margin="0 45 0 0">
                                     <DataGrid.RowStyle>
                                         <Style TargetType="DataGridRow">
                                             <Setter Property="Background" Value="{Binding ColorCode}" />
@@ -173,7 +173,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridComboBoxColumn Header="Category" SelectedValueBinding="{Binding Category,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Category" SelectedValueBinding="{Binding Category}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="General" Tag="1"/>
@@ -189,7 +189,7 @@
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
                                         
-                                        <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Status" SelectedValueBinding="{Binding StatusId}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="New" Tag="1" />
@@ -198,7 +198,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Connection" SelectedValueBinding="{Binding ConnectionSymbolId,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Connection" SelectedValueBinding="{Binding ConnectionSymbolId}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="Duplex" Tag="1">
@@ -406,7 +406,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Voltage" SelectedValueBinding="{Binding Voltage}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="115" Background="NavajoWhite" Tag="1" />
@@ -420,7 +420,7 @@
                                                 </CompositeCollection>
                                             </DataGridComboBoxColumn.ItemsSource>
                                         </DataGridComboBoxColumn>
-                                        <DataGridComboBoxColumn Header="Phase" SelectedValueBinding="{Binding Is3Ph,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Phase" SelectedValueBinding="{Binding Is3Ph}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="1" Tag="False"/>
@@ -453,7 +453,7 @@
                                                 </Binding>
                                             </DataGridTextColumn.Binding>
                                         </DataGridTextColumn>
-                                        <DataGridTextColumn Header="VA" Binding="{Binding Va, Converter={StaticResource RoundToNearestIntegerConverter}, UpdateSourceTrigger=LostFocus}"/>
+                                        <DataGridTextColumn Header="VA" Binding="{Binding Va, Converter={StaticResource RoundToNearestIntegerConverter}}"/>
                                         <DataGridComboBoxColumn Header="Panel" SelectedValueBinding="{Binding ParentId,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Key" DisplayMemberPath="Value">
                                             <DataGridComboBoxColumn.ElementStyle>
                                                 <Style TargetType="{x:Type ComboBox}">
@@ -485,7 +485,7 @@
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridComboBoxColumn Header="Load Type" SelectedValueBinding="{Binding LoadType,UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
+                                        <DataGridComboBoxColumn Header="Load Type" SelectedValueBinding="{Binding LoadType}" SelectedValuePath="Tag">
                                             <DataGridComboBoxColumn.ItemsSource>
                                                 <CompositeCollection>
                                                     <ComboBoxItem Content="Standard" Tag="1"/>

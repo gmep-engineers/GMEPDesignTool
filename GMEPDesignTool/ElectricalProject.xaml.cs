@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using Amazon.S3.Model;
 using GongSolutions.Wpf.DragDrop;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
@@ -20,6 +21,26 @@ namespace GMEPDesignTool
   /// <summary>
   /// Interaction logic for ElectricalProject.xaml
   /// </summary>
+  ///
+
+  public class DataGridEdit
+  {
+    public Object DataContext;
+    public Object? OldValue;
+    public Object? NewValue;
+    public string ColumnHeader;
+    public string? ParentId;
+    public PropertyChangedEventHandler? ProperyChanged;
+
+    public DataGridEdit(Object dataContext, string columnHeader, Object? oldValue, Object? newValue)
+    {
+      DataContext = dataContext;
+      ColumnHeader = columnHeader;
+      OldValue = oldValue;
+      NewValue = newValue;
+    }
+  }
+
   public partial class ElectricalProject : UserControl, IDropTarget, INotifyPropertyChanged
   {
     private DispatcherTimer timer = new DispatcherTimer();
@@ -55,6 +76,10 @@ namespace GMEPDesignTool
     ProjectControlViewModel ProjectView { get; set; }
 
     private bool isEditingSingleLine;
+
+    private List<DataGridEdit> ElectricalEquipmentDataGridUndoStack { get; set; }
+    private List<DataGridEdit> ElectricalEquipmentDataGridRedoStack { get; set; }
+
     public bool IsEditingSingleLine
     {
       get => isEditingSingleLine;
@@ -163,6 +188,8 @@ namespace GMEPDesignTool
     )
     {
       InitializeComponent();
+      ElectricalEquipmentDataGridUndoStack = new List<DataGridEdit>();
+      ElectricalEquipmentDataGridRedoStack = new List<DataGridEdit>();
       ProjectView = projectView ?? throw new ArgumentNullException(nameof(projectView));
       ProjectId = projectId ?? throw new ArgumentNullException(nameof(projectId));
       ElectricalProjectId =
@@ -2046,7 +2073,14 @@ namespace GMEPDesignTool
       }
       electricalEquipment.PropertyChanged -= ElectricalEquipment_PropertyChanged;
       electricalEquipment.ParentId = "";
-      ElectricalEquipments.Remove(electricalEquipment);
+      bool removed = ElectricalEquipments.Remove(electricalEquipment);
+      if (removed)
+      {
+        DataGridEdit dataGridEdit = new DataGridEdit(electricalEquipment, "removed", null, null);
+        dataGridEdit.ParentId = electricalEquipment.ParentId;
+        dataGridEdit.ProperyChanged = ElectricalEquipment_PropertyChanged;
+        ElectricalEquipmentDataGridUndoStack.Add(dataGridEdit);
+      }
       //StartTimer();
     }
 
@@ -2242,11 +2276,535 @@ namespace GMEPDesignTool
       EquipmentFilter.Text = "";
     }
 
+    private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+    {
+      // electrical equipment data grid undo/redo storage
+      if (e.EditAction == DataGridEditAction.Commit)
+      {
+        ElectricalEquipment? dataContext = e.Row.DataContext as ElectricalEquipment;
+        if (dataContext == null)
+        {
+          return;
+        }
+        var col = e.Column.Header.ToString();
+        if (String.IsNullOrEmpty(col))
+        {
+          return;
+        }
+        string[] textBoxCols =
+        [
+          "Tag",
+          "Description",
+          "Amperage",
+          "VA",
+          "HP",
+          "Width",
+          "Depth",
+          "Height",
+          "AIC Rating",
+          "Parent Distance",
+        ];
+        if (textBoxCols.Contains(col))
+        {
+          var oldValue = dataContext.EquipNo;
+          if (col == "Tag")
+          {
+            oldValue = dataContext.EquipNo;
+          }
+          if (col == "Description")
+          {
+            oldValue = dataContext.Description;
+          }
+          if (col == "Amperage")
+          {
+            oldValue = dataContext.Amp.ToString();
+          }
+          if (col == "VA")
+          {
+            oldValue = dataContext.Va.ToString();
+          }
+          if (col == "HP")
+          {
+            oldValue = dataContext.Hp;
+          }
+          if (col == "Width")
+          {
+            oldValue = dataContext.Width.ToString();
+          }
+          if (col == "Height")
+          {
+            oldValue = dataContext.Height.ToString();
+          }
+          if (col == "Depth")
+          {
+            oldValue = dataContext.Depth.ToString();
+          }
+          if (col == "AIC Rating")
+          {
+            oldValue = dataContext.AicRating.ToString();
+          }
+          if (col == "Parent Distance")
+          {
+            oldValue = dataContext.DistanceFromParent.ToString();
+          }
+
+          var element = e.EditingElement as TextBox;
+          if (element == null)
+          {
+            return;
+          }
+          var newValue = element.Text;
+          ElectricalEquipmentDataGridUndoStack.Add(
+            new DataGridEdit(dataContext, col, oldValue, newValue)
+          );
+        }
+        string[] comboBoxCols =
+        [
+          "Category",
+          "Status",
+          "Connection",
+          "Voltage",
+          "Phase",
+          "Load Type",
+          "MOCP",
+        ];
+        if (comboBoxCols.Contains(col))
+        {
+          var oldValue = dataContext.Category.ToString();
+          if (col == "Category")
+          {
+            oldValue = dataContext.Category.ToString();
+          }
+          if (col == "Status")
+          {
+            oldValue = dataContext.StatusId.ToString();
+          }
+          if (col == "Connection")
+          {
+            oldValue = dataContext.ConnectionSymbolId.ToString();
+          }
+          if (col == "Voltage")
+          {
+            oldValue = dataContext.Voltage.ToString();
+          }
+          if (col == "Phase")
+          {
+            oldValue = dataContext.Is3Ph.ToString();
+          }
+          if (col == "Load Type")
+          {
+            oldValue = dataContext.LoadType.ToString();
+          }
+          if (col == "MOCP")
+          {
+            oldValue = dataContext.MocpId.ToString();
+          }
+
+          var element = e.EditingElement as ComboBox;
+          if (element == null)
+          {
+            return;
+          }
+          try
+          {
+            var newValue = element.SelectedValue.ToString();
+            ElectricalEquipmentDataGridUndoStack.Add(
+              new DataGridEdit(dataContext, col, oldValue, newValue)
+            );
+            if (ElectricalEquipmentDataGridUndoStack.Count > 50)
+            {
+              ElectricalEquipmentDataGridUndoStack.Remove(
+                ElectricalEquipmentDataGridUndoStack.First()
+              );
+            }
+          }
+          catch (Exception ex) { }
+        }
+      }
+    }
+
     private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-      if (sender is DataGrid dataGrid && e.Key == Key.Return)
+      if (sender is DataGrid dataGrid)
       {
-        dataGrid.CurrentColumn = dataGrid.Columns[0];
+        if (e.Key == Key.Return)
+        {
+          dataGrid.CurrentColumn = dataGrid.Columns[0];
+        }
+        else if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+          // electrical equipment undo action
+          if (ElectricalEquipmentDataGridUndoStack.Count == 0)
+          {
+            return;
+          }
+          DataGridEdit last = ElectricalEquipmentDataGridUndoStack.Last();
+          if (last.ColumnHeader == "removed")
+          {
+            ElectricalEquipment? eq = last.DataContext as ElectricalEquipment;
+            if (eq == null)
+            {
+              return;
+            }
+            if (last.ParentId != null)
+            {
+              eq.ParentId = last.ParentId;
+            }
+            eq.PropertyChanged += last.ProperyChanged;
+            ElectricalEquipments.Add(eq);
+            ElectricalEquipmentDataGridRedoStack.Add(ElectricalEquipmentDataGridUndoStack.Last());
+            ElectricalEquipmentDataGridUndoStack.RemoveAt(
+              ElectricalEquipmentDataGridUndoStack.Count - 1
+            );
+            return;
+          }
+          if (last.OldValue == null)
+          {
+            return;
+          }
+          ElectricalEquipment? dataContext = last.DataContext as ElectricalEquipment;
+          if (dataContext == null)
+          {
+            return;
+          }
+
+          string col = last.ColumnHeader;
+
+          string[] textBoxCols =
+          [
+            "Tag",
+            "Description",
+            "Amperage",
+            "VA",
+            "HP",
+            "Width",
+            "Depth",
+            "Height",
+            "AIC Rating",
+            "Parent Distance",
+          ];
+          if (textBoxCols.Contains(col))
+          {
+            string oldValue = last.OldValue as string;
+            if (String.IsNullOrEmpty(oldValue))
+            {
+              oldValue = string.Empty;
+            }
+            foreach (var item in ElectricalEquipmentDataGrid.Items)
+            {
+              ElectricalEquipment? rowEq = item as ElectricalEquipment;
+              if (rowEq == null)
+              {
+                continue;
+              }
+              if (rowEq.Id != dataContext.Id)
+              {
+                continue;
+              }
+
+              if (col == "Tag")
+              {
+                rowEq.EquipNo = oldValue;
+              }
+              if (col == "Description")
+              {
+                rowEq.Description = oldValue;
+              }
+              if (col == "Amperage")
+              {
+                if (Double.TryParse(oldValue, out double value))
+                {
+                  rowEq.Fla = (float)value;
+                }
+              }
+              if (col == "VA")
+              {
+                if (Double.TryParse(oldValue, out double value))
+                {
+                  rowEq.Va = (float)value;
+                }
+              }
+              if (col == "HP")
+              {
+                rowEq.Hp = oldValue;
+              }
+
+              if (col == "Width")
+              {
+                if (Double.TryParse(oldValue, out double value))
+                {
+                  rowEq.Width = (float)value;
+                }
+              }
+
+              if (col == "Height")
+              {
+                if (Double.TryParse(oldValue, out double value))
+                {
+                  rowEq.Height = (float)value;
+                }
+              }
+
+              if (col == "Depth")
+              {
+                if (Double.TryParse(oldValue, out double value))
+                {
+                  rowEq.Depth = (float)value;
+                }
+              }
+
+              if (col == "AIC Rating")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.AicRating = value;
+                }
+              }
+
+              if (col == "Parent Distance")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.DistanceFromParent = value;
+                }
+              }
+            }
+
+            ElectricalEquipmentDataGridRedoStack.Add(ElectricalEquipmentDataGridUndoStack.Last());
+            ElectricalEquipmentDataGridUndoStack.RemoveAt(
+              ElectricalEquipmentDataGridUndoStack.Count - 1
+            );
+          }
+          string[] comboBoxCols =
+          [
+            "Category",
+            "Status",
+            "Connection",
+            "Voltage",
+            "Phase",
+            "Load Type",
+            "MOCP",
+          ];
+          if (comboBoxCols.Contains(col))
+          {
+            string oldValue = last.OldValue as string;
+            if (String.IsNullOrEmpty(oldValue))
+            {
+              oldValue = string.Empty;
+            }
+
+            foreach (var item in ElectricalEquipmentDataGrid.Items)
+            {
+              ElectricalEquipment? rowEq = item as ElectricalEquipment;
+              if (rowEq == null)
+              {
+                continue;
+              }
+              if (rowEq.Id != dataContext.Id)
+              {
+                continue;
+              }
+
+              if (col == "Category")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.Category = value;
+                }
+              }
+              if (col == "Status")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.StatusId = value;
+                }
+              }
+              if (col == "Connection")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.ConnectionSymbolId = value;
+                }
+              }
+              if (col == "Voltage")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.Voltage = value;
+                }
+              }
+              if (col == "Phase")
+              {
+                if (Boolean.TryParse(oldValue, out bool value))
+                {
+                  rowEq.Is3Ph = value;
+                }
+              }
+              if (col == "Load Type")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.LoadType = value;
+                }
+              }
+              if (col == "MOCP")
+              {
+                if (Int32.TryParse(oldValue, out int value))
+                {
+                  rowEq.MocpId = value;
+                }
+              }
+            }
+            ElectricalEquipmentDataGridRedoStack.Add(ElectricalEquipmentDataGridUndoStack.Last());
+            ElectricalEquipmentDataGridUndoStack.RemoveAt(
+              ElectricalEquipmentDataGridUndoStack.Count - 1
+            );
+          }
+        }
+        else if (e.Key == Key.Y && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+          // electrical equipment data grid redo action
+          if (ElectricalEquipmentDataGridRedoStack.Count == 0)
+          {
+            return;
+          }
+          DataGridEdit last = ElectricalEquipmentDataGridRedoStack.Last();
+          ElectricalEquipment? eq = last.DataContext as ElectricalEquipment;
+          string col = last.ColumnHeader;
+          if (eq == null)
+          {
+            return;
+          }
+          if (last.ColumnHeader == "removed")
+          {
+            RemoveElectricalEquipment(eq);
+            return;
+          }
+          string newValue = last.NewValue as string;
+          if (last.ColumnHeader == "Tag")
+          {
+            eq.EquipNo = newValue;
+          }
+          if (col == "Description")
+          {
+            eq.Description = newValue;
+          }
+          if (col == "Amperage")
+          {
+            if (Double.TryParse(newValue, out double value))
+            {
+              eq.Fla = (float)value;
+            }
+          }
+          if (col == "VA")
+          {
+            if (Double.TryParse(newValue, out double value))
+            {
+              eq.Va = (float)value;
+            }
+          }
+          if (col == "HP")
+          {
+            eq.Hp = newValue;
+          }
+          if (col == "Width")
+          {
+            if (Double.TryParse(newValue, out double value))
+            {
+              eq.Width = (float)value;
+            }
+          }
+          if (col == "Height")
+          {
+            if (Double.TryParse(newValue, out double value))
+            {
+              eq.Height = (float)value;
+            }
+          }
+          if (col == "Depth")
+          {
+            if (Double.TryParse(newValue, out double value))
+            {
+              eq.Depth = (float)value;
+            }
+          }
+          if (col == "AIC Rating")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.AicRating = value;
+            }
+          }
+          if (col == "Parent Distance")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.DistanceFromParent = value;
+            }
+          }
+          if (col == "Category")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.Category = value;
+            }
+          }
+          if (col == "Status")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.StatusId = value;
+            }
+          }
+          if (col == "Connection")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.ConnectionSymbolId = value;
+            }
+          }
+          if (col == "Voltage")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.Voltage = value;
+            }
+          }
+          if (col == "Phase")
+          {
+            if (Boolean.TryParse(newValue, out bool value))
+            {
+              eq.Is3Ph = value;
+            }
+          }
+          if (col == "Load Type")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.LoadType = value;
+            }
+          }
+          if (col == "MOCP")
+          {
+            if (Int32.TryParse(newValue, out int value))
+            {
+              eq.MocpId = value;
+            }
+          }
+          try
+          {
+            ElectricalEquipmentDataGridUndoStack.Add(
+              new DataGridEdit(eq, col, last.OldValue, newValue)
+            );
+            if (ElectricalEquipmentDataGridUndoStack.Count > 50)
+            {
+              ElectricalEquipmentDataGridUndoStack.Remove(
+                ElectricalEquipmentDataGridUndoStack.First()
+              );
+            }
+          }
+          catch (Exception ex) { }
+        }
       }
     }
 
