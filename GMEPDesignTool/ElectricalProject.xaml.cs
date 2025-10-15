@@ -245,27 +245,34 @@ namespace GMEPDesignTool
 
     public async Task InitializeAsync()
     {
+      SelectedVersion = ProjectView.database.GetElectricalProjectVersionNo(ElectricalProjectId);
       ElectricalPanels = await ProjectView.database.GetProjectPanels(ElectricalProjectId);
       ElectricalPanels.CollectionChanged += ElectricalPanels_CollectionChanged;
-      ElectricalServices = await ProjectView.database.GetProjectServices(ProjectId);
+      ElectricalServices = await ProjectView.database.GetProjectServices(ElectricalProjectId);
       ElectricalServices.CollectionChanged += ElectricalServices_CollectionChanged;
-      ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ProjectId);
+      ElectricalEquipments = await ProjectView.database.GetProjectEquipment(ElectricalProjectId);
       ElectricalEquipments.CollectionChanged += ElectricalEquipments_CollectionChanged;
-      ElectricalTransformers = await ProjectView.database.GetProjectTransformers(ProjectId);
+      ElectricalTransformers = await ProjectView.database.GetProjectTransformers(
+        ElectricalProjectId
+      );
       ElectricalTransformers.CollectionChanged += ElectricalTransformers_CollectionChanged;
-      ElectricalLightings = await ProjectView.database.GetProjectLighting(ProjectId);
+      ElectricalLightings = await ProjectView.database.GetProjectLighting(ElectricalProjectId);
       ElectricalLightings.CollectionChanged += ElectricalLightings_CollectionChanged;
-      ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(ProjectId);
-      LightingLocations = await ProjectView.database.GetLightingLocations(ProjectId);
-      TimeClocks = await ProjectView.database.GetLightingTimeClocks(ProjectId);
-      ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(ProjectId);
+      ElectricalLightingControls = await ProjectView.database.GetProjectLightingControls(
+        ElectricalProjectId
+      );
+      LightingLocations = await ProjectView.database.GetLightingLocations(ElectricalProjectId);
+      TimeClocks = await ProjectView.database.GetLightingTimeClocks(ElectricalProjectId);
+      ElectricalPanelNotes = await ProjectView.database.GetProjectElectricalPanelNotes(
+        ElectricalProjectId
+      );
       ElectricalPanelNoteRels = await ProjectView.database.GetProjectElectricalPanelNoteRels(
-        ProjectId
+        ElectricalProjectId
       );
       Owners = await ProjectView.database.getOwners();
-      CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ProjectId);
+      CustomCircuits = await ProjectView.database.GetProjectCustomCircuits(ElectricalProjectId);
       ElectricalPanelMiniBreakers =
-        await ProjectView.database.GetProjectElectricalPanelMiniBreakers(ProjectId);
+        await ProjectView.database.GetProjectElectricalPanelMiniBreakers(ElectricalProjectId);
 
       ParentNames.Add("", "");
       PanelTransformerNames.Add("", "");

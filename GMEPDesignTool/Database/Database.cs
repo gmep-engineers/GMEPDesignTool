@@ -2837,7 +2837,7 @@ INSERT INTO electrical_panel_custom_circuits
       }
       string query =
         @"
-INSERT INTO electrical_equipment
+INSERT IGNORE INTO electrical_equipment
 ( id,  project_id,  electrical_project_id,  equip_no,  parent_id,  owner_id,  voltage_id,  fla,  is_three_phase,  spec_sheet_id,  aic_rating,  spec_sheet_from_client,  parent_distance,  category_id,  color_code,  connection_type_id,  description,  hp,  has_plug,  locking_connector,  width,  depth,  height,  circuit_no,  is_hidden_on_plan,  load_type,  order_no,  va,  original_va,  date_created,  status_id,  connection_symbol_id,  num_conv_duplex,  phase_a_va,  phase_b_va,  phase_c_va,  mocp_id) VALUES 
 (@id, @project_id, @electrical_project_id, @equip_no, @parent_id, @owner_id, @voltage_id, @fla, @is_three_phase, @spec_sheet_id, @aic_rating, @spec_sheet_from_client, @parent_distance, @category_id, @color_code, @connection_type_id, @description, @hp, @has_plug, @locking_connector, @width, @depth, @height, @circuit_no, @is_hidden_on_plan, @load_type, @order_no, @va, @original_va, @date_created, @status_id, @connection_symbol_id, @num_conv_duplex, @phase_a_va, @phase_b_va, @phase_c_va, @mocp_id)";
       MySqlCommand command = new MySqlCommand(query, conn);
@@ -4113,6 +4113,27 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       reader.Close();
       CloseConnection(Connection);
       return electricalProjectIds;
+    }
+
+    public int GetElectricalProjectVersionNo(string id)
+    {
+      int versionNo = 1;
+      string query =
+        @"
+        SELECT version FROM electrical_projects WHERE id = @id
+      ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", id);
+      MySqlDataReader reader = (MySqlDataReader)command.ExecuteReader();
+
+      if (reader.Read())
+      {
+        versionNo = GetSafeInt(reader, "version");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return versionNo;
     }
 
     public List<string> GetElectricalTables()
