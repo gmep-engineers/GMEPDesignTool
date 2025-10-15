@@ -2013,12 +2013,33 @@ namespace GMEPDesignTool.Database
     {
       string query =
         @"
-      SELECT id FROM electrical_projects ORDER BY version DESC LIMIT 1
+      SELECT id FROM electrical_projects WHERE project_id = @project_id ORDER BY version DESC LIMIT 1 
       ";
       string id = string.Empty;
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@project_id", projectId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        id = GetSafeString(reader, "id");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return id;
+    }
+
+    public string GetActiveElectricalProjectId(string projectId, int version)
+    {
+      string query =
+        @"
+      SELECT id FROM electrical_projects WHERE project_id = @project_id AND version = @version ORDER BY version DESC LIMIT 1 
+      ";
+      string id = string.Empty;
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@project_id", projectId);
+      command.Parameters.AddWithValue("@version", version);
       MySqlDataReader reader = command.ExecuteReader();
       if (reader.Read())
       {

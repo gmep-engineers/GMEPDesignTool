@@ -71,7 +71,7 @@ namespace GMEPDesignTool
       Dictionary<int, string> projectIds = await viewModel.database.GetProjectIds(projectNo);
 
       Dictionary<int, string> electricalProjectIds =
-        viewModel.database.GetAllElectricalProjectVersionIds(projectNo);
+        viewModel.database.GetAllElectricalProjectVersionIds(projectIds.First().Value);
 
       string latestElectricalProjectId = projectIds.First().Value;
 
@@ -89,6 +89,12 @@ namespace GMEPDesignTool
         SessionId,
         loginResponse
       );
+
+      if (electricalProjectIds.Count > 0)
+      {
+        viewModel.ActiveElectricalProject.ElectricalProjectIds = electricalProjectIds;
+        viewModel.ActiveElectricalProject.SelectedVersion = electricalProjectIds.Last().Key;
+      }
 
       await viewModel.ActiveElectricalProject.InitializeAsync();
       ElectricalTab.Content = viewModel.ActiveElectricalProject;
@@ -164,7 +170,10 @@ namespace GMEPDesignTool
             .ActiveElectricalProject
             .ServiceTransPanelTabs
             .SelectedIndex;
-          string electricalProjectId = viewModel.database.GetLatestElectricalProjectId(projectId);
+          string electricalProjectId = viewModel.database.GetActiveElectricalProjectId(
+            projectId,
+            viewModel.ActiveElectricalProject.SelectedVersion
+          );
           viewModel.ActiveElectricalProject = new ElectricalProject(
             projectId,
             electricalProjectId,
