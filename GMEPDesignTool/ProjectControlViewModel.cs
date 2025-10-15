@@ -74,8 +74,8 @@ namespace GMEPDesignTool
       }
     }
 
-    public List<string> electricalProjectIds;
-    public List<string> ElectricalProjectIds
+    public Dictionary<int, string> electricalProjectIds;
+    public Dictionary<int, string> ElectricalProjectIds
     {
       get { return electricalProjectIds; }
       set

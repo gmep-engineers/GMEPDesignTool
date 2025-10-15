@@ -4092,12 +4092,12 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       );
     }
 
-    public List<string> GetAllElectricalProjectVersionIds(string projectId)
+    public Dictionary<int, string> GetAllElectricalProjectVersionIds(string projectId)
     {
-      List<string> electricalProjectIds = new List<string>();
+      Dictionary<int, string> electricalProjectIds = new Dictionary<int, string>();
       string query =
         @"
-        SELECT id FROM electrical_projects WHERE project_id = @projectId ORDER BY version
+        SELECT id, version FROM electrical_projects WHERE project_id = @projectId ORDER BY version
         ";
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
@@ -4108,7 +4108,7 @@ INSERT INTO electrical_lighting_timeclock_control_relays
 
       while (reader.Read())
       {
-        electricalProjectIds.Add(GetSafeString(reader, "id"));
+        electricalProjectIds.Add(GetSafeInt(reader, "version"), GetSafeString(reader, "id"));
       }
       reader.Close();
       CloseConnection(Connection);

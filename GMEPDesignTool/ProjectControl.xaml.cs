@@ -70,15 +70,14 @@ namespace GMEPDesignTool
 
       Dictionary<int, string> projectIds = await viewModel.database.GetProjectIds(projectNo);
 
-      List<string> electricalProjectIds = viewModel.database.GetAllElectricalProjectVersionIds(
-        projectNo
-      );
+      Dictionary<int, string> electricalProjectIds =
+        viewModel.database.GetAllElectricalProjectVersionIds(projectNo);
 
       string latestElectricalProjectId = projectIds.First().Value;
 
       if (electricalProjectIds.Count > 0)
       {
-        latestElectricalProjectId = electricalProjectIds.Last();
+        latestElectricalProjectId = electricalProjectIds.Last().Value;
       }
 
       viewModel.ActiveElectricalProject = new ElectricalProject(

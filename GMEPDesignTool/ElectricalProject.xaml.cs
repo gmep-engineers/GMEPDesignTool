@@ -552,11 +552,11 @@ namespace GMEPDesignTool
 
     private void DeleteElectricalProject_Click(object sender, RoutedEventArgs e)
     {
-      List<string> electricalProjectVersionIds =
+      Dictionary<int, string> electricalProjectVersionIds =
         ProjectView.database.GetAllElectricalProjectVersionIds(ProjectId);
-      foreach (string id in electricalProjectVersionIds)
+      foreach (KeyValuePair<int, string> entry in electricalProjectVersionIds)
       {
-        ProjectView.database.DeleteAllElectricalProjectAssets(id);
+        ProjectView.database.DeleteAllElectricalProjectAssets(entry.Value);
       }
     }
 
