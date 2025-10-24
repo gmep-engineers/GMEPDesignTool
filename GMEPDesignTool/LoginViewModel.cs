@@ -29,11 +29,11 @@ namespace GMEPDesignTool
       }
     }
 
-    public void OpenApp(LoginResponse loginResponse)
+    public void OpenApp(LoginResponse loginResponse, NetSuiteAuth netSuiteAuth)
     {
       Application.Current.Dispatcher.Invoke(() =>
       {
-        MainWindow mainWindow = new MainWindow(loginResponse);
+        MainWindow mainWindow = new MainWindow(loginResponse, netSuiteAuth);
         mainWindow.Show();
         _loginWindow.Close();
       });

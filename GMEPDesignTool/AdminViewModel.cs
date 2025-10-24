@@ -705,14 +705,6 @@ namespace GMEPDesignTool
         {
           SelectedClientCompanyId = companyId;
         }
-
-        //using (var stream = File.OpenRead(filePath))
-        //{
-        //  var message = MimeMessage.Load(stream);
-        //  Trace.WriteLine(message.Subject);
-        //  Trace.WriteLine(message.Body);
-        //  Trace.WriteLine(message.From);
-        //}
       }
     }
 

@@ -25,7 +25,7 @@ namespace GMEPDesignTool
 
     static HttpClient client = new HttpClient();
 
-    public MainWindow(LoginResponse loginResponse)
+    public MainWindow(LoginResponse loginResponse, NetSuiteAuth netSuiteAuth)
     {
       SessionId = loginResponse.SessionId;
       client.BaseAddress = new Uri("http://44.240.61.252:3000/");
@@ -33,7 +33,7 @@ namespace GMEPDesignTool
       client.DefaultRequestHeaders.Accept.Add(
         new MediaTypeWithQualityHeaderValue("application/json")
       );
-      MainWindowViewModel = new ViewModel(loginResponse);
+      MainWindowViewModel = new ViewModel(loginResponse, netSuiteAuth);
       DataContext = MainWindowViewModel;
       InitializeComponent();
     }

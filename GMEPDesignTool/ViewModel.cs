@@ -17,6 +17,8 @@ namespace GMEPDesignTool
   public class ViewModel : ViewModelBase
   {
     private LoginResponse loginResponse;
+    private NetSuiteAuth netSuiteAuth;
+
     private List<Project> _projects = new List<Project>();
     public List<Project> Projects
     {
@@ -197,9 +199,10 @@ namespace GMEPDesignTool
     public ICommand OpenAboutWindowCommand => _openAboutWindowCommand;
     public ObservableCollection<TabItem> Tabs { get; set; }
 
-    public ViewModel(LoginResponse loginResponse)
+    public ViewModel(LoginResponse loginResponse, NetSuiteAuth netSuiteAuth)
     {
       this.loginResponse = loginResponse;
+      this.netSuiteAuth = netSuiteAuth;
       Tabs = new ObservableCollection<TabItem>();
       _getSearchResultsCommand = new DelegateCommand(GetSearchResults, CanGetSearchResults);
       _openEmployeesWindowCommand = new DelegateCommand(
@@ -270,7 +273,7 @@ namespace GMEPDesignTool
 
     private void OpenProposalsWindow(object commandParameter)
     {
-      ProposalsWindow proposalsWindow = new ProposalsWindow(loginResponse);
+      ProposalsWindow proposalsWindow = new ProposalsWindow(loginResponse, netSuiteAuth);
       proposalsWindow.Show();
     }
 

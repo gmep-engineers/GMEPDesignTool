@@ -27,12 +27,18 @@ namespace GMEPDesignTool
 
     private LoginResponse LoginResponse { get; set; }
 
-    public ProposalsWindow(LoginResponse loginResponse)
+    public ProposalsWindow(LoginResponse loginResponse, NetSuiteAuth netSuiteAuth)
     {
-      ViewModel = new ProposalsViewModel(loginResponse);
+      ViewModel = new ProposalsViewModel(loginResponse, netSuiteAuth);
       this.LoginResponse = loginResponse;
       this.DataContext = ViewModel;
       InitializeComponent();
+
+      if (netSuiteAuth.refresh_token == null)
+      {
+        OAuthLoginWindow oAuthLoginWindow = new OAuthLoginWindow(loginResponse, netSuiteAuth);
+        oAuthLoginWindow.Show();
+      }
     }
 
     public void SaveClick(object sender, RoutedEventArgs e)

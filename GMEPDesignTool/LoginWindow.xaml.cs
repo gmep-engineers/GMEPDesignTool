@@ -44,6 +44,16 @@ namespace GMEPDesignTool
     public uint? Extension { get; set; }
     public string EmailAddress { get; set; }
     public string EmployeeId { get; set; }
+    public string NetSuiteClientId { get; set; }
+    public string NetSuiteClientSecret { get; set; }
+  }
+
+  public class NetSuiteAuth
+  {
+    public string? access_token;
+    public string? refresh_token;
+    public string? expires_in;
+    public string? token_type;
   }
 
   public partial class LoginWindow : Window
@@ -82,7 +92,8 @@ namespace GMEPDesignTool
         loginCredentials.Username = UsernameBox.Text;
         loginCredentials.Password = PasswordBox.Password;
         LoginResponse loginResponse = await AttemptLogin(loginCredentials);
-        LoginViewModel.OpenApp(loginResponse);
+        NetSuiteAuth netSuiteAuth = new NetSuiteAuth();
+        LoginViewModel.OpenApp(loginResponse, netSuiteAuth);
       }
       catch (Exception ex)
       {
