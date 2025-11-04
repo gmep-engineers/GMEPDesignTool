@@ -53,6 +53,7 @@
             <DataGrid.ContextMenu>
                 <ContextMenu Name="ProposalsContextMenu">
                     <MenuItem Header="Edit Details" Click="EditProposal_Click"/>
+                    <MenuItem Header="Create Estimate" Click="CreateEstimate_Click"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>

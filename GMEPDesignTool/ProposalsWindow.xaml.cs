@@ -71,6 +71,12 @@ namespace GMEPDesignTool
       {
         return;
       }
+      if (String.IsNullOrEmpty(p.ProjectId))
+      {
+        return;
+        // HERE create new project and assign project_id to proposal
+        // then create a temp gmep_project_no and assign to project
+      }
       AdminViewModel adminViewModel = new AdminViewModel(p.ProjectId, LoginResponse);
       SelectProposalTypeViewModel selectProposalTypeViewModel = new SelectProposalTypeViewModel();
       selectProposalTypeViewModel.TypeId = p.TypeId;
@@ -88,6 +94,16 @@ namespace GMEPDesignTool
         p
       );
       proposalCommercialWindow.Show();
+    }
+
+    private void CreateEstimate_Click(object sender, RoutedEventArgs e)
+    {
+      Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;
+      if (p == null)
+      {
+        return;
+      }
+      ViewModel.CreateEstimate(p);
     }
 
     protected override void OnClosing(CancelEventArgs e)

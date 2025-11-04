@@ -46,13 +46,55 @@ namespace GMEPDesignTool
       MyDataGrid.ItemsSource = Proposals;
     }
 
-    private async void SaveAdminProject(object sender, RoutedEventArgs e)
+    private async void SaveAdminProject(object sender, RoutedEventArgs args)
     {
       if (!Saving && !Loading)
       {
         Saving = true;
         if (AdminViewModel != null)
         {
+          Proposal? latestProposal = Proposals.First();
+          AdminViewModel.IsCheckedS = false;
+          AdminViewModel.IsCheckedM = false;
+          AdminViewModel.IsCheckedE = false;
+          AdminViewModel.IsCheckedP = false;
+
+          if (latestProposal != null && latestProposal.Data != null)
+          {
+            StructuralScope s = latestProposal.Data.StructuralScope;
+            MechanicalScope m = latestProposal.Data.MechanicalScope;
+            ElectricalScope e = latestProposal.Data.ElectricalScope;
+            PlumbingScope p = latestProposal.Data.PlumbingScope;
+            if (
+              s.StructuralPlans
+              || s.StructuralAnalysis
+              || s.StructuralGeoReport
+              || s.StructuralFramingDepths
+              || s.StructuralCodeCompliance
+              || s.StructuralDetailsCalculations
+            )
+            {
+              AdminViewModel.IsCheckedS = true;
+            }
+            if (m.MechanicalHvacEquipSpec || m.MechanicalExhaustSupply || m.MechanicalTitle24)
+            {
+              AdminViewModel.IsCheckedM = true;
+            }
+            if (
+              e.ElectricalSingleLineDiagram
+              || e.ElectricalPowerDesign
+              || e.ElectricalServiceLoadCalc
+              || e.ElectricalLightingDesign
+            )
+            {
+              AdminViewModel.IsCheckedE = true;
+            }
+            if (p.PlumbingHotColdWater || p.PlumbingWasteVent)
+            {
+              AdminViewModel.IsCheckedP = true;
+            }
+          }
+
           var model = new AdminModel
           {
             ProjectNo = AdminViewModel.ProjectNo,

@@ -836,6 +836,104 @@ namespace GMEPDesignTool
       }
     }
 
+    private string projectNo = string.Empty;
+    public string ProjectNo
+    {
+      get => projectNo;
+      set
+      {
+        if (projectNo != value)
+        {
+          projectNo = value;
+          OnPropertyChanged(nameof(ProjectNo));
+        }
+      }
+    }
+
+    private string projectName = string.Empty;
+    public string ProjectName
+    {
+      get => projectName;
+      set
+      {
+        if (projectName != value)
+        {
+          projectNo = value;
+          OnPropertyChanged(nameof(ProjectName));
+        }
+      }
+    }
+
+    private string ProjectStreetAddress = string.Empty;
+    public string projectStreetAddress
+    {
+      get => projectStreetAddress;
+      set
+      {
+        if (projectStreetAddress != value)
+        {
+          projectStreetAddress = value;
+          OnPropertyChanged(nameof(ProjectStreetAddress));
+        }
+      }
+    }
+
+    private string ProjectCity = string.Empty;
+    public string projectCity
+    {
+      get => projectCity;
+      set
+      {
+        if (projectCity != value)
+        {
+          projectCity = value;
+          OnPropertyChanged(nameof(ProjectCity));
+        }
+      }
+    }
+
+    private string ProjectState = string.Empty;
+    public string projectState
+    {
+      get => projectState;
+      set
+      {
+        if (projectState != value)
+        {
+          projectState = value;
+          OnPropertyChanged(nameof(ProjectState));
+        }
+      }
+    }
+
+    private string ProjectPostalCode = string.Empty;
+    public string projectPostalCode
+    {
+      get => projectPostalCode;
+      set
+      {
+        if (projectPostalCode != value)
+        {
+          projectPostalCode = value;
+          OnPropertyChanged(nameof(ProjectPostalCode));
+        }
+      }
+    }
+
+    private string ProjectDescription = string.Empty;
+    public string projectDescription
+    {
+      get => projectDescription;
+      set
+      {
+        if (projectDescription != value)
+        {
+          projectDescription = value;
+          OnPropertyChanged(nameof(ProjectDescription));
+        }
+      }
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected void OnPropertyChanged(string name)

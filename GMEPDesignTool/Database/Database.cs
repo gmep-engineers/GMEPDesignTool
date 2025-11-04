@@ -328,7 +328,7 @@ namespace GMEPDesignTool.Database
         LEFT JOIN proposal_types ON proposal_types.id = proposals.type_id
         WHERE proposals.status_id = @statusId
         GROUP BY proposals.project_id
-        ORDER BY proposals.date_created
+        ORDER BY proposals.date_created DESC
         ";
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
