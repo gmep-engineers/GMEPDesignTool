@@ -35,6 +35,8 @@ namespace GMEPDesignTool
       }
     }
 
+    public bool New = true;
+
     private string _ProjectId;
     public string ProjectId
     {
@@ -76,7 +78,7 @@ namespace GMEPDesignTool
         }
       }
     }
-    private DateTime _RfpDate;
+    private DateTime _RfpDate = DateTime.Now;
     public DateTime RfpDate
     {
       get => _RfpDate;
@@ -91,7 +93,7 @@ namespace GMEPDesignTool
       }
     }
 
-    private DateTime? _ProposalDate;
+    private DateTime? _ProposalDate = DateTime.Now;
     public DateTime? ProposalDate
     {
       get => _ProposalDate;

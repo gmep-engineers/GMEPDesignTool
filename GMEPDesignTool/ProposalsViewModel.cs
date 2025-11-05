@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -118,6 +119,9 @@ namespace GMEPDesignTool
 
       FilteredProposals = new ObservableCollection<Proposal>();
 
+      FilteredProposals.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
+        Saved = false;
+
       Employees = new List<Employee>();
 
       FilterDataGridByYear(DateTime.Now.Year.ToString());
@@ -132,6 +136,7 @@ namespace GMEPDesignTool
       foreach (Proposal proposal in proposals)
       {
         proposal.ProposalsViewModel = this;
+        proposal.New = false;
         FilteredProposals.Add(proposal);
       }
 
@@ -148,9 +153,15 @@ namespace GMEPDesignTool
       List<Proposal> proposals = new List<Proposal>();
       foreach (Proposal proposal in FilteredProposals)
       {
-        if (proposal.Modified)
+        if (proposal.New)
+        {
+          Database.CreateProposal(proposal, LoginResponse.EmployeeId, 0, proposal.ProjectId);
+          Database.SetProposalWindowProjectValues(proposal);
+        }
+        else if (proposal.Modified)
         {
           Database.SaveProposal(proposal);
+          Database.SetProposalWindowProjectValues(proposal);
         }
       }
     }

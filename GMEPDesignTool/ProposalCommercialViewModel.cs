@@ -858,14 +858,14 @@ namespace GMEPDesignTool
       {
         if (projectName != value)
         {
-          projectNo = value;
+          projectName = value;
           OnPropertyChanged(nameof(ProjectName));
         }
       }
     }
 
-    private string ProjectStreetAddress = string.Empty;
-    public string projectStreetAddress
+    private string projectStreetAddress = string.Empty;
+    public string ProjectStreetAddress
     {
       get => projectStreetAddress;
       set
@@ -878,8 +878,8 @@ namespace GMEPDesignTool
       }
     }
 
-    private string ProjectCity = string.Empty;
-    public string projectCity
+    private string projectCity = string.Empty;
+    public string ProjectCity
     {
       get => projectCity;
       set
@@ -892,8 +892,8 @@ namespace GMEPDesignTool
       }
     }
 
-    private string ProjectState = string.Empty;
-    public string projectState
+    private string projectState = string.Empty;
+    public string ProjectState
     {
       get => projectState;
       set
@@ -906,8 +906,8 @@ namespace GMEPDesignTool
       }
     }
 
-    private string ProjectPostalCode = string.Empty;
-    public string projectPostalCode
+    private string projectPostalCode = string.Empty;
+    public string ProjectPostalCode
     {
       get => projectPostalCode;
       set
@@ -920,19 +920,74 @@ namespace GMEPDesignTool
       }
     }
 
-    private string ProjectDescription = string.Empty;
-    public string projectDescription
+    private string projectDescriptions = string.Empty;
+    public string ProjectDescriptions
     {
-      get => projectDescription;
+      get => projectDescriptions;
       set
       {
-        if (projectDescription != value)
+        if (projectDescriptions != value)
         {
-          projectDescription = value;
-          OnPropertyChanged(nameof(ProjectDescription));
+          projectDescriptions = value;
+          OnPropertyChanged(nameof(ProjectDescriptions));
         }
       }
     }
+
+    public ObservableCollection<string> States { get; set; } =
+      new ObservableCollection<string>
+      {
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY",
+      };
 
     public event PropertyChangedEventHandler PropertyChanged;
 

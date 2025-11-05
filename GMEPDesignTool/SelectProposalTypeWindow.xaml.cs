@@ -47,7 +47,8 @@ namespace GMEPDesignTool
     public async void SelectButton_Click(object sender, RoutedEventArgs e)
     {
       Database.Database database = new Database.Database(LoginResponse.SqlConnectionString);
-      string id = database.CreateProposal(LoginResponse.EmployeeId, ViewModel.TypeId, ProjectId);
+      Proposal p = new Proposal();
+      string id = database.CreateProposal(p, LoginResponse.EmployeeId, ViewModel.TypeId, ProjectId);
       //MessageBox.Show($"proposal TypeId: {ViewModel.TypeId}");
       CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel, database);
 
@@ -55,7 +56,8 @@ namespace GMEPDesignTool
       ProposalCommercialWindow newWindow = new ProposalCommercialWindow(
         CommercialViewModel,
         id,
-        LoginResponse
+        LoginResponse,
+        adminViewModel
       );
       newWindow.DataContext = CommercialViewModel;
       newWindow.Show();

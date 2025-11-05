@@ -357,6 +357,7 @@ namespace GMEPDesignTool.Database
         @"
         UPDATE proposals SET
         rfp_date = @rfp_date,
+        project_id = @project_id,
         proposal_date = @proposal_date,
         type_id = @type_id,
         status_id = @status_id,
@@ -373,6 +374,7 @@ namespace GMEPDesignTool.Database
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@rfp_date", proposal.RfpDate);
+      command.Parameters.AddWithValue("@project_id", proposal.ProjectId);
       command.Parameters.AddWithValue("@proposal_date", proposal.ProposalDate);
       command.Parameters.AddWithValue("@type_id", proposal.TypeId);
       command.Parameters.AddWithValue("@status_id", proposal.StatusId);
@@ -401,6 +403,26 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@region_id", proposal.RegionId);
       command.Parameters.AddWithValue("@client_company_id", proposal.ClientCompanyId);
       command.Parameters.AddWithValue("@id", proposal.ProjectId);
+      command.ExecuteNonQuery();
+      Connection.Close();
+    }
+
+    public void SetProposalWindowProjectValues(Proposal p)
+    {
+      string query =
+        @"
+        UPDATE projects SET
+        client_company_id = @clientCompanyId,
+        gmep_project_name = @projectName,
+        gmep_project_no = @projectNo
+        WHERE id = @projectId
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@clientCompanyId", p.ClientCompanyId);
+      command.Parameters.AddWithValue("@projectName", p.ProjectName);
+      command.Parameters.AddWithValue("@projectNo", p.ProjectNo);
+      command.Parameters.AddWithValue("@projectId", p.ProjectId);
       command.ExecuteNonQuery();
       Connection.Close();
     }
@@ -1922,6 +1944,20 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@id", contact.CompanyId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
+    }
+
+    public string CreateBlankProject()
+    {
+      var id = Guid.NewGuid().ToString();
+      var projectNo = "n" + id.Substring(0, 6);
+      OpenConnection(Connection);
+      string query = "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", id);
+      command.Parameters.AddWithValue("@projectNo", projectNo);
+      command.ExecuteNonQuery();
+      CloseConnection(Connection);
+      return id;
     }
 
     public async Task<Dictionary<int, string>> GetProjectIds(string projectNo)
@@ -4441,24 +4477,43 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       return true;
     }
 
-    public string CreateProposal(string employeeId, int typeId, string projectId)
+    public string CreateProposal(
+      Proposal p,
+      string employeeId,
+      int typeId,
+      string projectId,
+      string id = ""
+    )
     {
-      string id = Guid.NewGuid().ToString();
-      ;
+      if (string.IsNullOrEmpty(id))
+      {
+        id = Guid.NewGuid().ToString();
+      }
+
+      if (string.IsNullOrEmpty(projectId))
+      {
+        projectId = CreateBlankProject();
+        p.ProjectId = projectId;
+        p.ProjectNo = "n" + projectId.Substring(0, 6);
+      }
       string query =
         @"
-                INSERT INTO proposals (id, project_id, type_id, employee_id)
-                VALUES (@id, @projectId, @typeId, @employeeId)
-                ";
+        INSERT INTO proposals
+        ( id,  rfp_date,  proposal_date,  project_id,  type_id,  employee_id) VALUES
+        (@id, @rfp_date, @proposal_date, @project_id, @type_id, @employee_id)
+        ";
 
       OpenConnection(Connection);
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", id);
-      command.Parameters.AddWithValue("@projectId", projectId);
-      command.Parameters.AddWithValue("@typeId", typeId);
-      command.Parameters.AddWithValue("@employeeId", employeeId);
+      command.Parameters.AddWithValue("@rfp_date", p.RfpDate);
+      command.Parameters.AddWithValue("@proposal_date", p.ProposalDate);
+      command.Parameters.AddWithValue("@project_id", projectId);
+      command.Parameters.AddWithValue("@type_id", typeId);
+      command.Parameters.AddWithValue("@employee_id", employeeId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
+      p.New = false;
       return id;
     }
 

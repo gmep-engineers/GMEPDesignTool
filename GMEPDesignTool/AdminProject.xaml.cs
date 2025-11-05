@@ -157,6 +157,7 @@ namespace GMEPDesignTool
           pvm,
           AdminViewModel.SelectedProposal.Id,
           LoginResponse,
+          AdminViewModel,
           proposal.Data,
           proposal
         );

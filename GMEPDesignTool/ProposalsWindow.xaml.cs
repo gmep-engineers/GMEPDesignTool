@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,32 +65,44 @@ namespace GMEPDesignTool
       }
     }
 
-    private void EditProposal_Click(object sender, RoutedEventArgs e)
+    private async void EditProposal_Click(object sender, RoutedEventArgs e)
     {
       Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;
+
+      Database.Database db = new Database.Database(LoginResponse.SqlConnectionString);
       if (p == null)
       {
         return;
       }
       if (String.IsNullOrEmpty(p.ProjectId))
       {
-        return;
-        // HERE create new project and assign project_id to proposal
-        // then create a temp gmep_project_no and assign to project
+        p.ProjectId = db.CreateBlankProject();
+        p.ProjectNo = "n" + p.ProjectId.Substring(0, 6);
+        db.CreateProposal(p, LoginResponse.EmployeeId, 0, p.ProjectId, p.Id);
+        db.SaveProposal(p);
       }
+
       AdminViewModel adminViewModel = new AdminViewModel(p.ProjectId, LoginResponse);
       SelectProposalTypeViewModel selectProposalTypeViewModel = new SelectProposalTypeViewModel();
       selectProposalTypeViewModel.TypeId = p.TypeId;
-      Database.Database db = new Database.Database(LoginResponse.SqlConnectionString);
       ProposalCommercialViewModel vm = new ProposalCommercialViewModel(
         adminViewModel,
         selectProposalTypeViewModel,
         db
       );
+      AdminModel adminModel = await db.GetAdminByProjectId(p.ProjectId);
+      adminViewModel.ProjectNo = adminModel.ProjectNo;
+      adminViewModel.ProjectName = adminModel.ProjectName;
+      adminViewModel.StreetAddress = adminModel.StreetAddress;
+      adminViewModel.City = adminModel.City;
+      adminViewModel.State = adminModel.State;
+      adminViewModel.PostalCode = adminModel.PostalCode;
+      adminViewModel.Descriptions = adminModel.Descriptions;
       ProposalCommercialWindow proposalCommercialWindow = new ProposalCommercialWindow(
         vm,
         p.Id,
         LoginResponse,
+        adminViewModel,
         p.Data,
         p
       );

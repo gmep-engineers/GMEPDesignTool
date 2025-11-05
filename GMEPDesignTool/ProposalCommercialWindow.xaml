@@ -44,6 +44,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0"  Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
                         <Grid.ColumnDefinitions>
@@ -121,6 +122,39 @@
                         <CheckBox Grid.Row="3" IsChecked="{Binding PlumbingCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
                     </Grid>
                     <Grid Grid.Row="4">
+                        <Grid Margin="10,20,40,10" IsEnabled="{Binding Editable}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="147*"/>
+                                <ColumnDefinition Width="647*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Content="Project Info" FontFamily="Tahoma" FontSize="16pt"/>
+                            <Label Grid.Row="1" Content="Project No." Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="ProjectNoBox" Grid.Row="1" Text="{Binding ProjectNo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="2" Content="Project Name" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="ProjectNameBox" Grid.Row="2" Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="3" Content="Street Address" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="ProjectStreetAddressBox" Grid.Row="3" Text="{Binding ProjectStreetAddress, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="4" Content="State" Margin="0,0,0,10" Width="auto" />
+                            <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"
+                              ItemsSource="{Binding States}" 
+                              SelectedItem="{Binding ProjectState}" 
+                             />
+                            <Label Grid.Row="5" Content="Postal Code" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="PostalCodeBox" Grid.Row="5" Text="{Binding ProjectPostalCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="6" Content="Descriptions" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="DescriptionsBox" Grid.Row="6" Text="{Binding ProjectDescriptions, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                        </Grid>
+                    </Grid>
+                    <Grid Grid.Row="5">
                         <Grid Margin="10,20,40,10" IsEnabled="{Binding Editable}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="147*"/>

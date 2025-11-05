@@ -61,19 +61,28 @@ namespace GMEPDesignTool
     public ProposalCommercialWindow(
       ProposalCommercialViewModel vm,
       string proposal_id,
-      LoginResponse loginResponse
+      LoginResponse loginResponse,
+      AdminViewModel adminVm
     )
     {
       InitializeComponent();
 
       InitializeWindow(vm, proposal_id, loginResponse);
       vm.WindowTitle = "Proposal Details";
+      vm.ProjectNo = adminVm.ProjectNo;
+      vm.ProjectName = adminVm.ProjectName;
+      vm.ProjectStreetAddress = adminVm.StreetAddress;
+      vm.ProjectCity = adminVm.City;
+      vm.ProjectState = adminVm.State;
+      vm.ProjectPostalCode = adminVm.PostalCode;
+      vm.ProjectDescriptions = adminVm.Descriptions;
     }
 
     public ProposalCommercialWindow(
       ProposalCommercialViewModel vm,
       string proposal_id,
       LoginResponse loginResponse,
+      AdminViewModel adminVm,
       ProposalData? proposalData,
       Proposal? proposal
     )
@@ -82,6 +91,13 @@ namespace GMEPDesignTool
 
       InitializeWindow(vm, proposal_id, loginResponse);
       this.proposal = proposal;
+      vm.ProjectNo = adminVm.ProjectNo;
+      vm.ProjectName = adminVm.ProjectName;
+      vm.ProjectStreetAddress = adminVm.StreetAddress;
+      vm.ProjectCity = adminVm.City;
+      vm.ProjectState = adminVm.State;
+      vm.ProjectPostalCode = adminVm.PostalCode;
+      vm.ProjectDescriptions = adminVm.Descriptions;
       if (proposal != null)
       {
         vm.SelectedClientCompanyId = proposal.ClientCompanyId;
@@ -121,6 +137,9 @@ namespace GMEPDesignTool
         vm.ElectricalPowerDesign = proposalData.ElectricalScope.ElectricalPowerDesign;
         vm.ElectricalServiceLoadCalc = proposalData.ElectricalScope.ElectricalServiceLoadCalc;
         vm.ElectricalSingleLineDiagram = proposalData.ElectricalScope.ElectricalSingleLineDiagram;
+
+        vm.PlumbingWasteVent = proposalData.PlumbingScope.PlumbingWasteVent;
+        vm.PlumbingHotColdWater = proposalData.PlumbingScope.PlumbingHotColdWater;
       }
       vm.WindowTitle = "Proposal Details";
       vm.Saved = true;
@@ -156,6 +175,74 @@ namespace GMEPDesignTool
         vm.ComparableProjectNo = comparableProject;
         vm.WarningText = "A project with a similar address already exists: " + comparableProject;
         vm.WarningVisibility = Visibility.Visible;
+      }
+    }
+
+    private async Task<AdminModel?> GetProjectData()
+    {
+      try
+      {
+        AdminModel projectData = new AdminModel();
+
+        var vm = DataContext as ProposalCommercialViewModel;
+        if (vm == null)
+        {
+          MessageBox.Show("Please complete the missing fields.");
+          return null;
+        }
+
+        Dictionary<int, string> projectIds = await database.GetProjectIds(vm.ProjectNo);
+        projectId = projectIds.First().Value;
+        AdminModel fixedProjectData = await database.GetAdminByProjectId(projectId);
+
+        projectData.ProjectNo = vm.ProjectNo;
+        projectData.ProjectName = vm.ProjectName;
+        projectData.StreetAddress = vm.ProjectStreetAddress;
+        projectData.City = vm.ProjectCity;
+        projectData.State = vm.ProjectState;
+        projectData.PostalCode = vm.ProjectPostalCode;
+        projectData.Descriptions = vm.ProjectDescriptions;
+        projectData.Client = fixedProjectData.Client;
+        projectData.Architect = fixedProjectData.Architect;
+        projectData.Directory = fixedProjectData.Directory;
+
+        projectData.IsCheckedS = false;
+        projectData.IsCheckedM = false;
+        projectData.IsCheckedE = false;
+        projectData.IsCheckedP = false;
+        if (
+          vm.StructuralAnalysis
+          || vm.StructuralCodeCompliance
+          || vm.StructuralDetailsCalculations
+          || vm.StructuralFramingDepths
+          || vm.StructuralGeoReport
+          || vm.StructuralPlans
+        )
+        {
+          projectData.IsCheckedS = true;
+        }
+        if (vm.MechanicalExhaustSupply || vm.MechanicalHvacEquipSpec || vm.MechanicalTitle24)
+        {
+          projectData.IsCheckedM = true;
+        }
+        if (
+          vm.ElectricalLightingDesign
+          || vm.ElectricalPowerDesign
+          || vm.ElectricalServiceLoadCalc
+          || vm.ElectricalSingleLineDiagram
+        )
+        {
+          projectData.IsCheckedE = true;
+        }
+        if (vm.PlumbingHotColdWater || vm.PlumbingWasteVent)
+        {
+          projectData.IsCheckedP = true;
+        }
+        return projectData;
+      }
+      catch (Exception ex)
+      {
+        return null;
       }
     }
 
@@ -239,7 +326,7 @@ namespace GMEPDesignTool
       Save();
     }
 
-    private void Save(CancelEventArgs? e = null)
+    private async void Save(CancelEventArgs? e = null)
     {
       ProposalData? proposalData = GetProposalData();
       if (proposalData == null)
@@ -252,9 +339,21 @@ namespace GMEPDesignTool
         return;
       }
 
+      AdminModel? projectData = await GetProjectData();
+      if (projectData == null)
+      {
+        MessageBox.Show("Please complete the missing fields.");
+        if (e != null)
+        {
+          e.Cancel = true;
+        }
+        return;
+      }
+
       string jsonString = JsonSerializer.Serialize(proposalData);
 
       database.SetProposalData(proposal_id, jsonString);
+      await database.UpdateAdminProject(projectData, projectId);
 
       if (proposal != null)
       {
