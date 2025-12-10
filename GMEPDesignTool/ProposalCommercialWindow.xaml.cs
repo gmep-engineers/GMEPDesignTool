@@ -364,6 +364,11 @@ namespace GMEPDesignTool
       }
 
       var vm = DataContext as ProposalCommercialViewModel;
+      if (proposal != null)
+      {
+        proposal.ProjectName = vm.ProjectName;
+        proposal.ProjectNo = vm.ProjectNo;
+      }
       vm.Saved = true;
     }
 

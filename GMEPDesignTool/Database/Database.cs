@@ -46,6 +46,7 @@ namespace GMEPDesignTool.Database
     {
       if (conn.State == System.Data.ConnectionState.Closed)
       {
+        Trace.WriteLine(ConnectionString);
         conn.Open();
       }
     }
@@ -1323,6 +1324,27 @@ namespace GMEPDesignTool.Database
       if (reader.Read())
       {
         name = GetSafeString(reader, "first_name") + " " + GetSafeString(reader, "last_name");
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return name;
+    }
+
+    public string GetCompanyName(string companyId)
+    {
+      string query =
+        @"
+        SELECT name FROM companies        
+        WHERE id = @companyId
+        ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@companyId", companyId);
+      MySqlDataReader reader = command.ExecuteReader();
+      string name = "";
+      if (reader.Read())
+      {
+        name = GetSafeString(reader, "name");
       }
       reader.Close();
       CloseConnection(Connection);

@@ -3,48 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using static Amazon.S3.Util.S3EventNotification;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace GMEPDesignTool
 {
-  public class NetSuiteQueryRequest
-  {
-    public string q;
-
-    public NetSuiteQueryRequest(string _q)
-    {
-      q = _q;
-    }
-  };
-
-  public class NetSuiteCompanyNameIdQueryResponse
-  {
-    public NetSuiteLink[] links;
-    public int count;
-    public bool hasMore;
-    public NetSuiteCompanyNameIdItem[] items;
-    public int offset;
-    public int totalResults;
-  }
-
-  public class NetSuiteLink
-  {
-    public string rel;
-    public string href;
-  }
-
-  public class NetSuiteCompanyNameIdItem
-  {
-    public NetSuiteLink[] links;
-    public string companyName;
-    public string id;
-  }
-
   public class ProposalsViewModel : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
@@ -220,6 +192,9 @@ namespace GMEPDesignTool
 
       HttpClient client = new HttpClient();
 
+      client.DefaultRequestHeaders.Authorization =
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", NetSuiteAuth.access_token);
+
       client.DefaultRequestHeaders.Accept.Clear();
       client.DefaultRequestHeaders.Accept.Add(
         new MediaTypeWithQualityHeaderValue("application/json")
@@ -229,21 +204,15 @@ namespace GMEPDesignTool
         "https://5645740.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=5",
         query
       );
+
       response.EnsureSuccessStatusCode();
-      NetSuiteCompanyNameIdQueryResponse netSuiteResponse =
-        await response.Content.ReadAsAsync<NetSuiteCompanyNameIdQueryResponse>();
-      if (netSuiteResponse != null)
-      {
-        if (netSuiteResponse.items.Length > 1)
-        {
-          // show which to chose
-        }
-        if (netSuiteResponse.items.Length == 1)
-        {
-          id = netSuiteResponse.items[0].id;
-        }
-      }
-      return id;
+      string resString = await response.Content.ReadAsStringAsync();
+      string netSuiteCompanyId = "";
+      resString = resString.Replace("\"", "");
+      string pattern = $"(?<={companyName},id:)[0-9]+";
+      Match m = Regex.Match(resString, pattern);
+      netSuiteCompanyId = m.Value;
+      return netSuiteCompanyId;
     }
 
     private static KeyValuePair<string, string> KV(string key, string value)
@@ -272,6 +241,10 @@ namespace GMEPDesignTool
           await RefreshNetSuiteToken();
         }
         // get id of company
+        if (string.IsNullOrEmpty(p.CompanyName))
+        {
+          p.CompanyName = Database.GetCompanyName(p.ClientCompanyId);
+        }
         string companyId = await GetNetSuiteCompanyId(p.CompanyName);
         if (string.IsNullOrEmpty(companyId))
         {
@@ -280,55 +253,54 @@ namespace GMEPDesignTool
         }
         AdminModel project = await Database.GetAdminByProjectId(p.ProjectId);
 
-        var formData = new List<KeyValuePair<string, string>>
-        {
-          KV("submitter", "Save"),
-          KV("tranid", project.ProjectName), // Estimate #
-          KV("entity", companyId), // Client
-          KV("type", "estimate"), // Client
-          KV("entity_display", p.CompanyName),
-          //KV("inpt_job", ""),
-          //KV("job", ""),
-          //KV("title", ""),
-          //KV("duedate", ""),
-          KV("trandate", DateTime.Now.ToShortDateString()),
-          //KV("custbody22", ""),
-          //KV("custbody23", ""),
-          KV("inpt_entitystatus", "Proposal"),
-          KV("entitystatus", "10"),
-          KV("custbody_project_address", project.StreetAddress),
-          KV("custbody_project_city", project.City),
-          KV("custbody_project_state", project.State),
-          KV("custbody_project_zip", project.PostalCode),
-          KV("custbody_mechanical", TF(project.IsCheckedM)),
-          KV("custbody_electrical", TF(project.IsCheckedE)),
-          KV("custbody_plumbing", TF(project.IsCheckedP)),
-          KV("custbody_site_lighting", TF(p.Data.HasSiteLighting)),
-          KV("custbody_photometric", TF(p.Data.ElectricalScope.ElectricalLightingDesign)),
-          KV("custbody_site_visit", TF(p.Data.HasSiteVisit)),
-        };
+        //var formData = new List<KeyValuePair<string, string>>
+        //{
+        //  //KV("submitter", "Save"),
+        //  KV("tranid", project.ProjectName), // Estimate #
+        //  KV("entity", companyId), // Client
+        //  //KV("type", "estimate"), // Client
+        //  //KV("entity_display", p.CompanyName),
+        //  //KV("inpt_job", ""),
+        //  //KV("job", ""),
+        //  //KV("title", ""),
+        //  //KV("duedate", ""),
+        //  KV("trandate", DateTime.Now.ToShortDateString()),
+        //  //KV("custbody22", ""),
+        //  //KV("custbody23", ""),
+        //  //KV("inpt_entitystatus", "Proposal"),
+        //  KV("entitystatus", "10"),
+        //  //KV("custbody_project_address", project.StreetAddress),
+        //  //KV("custbody_project_city", project.City),
+        //  //KV("custbody_project_state", project.State),
+        //  //KV("custbody_project_zip", project.PostalCode),
+        //  //KV("custbody_mechanical", TF(project.IsCheckedM)),
+        //  //KV("custbody_electrical", TF(project.IsCheckedE)),
+        //  //KV("custbody_plumbing", TF(project.IsCheckedP)),
+        //  //KV("custbody_site_lighting", TF(p.Data.HasSiteLighting)),
+        //  //KV("custbody_photometric", TF(p.Data.ElectricalScope.ElectricalLightingDesign)),
+        //  //KV("custbody_site_visit", TF(p.Data.HasSiteVisit)),
 
-        if (p.TypeId == 1)
-        {
-          formData.Add(KV("inpt_custbody_project_type", "Commercial"));
-        }
-        if (p.TypeId == 2)
-        {
-          formData.Add(KV("inpt_custbody_project_type", "Residential"));
-        }
+        //};
 
-        string username = LoginResponse.NetSuiteClientId;
-        string password = LoginResponse.NetSuiteClientSecret;
-        string credentials = $"{username}:{password}";
+        //if (p.TypeId == 1)
+        //{
+        //  formData.Add(KV("inpt_custbody_project_type", "Commercial"));
+        //}
+        //if (p.TypeId == 2)
+        //{
+        //  formData.Add(KV("inpt_custbody_project_type", "Residential"));
+        //}
 
-        byte[] credentialBytes = System.Text.Encoding.ASCII.GetBytes(credentials);
-        string base64Credentials = Convert.ToBase64String(credentialBytes);
+
 
         HttpClient client = new HttpClient();
 
         client.DefaultRequestHeaders.Accept.Clear();
+        //client.DefaultRequestHeaders.Accept.Add(
+        //  new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded")
+        //);
         client.DefaultRequestHeaders.Accept.Add(
-          new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded")
+          new MediaTypeWithQualityHeaderValue("application/json")
         );
 
         client.DefaultRequestHeaders.Authorization =
@@ -337,12 +309,53 @@ namespace GMEPDesignTool
             NetSuiteAuth.access_token
           );
 
-        var form = new FormUrlEncodedContent(formData);
+        //var form = new FormUrlEncodedContent(formData);
+
+        //HttpResponseMessage response = await client.PostAsync(
+        //  "https://5645740.suitetalk.api.netsuite.com/services/rest/record/v1/estimate",
+        //  form
+        //);
+
+
+        NetSuiteEstimate estimate = new NetSuiteEstimate()
+        {
+          tranId = project.ProjectName + "1",
+          tranDate = DateTime.Now.ToString("yyyy-MM-dd"),
+          entity = companyId,
+          entityStatus = new NetSuiteEntityStatus() { id = "10", refName = "Proposal" },
+          expectedCloseDate = DateTime.Now.ToString("yyyy-MM-dd"),
+          probability = 50,
+          item = new NetSuiteEstimateItem()
+          {
+            items = new List<NetSuiteItem>()
+            {
+              new NetSuiteItem()
+              {
+                line = 1,
+                item = new NetSuiteLineItem() { id = 5 }, // ID must be 5 for "Consulting"
+                rate = 2000,
+                quantity = 1,
+              },
+            },
+          },
+        };
+
+        var jsonPayload = JsonSerializer.Serialize(estimate);
+
+        Trace.WriteLine(NetSuiteAuth.access_token);
+
+        Trace.WriteLine(jsonPayload);
+
+        var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
+
+        Trace.WriteLine(content);
 
         HttpResponseMessage response = await client.PostAsync(
           "https://5645740.suitetalk.api.netsuite.com/services/rest/record/v1/estimate",
-          form
+          content
         );
+
+        Trace.WriteLine(await response.Content.ReadAsStringAsync());
 
         response.EnsureSuccessStatusCode();
 

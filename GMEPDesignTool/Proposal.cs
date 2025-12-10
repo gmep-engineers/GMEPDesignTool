@@ -186,6 +186,7 @@ namespace GMEPDesignTool
           if (db != null)
           {
             ContactName = db.GetCompanyPrimaryContactName(_ClientCompanyId);
+            CompanyName = db.GetCompanyName(_ClientCompanyId);
           }
           _Modified = true;
         }
