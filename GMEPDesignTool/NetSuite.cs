@@ -53,6 +53,17 @@ namespace GMEPDesignTool
     public NetSuiteEntityStatus entityStatus { get; set; }
 
     public NetSuiteEstimateItem item { get; set; }
+
+    public string custbody_project_address { get; set; }
+    public string custbody_project_city { get; set; }
+    public string custbody_project_state { get; set; }
+    public string custbody_project_zip { get; set; }
+    public bool custbody_mechanical { get; set; }
+    public bool custbody_electrical { get; set; }
+    public bool custbody_plumbing { get; set; }
+    public bool custbody_energy_calculations_send { get; set; }
+    public bool custbody_site_lighting { get; set; }
+    public bool custbody_site_visit { get; set; }
   }
 
   public class NetSuiteEntityStatus

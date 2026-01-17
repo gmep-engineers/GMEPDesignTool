@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using Google.Protobuf.WellKnownTypes;
 using static Amazon.S3.Util.S3EventNotification;
 using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
@@ -220,11 +221,6 @@ namespace GMEPDesignTool
       return new KeyValuePair<string, string>(key, value);
     }
 
-    private static string TF(bool b)
-    {
-      return b ? "T" : "F";
-    }
-
     public async void CreateEstimate(Proposal p)
     {
       if (NetSuiteAuth.refresh_token == null || NetSuiteAuth.expires_in == null)
@@ -240,7 +236,6 @@ namespace GMEPDesignTool
         {
           await RefreshNetSuiteToken();
         }
-        // get id of company
         if (string.IsNullOrEmpty(p.CompanyName))
         {
           p.CompanyName = Database.GetCompanyName(p.ClientCompanyId);
@@ -253,52 +248,9 @@ namespace GMEPDesignTool
         }
         AdminModel project = await Database.GetAdminByProjectId(p.ProjectId);
 
-        //var formData = new List<KeyValuePair<string, string>>
-        //{
-        //  //KV("submitter", "Save"),
-        //  KV("tranid", project.ProjectName), // Estimate #
-        //  KV("entity", companyId), // Client
-        //  //KV("type", "estimate"), // Client
-        //  //KV("entity_display", p.CompanyName),
-        //  //KV("inpt_job", ""),
-        //  //KV("job", ""),
-        //  //KV("title", ""),
-        //  //KV("duedate", ""),
-        //  KV("trandate", DateTime.Now.ToShortDateString()),
-        //  //KV("custbody22", ""),
-        //  //KV("custbody23", ""),
-        //  //KV("inpt_entitystatus", "Proposal"),
-        //  KV("entitystatus", "10"),
-        //  //KV("custbody_project_address", project.StreetAddress),
-        //  //KV("custbody_project_city", project.City),
-        //  //KV("custbody_project_state", project.State),
-        //  //KV("custbody_project_zip", project.PostalCode),
-        //  //KV("custbody_mechanical", TF(project.IsCheckedM)),
-        //  //KV("custbody_electrical", TF(project.IsCheckedE)),
-        //  //KV("custbody_plumbing", TF(project.IsCheckedP)),
-        //  //KV("custbody_site_lighting", TF(p.Data.HasSiteLighting)),
-        //  //KV("custbody_photometric", TF(p.Data.ElectricalScope.ElectricalLightingDesign)),
-        //  //KV("custbody_site_visit", TF(p.Data.HasSiteVisit)),
-
-        //};
-
-        //if (p.TypeId == 1)
-        //{
-        //  formData.Add(KV("inpt_custbody_project_type", "Commercial"));
-        //}
-        //if (p.TypeId == 2)
-        //{
-        //  formData.Add(KV("inpt_custbody_project_type", "Residential"));
-        //}
-
-
-
         HttpClient client = new HttpClient();
 
         client.DefaultRequestHeaders.Accept.Clear();
-        //client.DefaultRequestHeaders.Accept.Add(
-        //  new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded")
-        //);
         client.DefaultRequestHeaders.Accept.Add(
           new MediaTypeWithQualityHeaderValue("application/json")
         );
@@ -309,22 +261,30 @@ namespace GMEPDesignTool
             NetSuiteAuth.access_token
           );
 
-        //var form = new FormUrlEncodedContent(formData);
-
-        //HttpResponseMessage response = await client.PostAsync(
-        //  "https://5645740.suitetalk.api.netsuite.com/services/rest/record/v1/estimate",
-        //  form
-        //);
-
-
         NetSuiteEstimate estimate = new NetSuiteEstimate()
         {
-          tranId = project.ProjectName + "1",
+          tranId = project.ProjectName,
           tranDate = DateTime.Now.ToString("yyyy-MM-dd"),
           entity = companyId,
           entityStatus = new NetSuiteEntityStatus() { id = "10", refName = "Proposal" },
           expectedCloseDate = DateTime.Now.ToString("yyyy-MM-dd"),
           probability = 50,
+          custbody_project_address = project.StreetAddress,
+
+          custbody_project_city = project.City,
+          custbody_project_state = project.State,
+          custbody_project_zip = project.PostalCode,
+          custbody_mechanical = project.IsCheckedM,
+          custbody_electrical = project.IsCheckedE,
+          custbody_plumbing = project.IsCheckedP,
+          custbody_energy_calculations_send =
+            p.Data != null
+              ? p.Data.ElectricalScope.ElectricalLightingDesign
+                || p.Data.MechanicalScope.MechanicalTitle24
+              : false,
+          custbody_site_lighting = p.Data != null ? p.Data.HasSiteLighting : false,
+
+          custbody_site_visit = p.Data != null ? p.Data.HasSiteVisit : false,
           item = new NetSuiteEstimateItem()
           {
             items = new List<NetSuiteItem>()
@@ -358,9 +318,13 @@ namespace GMEPDesignTool
         Trace.WriteLine(await response.Content.ReadAsStringAsync());
 
         response.EnsureSuccessStatusCode();
+        var unixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+        var url =
+          $"https://5645740.app.netsuite.com/app/accounting/transactions/transactionlist.nl?Transaction_TYPE=Estimate&whence=&siaT={unixTime}&siaWhc=%2Fapp%2Fcenter%2Fcard.nl&siaNv=ct3";
 
-        // create estimate in net suite
-        // use Authorization, Bearer Token where Token = access_token
+        ProcessStartInfo openNetSuiteInfo = new ProcessStartInfo(url) { UseShellExecute = true };
+
+        System.Diagnostics.Process.Start(openNetSuiteInfo);
       }
     }
   }

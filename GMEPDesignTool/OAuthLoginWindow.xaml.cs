@@ -81,6 +81,7 @@ namespace GMEPDesignTool
 
           NetSuiteAuth authRes = await response.Content.ReadAsAsync<NetSuiteAuth>();
 
+          Trace.WriteLine(authRes.access_token);
           netSuiteAuth.access_token = authRes.access_token;
           netSuiteAuth.refresh_token = authRes.refresh_token;
           netSuiteAuth.token_type = authRes.token_type;
