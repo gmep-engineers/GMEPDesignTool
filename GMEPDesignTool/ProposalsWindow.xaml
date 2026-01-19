@@ -11,6 +11,7 @@
         <CollectionViewSource x:Key="ProposalsViewSource" Source="{Binding FilteredProposals}" />
         <CollectionViewSource x:Key="ClientsViewSource" Source="{Binding Clients}" />
         <CollectionViewSource x:Key="EmployeesViewSource" Source="{Binding Employees}" />
+        <local:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -81,12 +82,52 @@
                     SelectedValuePath="Id"
                     DisplayMemberPath="FullName"
                     />
+                <!--
                 <DataGridComboBoxColumn Header="Company Name"
                                         ItemsSource="{Binding Source={StaticResource ClientsViewSource}}"
                                         SelectedValueBinding="{Binding ClientCompanyId}"
                                         SelectedValuePath="CompanyId"
                                         DisplayMemberPath="CompanyName"                                       
                                         />
+                -->
+
+
+
+
+
+
+
+                <DataGridTemplateColumn Header="Client">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Path=CompanyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Click="ClientSelection_Click"
+                                    >
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ClientCompanyId, Converter={StaticResource StringLengthToBoolConverter}}"
+                                                         Value="True">
+                                                <Setter Property="Visibility"
+                                                        Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+
+
+
+
+
+
                 <DataGridTextColumn Header="Contact Name" Binding="{Binding ContactName}" />
                 <DataGridTextColumn Header="Project Name" Binding="{Binding ProjectName}" />
                 <DataGridTemplateColumn Header="Estimate?">

@@ -28,9 +28,12 @@ namespace GMEPDesignTool
 
     private LoginResponse LoginResponse { get; set; }
 
+    private NetSuiteAuth NetSuiteAuth { get; set; }
+
     public ProposalsWindow(LoginResponse loginResponse, NetSuiteAuth netSuiteAuth)
     {
       ViewModel = new ProposalsViewModel(loginResponse, netSuiteAuth);
+      NetSuiteAuth = netSuiteAuth;
       this.LoginResponse = loginResponse;
       this.DataContext = ViewModel;
       InitializeComponent();
@@ -117,6 +120,21 @@ namespace GMEPDesignTool
         return;
       }
       ViewModel.CreateEstimate(p);
+    }
+
+    private void ClientSelection_Click(object sender, RoutedEventArgs args)
+    {
+      Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;
+      if (p == null)
+      {
+        return;
+      }
+      ClientSelectionWindow clientSelectionWindow = new ClientSelectionWindow(
+        LoginResponse,
+        NetSuiteAuth,
+        p
+      );
+      clientSelectionWindow.Show();
     }
 
     protected override void OnClosing(CancelEventArgs e)

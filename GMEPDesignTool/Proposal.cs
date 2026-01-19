@@ -170,7 +170,21 @@ namespace GMEPDesignTool
         }
       }
     }
-    public string CompanyName { get; set; }
+
+    private string _CompanyName;
+
+    public string CompanyName
+    {
+      get => _CompanyName;
+      set
+      {
+        if (value != _CompanyName)
+        {
+          _CompanyName = value;
+          OnPropertyChanged(nameof(CompanyName));
+        }
+      }
+    }
 
     private string _ClientCompanyId;
 

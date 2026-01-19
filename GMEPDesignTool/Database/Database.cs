@@ -529,6 +529,7 @@ namespace GMEPDesignTool.Database
         company_contacts.first_name as company_contact_first_name,
         company_contacts.last_name as company_contact_last_name,
         companies.id as company_id,
+        companies.name as company_name,
         projects.gmep_project_name,
         proposals.is_estimate,
         projects.gmep_project_no,
@@ -590,6 +591,7 @@ namespace GMEPDesignTool.Database
                 GetSafeString(reader, "company_contact_first_name")
                 + " "
                 + GetSafeString(reader, "company_contact_last_name"),
+              CompanyName = GetSafeString(reader, "company_name"),
               ClientCompanyId = GetSafeString(reader, "company_id"),
               ProjectName = GetSafeString(reader, "gmep_project_name"),
               IsEstimate = GetSafeBoolean(reader, "is_estimate"),
