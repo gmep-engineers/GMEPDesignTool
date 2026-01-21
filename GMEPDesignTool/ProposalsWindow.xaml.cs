@@ -137,6 +137,22 @@ namespace GMEPDesignTool
       clientSelectionWindow.Show();
     }
 
+    private void ArchitectSelection_Click(object sender, RoutedEventArgs args)
+    {
+      Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;
+      if (p == null)
+      {
+        return;
+      }
+      ClientSelectionWindow clientSelectionWindow = new ClientSelectionWindow(
+        LoginResponse,
+        NetSuiteAuth,
+        p,
+        true
+      );
+      clientSelectionWindow.Show();
+    }
+
     protected override void OnClosing(CancelEventArgs e)
     {
       if (ViewModel != null && !ViewModel.Saved)

@@ -5,24 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GMEPDesignTool"
         mc:Ignorable="d"
-        Title="ClientSelectionWindow" Height="450" Width="800">
-    
-    <Grid>
-        <Label Content="Search" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top"/>
-        <TextBox Name="SearchTextBox" HorizontalAlignment="Left" Margin="73,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
-        <Label Content="Results" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top"/>
-        <DataGrid Name="ClientsDataGrid" ItemsSource="{Binding Clients}" Margin="10,99,239,174" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
+        Title="ClientSelectionWindow" Height="229" Width="502">
+
+    <Grid Margin="0,0,10,-6">
+        <Label Content="Search" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="SearchTextBox" HorizontalAlignment="Left" Margin="73,35,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+        <Label Content="Results" HorizontalAlignment="Left" Margin="10,53,0,0" VerticalAlignment="Top"/>
+        <DataGrid Name="ClientsDataGrid" ItemsSource="{Binding Clients}" Margin="10,84,10,25" SelectedItem="{Binding Path=SelectedClient,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" AutoGenerateColumns="False">
             <DataGrid.ContextMenu>
                 <ContextMenu Name="ClientSelectionContextMenu">
                     <MenuItem Header="Select" Click="Select_Click"/>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Company Name" Binding="{Binding Name}">                    
+                <DataGridTextColumn Header="Company Name" Binding="{Binding Name}">
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="NetSuite ID" Binding="{Binding Id}">                    
+                <DataGridTextColumn Header="NetSuite ID" Binding="{Binding Id}">
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Label Foreground="Red"  Content="NetSuite auth required" HorizontalAlignment="Left" Margin="216,31,0,0" VerticalAlignment="Top" Visibility="{Binding Path=NetSuiteAuthWarningVisibility}"/>
+        <Label Content="Current" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding CurrentCompanyName}" HorizontalAlignment="Left" Margin="73,10,0,0" VerticalAlignment="Top" Cursor="Pen" MouseDoubleClick="CurrentCompanyName_DoubleClick" Foreground="Blue"/>
     </Grid>
 </Window>

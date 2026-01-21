@@ -22,15 +22,32 @@ namespace GMEPDesignTool
   {
     ClientSelectionViewModel ViewModel { get; set; }
 
+    LoginResponse LoginResponse { get; set; }
+
     public ClientSelectionWindow(
       LoginResponse loginResponse,
       NetSuiteAuth netSuiteAuth,
-      Proposal proposal
+      Proposal proposal,
+      bool setAsArchitect = false
     )
     {
       InitializeComponent();
-      ViewModel = new ClientSelectionViewModel(loginResponse, netSuiteAuth, proposal);
+      ViewModel = new ClientSelectionViewModel(
+        loginResponse,
+        netSuiteAuth,
+        proposal,
+        setAsArchitect
+      );
       this.DataContext = ViewModel;
+      LoginResponse = loginResponse;
+      if (setAsArchitect)
+      {
+        this.Title = "Architect Selection";
+      }
+      else
+      {
+        this.Title = "Client Selection";
+      }
     }
 
     public void TextBox_TextChanged(object sender, EventArgs e)
@@ -52,6 +69,19 @@ namespace GMEPDesignTool
         return;
       }
       ViewModel.SetClientCompanyId(c);
+    }
+
+    public void CurrentCompanyName_DoubleClick(object sender, RoutedEventArgs e)
+    {
+      if (ViewModel.CurrentCompanyName != null)
+      {
+        AddEditContactWindow addEditContactWindow = new AddEditContactWindow(
+          ViewModel.CurrentCompanyId,
+          ViewModel.CurrentCompanyName,
+          LoginResponse
+        );
+        addEditContactWindow.Show();
+      }
     }
   }
 }

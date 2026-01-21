@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using MySqlX.XDevAPI;
 
 namespace GMEPDesignTool
 {
@@ -19,6 +21,18 @@ namespace GMEPDesignTool
     Proposal Proposal { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private NetSuiteAuth NetSuiteAuth;
+
+    private Visibility _NetSuiteAuthWarningVisibility = Visibility.Collapsed;
+    public Visibility NetSuiteAuthWarningVisibility
+    {
+      get { return _NetSuiteAuthWarningVisibility; }
+      set
+      {
+        _NetSuiteAuthWarningVisibility = value;
+        OnPropertyChanged("NetSuiteAuthWarningVisibility");
+      }
+    }
+
     private ObservableCollection<ClientSearchResult> _clients;
     public ObservableCollection<ClientSearchResult> Clients
     {
@@ -30,6 +44,24 @@ namespace GMEPDesignTool
       }
     }
 
+    private string _currentCompanyName;
+    public string CurrentCompanyName
+    {
+      get { return _currentCompanyName; }
+      set
+      {
+        if (_currentCompanyName != value)
+        {
+          _currentCompanyName = value;
+          OnPropertyChanged("CurrentCompanyName");
+        }
+      }
+    }
+
+    public string CurrentCompanyId { get; set; }
+
+    private bool SetAsArchitect { get; set; }
+
     protected void OnPropertyChanged(string name)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -38,18 +70,46 @@ namespace GMEPDesignTool
     public ClientSelectionViewModel(
       LoginResponse loginResponse,
       NetSuiteAuth netSuiteAuth,
-      Proposal proposal
+      Proposal proposal,
+      bool setAsArchitect = false
     )
     {
       db = new Database.Database(loginResponse.SqlConnectionString);
       Clients = new ObservableCollection<ClientSearchResult>();
       Proposal = proposal;
 
+      if (setAsArchitect)
+      {
+        if (!String.IsNullOrEmpty(proposal.ArchitectCompanyName))
+        {
+          CurrentCompanyName = proposal.ArchitectCompanyName;
+          CurrentCompanyId = proposal.ArchitectCompanyId;
+        }
+      }
+      else
+      {
+        if (!String.IsNullOrEmpty(proposal.ClientCompanyName))
+        {
+          CurrentCompanyName = proposal.ClientCompanyName;
+          CurrentCompanyId = proposal.ClientCompanyId;
+        }
+      }
+
       NetSuiteAuth = netSuiteAuth;
+
+      if (string.IsNullOrEmpty(NetSuiteAuth.access_token))
+      {
+        NetSuiteAuthWarningVisibility = Visibility.Visible;
+      }
+      SetAsArchitect |= setAsArchitect;
     }
 
     public async Task SearchNetSuitCompanyNames(string searchStr)
     {
+      if (string.IsNullOrEmpty(NetSuiteAuth.access_token))
+      {
+        return;
+      }
       Clients.Clear();
       string id = "";
       string q = $"SELECT id, companyName FROM customer WHERE companyName LIKE '%{searchStr}%'";
@@ -95,31 +155,58 @@ namespace GMEPDesignTool
       Clients.Add(res);
     }
 
+    private async Task ImportCompanyFromNetSuite(ClientSearchResult c)
+    {
+      HttpClient httpClient = new HttpClient();
+      httpClient.BaseAddress = new Uri("http://44.240.61.252:3000/");
+      httpClient.DefaultRequestHeaders.Accept.Clear();
+      httpClient.DefaultRequestHeaders.Accept.Add(
+        new MediaTypeWithQualityHeaderValue("application/json")
+      );
+      CustomerJson json = new CustomerJson();
+      json.CustomerId = c.Id;
+      json.Token = NetSuiteAuth.access_token;
+      json.IsArchitect = SetAsArchitect;
+      HttpResponseMessage response = await httpClient.PostAsJsonAsync(
+        "api/netsuite/sync-client",
+        json
+      );
+      response.EnsureSuccessStatusCode();
+    }
+
     public async Task SetClientCompanyId(ClientSearchResult c)
     {
-      Client? client = db.GetClient(c.Id);
-      if (client == null)
+      if (SetAsArchitect)
       {
-        // HERE import into database from netsuite
-        HttpClient httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri("http://44.240.61.252:3000/");
-        httpClient.DefaultRequestHeaders.Accept.Clear();
-        httpClient.DefaultRequestHeaders.Accept.Add(
-          new MediaTypeWithQualityHeaderValue("application/json")
-        );
-        CustomerJson json = new CustomerJson();
-        json.CustomerId = c.Id;
-        json.Token = NetSuiteAuth.access_token;
-        HttpResponseMessage response = await httpClient.PostAsJsonAsync(
-          "api/netsuite/sync-client",
-          json
-        );
-        response.EnsureSuccessStatusCode();
-        client = db.GetClient(c.Id);
+        Architect architect = db.GetArchitect(c.Id);
+        if (architect == null)
+        {
+          await ImportCompanyFromNetSuite(c);
+          architect = db.GetArchitect(c.Id);
+        }
+        if (architect != null)
+        {
+          CurrentCompanyId = architect.CompanyId;
+          CurrentCompanyName = architect.CompanyName;
+          Proposal.ArchitectCompanyId = CurrentCompanyId;
+          Proposal.ArchitectCompanyName = CurrentCompanyName;
+        }
       }
-      if (client != null)
+      else
       {
-        Proposal.ClientCompanyId = client.CompanyId;
+        Client? client = db.GetClient(c.Id);
+        if (client == null)
+        {
+          await ImportCompanyFromNetSuite(c);
+          client = db.GetClient(c.Id);
+        }
+        if (client != null)
+        {
+          CurrentCompanyId = client.CompanyId;
+          CurrentCompanyName = client.CompanyName;
+          Proposal.ClientCompanyId = CurrentCompanyId;
+          Proposal.ClientCompanyName = CurrentCompanyName;
+        }
       }
     }
   }
@@ -128,6 +215,7 @@ namespace GMEPDesignTool
   {
     public string CustomerId { get; set; }
     public string Token { get; set; }
+    public bool IsArchitect { get; set; }
   }
 
   public class ClientSearchResult

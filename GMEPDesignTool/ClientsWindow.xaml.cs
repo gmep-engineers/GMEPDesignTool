@@ -63,7 +63,8 @@ namespace GMEPDesignTool
     private void AddEditPrimaryContact_Click(object sender, RoutedEventArgs e)
     {
       AddEditContactWindow addEditClientWindow = new AddEditContactWindow(
-        ViewModel.SelectedClient,
+        ViewModel.SelectedClient.CompanyId,
+        ViewModel.SelectedClient.CompanyName,
         LoginResponse
       );
       addEditClientWindow.Show();

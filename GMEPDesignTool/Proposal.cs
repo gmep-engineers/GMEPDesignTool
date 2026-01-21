@@ -171,17 +171,30 @@ namespace GMEPDesignTool
       }
     }
 
-    private string _CompanyName;
+    private string _ClientCompanyName;
 
     public string CompanyName
     {
-      get => _CompanyName;
+      get => _ClientCompanyName;
       set
       {
-        if (value != _CompanyName)
+        if (value != _ClientCompanyName)
         {
-          _CompanyName = value;
+          _ClientCompanyName = value;
           OnPropertyChanged(nameof(CompanyName));
+        }
+      }
+    }
+
+    public string ClientCompanyName
+    {
+      get => _ClientCompanyName;
+      set
+      {
+        if (value != _ClientCompanyName)
+        {
+          _ClientCompanyName = value;
+          OnPropertyChanged(nameof(ClientCompanyName));
         }
       }
     }
@@ -201,6 +214,40 @@ namespace GMEPDesignTool
           {
             ContactName = db.GetCompanyPrimaryContactName(_ClientCompanyId);
             CompanyName = db.GetCompanyName(_ClientCompanyId);
+          }
+          _Modified = true;
+        }
+      }
+    }
+
+    private string _ArchitectCompanyName;
+
+    public string ArchitectCompanyName
+    {
+      get => _ArchitectCompanyName;
+      set
+      {
+        if (value != _ArchitectCompanyName)
+        {
+          _ArchitectCompanyName = value;
+          OnPropertyChanged(nameof(ArchitectCompanyName));
+        }
+      }
+    }
+
+    private string _ArchitectCompanyId;
+    public string ArchitectCompanyId
+    {
+      get => _ArchitectCompanyId;
+      set
+      {
+        if (_ArchitectCompanyId != value)
+        {
+          _ArchitectCompanyId = value;
+          OnPropertyChanged(nameof(ArchitectCompanyId));
+          if (db != null)
+          {
+            ArchitectCompanyName = db.GetCompanyName(ArchitectCompanyId);
           }
           _Modified = true;
         }
