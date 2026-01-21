@@ -397,12 +397,14 @@ namespace GMEPDesignTool.Database
         @"
         UPDATE projects SET
         region_id = @region_id,
-        client_company_id = @client_company_id
+        client_company_id = @client_company_id,
+        architect_company_id = @architect_company_id
         WHERE id = @id
         ";
       command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@region_id", proposal.RegionId);
       command.Parameters.AddWithValue("@client_company_id", proposal.ClientCompanyId);
+      command.Parameters.AddWithValue("@architect_company_id", proposal.ArchitectCompanyId);
       command.Parameters.AddWithValue("@id", proposal.ProjectId);
       command.ExecuteNonQuery();
       Connection.Close();
@@ -528,8 +530,10 @@ namespace GMEPDesignTool.Database
         sender_employees.id as sender_employee_id,
         company_contacts.first_name as company_contact_first_name,
         company_contacts.last_name as company_contact_last_name,
-        companies.id as company_id,
-        companies.name as company_name,
+        client_companies.id as client_company_id,
+        client_companies.name as client_company_name,
+        architect_companies.id as architect_company_id,
+        architect_companies.name as architect_company_name,
         projects.gmep_project_name,
         proposals.is_estimate,
         projects.gmep_project_no,
@@ -549,8 +553,9 @@ namespace GMEPDesignTool.Database
         LEFT JOIN contacts AS sender_employee_contacts ON sender_employee_contacts.id = sender_employees.contact_id
         LEFT JOIN projects ON projects.id = proposals.project_id
         LEFT JOIN employees AS follow_up_employees ON follow_up_employees.id = proposals.employee_id
-        LEFT JOIN companies ON companies.id = projects.client_company_id
-        LEFT JOIN contacts AS company_contacts ON company_contacts.id = companies.primary_contact_id
+        LEFT JOIN companies AS client_companies ON client_companies.id = projects.client_company_id
+        LEFT JOIN companies AS architect_companies ON architect_companies.id = projects.architect_company_id
+        LEFT JOIN contacts AS company_contacts ON company_contacts.id = client_companies.primary_contact_id
         WHERE proposals.rfp_date BETWEEN @yearStart AND @yearEnd
         ORDER BY proposals.date_created DESC
         ";
@@ -591,8 +596,10 @@ namespace GMEPDesignTool.Database
                 GetSafeString(reader, "company_contact_first_name")
                 + " "
                 + GetSafeString(reader, "company_contact_last_name"),
-              CompanyName = GetSafeString(reader, "company_name"),
-              ClientCompanyId = GetSafeString(reader, "company_id"),
+              ClientCompanyName = GetSafeString(reader, "client_company_name"),
+              ClientCompanyId = GetSafeString(reader, "client_company_id"),
+              ArchitectCompanyName = GetSafeString(reader, "architect_company_name"),
+              ArchitectCompanyId = GetSafeString(reader, "architect_company_id"),
               ProjectName = GetSafeString(reader, "gmep_project_name"),
               IsEstimate = GetSafeBoolean(reader, "is_estimate"),
               ProjectNo = GetSafeString(reader, "gmep_project_no"),
