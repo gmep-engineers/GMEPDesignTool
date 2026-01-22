@@ -95,7 +95,16 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Client Contact Name" Binding="{Binding ContactName}" />
+                <DataGridTemplateColumn Header="Client Contact">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Contacts}"
+                                DisplayMemberPath="FullName"   
+                                SelectedValuePath="Id"                                   
+                                SelectedValue="{Binding Path=ContactId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn> 
 
                 <DataGridTemplateColumn Header="Architect">
                     <DataGridTemplateColumn.CellTemplate>

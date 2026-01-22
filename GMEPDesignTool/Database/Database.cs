@@ -365,6 +365,7 @@ namespace GMEPDesignTool.Database
         employee_id = @employee_id,
         pdf_name = @pdf_name,
         is_estimate = @is_estimate,
+        contact_id = @contact_id,
         notes = @notes,
         last_follow_up_date = @last_follow_up_date,
         followed_up_by_employee_id = @followed_up_by_employee_id,
@@ -384,6 +385,7 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@is_estimate", proposal.IsEstimate);
       command.Parameters.AddWithValue("@notes", proposal.Notes);
       command.Parameters.AddWithValue("@last_follow_up_date", proposal.LastFollowUpDate);
+      command.Parameters.AddWithValue("@contact_id", proposal.ContactId);
       command.Parameters.AddWithValue(
         "@followed_up_by_employee_id",
         proposal.FollowedUpByEmployeeId
@@ -530,6 +532,7 @@ namespace GMEPDesignTool.Database
         sender_employees.id as sender_employee_id,
         company_contacts.first_name as company_contact_first_name,
         company_contacts.last_name as company_contact_last_name,
+        company_contacts.id as company_contact_id,
         client_companies.id as client_company_id,
         client_companies.name as client_company_name,
         architect_companies.id as architect_company_id,
@@ -546,6 +549,7 @@ namespace GMEPDesignTool.Database
         proposals.id as proposal_id,
         follow_up_employees.id as follow_up_employee_id,
         proposals.status_id,
+        proposals.contact_id,
         projects.region_id,
         proposals.s_drive_path
         FROM proposals
@@ -596,6 +600,7 @@ namespace GMEPDesignTool.Database
                 GetSafeString(reader, "company_contact_first_name")
                 + " "
                 + GetSafeString(reader, "company_contact_last_name"),
+              ContactId = GetSafeString(reader, "contact_id"),
               ClientCompanyName = GetSafeString(reader, "client_company_name"),
               ClientCompanyId = GetSafeString(reader, "client_company_id"),
               ArchitectCompanyName = GetSafeString(reader, "architect_company_name"),
@@ -614,11 +619,46 @@ namespace GMEPDesignTool.Database
               TypeId = GetSafeInt(reader, "type_id"),
               Data = proposalData,
               db = new Database(ConnectionString),
+              Contacts = new ObservableCollection<ProposalContact>(),
             }
           );
         }
       }
       reader.Close();
+      foreach (Proposal p in proposals)
+      {
+        if (String.IsNullOrEmpty(p.ClientCompanyId))
+        {
+          continue;
+        }
+        query =
+          @"
+          SELECT 
+          contacts.first_name,
+          contacts.last_name,
+          contacts.id
+          FROM contacts
+          LEFT JOIN
+          companies on companies.id = contacts.company_id
+          where companies.id = @companyId
+          ";
+        MySqlCommand command2 = new MySqlCommand(query, Connection);
+        command2.Parameters.AddWithValue("@companyId", p.ClientCompanyId);
+        MySqlDataReader reader2 = command2.ExecuteReader();
+        while (reader2.Read())
+        {
+          p.Contacts.Add(
+            new ProposalContact()
+            {
+              FullName =
+                GetSafeString(reader2, "first_name") + " " + GetSafeString(reader2, "last_name"),
+              Id = GetSafeString(reader2, "id"),
+            }
+          );
+        }
+        reader2.Close();
+      }
+
       CloseConnection(Connection);
       return proposals;
     }

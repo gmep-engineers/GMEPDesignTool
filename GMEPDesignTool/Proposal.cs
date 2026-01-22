@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
+  public class ProposalContact
+  {
+    public string FullName { get; set; }
+    public string Id { get; set; }
+  }
+
   public class Proposal : INotifyPropertyChanged
   {
     public Database.Database db { get; set; }
@@ -166,6 +173,32 @@ namespace GMEPDesignTool
         {
           _ContactName = value;
           OnPropertyChanged(nameof(ContactName));
+          _Modified = true;
+        }
+      }
+    }
+
+    private ObservableCollection<ProposalContact> _Contacts;
+    public ObservableCollection<ProposalContact> Contacts
+    {
+      get => _Contacts;
+      set
+      {
+        _Contacts = value;
+        OnPropertyChanged(nameof(Contacts));
+      }
+    }
+
+    private string _ContactId;
+    public string ContactId
+    {
+      get => _ContactId;
+      set
+      {
+        if (value != _ContactId)
+        {
+          _ContactId = value;
+          OnPropertyChanged(nameof(ContactId));
           _Modified = true;
         }
       }
