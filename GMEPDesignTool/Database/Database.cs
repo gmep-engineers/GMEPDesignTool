@@ -599,6 +599,44 @@ namespace GMEPDesignTool.Database
       return newId;
     }
 
+    public ObservableCollection<ProposalContact> GetProposalContacts(string companyId)
+    {
+      ObservableCollection<ProposalContact> contacts = new ObservableCollection<ProposalContact>();
+      var query =
+        @"
+          SELECT 
+          contacts.first_name,
+          contacts.last_name,
+          contacts.id
+          FROM contacts
+          LEFT JOIN
+          companies on companies.id = contacts.company_id
+          where companies.id = @companyId
+          ";
+      MySqlCommand command = new MySqlCommand(query, Connection);
+
+      command.Parameters.AddWithValue("@companyId", companyId);
+
+      OpenConnection(Connection);
+
+      MySqlDataReader reader = command.ExecuteReader();
+
+      while (reader.Read())
+      {
+        contacts.Add(
+          new ProposalContact()
+          {
+            FullName =
+              GetSafeString(reader, "first_name") + " " + GetSafeString(reader, "last_name"),
+            Id = GetSafeString(reader, "id"),
+          }
+        );
+      }
+
+      reader.Close();
+      return contacts;
+    }
+
     public ObservableCollection<Proposal> GetProposalsByYear(string year)
     {
       ObservableCollection<Proposal> proposals = new ObservableCollection<Proposal>();
@@ -711,32 +749,7 @@ namespace GMEPDesignTool.Database
         {
           continue;
         }
-        query =
-          @"
-          SELECT 
-          contacts.first_name,
-          contacts.last_name,
-          contacts.id
-          FROM contacts
-          LEFT JOIN
-          companies on companies.id = contacts.company_id
-          where companies.id = @companyId
-          ";
-        MySqlCommand command2 = new MySqlCommand(query, Connection);
-        command2.Parameters.AddWithValue("@companyId", p.ClientCompanyId);
-        MySqlDataReader reader2 = command2.ExecuteReader();
-        while (reader2.Read())
-        {
-          p.Contacts.Add(
-            new ProposalContact()
-            {
-              FullName =
-                GetSafeString(reader2, "first_name") + " " + GetSafeString(reader2, "last_name"),
-              Id = GetSafeString(reader2, "id"),
-            }
-          );
-        }
-        reader2.Close();
+        p.Contacts = GetProposalContacts(p.ClientCompanyId);
       }
 
       CloseConnection(Connection);

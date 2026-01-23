@@ -76,20 +76,26 @@
                         </Binding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridComboBoxColumn Header="Sent By"
-                    ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"
-                    SelectedValueBinding="{Binding SentByEmployeeId}"
-                    SelectedValuePath="Id"
-                    DisplayMemberPath="FullName"
-                    />
+
+                <DataGridTemplateColumn Header="Sent By">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"                                      
+                                DisplayMemberPath="FullName" 
+                                SelectedValuePath="Id"                                     
+                                SelectedValue="{Binding SentByEmployeeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                IsSynchronizedWithCurrentItem="False"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
 
                 <DataGridTemplateColumn Header="Client">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="{Binding Path=CompanyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            <Button Content="{Binding Path=ClientCompanyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                     Click="ClientSelection_Click"
-                                    >
-                                
+                                    >                                
                             </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -98,7 +104,7 @@
                 <DataGridTemplateColumn Header="Client Contact">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding Contacts}"
+                            <ComboBox ItemsSource="{Binding Path=Contacts, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                 DisplayMemberPath="FullName"   
                                 SelectedValuePath="Id"                                   
                                 SelectedValue="{Binding Path=ContactId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

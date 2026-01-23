@@ -17,7 +17,7 @@ namespace GMEPDesignTool
 {
   public class ClientSelectionViewModel : INotifyPropertyChanged
   {
-    Database.Database db { get; set; }
+    public Database.Database db { get; set; }
     Proposal Proposal { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private NetSuiteAuth NetSuiteAuth;
@@ -54,6 +54,20 @@ namespace GMEPDesignTool
         {
           _currentCompanyName = value;
           OnPropertyChanged("CurrentCompanyName");
+        }
+      }
+    }
+
+    private ClientSearchResult _selectedClient;
+    public ClientSearchResult SelectedClient
+    {
+      get { return _selectedClient; }
+      set
+      {
+        if (_selectedClient != value)
+        {
+          _selectedClient = value;
+          OnPropertyChanged("SelectedClient");
         }
       }
     }
@@ -206,6 +220,8 @@ namespace GMEPDesignTool
           CurrentCompanyName = client.CompanyName;
           Proposal.ClientCompanyId = CurrentCompanyId;
           Proposal.ClientCompanyName = CurrentCompanyName;
+          Proposal.db = db;
+          Proposal.Contacts = db.GetProposalContacts(Proposal.ClientCompanyId);
         }
       }
     }
