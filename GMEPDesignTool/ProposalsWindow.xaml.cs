@@ -43,6 +43,10 @@ namespace GMEPDesignTool
         OAuthLoginWindow oAuthLoginWindow = new OAuthLoginWindow(loginResponse, netSuiteAuth);
         oAuthLoginWindow.Show();
       }
+      Task.Run(() =>
+      {
+        AutoSave();
+      });
     }
 
     public void SaveClick(object sender, RoutedEventArgs e)
@@ -54,6 +58,21 @@ namespace GMEPDesignTool
     {
       ViewModel.Save();
       ViewModel.Saved = true;
+    }
+
+    public async void AutoSave()
+    {
+      int countdown = 300;
+      while (true)
+      {
+        if (countdown == 0)
+        {
+          await ViewModel.SaveAsync();
+          countdown = 300;
+        }
+        Thread.Sleep(1000);
+        countdown--;
+      }
     }
 
     private void ProposalsDataGrid_KeyDown(object sender, KeyEventArgs e)

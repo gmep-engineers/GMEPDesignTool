@@ -412,6 +412,66 @@ namespace GMEPDesignTool.Database
       Connection.Close();
     }
 
+    public async Task SaveProposalAsync(Proposal proposal)
+    {
+      string query =
+        @"
+        UPDATE proposals SET
+        rfp_date = @rfp_date,
+        project_id = @project_id,
+        proposal_date = @proposal_date,
+        type_id = @type_id,
+        status_id = @status_id,
+        employee_id = @employee_id,
+        pdf_name = @pdf_name,
+        is_estimate = @is_estimate,
+        contact_id = @contact_id,
+        notes = @notes,
+        last_follow_up_date = @last_follow_up_date,
+        followed_up_by_employee_id = @followed_up_by_employee_id,
+        fees = @fees,
+        s_drive_path = @s_drive_path
+        WHERE id = @id
+        ";
+      await OpenConnectionAsync(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@rfp_date", proposal.RfpDate);
+      command.Parameters.AddWithValue("@project_id", proposal.ProjectId);
+      command.Parameters.AddWithValue("@proposal_date", proposal.ProposalDate);
+      command.Parameters.AddWithValue("@type_id", proposal.TypeId);
+      command.Parameters.AddWithValue("@status_id", proposal.StatusId);
+      command.Parameters.AddWithValue("@employee_id", proposal.SentByEmployeeId);
+      command.Parameters.AddWithValue("@pdf_name", proposal.PdfName);
+      command.Parameters.AddWithValue("@is_estimate", proposal.IsEstimate);
+      command.Parameters.AddWithValue("@notes", proposal.Notes);
+      command.Parameters.AddWithValue("@last_follow_up_date", proposal.LastFollowUpDate);
+      command.Parameters.AddWithValue("@contact_id", proposal.ContactId);
+      command.Parameters.AddWithValue(
+        "@followed_up_by_employee_id",
+        proposal.FollowedUpByEmployeeId
+      );
+      command.Parameters.AddWithValue("@fees", proposal.Fees);
+      command.Parameters.AddWithValue("@s_drive_path", proposal.SDrivePath);
+      command.Parameters.AddWithValue("@id", proposal.Id);
+      await command.ExecuteNonQueryAsync();
+
+      query =
+        @"
+        UPDATE projects SET
+        region_id = @region_id,
+        client_company_id = @client_company_id,
+        architect_company_id = @architect_company_id
+        WHERE id = @id
+        ";
+      command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@region_id", proposal.RegionId);
+      command.Parameters.AddWithValue("@client_company_id", proposal.ClientCompanyId);
+      command.Parameters.AddWithValue("@architect_company_id", proposal.ArchitectCompanyId);
+      command.Parameters.AddWithValue("@id", proposal.ProjectId);
+      await command.ExecuteNonQueryAsync();
+      await Connection.CloseAsync();
+    }
+
     public void SetProposalWindowProjectValues(Proposal p)
     {
       string query =
@@ -430,6 +490,26 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@projectId", p.ProjectId);
       command.ExecuteNonQuery();
       Connection.Close();
+    }
+
+    public async Task SetProposalWindowProjectValuesAsync(Proposal p)
+    {
+      string query =
+        @"
+        UPDATE projects SET
+        client_company_id = @clientCompanyId,
+        gmep_project_name = @projectName,
+        gmep_project_no = @projectNo
+        WHERE id = @projectId
+        ";
+      await OpenConnectionAsync(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@clientCompanyId", p.ClientCompanyId);
+      command.Parameters.AddWithValue("@projectName", p.ProjectName);
+      command.Parameters.AddWithValue("@projectNo", p.ProjectNo);
+      command.Parameters.AddWithValue("@projectId", p.ProjectId);
+      await command.ExecuteNonQueryAsync();
+      await Connection.CloseAsync();
     }
 
     public async Task<AdminModel> GetAdminByProjectId(string projectId)
@@ -4584,6 +4664,46 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       command.Parameters.AddWithValue("@employee_id", employeeId);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
+      p.New = false;
+      return id;
+    }
+
+    public async Task<string> CreateProposalAsync(
+      Proposal p,
+      string employeeId,
+      int typeId,
+      string projectId,
+      string id = ""
+    )
+    {
+      if (string.IsNullOrEmpty(id))
+      {
+        id = Guid.NewGuid().ToString();
+      }
+
+      if (string.IsNullOrEmpty(projectId))
+      {
+        projectId = CreateBlankProject();
+        p.ProjectId = projectId;
+        p.ProjectNo = "n" + projectId.Substring(0, 6);
+      }
+      string query =
+        @"
+        INSERT INTO proposals
+        ( id,  rfp_date,  proposal_date,  project_id,  type_id,  employee_id) VALUES
+        (@id, @rfp_date, @proposal_date, @project_id, @type_id, @employee_id)
+        ";
+
+      await OpenConnectionAsync(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@id", id);
+      command.Parameters.AddWithValue("@rfp_date", p.RfpDate);
+      command.Parameters.AddWithValue("@proposal_date", p.ProposalDate);
+      command.Parameters.AddWithValue("@project_id", projectId);
+      command.Parameters.AddWithValue("@type_id", typeId);
+      command.Parameters.AddWithValue("@employee_id", employeeId);
+      await command.ExecuteNonQueryAsync();
+      await CloseConnectionAsync(Connection);
       p.New = false;
       return id;
     }

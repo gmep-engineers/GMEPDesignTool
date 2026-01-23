@@ -494,7 +494,7 @@ namespace GMEPDesignTool
       }
     }
 
-    private bool newConstruction;
+    private bool newConstruction = false;
     public bool NewConstruction
     {
       get => newConstruction;
@@ -504,9 +504,40 @@ namespace GMEPDesignTool
         {
           newConstruction = value;
           OnPropertyChanged(nameof(NewConstruction));
+          if (newConstruction)
+          {
+            TenantImprovement = false;
+          }
+          else
+          {
+            TenantImprovement = true;
+          }
         }
       }
     }
+
+    private bool tenantImprovement = true;
+    public bool TenantImprovement
+    {
+      get => tenantImprovement;
+      set
+      {
+        if (tenantImprovement != value)
+        {
+          tenantImprovement = value;
+          OnPropertyChanged(nameof(TenantImprovement));
+          if (tenantImprovement)
+          {
+            NewConstruction = false;
+          }
+          else
+          {
+            NewConstruction = true;
+          }
+        }
+      }
+    }
+
     private bool hasSiteVisit;
     public bool HasSiteVisit
     {

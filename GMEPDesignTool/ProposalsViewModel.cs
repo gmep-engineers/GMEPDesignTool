@@ -139,6 +139,29 @@ namespace GMEPDesignTool
       }
     }
 
+    public async Task SaveAsync()
+    {
+      List<Proposal> proposals = new List<Proposal>();
+      foreach (Proposal proposal in FilteredProposals)
+      {
+        if (proposal.New)
+        {
+          await Database.CreateProposalAsync(
+            proposal,
+            LoginResponse.EmployeeId,
+            0,
+            proposal.ProjectId
+          );
+          await Database.SetProposalWindowProjectValuesAsync(proposal);
+        }
+        else if (proposal.Modified)
+        {
+          await Database.SaveProposalAsync(proposal);
+          await Database.SetProposalWindowProjectValuesAsync(proposal);
+        }
+      }
+    }
+
     public async Task RefreshNetSuiteToken()
     {
       var formData = new List<KeyValuePair<string, string>>
