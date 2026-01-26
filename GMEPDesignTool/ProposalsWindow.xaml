@@ -93,7 +93,7 @@
                 <DataGridTemplateColumn Header="Client">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="{Binding Path=ClientCompanyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            <Button Content="{Binding Path=ClientCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Click="ClientSelection_Click"
                                     >                                
                             </Button>
@@ -104,7 +104,7 @@
                 <DataGridTemplateColumn Header="Client Contact">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding Path=Contacts, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            <ComboBox ItemsSource="{Binding Path=Contacts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 DisplayMemberPath="FullName"   
                                 SelectedValuePath="Id"                                   
                                 SelectedValue="{Binding Path=ContactId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -115,7 +115,7 @@
                 <DataGridTemplateColumn Header="Architect">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="{Binding Path=ArchitectCompanyName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                            <Button Content="{Binding Path=ArchitectCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     Click="ArchitectSelection_Click"
                                     >
                             </Button>
@@ -143,59 +143,75 @@
                         </Binding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridComboBoxColumn Header="Followed Up By"
-                        ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"
-                        SelectedValueBinding="{Binding FollowedUpByEmployeeId}"
-                        SelectedValuePath="Id"
-                        DisplayMemberPath="FullName"
-                        />
-                <DataGridComboBoxColumn Header="APPROVED/DENIED"  SelectedValueBinding="{Binding StatusId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
-                    <DataGridComboBoxColumn.ItemsSource>
-                        <CompositeCollection>
-                            <ComboBoxItem Content="Pending" Tag="1"/>
-                            <ComboBoxItem Content="Executed" Tag="2"/>
-                            <ComboBoxItem Content="Dead" Tag="3"/>
-                            <ComboBoxItem Content="Denied" Tag="4"/>
-                            <ComboBoxItem Content="Approved" Tag="5"/>
-                        </CompositeCollection>
-                    </DataGridComboBoxColumn.ItemsSource>
-                </DataGridComboBoxColumn>
-                <DataGridComboBoxColumn Header="Region"  SelectedValueBinding="{Binding RegionId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
-                    <DataGridComboBoxColumn.ItemsSource>
-                        <CompositeCollection>
-                            <ComboBoxItem Content="SoCal" Tag="1"/>
-                            <ComboBoxItem Content="NorCal" Tag="2"/>
-                            <ComboBoxItem Content="Central CA" Tag="3"/>
-                            <ComboBoxItem Content="AZ" Tag="4"/>
-                            <ComboBoxItem Content="CO" Tag="5"/>
-                            <ComboBoxItem Content="FL" Tag="6"/>
-                            <ComboBoxItem Content="GA" Tag="7"/>
-                            <ComboBoxItem Content="ID" Tag="8"/>
-                            <ComboBoxItem Content="KY" Tag="9"/>
-                            <ComboBoxItem Content="MN" Tag="10"/>
-                            <ComboBoxItem Content="NV" Tag="11"/>
-                            <ComboBoxItem Content="NH" Tag="12"/>
-                            <ComboBoxItem Content="OH" Tag="13"/>
-                            <ComboBoxItem Content="OR" Tag="14"/>
-                            <ComboBoxItem Content="TX" Tag="15"/>
-                            <ComboBoxItem Content="UT" Tag="16"/>
-                            <ComboBoxItem Content="VA" Tag="17"/>
-                            <ComboBoxItem Content="WA" Tag="18"/>
-                            <ComboBoxItem Content="Multi" Tag="19"/>
-                        </CompositeCollection>
-                    </DataGridComboBoxColumn.ItemsSource>
-                </DataGridComboBoxColumn >
-                <DataGridComboBoxColumn Header="Type" SelectedValueBinding="{Binding TypeId, UpdateSourceTrigger=LostFocus}" SelectedValuePath="Tag">
-                    <DataGridComboBoxColumn.ItemsSource>
-                        <CompositeCollection>
-                            <ComboBoxItem Content="Commercial" Tag="1"/>
-                            <ComboBoxItem Content="Residential" Tag="2"/>
-                            <ComboBoxItem Content="T24" Tag="3"/>
-                            <ComboBoxItem Content="Site Lighting Tarrar" Tag="4"/>
-                            <ComboBoxItem Content="2019" Tag="5"/>
-                        </CompositeCollection>
-                    </DataGridComboBoxColumn.ItemsSource>
-                </DataGridComboBoxColumn>
+
+                <DataGridTemplateColumn Header="Followed Up By">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource EmployeesViewSource}}"                                      
+                                        DisplayMemberPath="FullName" 
+                                        SelectedValuePath="Id"                                     
+                                        SelectedValue="{Binding FollowedUpByEmployeeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        IsSynchronizedWithCurrentItem="False"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="APPROVED/DENIED">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox VerticalAlignment="Top" SelectedValue="{Binding StatusId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Pending" Tag="1"/>
+                                <ComboBoxItem Content="Executed" Tag="2"/>
+                                <ComboBoxItem Content="Dead" Tag="3"/>
+                                <ComboBoxItem Content="Denied" Tag="4"/>
+                                <ComboBoxItem Content="Approved" Tag="5"/>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Region">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox VerticalAlignment="Top" SelectedValue="{Binding RegionId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="SoCal" Tag="1"/>
+                                <ComboBoxItem Content="NorCal" Tag="2"/>
+                                <ComboBoxItem Content="Central CA" Tag="3"/>
+                                <ComboBoxItem Content="AZ" Tag="4"/>
+                                <ComboBoxItem Content="CO" Tag="5"/>
+                                <ComboBoxItem Content="FL" Tag="6"/>
+                                <ComboBoxItem Content="GA" Tag="7"/>
+                                <ComboBoxItem Content="ID" Tag="8"/>
+                                <ComboBoxItem Content="KY" Tag="9"/>
+                                <ComboBoxItem Content="MN" Tag="10"/>
+                                <ComboBoxItem Content="NV" Tag="11"/>
+                                <ComboBoxItem Content="NH" Tag="12"/>
+                                <ComboBoxItem Content="OH" Tag="13"/>
+                                <ComboBoxItem Content="OR" Tag="14"/>
+                                <ComboBoxItem Content="TX" Tag="15"/>
+                                <ComboBoxItem Content="UT" Tag="16"/>
+                                <ComboBoxItem Content="VA" Tag="17"/>
+                                <ComboBoxItem Content="WA" Tag="18"/>
+                                <ComboBoxItem Content="Multi" Tag="19"/>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Type">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox VerticalAlignment="Top" SelectedValue="{Binding TypeId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
+                                <ComboBoxItem Content="Commercial" Tag="1"/>
+                                <ComboBoxItem Content="Residential" Tag="2"/>
+                                <ComboBoxItem Content="T24" Tag="3"/>
+                                <ComboBoxItem Content="Site Lighting Tarrar" Tag="4"/>
+                                <ComboBoxItem Content="2019" Tag="5"/>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
                 <DataGridTextColumn Header="S Drive Filepath" Binding="{Binding SDrivePath}" />
             </DataGrid.Columns>
         </DataGrid>

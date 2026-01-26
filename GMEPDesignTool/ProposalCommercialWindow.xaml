@@ -135,6 +135,7 @@
                                 <RowDefinition Height="40"/>
                                 <RowDefinition Height="40"/>
                                 <RowDefinition Height="40"/>
+                                <RowDefinition Height="40"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Content="Project Info" FontFamily="Tahoma" FontSize="16pt"/>
                             <Label Grid.Row="1" Content="Project No." Margin="0,0,0,10" Width="auto" />
@@ -143,15 +144,17 @@
                             <TextBox x:Name="ProjectNameBox" Grid.Row="2" Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
                             <Label Grid.Row="3" Content="Street Address" Margin="0,0,0,10" Width="auto" />
                             <TextBox x:Name="ProjectStreetAddressBox" Grid.Row="3" Text="{Binding ProjectStreetAddress, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
-                            <Label Grid.Row="4" Content="State" Margin="0,0,0,10" Width="auto" />
-                            <ComboBox Grid.Row="4" Grid.Column="1" Margin="0,0,0,10"
+                            <Label Grid.Row="4" Content="City" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="CityAddressBox" Grid.Row="4" Text="{Binding ProjectCity, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="5" Content="State" Margin="0,0,0,10" Width="auto" />
+                            <ComboBox Grid.Row="5" Grid.Column="1" Margin="0,0,0,10"
                               ItemsSource="{Binding States}" 
                               SelectedItem="{Binding ProjectState}" 
                              />
-                            <Label Grid.Row="5" Content="Postal Code" Margin="0,0,0,10" Width="auto" />
-                            <TextBox x:Name="PostalCodeBox" Grid.Row="5" Text="{Binding ProjectPostalCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
-                            <Label Grid.Row="6" Content="Descriptions" Margin="0,0,0,10" Width="auto" />
-                            <TextBox x:Name="DescriptionsBox" Grid.Row="6" Text="{Binding ProjectDescriptions, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="6" Content="Postal Code" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="PostalCodeBox" Grid.Row="6" Text="{Binding ProjectPostalCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
+                            <Label Grid.Row="7" Content="Descriptions" Margin="0,0,0,10" Width="auto" />
+                            <TextBox x:Name="DescriptionsBox" Grid.Row="7" Text="{Binding ProjectDescriptions, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="5">
@@ -173,7 +176,7 @@
                                 <RowDefinition Height="40"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Content="Scope" FontFamily="Tahoma" FontSize="16pt"/>
-                            <Label Grid.Row="1" Content="TotalPrice"  Margin="0,0,0,10" Width="auto" />
+                            <Label Grid.Row="1" Content="Total Price"  Margin="0,0,0,10" Width="auto" />
                             <TextBox x:Name="TotalPriceBox" Grid.Row="1" Text="{Binding TotalPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
                             <CheckBox Grid.Row="2" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>
 

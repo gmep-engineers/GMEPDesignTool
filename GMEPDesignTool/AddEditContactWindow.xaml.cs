@@ -21,10 +21,16 @@ namespace GMEPDesignTool
   {
     AddEditContactViewModel ViewModel { get; set; }
 
-    public AddEditContactWindow(string companyId, string companyName, LoginResponse loginResponse)
+    public AddEditContactWindow(
+      string companyName,
+      string companyId,
+      Proposal proposal,
+      LoginResponse loginResponse
+    // HERE add list of client contacts, same data type as in the client contact column
+    )
     {
       InitializeComponent();
-      ViewModel = new AddEditContactViewModel(loginResponse, companyId, companyName);
+      ViewModel = new AddEditContactViewModel(companyName, companyId, loginResponse, proposal);
       this.DataContext = ViewModel;
     }
 

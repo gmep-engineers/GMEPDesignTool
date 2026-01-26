@@ -65,6 +65,7 @@ namespace GMEPDesignTool
       AddEditContactWindow addEditClientWindow = new AddEditContactWindow(
         ViewModel.SelectedClient.CompanyId,
         ViewModel.SelectedClient.CompanyName,
+        null,
         LoginResponse
       );
       addEditClientWindow.Show();

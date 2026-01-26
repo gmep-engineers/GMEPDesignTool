@@ -123,7 +123,6 @@ namespace GMEPDesignTool
 
     public void Save()
     {
-      List<Proposal> proposals = new List<Proposal>();
       foreach (Proposal proposal in FilteredProposals)
       {
         if (proposal.New)
@@ -141,7 +140,6 @@ namespace GMEPDesignTool
 
     public async Task SaveAsync()
     {
-      List<Proposal> proposals = new List<Proposal>();
       foreach (Proposal proposal in FilteredProposals)
       {
         if (proposal.New)

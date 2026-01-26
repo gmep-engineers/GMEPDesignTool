@@ -101,6 +101,9 @@ namespace GMEPDesignTool
       if (proposal != null)
       {
         vm.SelectedClientCompanyId = proposal.ClientCompanyId;
+        vm.ProjectName = proposal.ProjectName;
+        vm.TotalPrice = proposal.Fees.ToString();
+        vm.Proposal = proposal;
       }
       if (proposalData != null)
       {
@@ -255,7 +258,6 @@ namespace GMEPDesignTool
         var vm = DataContext as ProposalCommercialViewModel;
         if (vm == null)
         {
-          MessageBox.Show("Please complete the missing fields.");
           return null;
         }
 
@@ -263,12 +265,13 @@ namespace GMEPDesignTool
         proposalData.HasSiteVisit = vm.HasSiteVisit;
         proposalData.RetainerPercent = RetainerPercentBox.Text;
 
-        proposalData.DateSent = vm.DateSent.Value;
+        proposalData.DateSent = vm.DateSent != null ? vm.DateSent.Value : DateTime.MinValue;
 
         proposalData.NumMeetings = NumMeetingsBox.Text;
 
         proposalData.TarrarNo = TarrarNoBox.Text;
-        proposalData.DateDrawingsReceived = vm.DateDrawingsReceived.Value;
+        proposalData.DateDrawingsReceived =
+          vm.DateDrawingsReceived != null ? vm.DateDrawingsReceived.Value : DateTime.MinValue;
 
         proposalData.HasSiteVisit = vm.HasSiteVisit;
 
@@ -472,10 +475,27 @@ namespace GMEPDesignTool
       pdfRequest.ClientStreetAddress = client.StreetAddress;
       string clientCityStateZip = client.City + ", " + client.State + "  " + client.PostalCode;
       pdfRequest.ClientCityStateZip = clientCityStateZip;
-      pdfRequest.DateSent = vm.DateSent.Value.ToString("yyyy-MM-dd");
+      if (vm.DateSent == null || vm.DateSent == DateTime.MinValue)
+      {
+        MessageBox.Show("Please fill in the Date Sent.");
+        return;
+      }
+      pdfRequest.DateSent =
+        vm.DateSent != null
+          ? vm.DateSent.Value.ToString("yyyy-MM-dd")
+          : DateTime.MinValue.ToString("yyyy-MM-dd");
+
       pdfRequest.NumMeetings = NumMeetingsBox.Text;
       pdfRequest.TarrarNo = TarrarNoBox.Text;
-      pdfRequest.DateDrawingsReceived = vm.DateDrawingsReceived.Value.ToString("yyyy-MM-dd");
+      if (vm.DateDrawingsReceived == null || vm.DateDrawingsReceived == DateTime.MinValue)
+      {
+        MessageBox.Show("Please fill in the Date Drawings Received.");
+        return;
+      }
+      pdfRequest.DateDrawingsReceived =
+        vm.DateDrawingsReceived != null
+          ? vm.DateDrawingsReceived.Value.ToString("yyyy-MM-dd")
+          : DateTime.MinValue.ToString("yyyy-MM-dd");
       pdfRequest.HasSiteVisit = vm.HasSiteVisit;
 
       pdfRequest.NewConstruction = vm.NewConstruction;
@@ -492,8 +512,30 @@ namespace GMEPDesignTool
 
       pdfRequest.HasSiteLighting = vm.HasSiteLighting;
 
-      pdfRequest.Client = vm.AdminViewModel.Client;
-      pdfRequest.Architect = vm.AdminViewModel.Architect;
+      pdfRequest.Client =
+        (proposal != null ? proposal.ClientCompanyName : null) ?? vm.AdminViewModel.Client;
+      pdfRequest.Architect =
+        (proposal != null ? proposal.ArchitectCompanyName : null) ?? vm.AdminViewModel.Architect;
+      if (string.IsNullOrEmpty(vm.AdminViewModel.StreetAddress))
+      {
+        MessageBox.Show("Please fill in street address");
+        return;
+      }
+      if (string.IsNullOrEmpty(vm.AdminViewModel.City))
+      {
+        MessageBox.Show("Please fill in city");
+        return;
+      }
+      if (string.IsNullOrEmpty(vm.AdminViewModel.State))
+      {
+        MessageBox.Show("Please fill in state");
+        return;
+      }
+      if (string.IsNullOrEmpty(vm.AdminViewModel.PostalCode))
+      {
+        MessageBox.Show("Please fill in postal code");
+        return;
+      }
       string projectAddress =
         vm.AdminViewModel.StreetAddress
         + ", "
@@ -502,6 +544,7 @@ namespace GMEPDesignTool
         + vm.AdminViewModel.State
         + " "
         + vm.AdminViewModel.PostalCode;
+
       pdfRequest.ProjectAddress = projectAddress;
       pdfRequest.ProjectDescriptions = vm.AdminViewModel.Descriptions;
       pdfRequest.ProjectName = vm.AdminViewModel.ProjectName;
@@ -641,7 +684,17 @@ namespace GMEPDesignTool
           return;
       }
 
-      response.EnsureSuccessStatusCode();
+      try
+      {
+        response.EnsureSuccessStatusCode();
+      }
+      catch (System.Net.Http.HttpRequestException ex)
+      {
+        MessageBox.Show(
+          "Could not generate pdf. Check for missing fields and ensure at least one of the SMEP checkboxes are selected."
+        );
+        return;
+      }
       var pdfBytes = await response.Content.ReadAsByteArrayAsync();
       string keyName = $"{pdfRequest.ProjectName} Proposal.pdf";
 
@@ -658,7 +711,15 @@ namespace GMEPDesignTool
       }
 
       string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), keyName);
-      System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
+      try
+      {
+        System.IO.File.WriteAllBytes(tempFilePath, pdfBytes);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show("Could not save PDF. Check if file with the same name is currently open.");
+        return;
+      }
       Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
       await s3.UploadFileAsync(keyName, tempFilePath);
       int currentYear = DateTime.Now.Year;
@@ -673,7 +734,7 @@ namespace GMEPDesignTool
         $"S:\\Projects\\Projects\\{currentYear}\\{client.CompanyName}\\{pdfRequest.ProjectName}\\${keyName}";
       try
       {
-        System.IO.File.Copy(tempFilePath, destinationPath);
+        System.IO.File.Copy(tempFilePath, destinationPath, true);
       }
       catch (Exception ex)
       {

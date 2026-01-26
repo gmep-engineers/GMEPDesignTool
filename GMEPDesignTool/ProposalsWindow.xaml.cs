@@ -67,7 +67,11 @@ namespace GMEPDesignTool
       {
         if (countdown == 0)
         {
-          await ViewModel.SaveAsync();
+          if (ViewModel.Saved == false)
+          {
+            await ViewModel.SaveAsync();
+            ViewModel.Saved = true;
+          }
           countdown = 300;
         }
         Thread.Sleep(1000);
@@ -110,7 +114,8 @@ namespace GMEPDesignTool
       ProposalCommercialViewModel vm = new ProposalCommercialViewModel(
         adminViewModel,
         selectProposalTypeViewModel,
-        db
+        db,
+        p
       );
       AdminModel adminModel = await db.GetAdminByProjectId(p.ProjectId);
       adminViewModel.ProjectNo = adminModel.ProjectNo;
@@ -203,6 +208,7 @@ namespace GMEPDesignTool
 
     public void ProposalYearListViewItem_Click(object sender, RoutedEventArgs e)
     {
+      Save();
       string year = (string)ProposalYearListView.SelectedItem;
       ViewModel.FilterDataGridByYear(year);
     }

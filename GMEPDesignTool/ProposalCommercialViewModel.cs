@@ -21,7 +21,8 @@ namespace GMEPDesignTool
     public ProposalCommercialViewModel(
       AdminViewModel adminViewModel,
       SelectProposalTypeViewModel selectProposalTypeViewModel,
-      Database.Database database
+      Database.Database database,
+      Proposal? proposal
     )
     {
       this.adminViewModel = adminViewModel;
@@ -38,9 +39,12 @@ namespace GMEPDesignTool
       }
       selectedClientCompanyId = adminViewModel.SelectedClientCompanyId;
       Saved = true;
+      Proposal = proposal;
     }
 
     private List<ComboData> clientData = new List<ComboData>();
+
+    public Proposal? Proposal { get; set; }
     public List<ComboData> ClientData
     {
       get { return clientData; }
@@ -700,6 +704,10 @@ namespace GMEPDesignTool
               string.Empty
             );
           }
+          if (String.IsNullOrEmpty(WarningText) && Proposal != null)
+          {
+            Proposal.Fees = t;
+          }
         }
       }
     }
@@ -890,6 +898,10 @@ namespace GMEPDesignTool
         if (projectName != value)
         {
           projectName = value;
+          if (Proposal != null)
+          {
+            Proposal.ProjectName = projectName;
+          }
           OnPropertyChanged(nameof(ProjectName));
         }
       }
@@ -904,6 +916,7 @@ namespace GMEPDesignTool
         if (projectStreetAddress != value)
         {
           projectStreetAddress = value;
+          AdminViewModel.StreetAddress = value;
           OnPropertyChanged(nameof(ProjectStreetAddress));
         }
       }
@@ -918,6 +931,7 @@ namespace GMEPDesignTool
         if (projectCity != value)
         {
           projectCity = value;
+          AdminViewModel.City = value;
           OnPropertyChanged(nameof(ProjectCity));
         }
       }
@@ -932,6 +946,7 @@ namespace GMEPDesignTool
         if (projectState != value)
         {
           projectState = value;
+          AdminViewModel.State = value;
           OnPropertyChanged(nameof(ProjectState));
         }
       }
@@ -946,6 +961,7 @@ namespace GMEPDesignTool
         if (projectPostalCode != value)
         {
           projectPostalCode = value;
+          AdminViewModel.PostalCode = value;
           OnPropertyChanged(nameof(ProjectPostalCode));
         }
       }

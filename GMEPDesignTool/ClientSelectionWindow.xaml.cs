@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MySqlX.XDevAPI;
 
 namespace GMEPDesignTool
 {
@@ -23,6 +24,8 @@ namespace GMEPDesignTool
     ClientSelectionViewModel ViewModel { get; set; }
 
     LoginResponse LoginResponse { get; set; }
+
+    Proposal Proposal { get; set; }
 
     public ClientSelectionWindow(
       LoginResponse loginResponse,
@@ -48,6 +51,7 @@ namespace GMEPDesignTool
       {
         this.Title = "Client Selection";
       }
+      Proposal = proposal;
     }
 
     public void TextBox_TextChanged(object sender, EventArgs e)
@@ -69,6 +73,17 @@ namespace GMEPDesignTool
         return;
       }
       ViewModel.SetClientCompanyId(c);
+      if (Title == "Client Selection")
+      {
+        // Do this to update the button text since async functions cannot update the UI
+        ViewModel.Proposal.ClientCompanyName = "";
+        ViewModel.Proposal.ClientCompanyName = c.Name;
+      }
+      else
+      {
+        ViewModel.Proposal.ArchitectCompanyName = "";
+        ViewModel.Proposal.ArchitectCompanyName = c.Name;
+      }
     }
 
     public void CurrentCompanyName_DoubleClick(object sender, RoutedEventArgs e)
@@ -76,8 +91,9 @@ namespace GMEPDesignTool
       if (ViewModel.CurrentCompanyName != null)
       {
         AddEditContactWindow addEditContactWindow = new AddEditContactWindow(
-          ViewModel.CurrentCompanyId,
           ViewModel.CurrentCompanyName,
+          ViewModel.CurrentCompanyId,
+          Proposal,
           LoginResponse
         );
         addEditContactWindow.Show();

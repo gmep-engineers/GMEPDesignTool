@@ -10,10 +10,42 @@ using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
-  public class ProposalContact
+  public class ProposalContact : INotifyPropertyChanged
   {
-    public string FullName { get; set; }
-    public string Id { get; set; }
+    private string _FullName = string.Empty;
+    public string FullName
+    {
+      get => _FullName;
+      set
+      {
+        if (_FullName != value)
+        {
+          _FullName = value;
+          OnPropertyChanged(nameof(FullName));
+        }
+      }
+    }
+
+    private string _Id = string.Empty;
+    public string Id
+    {
+      get => _Id;
+      set
+      {
+        if (_Id != value)
+        {
+          _Id = value;
+          OnPropertyChanged(nameof(Id));
+        }
+      }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
   }
 
   public class Proposal : INotifyPropertyChanged

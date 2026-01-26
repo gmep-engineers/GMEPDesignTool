@@ -19,6 +19,8 @@ namespace GMEPDesignTool
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    Proposal Proposal { get; set; }
+
     private string _CompanyId;
     public string CompanyId
     {
@@ -39,19 +41,22 @@ namespace GMEPDesignTool
     public Contact? SelectedContact { get; set; }
 
     public AddEditContactViewModel(
-      LoginResponse loginResponse,
+      string companyName,
       string companyId,
-      string companyName
+      LoginResponse loginResponse,
+      Proposal proposal
+    // HERE add list of client contacts, same data type as in the client contact column
     )
     {
       _CompanyId = companyId;
       _CompanyName = companyName;
       Database = new Database.Database(loginResponse.SqlConnectionString);
-      CompanyContacts = new ObservableCollection<Contact>(Database.GetContacts(companyId));
+      CompanyContacts = new ObservableCollection<Contact>(Database.GetContacts(_CompanyId));
       foreach (Contact contact in CompanyContacts)
       {
         contact.New = false;
       }
+      Proposal = proposal;
     }
 
     public void Save()
@@ -69,11 +74,21 @@ namespace GMEPDesignTool
         {
           Database.SaveContact(contact);
           contact.Modified = false;
+          var proposalContact = Proposal.Contacts.FirstOrDefault((p) => p.Id == contact.Id);
+          if (proposalContact != null)
+          {
+            proposalContact.FullName = contact.FirstName + " " + contact.LastName;
+          }
         }
       }
       foreach (Contact contact in deletedContacts)
       {
         CompanyContacts.Remove(contact);
+        var proposalContact = Proposal.Contacts.FirstOrDefault((p) => p.Id == contact.Id);
+        if (proposalContact != null)
+        {
+          Proposal.Contacts.Remove(proposalContact);
+        }
       }
     }
 
@@ -84,8 +99,28 @@ namespace GMEPDesignTool
         contact.CompanyId = _CompanyId;
         if (contact.Modified)
         {
+          if (contact.New && Proposal != null)
+          {
+            Proposal.Contacts.Add(
+              new ProposalContact()
+              {
+                FullName = contact.FirstName + " " + contact.LastName,
+                Id = contact.Id,
+              }
+            );
+          }
           Database.SaveContact(contact);
           contact.Modified = false;
+          if (Proposal != null)
+          {
+            ProposalContact? proposalContact = Proposal.Contacts.FirstOrDefault(
+              (p) => p.Id == contact.Id
+            );
+            if (proposalContact != null)
+            {
+              proposalContact.FullName = contact.FirstName + " " + contact.LastName;
+            }
+          }
         }
       }
     }

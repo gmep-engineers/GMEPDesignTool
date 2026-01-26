@@ -18,7 +18,7 @@ namespace GMEPDesignTool
   public class ClientSelectionViewModel : INotifyPropertyChanged
   {
     public Database.Database db { get; set; }
-    Proposal Proposal { get; set; }
+    public Proposal Proposal { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private NetSuiteAuth NetSuiteAuth;
 

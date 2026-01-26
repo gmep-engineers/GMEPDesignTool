@@ -50,7 +50,7 @@ namespace GMEPDesignTool
       Proposal p = new Proposal();
       string id = database.CreateProposal(p, LoginResponse.EmployeeId, ViewModel.TypeId, ProjectId);
       //MessageBox.Show($"proposal TypeId: {ViewModel.TypeId}");
-      CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel, database);
+      CommercialViewModel = new ProposalCommercialViewModel(adminViewModel, ViewModel, database, p);
 
       Proposals = await database.GetProposals(ProjectId);
       ProposalCommercialWindow newWindow = new ProposalCommercialWindow(
