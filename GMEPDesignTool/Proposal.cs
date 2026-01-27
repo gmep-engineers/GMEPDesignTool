@@ -487,6 +487,8 @@ namespace GMEPDesignTool
     public ElectricalScope ElectricalScope { get; set; }
     public PlumbingScope PlumbingScope { get; set; }
     public string TotalPrice { get; set; }
+    public string MaxAdminHours { get; set; }
+    public string BudgetedAdminHours { get; set; }
     public DateTime DateSent { get; set; }
     public DateTime DateDrawingsReceived { get; set; }
     public bool HasSiteVisit { get; set; }

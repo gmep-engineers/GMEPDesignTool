@@ -712,6 +712,34 @@ namespace GMEPDesignTool
       }
     }
 
+    private string _MaxAdminHours;
+    public string MaxAdminHours
+    {
+      get => _MaxAdminHours;
+      set
+      {
+        if (_MaxAdminHours != value)
+        {
+          _MaxAdminHours = value;
+          OnPropertyChanged(nameof(MaxAdminHours));
+        }
+      }
+    }
+
+    private string _BudgetedAdminHours;
+    public string BudgetedAdminHours
+    {
+      get => _BudgetedAdminHours;
+      set
+      {
+        if (_BudgetedAdminHours != value)
+        {
+          _BudgetedAdminHours = value;
+          OnPropertyChanged(nameof(BudgetedAdminHours));
+        }
+      }
+    }
+
     private string retainerPercent;
     public string RetainerPercent
     {

@@ -78,11 +78,13 @@ namespace GMEPDesignTool
         // Do this to update the button text since async functions cannot update the UI
         ViewModel.Proposal.ClientCompanyName = "";
         ViewModel.Proposal.ClientCompanyName = c.Name;
+        ViewModel.Proposal.ClientCompanyId = c.Id;
       }
       else
       {
         ViewModel.Proposal.ArchitectCompanyName = "";
         ViewModel.Proposal.ArchitectCompanyName = c.Name;
+        ViewModel.Proposal.ArchitectCompanyId = c.Id;
       }
     }
 

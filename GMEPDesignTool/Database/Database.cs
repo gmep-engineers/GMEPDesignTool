@@ -46,7 +46,6 @@ namespace GMEPDesignTool.Database
     {
       if (conn.State == System.Data.ConnectionState.Closed)
       {
-        Trace.WriteLine(ConnectionString);
         conn.Open();
       }
     }
@@ -1830,6 +1829,67 @@ namespace GMEPDesignTool.Database
       {
         SaveCompany(architect);
       }
+    }
+
+    public Contact? GetContact(string contactId)
+    {
+      Contact? contact = null;
+      string query =
+        @"
+        SELECT 
+        contacts.id as contact_id,
+        contacts.entity_id,
+        contacts.first_name,
+        contacts.last_name,
+        contacts.company_id,
+        phone_numbers.phone_number,
+        phone_numbers.extension,
+        phone_numbers.id as phone_number_id,
+        email_addresses.email_address,
+        email_addresses.id as email_address_id,
+        companies.name
+        FROM contacts
+        LEFT JOIN
+        entities ON entities.id = contacts.entity_id
+        LEFT JOIN
+        phone_number_entity_rel ON phone_number_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        phone_numbers ON phone_numbers.id = phone_number_entity_rel.phone_number_id
+        LEFT JOIN
+        email_addr_entity_rel ON email_addr_entity_rel.entity_id = entities.id
+        LEFT JOIN
+        email_addresses ON email_addresses.id = email_addr_entity_rel.email_address_id
+        LEFT JOIN
+        companies ON companies.id = contacts.company_id
+        LEFT JOIN
+        clients ON clients.company_id = companies.id
+        LEFT JOIN
+        architects ON architects.company_id = companies.id
+        WHERE contacts.id = @contactId
+      ";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      command.Parameters.AddWithValue("@contactId", contactId);
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        contact = new Contact(
+          GetSafeString(reader, "contact_id"),
+          GetSafeString(reader, "entity_id"),
+          GetSafeString(reader, "first_name"),
+          GetSafeString(reader, "last_name"),
+          GetSafeString(reader, "company_id"),
+          GetSafeString(reader, "name"),
+          GetSafeString(reader, "email_address_id"),
+          GetSafeString(reader, "email_address"),
+          GetSafeString(reader, "phone_number_id"),
+          GetUnsafeULong(reader, "phone_number"),
+          GetUnsafeUInt(reader, "extension")
+        );
+      }
+      reader.Close();
+      CloseConnection(Connection);
+      return contact;
     }
 
     public List<Contact> GetContacts(string companyId = "")

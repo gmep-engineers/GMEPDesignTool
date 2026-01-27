@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Mysqlx.Crud;
 using static GMEPDesignTool.ProposalCommercialWindow;
+using static MsgReader.Outlook.Storage;
 
 namespace GMEPDesignTool
 {
@@ -34,12 +35,16 @@ namespace GMEPDesignTool
       public string ProjectDescriptions { get; set; }
       public string ProjectName { get; set; }
       public string TotalPrice { get; set; }
+      public string MaxAdminHours { get; set; }
+      public string BudgetedAdminHours { get; set; }
       public string RetainerPercent { get; set; }
       public string ClientType { get; set; }
       public string ClientContactName { get; set; }
       public string ClientBusinessName { get; set; }
       public string ClientStreetAddress { get; set; }
       public string ClientCityStateZip { get; set; }
+      public string ClientEmail { get; set; }
+      public string ClientPhone { get; set; }
       public string DateSent { get; set; }
       public string NumMeetings { get; set; }
       public string TarrarNo { get; set; }
@@ -108,6 +113,8 @@ namespace GMEPDesignTool
       if (proposalData != null)
       {
         vm.TotalPrice = proposalData.TotalPrice;
+        vm.MaxAdminHours = proposalData.MaxAdminHours;
+        vm.BudgetedAdminHours = proposalData.BudgetedAdminHours;
         vm.HasSiteVisit = proposalData.HasSiteVisit;
         vm.RetainerPercent = proposalData.RetainerPercent;
         vm.DateSent = proposalData.DateSent;
@@ -262,6 +269,8 @@ namespace GMEPDesignTool
         }
 
         proposalData.TotalPrice = TotalPriceBox.Text;
+        proposalData.BudgetedAdminHours = vm.BudgetedAdminHours;
+        proposalData.MaxAdminHours = vm.MaxAdminHours;
         proposalData.HasSiteVisit = vm.HasSiteVisit;
         proposalData.RetainerPercent = RetainerPercentBox.Text;
 
@@ -435,6 +444,30 @@ namespace GMEPDesignTool
 
       pdfRequest.TotalPrice = TotalPriceBox.Text.Trim();
 
+      pdfRequest.MaxAdminHours = MaxAdminHours.Text.Trim();
+
+      if (
+        !string.IsNullOrEmpty(pdfRequest.MaxAdminHours)
+        && !Int32.TryParse(pdfRequest.MaxAdminHours, out _)
+      )
+      {
+        MessageBox.Show("Max Admin Hours must be a number");
+        return;
+      }
+
+      pdfRequest.BudgetedAdminHours = BudgetedAdminHours.Text.Trim();
+
+      if (
+        !string.IsNullOrEmpty(pdfRequest.BudgetedAdminHours)
+        && !Int32.TryParse(pdfRequest.MaxAdminHours, out _)
+      )
+      {
+        MessageBox.Show("Budgeted Admin Hours must be a number");
+        return;
+      }
+
+      pdfRequest.BudgetedAdminHours = BudgetedAdminHours.Text.Trim();
+
       pdfRequest.RetainerPercent = RetainerPercentBox.Text.Trim();
 
       if (String.IsNullOrEmpty(pdfRequest.TotalPrice))
@@ -470,7 +503,41 @@ namespace GMEPDesignTool
       {
         pdfRequest.ClientType = "new";
       }
-      pdfRequest.ClientContactName = client.PrimaryContactName;
+
+      pdfRequest.ClientPhone = client.CompanyPhone.ToString();
+      pdfRequest.ClientEmail = client.CompanyEmail;
+
+      if (proposal != null && proposal.ContactId != client.PrimaryContactId)
+      {
+        Contact? contact = database.GetContact(proposal.ContactId);
+        if (contact != null)
+        {
+          pdfRequest.ClientContactName = contact.FirstName + " " + contact.LastName;
+          if (!string.IsNullOrEmpty(contact.EmailAddress))
+          {
+            pdfRequest.ClientEmail = contact.EmailAddress;
+          }
+
+          if (contact.PhoneNumber != null)
+          {
+            pdfRequest.ClientPhone = contact.PhoneNumber.ToString();
+          }
+        }
+      }
+      else
+      {
+        pdfRequest.ClientContactName = client.PrimaryContactName;
+        if (!string.IsNullOrEmpty(client.CompanyEmail))
+        {
+          pdfRequest.ClientEmail = client.CompanyEmail;
+        }
+
+        if (client.CompanyPhone != null)
+        {
+          pdfRequest.ClientPhone = client.CompanyPhone.ToString();
+        }
+      }
+
       pdfRequest.ClientBusinessName = client.CompanyName;
       pdfRequest.ClientStreetAddress = client.StreetAddress;
       string clientCityStateZip = client.City + ", " + client.State + "  " + client.PostalCode;
