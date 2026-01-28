@@ -24,8 +24,10 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Label Foreground="Red"  Content="Remove" HorizontalAlignment="Right" Margin="0,10,0,0" VerticalAlignment="Top" Visibility="{Binding Path=RemoveLabelVisibility}" MouseDoubleClick="RemoveLabel_DoubleClick" Cursor="Hand"/>
         <Label Foreground="Red"  Content="NetSuite auth required" HorizontalAlignment="Left" Margin="216,31,0,0" VerticalAlignment="Top" Visibility="{Binding Path=NetSuiteAuthWarningVisibility}"/>
         <Label Content="Current" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="{Binding CurrentCompanyName}" HorizontalAlignment="Left" Margin="73,10,0,0" VerticalAlignment="Top" Cursor="Pen" MouseDoubleClick="CurrentCompanyName_DoubleClick" Foreground="Blue"/>
+        <Label Content="{Binding CurrentCompanyName}" HorizontalAlignment="Left" Margin="73,10,0,0" VerticalAlignment="Top" Cursor="Hand" MouseDoubleClick="CurrentCompanyName_DoubleClick" Foreground="Blue"/>
     </Grid>
 </Window>

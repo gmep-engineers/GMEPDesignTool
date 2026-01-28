@@ -1,11 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GMEPDesignTool
 {
+  public static class NetSuiteHandler
+  {
+    public static async Task RefreshNetSuiteToken(
+      LoginResponse loginResponse,
+      NetSuiteAuth netSuiteAuth
+    )
+    {
+      var formData = new List<KeyValuePair<string, string>>
+      {
+        new KeyValuePair<string, string>("refresh_token", netSuiteAuth.refresh_token),
+        new KeyValuePair<string, string>("grant_type", "refresh_token"),
+      };
+      string username = loginResponse.NetSuiteClientId;
+      string password = loginResponse.NetSuiteClientSecret;
+      string credentials = $"{username}:{password}";
+
+      byte[] credentialBytes = System.Text.Encoding.ASCII.GetBytes(credentials);
+      string base64Credentials = Convert.ToBase64String(credentialBytes);
+
+      HttpClient client = new HttpClient();
+
+      client.DefaultRequestHeaders.Accept.Clear();
+      client.DefaultRequestHeaders.Accept.Add(
+        new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded")
+      );
+
+      client.DefaultRequestHeaders.Authorization =
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", base64Credentials);
+
+      var form = new FormUrlEncodedContent(formData);
+
+      HttpResponseMessage response = await client.PostAsync(
+        "https://5645740.suitetalk.api.netsuite.com/services/rest/auth/oauth2/v1/token",
+        form
+      );
+
+      response.EnsureSuccessStatusCode();
+
+      NetSuiteAuth authRes = await response.Content.ReadAsAsync<NetSuiteAuth>();
+
+      netSuiteAuth.access_token = authRes.access_token;
+      netSuiteAuth.token_type = authRes.token_type;
+      netSuiteAuth.expires_in = authRes.expires_in;
+      int expires_in = 0;
+      if (Int32.TryParse(authRes.expires_in, out expires_in))
+      {
+        // calculate datetime of 3600 seconds from now
+        netSuiteAuth.expires_in = DateTime.Now.AddSeconds(expires_in).ToString();
+      }
+    }
+  }
+
   public class NetSuiteQueryRequest
   {
     public string q;

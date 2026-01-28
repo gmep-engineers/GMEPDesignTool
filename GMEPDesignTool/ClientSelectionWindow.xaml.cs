@@ -101,5 +101,13 @@ namespace GMEPDesignTool
         addEditContactWindow.Show();
       }
     }
+
+    public void RemoveLabel_DoubleClick(object sender, RoutedEventArgs e)
+    {
+      if (ViewModel.CurrentCompanyName != null)
+      {
+        ViewModel.RemoveCurrentCompany();
+      }
+    }
   }
 }

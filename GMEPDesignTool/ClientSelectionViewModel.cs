@@ -21,6 +21,7 @@ namespace GMEPDesignTool
     public Proposal Proposal { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;
     private NetSuiteAuth NetSuiteAuth;
+    private LoginResponse LoginResponse;
 
     private Visibility _NetSuiteAuthWarningVisibility = Visibility.Collapsed;
     public Visibility NetSuiteAuthWarningVisibility
@@ -30,6 +31,17 @@ namespace GMEPDesignTool
       {
         _NetSuiteAuthWarningVisibility = value;
         OnPropertyChanged("NetSuiteAuthWarningVisibility");
+      }
+    }
+
+    private Visibility _RemoveLabelVisibility = Visibility.Collapsed;
+    public Visibility RemoveLabelVisibility
+    {
+      get { return _RemoveLabelVisibility; }
+      set
+      {
+        _RemoveLabelVisibility = value;
+        OnPropertyChanged("RemoveButtonVisibility");
       }
     }
 
@@ -53,6 +65,14 @@ namespace GMEPDesignTool
         if (_currentCompanyName != value)
         {
           _currentCompanyName = value;
+          if (!string.IsNullOrEmpty(value))
+          {
+            RemoveLabelVisibility = Visibility.Visible;
+          }
+          else
+          {
+            RemoveLabelVisibility = Visibility.Collapsed;
+          }
           OnPropertyChanged("CurrentCompanyName");
         }
       }
@@ -110,6 +130,7 @@ namespace GMEPDesignTool
       }
 
       NetSuiteAuth = netSuiteAuth;
+      LoginResponse = loginResponse;
 
       if (string.IsNullOrEmpty(NetSuiteAuth.access_token))
       {
@@ -130,6 +151,14 @@ namespace GMEPDesignTool
       NetSuiteQueryRequest query = new NetSuiteQueryRequest(q);
 
       HttpClient client = new HttpClient();
+
+      if (DateTime.TryParse(NetSuiteAuth.expires_in, out DateTime expiryDate))
+      {
+        if (expiryDate < DateTime.Now)
+        {
+          await NetSuiteHandler.RefreshNetSuiteToken(LoginResponse, NetSuiteAuth);
+        }
+      }
 
       client.DefaultRequestHeaders.Authorization =
         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", NetSuiteAuth.access_token);
@@ -223,6 +252,27 @@ namespace GMEPDesignTool
           Proposal.db = db;
           Proposal.Contacts = db.GetProposalContacts(Proposal.ClientCompanyId);
         }
+      }
+    }
+
+    public void RemoveCurrentCompany()
+    {
+      CurrentCompanyId = string.Empty;
+      CurrentCompanyName = string.Empty;
+      if (SetAsArchitect)
+      {
+        Proposal.ArchitectCompanyId = string.Empty;
+        Proposal.ArchitectCompanyName = string.Empty;
+
+        Trace.WriteLine("arch " + Proposal.ArchitectCompanyName);
+      }
+      else
+      {
+        Proposal.ClientCompanyId = string.Empty;
+        Proposal.ClientCompanyName = string.Empty;
+        Proposal.Contacts.Clear();
+
+        Trace.WriteLine("cli " + Proposal.ClientCompanyName);
       }
     }
   }

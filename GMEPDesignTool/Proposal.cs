@@ -275,10 +275,15 @@ namespace GMEPDesignTool
         {
           _ClientCompanyId = value;
           OnPropertyChanged(nameof(ClientCompanyId));
-          if (db != null)
+          if (string.IsNullOrEmpty(value))
+          {
+            ContactName = string.Empty;
+            ClientCompanyName = string.Empty;
+          }
+          else if (db != null)
           {
             ContactName = db.GetCompanyPrimaryContactName(_ClientCompanyId);
-            CompanyName = db.GetCompanyName(_ClientCompanyId);
+            ClientCompanyName = db.GetCompanyName(_ClientCompanyId);
           }
           _Modified = true;
         }
