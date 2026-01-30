@@ -584,6 +584,7 @@ namespace GMEPDesignTool
           || d.ElectricalScope.ElectricalServiceLoadCalc
           || d.ElectricalScope.ElectricalSingleLineDiagram
           || d.ElectricalScope.ElectricalLightingDesign
+          || d.ElectricalScope.ElectricalPhotometric
         )
         {
           if (d.NewConstruction)
@@ -602,6 +603,20 @@ namespace GMEPDesignTool
             electricalDescriptions += ", Single line diagrams";
           if (d.ElectricalScope.ElectricalLightingDesign)
             electricalDescriptions += ", Electrical lighting design";
+          if (d.ElectricalScope.ElectricalLightingDesign)
+            electricalDescriptions += ", Electrical photometric";
+
+          if (
+            electricalDescriptions.EndsWith(
+              "engineering for Electrical design, Electrical photometric"
+            )
+          )
+          {
+            electricalDescriptions = electricalDescriptions.Replace(
+              "engineering for Electrical design, Electrical photometric",
+              "Electrical photometric"
+            );
+          }
           r.ElectricalDescriptions = electricalDescriptions;
         }
 

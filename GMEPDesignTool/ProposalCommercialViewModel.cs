@@ -337,6 +337,21 @@ namespace GMEPDesignTool
       }
     }
 
+    private bool electricalPhotometric = false;
+    public bool ElectricalPhotometric
+    {
+      get { return electricalPhotometric; }
+      set
+      {
+        if (electricalPhotometric != value)
+        {
+          electricalPhotometric = value;
+          OnPropertyChanged(nameof(ElectricalPhotometric));
+          UpdateElectricalCheckAll();
+        }
+      }
+    }
+
     private bool electricalSingleLineDiagram = false;
     public bool ElectricalSingleLineDiagram
     {
@@ -385,6 +400,7 @@ namespace GMEPDesignTool
             ElectricalServiceLoadCalc = true;
             ElectricalSingleLineDiagram = true;
             ElectricalLightingDesign = true;
+            ElectricalPhotometric = true;
           }
           else
           {
@@ -393,6 +409,7 @@ namespace GMEPDesignTool
             ElectricalServiceLoadCalc = false;
             ElectricalSingleLineDiagram = false;
             ElectricalLightingDesign = false;
+            ElectricalPhotometric = false;
           }
         }
       }
@@ -404,7 +421,8 @@ namespace GMEPDesignTool
         ElectricalPowerDesign
         && ElectricalServiceLoadCalc
         && ElectricalSingleLineDiagram
-        && ElectricalLightingDesign;
+        && ElectricalLightingDesign
+        && ElectricalPhotometric;
 
       if (electricalCheckAll != allChecked)
       {

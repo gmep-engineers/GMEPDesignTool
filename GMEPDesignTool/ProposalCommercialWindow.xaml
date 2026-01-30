@@ -99,6 +99,7 @@
                             <RowDefinition Height="20" />
                             <RowDefinition Height="20" />
                             <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
                             <RowDefinition Height="30" />
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Content="Electrical" FontFamily="Tahoma" FontSize="16pt"/>
@@ -106,7 +107,8 @@
                         <CheckBox Grid.Row="2" IsChecked="{Binding ElectricalServiceLoadCalc}" Content="Service load calculation" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
                         <CheckBox Grid.Row="3" IsChecked="{Binding ElectricalSingleLineDiagram}" Content="Single line diagrams" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
                         <CheckBox Grid.Row="4" IsChecked="{Binding ElectricalLightingDesign}" Content="Electrical lighting design" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
-                        <CheckBox Grid.Row="5" IsChecked="{Binding ElectricalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="5" IsChecked="{Binding ElectricalPhotometric}" Content="Electrical photometric" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+                        <CheckBox Grid.Row="6" IsChecked="{Binding ElectricalCheckAll}" Content="Check All" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"/>
                     </Grid>
                     <Grid Grid.Row="3" Background="#FFE5E5E5" IsEnabled="{Binding Editable}">
                         <Grid.RowDefinitions>

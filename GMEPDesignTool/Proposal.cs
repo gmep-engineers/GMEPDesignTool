@@ -565,6 +565,7 @@ namespace GMEPDesignTool
     public bool ElectricalServiceLoadCalc { get; set; }
     public bool ElectricalSingleLineDiagram { get; set; }
     public bool ElectricalLightingDesign { get; set; }
+    public bool ElectricalPhotometric { get; set; }
 
     public ElectricalScope()
     {
@@ -572,6 +573,7 @@ namespace GMEPDesignTool
       ElectricalServiceLoadCalc = false;
       ElectricalSingleLineDiagram = false;
       ElectricalLightingDesign = false;
+      ElectricalPhotometric = false;
     }
   }
 

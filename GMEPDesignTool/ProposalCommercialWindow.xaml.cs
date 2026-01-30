@@ -147,6 +147,7 @@ namespace GMEPDesignTool
         vm.ElectricalPowerDesign = proposalData.ElectricalScope.ElectricalPowerDesign;
         vm.ElectricalServiceLoadCalc = proposalData.ElectricalScope.ElectricalServiceLoadCalc;
         vm.ElectricalSingleLineDiagram = proposalData.ElectricalScope.ElectricalSingleLineDiagram;
+        vm.ElectricalPhotometric = proposalData.ElectricalScope.ElectricalPhotometric;
 
         vm.PlumbingWasteVent = proposalData.PlumbingScope.PlumbingWasteVent;
         vm.PlumbingHotColdWater = proposalData.PlumbingScope.PlumbingHotColdWater;
@@ -240,6 +241,7 @@ namespace GMEPDesignTool
           || vm.ElectricalPowerDesign
           || vm.ElectricalServiceLoadCalc
           || vm.ElectricalSingleLineDiagram
+          || vm.ElectricalPhotometric
         )
         {
           projectData.IsCheckedE = true;
@@ -318,6 +320,7 @@ namespace GMEPDesignTool
         electricalScope.ElectricalLightingDesign = vm.ElectricalLightingDesign;
         electricalScope.ElectricalSingleLineDiagram = vm.ElectricalSingleLineDiagram;
         electricalScope.ElectricalServiceLoadCalc = vm.ElectricalServiceLoadCalc;
+        electricalScope.ElectricalPhotometric = vm.ElectricalPhotometric;
         proposalData.ElectricalScope = electricalScope;
 
         PlumbingScope plumbingScope = new PlumbingScope();
@@ -676,6 +679,7 @@ namespace GMEPDesignTool
         || vm.ElectricalServiceLoadCalc
         || vm.ElectricalSingleLineDiagram
         || vm.ElectricalLightingDesign
+        || vm.ElectricalPhotometric
       )
       {
         if (vm.NewConstruction)
@@ -694,6 +698,20 @@ namespace GMEPDesignTool
           electricalDescriptions += ", Single line diagrams";
         if (vm.ElectricalLightingDesign)
           electricalDescriptions += ", Electrical lighting design";
+        if (vm.ElectricalPhotometric)
+          electricalDescriptions += ", Electrical photometric";
+
+        if (
+          electricalDescriptions.EndsWith(
+            "engineering for Electrical design, Electrical photometric"
+          )
+        )
+        {
+          electricalDescriptions = electricalDescriptions.Replace(
+            "engineering for Electrical design, Electrical photometric",
+            "Electrical photometric"
+          );
+        }
         pdfRequest.ElectricalDescriptions = electricalDescriptions;
       }
 

@@ -85,6 +85,7 @@ namespace GMEPDesignTool
               || e.ElectricalPowerDesign
               || e.ElectricalServiceLoadCalc
               || e.ElectricalLightingDesign
+              || e.ElectricalPhotometric
             )
             {
               AdminViewModel.IsCheckedE = true;
