@@ -104,6 +104,20 @@ namespace GMEPDesignTool
       }
     }
 
+    private string _EstimateNo;
+    public string EstimateNo
+    {
+      get => _EstimateNo;
+      set
+      {
+        if (_EstimateNo != value)
+        {
+          _EstimateNo = value;
+          OnPropertyChanged(nameof(EstimateNo));
+        }
+      }
+    }
+
     private DateTime _DateCreated;
     public DateTime DateCreated
     {

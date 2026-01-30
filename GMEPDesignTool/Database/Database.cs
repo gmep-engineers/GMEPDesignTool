@@ -478,7 +478,8 @@ namespace GMEPDesignTool.Database
         UPDATE projects SET
         client_company_id = @clientCompanyId,
         gmep_project_name = @projectName,
-        gmep_project_no = @projectNo
+        gmep_project_no = @projectNo,
+        gmep_estimate_no = @estimateNo
         WHERE id = @projectId
         ";
       OpenConnection(Connection);
@@ -486,6 +487,7 @@ namespace GMEPDesignTool.Database
       command.Parameters.AddWithValue("@clientCompanyId", p.ClientCompanyId);
       command.Parameters.AddWithValue("@projectName", p.ProjectName);
       command.Parameters.AddWithValue("@projectNo", p.ProjectNo);
+      command.Parameters.AddWithValue("@estimateNo", p.EstimateNo);
       command.Parameters.AddWithValue("@projectId", p.ProjectId);
       command.ExecuteNonQuery();
       Connection.Close();
@@ -2173,12 +2175,10 @@ namespace GMEPDesignTool.Database
     public string CreateBlankProject()
     {
       var id = Guid.NewGuid().ToString();
-      var projectNo = "n" + id.Substring(0, 6);
       OpenConnection(Connection);
-      string query = "INSERT INTO projects (id, gmep_project_no) VALUES (@id, @projectNo)";
+      string query = "INSERT INTO projects (id) VALUES (@id)";
       MySqlCommand command = new MySqlCommand(query, Connection);
       command.Parameters.AddWithValue("@id", id);
-      command.Parameters.AddWithValue("@projectNo", projectNo);
       command.ExecuteNonQuery();
       CloseConnection(Connection);
       return id;
@@ -4701,6 +4701,35 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       return true;
     }
 
+    public string GetNextEstimateNo()
+    {
+      string currDate = DateTime.Today.ToString("yyyyMMdd");
+      string query =
+        $"SELECT gmep_estimate_no FROM projects WHERE gmep_estimate_no LIKE '{currDate}%' ORDER BY gmep_estimate_no DESC";
+      OpenConnection(Connection);
+      MySqlCommand command = new MySqlCommand(query, Connection);
+      string nextEstimateNo = $"{currDate}-1";
+
+      MySqlDataReader reader = command.ExecuteReader();
+      if (reader.Read())
+      {
+        string latestEstimateNo = GetSafeString(reader, "gmep_estimate_no");
+        if (latestEstimateNo.StartsWith(currDate))
+        {
+          string estimateIdxStr = latestEstimateNo.Split('-')[1];
+          if (Int32.TryParse(estimateIdxStr, out int estimateIdx))
+          {
+            int nextEstimateIdx = estimateIdx + 1;
+            nextEstimateNo = $"{currDate}-{nextEstimateIdx}";
+          }
+        }
+      }
+
+      reader.Close();
+      CloseConnection(Connection);
+      return nextEstimateNo;
+    }
+
     public string CreateProposal(
       Proposal p,
       string employeeId,
@@ -4718,7 +4747,8 @@ INSERT INTO electrical_lighting_timeclock_control_relays
       {
         projectId = CreateBlankProject();
         p.ProjectId = projectId;
-        p.ProjectNo = "n" + projectId.Substring(0, 6);
+        p.ProjectNo = string.Empty;
+        p.EstimateNo = GetNextEstimateNo();
       }
       string query =
         @"

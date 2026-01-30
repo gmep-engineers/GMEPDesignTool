@@ -131,6 +131,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Estimate #" Binding="{Binding EstimateNo}" />
                 <DataGridTextColumn Header="Project #" Binding="{Binding ProjectNo}" />
                 <DataGridTextColumn Header="Fees" Binding="{Binding Fees}" />
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" />
