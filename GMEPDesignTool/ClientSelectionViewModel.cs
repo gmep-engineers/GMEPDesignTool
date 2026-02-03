@@ -263,16 +263,12 @@ namespace GMEPDesignTool
       {
         Proposal.ArchitectCompanyId = string.Empty;
         Proposal.ArchitectCompanyName = string.Empty;
-
-        Trace.WriteLine("arch " + Proposal.ArchitectCompanyName);
       }
       else
       {
         Proposal.ClientCompanyId = string.Empty;
         Proposal.ClientCompanyName = string.Empty;
         Proposal.Contacts.Clear();
-
-        Trace.WriteLine("cli " + Proposal.ClientCompanyName);
       }
     }
   }

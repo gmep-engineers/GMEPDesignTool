@@ -1337,9 +1337,7 @@ namespace GMEPDesignTool.Database
         contacts ON contacts.id = companies.primary_contact_id
         LEFT JOIN
         clients ON clients.company_id = companies.id
-        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
-        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
-        AND clients.company_id IS NOT NULL
+        WHERE clients.company_id IS NOT NULL
         AND clients.date_deleted IS NULL
         GROUP BY companies.id
         ORDER BY companies.name
@@ -1370,6 +1368,7 @@ namespace GMEPDesignTool.Database
           )
         );
       }
+
       reader.Close();
       CloseConnection(Connection);
       return clients;
@@ -1928,9 +1927,7 @@ namespace GMEPDesignTool.Database
         clients ON clients.company_id = companies.id
         LEFT JOIN
         architects ON architects.company_id = companies.id
-        WHERE ( email_addr_entity_rel.is_primary OR email_addr_entity_rel.is_primary IS NULL )
-        AND ( phone_number_entity_rel.is_primary OR phone_number_entity_rel.is_primary IS NULL )
-        AND ( clients.date_deleted IS NULL OR architects.date_deleted IS NULL )
+        WHERE ( clients.date_deleted IS NULL OR architects.date_deleted IS NULL )
         AND contacts.date_deleted IS NULL
         AND ( clients.company_id IS NOT NULL OR architects.company_id IS NOT NULL )
       ";

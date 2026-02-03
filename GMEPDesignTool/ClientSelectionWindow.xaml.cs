@@ -79,6 +79,7 @@ namespace GMEPDesignTool
         ViewModel.Proposal.ClientCompanyName = "";
         ViewModel.Proposal.ClientCompanyName = c.Name;
         ViewModel.Proposal.ClientCompanyId = c.Id;
+        ViewModel.Proposal.Contacts = ViewModel.db.GetProposalContacts(c.Id);
       }
       else
       {
