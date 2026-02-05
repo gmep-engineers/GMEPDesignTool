@@ -147,7 +147,8 @@ namespace GMEPDesignTool
       }
       Clients.Clear();
       string id = "";
-      string q = $"SELECT id, companyName FROM customer WHERE companyName LIKE '%{searchStr}%'";
+      string q =
+        $"SELECT id, companyName FROM customer WHERE LOWER(companyName) LIKE LOWER('%{searchStr}%')";
       NetSuiteQueryRequest query = new NetSuiteQueryRequest(q);
 
       HttpClient client = new HttpClient();

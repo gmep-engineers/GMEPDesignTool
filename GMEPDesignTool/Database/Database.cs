@@ -1522,7 +1522,7 @@ namespace GMEPDesignTool.Database
         string emailAddressRelId = Guid.NewGuid().ToString();
         query =
           @"
-                    INSERT INTO email_addresses (id, email_address)
+                    INSERT IGNORE INTO email_addresses (id, email_address)
                     VALUES (@id, @emailAddress)
                     ";
         command = new MySqlCommand(query, Connection);

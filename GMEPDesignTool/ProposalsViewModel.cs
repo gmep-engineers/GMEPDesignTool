@@ -163,7 +163,8 @@ namespace GMEPDesignTool
     public async Task<string> GetNetSuiteCompanyId(string companyName)
     {
       string id = "";
-      string q = $"SELECT id, companyName FROM customer WHERE companyName = '{companyName}'";
+      string q =
+        $"SELECT id, companyName FROM customer WHERE LOWER(companyName) LIKE LOWER('%{companyName}%')";
       NetSuiteQueryRequest query = new NetSuiteQueryRequest(q);
 
       HttpClient client = new HttpClient();
