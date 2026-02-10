@@ -38,6 +38,7 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu Name="ClientContextMenu">
                                 <MenuItem Header="Flag for deletion" Click="FlagClientForDeletion_Click"/>
+                                <MenuItem Header="Sync from NetSuite" Click="SyncFromNetSuite_Click"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.RowStyle>

@@ -146,6 +146,16 @@ namespace GMEPDesignTool
       ViewModel.CreateEstimate(p);
     }
 
+    private void Delete_Click(object sender, RoutedEventArgs e)
+    {
+      MessageBoxResult result = MessageBox.Show(
+        "Delete this proposal?",
+        "Confirmation",
+        MessageBoxButton.YesNo
+      );
+      if (result == MessageBoxResult.Yes) { }
+    }
+
     private void ClientSelection_Click(object sender, RoutedEventArgs args)
     {
       Proposal? p = ProposalsDataGrid.SelectedItem as Proposal;

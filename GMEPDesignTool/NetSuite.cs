@@ -118,6 +118,13 @@ namespace GMEPDesignTool
     public bool custbody_energy_calculations_send { get; set; }
     public bool custbody_site_lighting { get; set; }
     public bool custbody_site_visit { get; set; }
+    public string custbody_project_name { get; set; }
+
+    public string custbody_architect { get; set; }
+
+    public int custbody_project_type { get; set; }
+
+    public string custbody17 { get; set; } // comments/notes field
   }
 
   public class NetSuiteEntityStatus
@@ -136,7 +143,8 @@ namespace GMEPDesignTool
     public int line { get; set; }
     public NetSuiteLineItem item { get; set; }
     public double rate { get; set; }
-    public int quantity;
+    public double quantity;
+    public string description { get; set; }
   }
 
   public class NetSuiteLineItem

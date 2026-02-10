@@ -212,9 +212,12 @@ namespace GMEPDesignTool
         {
           await NetSuiteHandler.RefreshNetSuiteToken(LoginResponse, NetSuiteAuth);
         }
+
+        string clientLoyaltyType = "new";
         if (string.IsNullOrEmpty(p.CompanyName))
         {
           p.CompanyName = Database.GetCompanyName(p.ClientCompanyId);
+          clientLoyaltyType = Database.GetCompanyClientLoyaltyType(p.ClientCompanyId);
         }
         string companyId = await GetNetSuiteCompanyId(p.CompanyName);
         if (string.IsNullOrEmpty(companyId))
@@ -237,6 +240,67 @@ namespace GMEPDesignTool
             NetSuiteAuth.access_token
           );
 
+        double quantity = 1;
+
+        if (clientLoyaltyType == "loyal")
+        {
+          if (p.Fees < 3000)
+          {
+            quantity = 1;
+          }
+          else if (p.Fees < 15000)
+          {
+            quantity = 0.75;
+          }
+          else if (p.Fees < 25000)
+          {
+            quantity = 0.25;
+          }
+        }
+
+        if (clientLoyaltyType == "returning")
+        {
+          if (p.Fees < 1000)
+          {
+            quantity = 1;
+          }
+          else if (p.Fees < 3000)
+          {
+            quantity = 0.5;
+          }
+          else if (p.Fees < 10000)
+          {
+            quantity = 0.25;
+          }
+          else if (p.Fees < 25000)
+          {
+            quantity = 0.25;
+          }
+        }
+
+        if (clientLoyaltyType == "new")
+        {
+          if (p.Fees < 2000)
+          {
+            quantity = 1;
+          }
+          if (p.Fees < 10000)
+          {
+            quantity = 0.5;
+          }
+          if (p.Fees < 25000)
+          {
+            quantity = 0.25;
+          }
+        }
+
+        int netSuiteProjectTypeId = 1;
+
+        if (p.Type == "Residential")
+        {
+          netSuiteProjectTypeId = 2;
+        }
+
         NetSuiteEstimate estimate = new NetSuiteEstimate()
         {
           tranId = project.ProjectName,
@@ -253,6 +317,7 @@ namespace GMEPDesignTool
           custbody_mechanical = project.IsCheckedM,
           custbody_electrical = project.IsCheckedE,
           custbody_plumbing = project.IsCheckedP,
+          custbody_project_name = project.ProjectName,
           custbody_energy_calculations_send =
             p.Data != null
               ? p.Data.ElectricalScope.ElectricalLightingDesign
@@ -261,6 +326,9 @@ namespace GMEPDesignTool
           custbody_site_lighting = p.Data != null ? p.Data.HasSiteLighting : false,
 
           custbody_site_visit = p.Data != null ? p.Data.HasSiteVisit : false,
+          custbody17 = project.Descriptions,
+          custbody_architect = p.ArchitectCompanyId,
+          custbody_project_type = netSuiteProjectTypeId,
           item = new NetSuiteEstimateItem()
           {
             items = new List<NetSuiteItem>()
@@ -269,8 +337,9 @@ namespace GMEPDesignTool
               {
                 line = 1,
                 item = new NetSuiteLineItem() { id = 5 }, // ID must be 5 for "Consulting"
-                rate = 2000,
-                quantity = 1,
+                rate = p.Fees,
+                quantity = quantity,
+                description = project.Descriptions,
               },
             },
           },

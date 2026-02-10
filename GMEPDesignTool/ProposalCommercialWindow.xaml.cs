@@ -485,6 +485,7 @@ namespace GMEPDesignTool
       }
 
       string selectedClientCompanyId = ClientNameComboBox.SelectedValue.ToString();
+      Trace.WriteLine(selectedClientCompanyId);
 
       Client client = database.GetClient(selectedClientCompanyId);
 
@@ -816,7 +817,7 @@ namespace GMEPDesignTool
       }
       catch (Exception ex) { }
       string destinationPath =
-        $"S:\\Projects\\Projects\\{currentYear}\\{client.CompanyName}\\{pdfRequest.ProjectName}\\${keyName}";
+        $"S:\\Projects\\Projects\\{currentYear}\\{client.CompanyName}\\{pdfRequest.ProjectName}\\{keyName}";
       try
       {
         System.IO.File.Copy(tempFilePath, destinationPath, true);

@@ -183,10 +183,10 @@
                             <Label Grid.Row="1" Content="Total Price"  Margin="0,0,0,10" Width="auto" />
                             <TextBox x:Name="TotalPriceBox" Grid.Row="1" Text="{Binding TotalPrice, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
 
-                            <Label Grid.Row="2" Content="Max Admin Hours"  Margin="0,0,0,10" Width="auto" />
+                            <Label Grid.Row="2" Content="CA Hours"  Margin="0,0,0,10" Width="auto" />
                             <TextBox x:Name="MaxAdminHours" Grid.Row="2" Text="{Binding MaxAdminHours, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
 
-                            <Label Grid.Row="3" Content="Budgeted Admin Hours"  Margin="0,0,0,10" Width="auto" />
+                            <Label Grid.Row="3" Content="Coordination Hours"  Margin="0,0,0,10" Width="auto" />
                             <TextBox x:Name="BudgetedAdminHours" Grid.Row="3" Text="{Binding BudgetedAdminHours, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Grid.Column="1" TextChanged="TextBox_TextChanged" />
 
                             <CheckBox Grid.Row="4" Content="Site Visit" Margin="10,0,0,10" IsChecked="{Binding HasSiteVisit}" Height="20"/>

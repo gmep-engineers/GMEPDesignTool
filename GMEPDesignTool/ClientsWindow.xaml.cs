@@ -111,6 +111,11 @@ namespace GMEPDesignTool
       ViewModel.FlagContactForDeletion();
     }
 
+    private void SyncFromNetSuite_Click(object sender, RoutedEventArgs e)
+    {
+      // HERE implement
+    }
+
     private void IsArchitect_Checked(object sender, RoutedEventArgs e)
     {
       ViewModel.AddClientToArchitects();
